@@ -12,7 +12,8 @@ import type {
 } from '../lib/types';
 import { copyPrintSettings } from '../lib/print-settings';
 import { planStructureEdit, transformPosition, transformRange } from '../lib/structure-edit';
-import { planRowSort, type RowSortRequest } from '../lib/row-sort';
+import type { RowSortRequest } from '../lib/row-sort';
+import { planWorkbookRowSort, WorkbookSortValidationError } from '../lib/workbook-sort';
 import type { StructureEdit } from '../lib/formula-structure';
 import {
   checkValue,
@@ -748,26 +749,19 @@ export class LuminaSpreadsheet {
   sortRows(request: RowSortRequest): SortResult {
     this.assertWritable();
     const sheet = this.sheetForMetadata();
-    // Planning must not fill or invalidate the live evaluator cache if the
-    // request, resource limit, or destination validation rejects the operation.
-    const evaluate = createEvaluator(this.workbook, { managedMutations: true });
-    const planned = asArgument(() => planRowSort(sheet, request, (key) => evaluate(sheet, key)));
-    if (!planned.changes.length) return { movedRows: 0, changedCells: 0 };
-    // A moved formula can keep exactly the same raw text after relative
-    // translation yet calculate a different value from its newly sorted peers.
-    // Include retained cells in moved rows in destination validation, even if
-    // their unchanged raw value required no physical patch.
-    const validationKeys = new Set(planned.changes.map(({ key }) => key));
-    if (sheet.dataValidations?.length) {
-      const moved = new Set(
-        planned.targetRows.filter((row, index) => row !== planned.rowOrder[index]),
-      );
-      for (const key in sheet.cells) {
-        const point = parseCellKey(key);
-        if (point && moved.has(point.row)) validationKeys.add(key);
+    const planned = asArgument(() => {
+      try {
+        return planWorkbookRowSort(this.workbook, sheet.id, request);
+      } catch (error) {
+        if (error instanceof WorkbookSortValidationError)
+          throw new DataValidationError(error.failures);
+        throw error;
       }
-    }
-    this.apply(sheet.id, planned.changes, true, undefined, undefined, true, validationKeys);
+    });
+    if (!planned.changes.length) return { movedRows: 0, changedCells: 0 };
+    // The shared planner validates moved records with an isolated evaluator;
+    // apply retains the ordinary patch validation and history contract.
+    this.apply(sheet.id, planned.changes, true, undefined, undefined, true);
     return { movedRows: planned.movedRows, changedCells: planned.changes.length };
   }
   getValue(address: string): CellValue {
@@ -1039,7 +1033,6 @@ export class LuminaSpreadsheet {
     targetDimensions?: SheetDimensions,
     targetMetadata?: SheetMetadata,
     preserveSelection = false,
-    validationKeys?: Iterable<string>,
   ) {
     this.assertWritable();
     const sheet = this.workbook.sheets.find((item) => item.id === sheetId);
@@ -1084,7 +1077,7 @@ export class LuminaSpreadsheet {
       };
       const evaluate = createEvaluator(workbook, { managedMutations: true });
       const failures: DataValidationFailure[] = [];
-      for (const key of validationKeys ?? normalized.keys()) {
+      for (const key of normalized.keys()) {
         const point = parseCellKey(key)!;
         const matches = sheet.dataValidations.filter(
           (rule) =>

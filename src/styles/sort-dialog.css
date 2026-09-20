@@ -1,0 +1,150 @@
+.modal:has(> .sort-dialog) {
+  --sort-dialog-inset: 24px;
+  padding: 20px var(--sort-dialog-inset) 0;
+  scroll-padding-block: 20px 90px;
+}
+
+.modal:has(> .sort-dialog) > .modal-heading {
+  margin-bottom: 16px;
+}
+
+.modal:has(> .sort-dialog) > .modal-heading p {
+  margin-top: 5px;
+}
+
+.sort-dialog {
+  min-width: 0;
+}
+
+.sort-dialog-section {
+  min-width: 0;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+.sort-dialog-section legend {
+  margin-bottom: 9px;
+  padding: 0;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sort-dialog-range,
+.sort-dialog-key {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.sort-dialog-key + .sort-dialog-key {
+  margin-top: 11px;
+}
+
+.sort-dialog-field {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+  color: #607566;
+  font-size: 12px;
+}
+
+.sort-dialog-field input,
+.sort-dialog-field select {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #dbe5d8;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-overflow: ellipsis;
+}
+
+.sort-dialog-field select:disabled {
+  background: #f4f6f3;
+  color: #9aa59d;
+}
+
+.sort-dialog-hint {
+  margin-top: 7px;
+  color: #768479;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.sort-dialog-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #48624f;
+  font-size: 12px;
+}
+
+.sort-dialog-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+.sort-dialog-summary {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  background: #f5f8f3;
+  color: #6e7e68;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.sort-dialog-summary p + p {
+  margin-top: 3px;
+}
+
+.sort-dialog-error {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid #efd0c9;
+  border-radius: 7px;
+  background: #fff4f0;
+  color: #963f30;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.modal-footer.sort-dialog-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  flex-wrap: wrap;
+  margin: 14px calc(-1 * var(--sort-dialog-inset)) 0;
+  padding: 12px var(--sort-dialog-inset) 18px;
+  background: #fff;
+  box-shadow: 0 -5px 12px #ffffffeb;
+}
+
+@media (max-width: 430px) {
+  .modal:has(> .sort-dialog) {
+    --sort-dialog-inset: 18px;
+    padding-top: 18px;
+  }
+
+  .sort-dialog-key {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .sort-dialog-summary {
+    padding: 10px 12px;
+  }
+
+  .sort-dialog-footer .button {
+    flex: 1;
+    justify-content: center;
+  }
+}

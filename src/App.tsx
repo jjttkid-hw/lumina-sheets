@@ -100,6 +100,9 @@ import { exportWorkbook, importFile, validateWorkbook, IMPORT_LIMITS } from './l
 import { loadWorkbooks, readStored, writeStored, snapshotLink, readSnapshot } from './lib/storage';
 import { getPersistence } from './lib/persistence';
 import { createCalculationRuntime } from './lib/calculation';
+import { planWorkbookRowSort } from './lib/workbook-sort';
+import type { RowSortRequest } from './lib/row-sort';
+import SortDialog from './components/SortDialog';
 import Spreadsheet from './components/Spreadsheet';
 import Analytics, { readWorkbookAnalytics } from './components/Analytics';
 import Insights from './components/Insights';
@@ -116,6 +119,7 @@ type ModalName =
   | 'search'
   | 'plans'
   | 'rename'
+  | 'sort'
   | null;
 const money = (n: number) => new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0 }).format(n);
 const dateTime = (s: string) =>
@@ -216,6 +220,13 @@ export default function App() {
   const [insights, setInsights] = useState(() => window.innerWidth > 900);
   const [sidebar, setSidebar] = useState(() => window.innerWidth > 740);
   const [modal, setModal] = useState<ModalName>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const sortButton = useRef<HTMLButtonElement>(null);
+  const sortDialogOpen = useRef(false);
+  useEffect(() => {
+    if (sortDialogOpen.current && modal !== 'sort') sortButton.current?.focus();
+    sortDialogOpen.current = modal === 'sort';
+  }, [modal]);
   const [templateFilter, setTemplateFilter] = useState('精选模板');
   const [menu, setMenu] = useState<string | null>(null);
   const [search, setSearch] = useState('');
@@ -682,49 +693,22 @@ export default function App() {
     setCommentInput('');
     notify('批注已添加');
   }
-  function sortSheet(direction: 1 | -1) {
-    if (sheet.merges?.length) {
-      notify('请先取消合并单元格，再进行排序');
-      setMenu(null);
-      return;
-    }
-    const evaluate = createEvaluator(book);
-    const rows = new Map<number, Array<[number, typeof selectedCell]>>();
-    for (const [key, cell] of Object.entries(sheet.cells)) {
-      const p = parseCellKey(key);
-      if (!p || p.row === 0) continue;
-      if (!rows.has(p.row)) rows.set(p.row, []);
-      rows.get(p.row)!.push([p.col, cell]);
-    }
-    const indices = [...rows.keys()];
-    indices.sort((a, b) => {
-      const av = evaluate(sheet, cellKey(a, selection.col)),
-        bv = evaluate(sheet, cellKey(b, selection.col));
-      return (
-        direction *
-        (typeof av === 'number' && typeof bv === 'number'
-          ? av - bv
-          : String(av).localeCompare(String(bv), 'zh-CN'))
-      );
-    });
-    const cells = Object.fromEntries(
-      Object.entries(sheet.cells).filter(([key]) => parseCellKey(key)?.row === 0),
-    );
-    indices.forEach((source, i) =>
-      rows.get(source)!.forEach(([c, cell]) => {
-        if (!cell) return;
-        cells[cellKey(i + 1, c)] = {
-          ...cell,
-          value:
-            typeof cell.value === 'string' && cell.value.startsWith('=')
-              ? evaluate(sheet, cellKey(source, c))
-              : cell.value,
-        };
-      }),
-    );
-    changeSheet({ ...sheet, cells });
-    notify('已排序；公式结果已保留为数值，可撤销恢复公式');
+  function openSort(direction: 'asc' | 'desc') {
+    setSortDirection(direction);
     setMenu(null);
+    setModal('sort');
+  }
+  function sortSheet(request: RowSortRequest) {
+    // Resolve and validate the whole candidate before queuing persistence or
+    // creating a history entry. Rejections leave the dialog and workbook intact.
+    const planned = planWorkbookRowSort(book, sheet.id, request);
+    if (planned.changes.length) applySheetPatches(sheet.id, planned.changes);
+    setModal(null);
+    notify(
+      planned.changes.length
+        ? `已移动 ${planned.movedRows} 行，公式已保留 · 可一次撤销`
+        : '当前顺序已符合条件，没有新增撤销记录',
+    );
   }
   function mergeCells() {
     const r1 = Math.min(selection.row, selection.endRow ?? selection.row),
@@ -1522,6 +1506,7 @@ export default function App() {
                         <div className="menu-anchor">
                           <button
                             aria-label="排序"
+                            ref={sortButton}
                             className="toolbar-text-button"
                             onClick={() => setMenu(menu === 'sort' ? null : 'sort')}
                           >
@@ -1532,15 +1517,17 @@ export default function App() {
                           {menu === 'sort' && (
                             <div className="dropdown">
                               <strong>按 {columnLabel(selection.col)} 列排序</strong>
-                              <button onClick={() => sortSheet(1)}>
+                              <button onClick={() => openSort('asc')}>
                                 <SortAsc size={16} />
                                 升序排列
                               </button>
-                              <button onClick={() => sortSheet(-1)}>
+                              <button onClick={() => openSort('desc')}>
                                 <SortDesc size={16} />
                                 降序排列
                               </button>
-                              <p className="menu-note">排序会将公式保留为当前数值。</p>
+                              <p className="menu-note">
+                                选择行范围与排序条件，公式和整行数据一起移动。
+                              </p>
                             </div>
                           )}
                         </div>
@@ -1792,6 +1779,16 @@ export default function App() {
           <span />
           正在处理文件…
         </div>
+      )}
+      {modal === 'sort' && (
+        <SortDialog
+          key={`${book.id}:${sheet.id}`}
+          sheet={sheet}
+          selection={selection}
+          direction={sortDirection}
+          onClose={closeModal}
+          onSort={sortSheet}
+        />
       )}
       {modal === 'new' && (
         <Modal
