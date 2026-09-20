@@ -96,13 +96,16 @@ import {
   MAX_ROWS,
 } from './lib/engine';
 import { createDemoWorkbook, createBlankWorkbook, createTemplateWorkbook } from './lib/seed';
-import { exportWorkbook, importFile, validateWorkbook, IMPORT_LIMITS } from './lib/io';
+import { exportWorkbook, importFile, validateWorkbook } from './lib/io';
 import { loadWorkbooks, readStored, writeStored, snapshotLink, readSnapshot } from './lib/storage';
-import { getPersistence } from './lib/persistence';
+import { getPersistence, type WorkbookPatch } from './lib/persistence';
+import { WorkspaceSaveQueue } from './lib/workspace-save';
 import { createCalculationRuntime } from './lib/calculation';
 import { planWorkbookRowSort } from './lib/workbook-sort';
 import type { RowSortRequest } from './lib/row-sort';
 import SortDialog from './components/SortDialog';
+import FormulaBar from './components/FormulaBar';
+import { planWorkspaceCellChanges } from './lib/workspace-edit';
 import Spreadsheet from './components/Spreadsheet';
 import Analytics, { readWorkbookAnalytics } from './components/Analytics';
 import Insights from './components/Insights';
@@ -236,22 +239,42 @@ export default function App() {
   const [showGrid, setShowGrid] = useState(true);
   const [zoom, setZoom] = useState(100);
   const [toast, setToast] = useState('');
-  const [saveState, setSaveState] = useState<'saving' | 'saved' | 'error'>('saved');
-  const [formula, setFormula] = useState('');
+  const [saveState, setSaveState] = useState<'saving' | 'saved' | 'session' | 'error'>('saving');
+  const [workspaceReady, setWorkspaceReady] = useState(false);
+  const [workspaceLoadFailed, setWorkspaceLoadFailed] = useState(false);
+  const [workspaceLoadAttempt, setWorkspaceLoadAttempt] = useState(0);
   const [address, setAddress] = useState('D2');
   const [nameInput, setNameInput] = useState('');
   const [revisions, setRevisions] = useState<Revision[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentInput, setCommentInput] = useState('');
+  const auxiliaryBook = useRef(book.id);
+  auxiliaryBook.current = book.id;
+  const historyRequest = useRef(0);
+  const commentsRequest = useRef(0);
   const [sharedUrl, setSharedUrl] = useState('');
   const [trash, setTrash] = useState<Workbook[]>(() => readStored('trash', []));
   const undoStack = useRef<Workbook[]>([]),
     redoStack = useRef<Workbook[]>([]);
   const [, refreshHistory] = useState(0);
   const fileInput = useRef<HTMLInputElement>(null);
-  const formulaBlurSkip = useRef(false);
   const [busy, setBusy] = useState(false);
   const persistence = useRef(getPersistence());
+  const saveQueue = useRef<WorkspaceSaveQueue | null>(null);
+  if (!saveQueue.current) saveQueue.current = new WorkspaceSaveQueue(persistence.current);
+  const saveRevision = useRef(0);
+  const recordSave = useCallback((pending: Promise<void>) => {
+    const revision = ++saveRevision.current;
+    setSaveState('saving');
+    void pending
+      .then(() => {
+        if (revision === saveRevision.current)
+          setSaveState(persistence.current.stats.backend === 'memory' ? 'session' : 'saved');
+      })
+      .catch(() => {
+        if (revision === saveRevision.current) setSaveState('error');
+      });
+  }, []);
   const calculation = useRef<ReturnType<typeof createCalculationRuntime> | null>(null);
   const [calculationVersion, setCalculationVersion] = useState(0);
   const [calculatedValues, setCalculatedValues] = useState<Record<string, CellValue>>({});
@@ -275,36 +298,55 @@ export default function App() {
   }, []);
   const closeModal = useCallback(() => setModal(null), []);
   const selectedCell = sheet.cells[cellKey(selection.row, selection.col)];
-  const persistenceHydrated = useRef(false);
+  const openedSnapshot = useRef(new URLSearchParams(location.hash.slice(1)).has('snapshot'));
+  const requestedActiveId = useRef(readStored<string>('activeWorkbook', ''));
   useEffect(() => {
-    if (new URLSearchParams(location.hash.slice(1)).has('snapshot')) {
-      persistenceHydrated.current = true;
-      return;
-    }
     let cancelled = false;
-    void persistence.current.loadWorkbooks().then((loaded) => {
-      if (cancelled) return;
-      if (!loaded.length) {
-        void persistence.current.putWorkbooks(books).catch(() => undefined);
-        persistenceHydrated.current = true;
-        return;
-      }
-      const valid = loaded.flatMap((raw) => {
-        try {
-          return [validateWorkbook(raw)];
-        } catch {
-          return [];
+    setWorkspaceLoadFailed(false);
+    void (async () => {
+      try {
+        const loaded = await persistence.current.loadWorkbooks();
+        if (cancelled) return;
+        const archived = new Set(readStored<Workbook[]>('trash', []).map((item) => item.id));
+        const valid = loaded.flatMap((raw) => {
+          try {
+            const candidate = validateWorkbook(raw);
+            return archived.has(candidate.id) ? [] : [candidate];
+          } catch {
+            return [];
+          }
+        });
+        const restored = valid.length ? valid : books.filter((item) => !archived.has(item.id));
+        const readyBooks = openedSnapshot.current
+          ? [books[0], ...restored.filter((item) => item.id !== books[0].id)]
+          : restored.length
+            ? restored
+            : [createBlankWorkbook()];
+        setBooks(readyBooks);
+        setActiveId(
+          openedSnapshot.current
+            ? readyBooks[0].id
+            : readyBooks.some((item) => item.id === requestedActiveId.current)
+              ? requestedActiveId.current
+              : readyBooks[0].id,
+        );
+        const storedIds = new Set(valid.map((item) => item.id));
+        const newBooks = readyBooks.filter((item) => !storedIds.has(item.id));
+        if (newBooks.length) {
+          for (const initial of newBooks) recordSave(saveQueue.current!.snapshot(initial));
+        } else recordSave(saveQueue.current!.flush());
+        setWorkspaceReady(true);
+      } catch {
+        if (!cancelled) {
+          setSaveState('error');
+          setWorkspaceLoadFailed(true);
         }
-      });
-      if (!valid.length) return;
-      setBooks(valid);
-      setActiveId((current) => (valid.some((book) => book.id === current) ? current : valid[0].id));
-      persistenceHydrated.current = true;
-    });
+      }
+    })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [workspaceLoadAttempt]);
   useEffect(() => {
     const runtime = createCalculationRuntime();
     calculation.current = runtime;
@@ -340,37 +382,58 @@ export default function App() {
     };
   }, [book, calculationVersion]);
   useEffect(() => {
-    setFormula(String(selectedCell?.value ?? ''));
     setAddress(cellKey(selection.row, selection.col));
   }, [selection, sheet.id, selectedCell?.value]);
   useEffect(() => {
-    writeStored('activeWorkbook', activeId);
-  }, [activeId]);
-  useEffect(() => {
-    setSaveState('saving');
-    const timer = setTimeout(() => {
-      void persistence.current
-        .flush()
-        .then(() => setSaveState('saved'))
-        .catch(() => setSaveState('error'));
-    }, 350);
-    if (persistenceHydrated.current) void persistence.current.flush().catch(() => undefined);
-    return () => clearTimeout(timer);
-  }, [books]);
+    if (workspaceReady) writeStored('activeWorkbook', activeId);
+  }, [activeId, workspaceReady]);
   useEffect(() => {
     if (new URLSearchParams(location.hash.slice(1)).has('snapshot'))
       history.replaceState(null, '', location.pathname + location.search);
   }, []);
   useEffect(() => {
-    void persistence.current.loadRevisions(book.id).then(setRevisions);
-    void persistence.current.loadComments(book.id).then(setComments);
+    if (!workspaceReady) return;
+    let cancelled = false;
+    const historyVersion = ++historyRequest.current;
+    const commentsVersion = ++commentsRequest.current;
+    setRevisions([]);
+    setComments([]);
+    void persistence.current
+      .loadRevisions(book.id)
+      .then((items) => {
+        if (
+          !cancelled &&
+          auxiliaryBook.current === book.id &&
+          historyRequest.current === historyVersion
+        )
+          setRevisions(items);
+      })
+      .catch(() => {
+        if (!cancelled) notify('版本历史读取失败，请重新打开历史');
+      });
+    void persistence.current
+      .loadComments(book.id)
+      .then((items) => {
+        if (
+          !cancelled &&
+          auxiliaryBook.current === book.id &&
+          commentsRequest.current === commentsVersion
+        )
+          setComments(items);
+      })
+      .catch(() => {
+        if (!cancelled) notify('批注读取失败，请重新打开工作簿');
+      });
     undoStack.current = [];
     redoStack.current = [];
     setSelection({
       row: window.innerWidth <= 740 ? 0 : Math.min(1, sheet.rowCount - 1),
       col: window.innerWidth <= 740 ? 0 : Math.min(3, sheet.colCount - 1),
     });
-  }, [book.id]);
+    return () => {
+      cancelled = true;
+    };
+  }, [book.id, workspaceReady]);
   useEffect(() => {
     setSelection((current) => ({
       row: Math.min(current.row, sheet.rowCount - 1),
@@ -384,50 +447,61 @@ export default function App() {
     }));
   }, [sheet.id, sheet.rowCount, sheet.colCount]);
   const updateBook = useCallback(
-    (next: Workbook, track = true) => {
+    (next: Workbook, track = true, persistedByPatch = false) => {
       if (track) {
         undoStack.current.push(structuredClone(book));
         undoStack.current = undoStack.current.slice(-60);
         redoStack.current = [];
       }
-      setBooks((prev) =>
-        prev.map((b) => (b.id === book.id ? { ...next, updatedAt: new Date().toISOString() } : b)),
-      );
+      const committed = { ...next, updatedAt: new Date().toISOString() };
+      if (!persistedByPatch) recordSave(saveQueue.current!.snapshot(committed));
+      setBooks((prev) => prev.map((b) => (b.id === book.id ? committed : b)));
       setCalculationVersion((version) => version + 1);
       refreshHistory((n) => n + 1);
     },
     [book],
   );
-  function changeSheet(next: Sheet) {
-    if (
-      next.rowCount > IMPORT_LIMITS.rows ||
-      next.colCount > IMPORT_LIMITS.columns ||
-      Object.keys(next.cells).length > IMPORT_LIMITS.cells
-    ) {
-      notify('当前版本最多支持 100,000 行、256 列和 100,000 个已存储单元格');
-      return;
-    }
-    const previous = book.sheets.find((item) => item.id === next.id);
-    if (previous && previous.cells !== next.cells) {
-      const keys = new Set([...Object.keys(previous.cells), ...Object.keys(next.cells)]);
-      for (const key of keys) {
-        const before = previous.cells[key],
-          after = next.cells[key];
-        if (JSON.stringify(before) !== JSON.stringify(after))
-          persistence.current.queueCellPatch(book.id, next.id, key, after ?? null);
-      }
-    }
-    if (previous) {
+  function changeSheet(next: Sheet): boolean {
+    try {
+      const previous = book.sheets.find((item) => item.id === next.id);
+      if (!previous) throw new Error('找不到工作表');
+      const keys =
+        previous.cells === next.cells
+          ? []
+          : [...new Set([...Object.keys(previous.cells), ...Object.keys(next.cells)])];
+      const changes = keys.flatMap((key) =>
+        JSON.stringify(previous.cells[key]) === JSON.stringify(next.cells[key])
+          ? []
+          : [{ key, cell: next.cells[key] ?? null }],
+      );
+      const planned = planWorkspaceCellChanges(book, next.id, changes, {
+        rowCount: next.rowCount,
+        colCount: next.colCount,
+      });
       const { cells: _beforeCells, ...beforeMeta } = previous;
       const { cells: _afterCells, ...afterMeta } = next;
-      if (JSON.stringify(beforeMeta) !== JSON.stringify(afterMeta))
-        persistence.current.queuePatch(book.id, {
-          kind: 'sheet-meta',
-          sheetId: next.id,
-          changes: afterMeta,
-        });
+      const metadataChanged = JSON.stringify(beforeMeta) !== JSON.stringify(afterMeta);
+      if (!planned && !metadataChanged) return true;
+      // Both data and metadata are queued only after every candidate cell passed.
+      const patches: WorkbookPatch[] = (planned?.changes ?? []).map((change) => ({
+        kind: 'cell',
+        sheetId: next.id,
+        ...change,
+      }));
+      if (metadataChanged)
+        patches.push({ kind: 'sheet-meta', sheetId: next.id, changes: afterMeta });
+      recordSave(saveQueue.current!.patches(book.id, patches));
+      const result = { ...next, cells: planned?.sheet.cells ?? previous.cells };
+      updateBook(
+        { ...book, sheets: book.sheets.map((s) => (s.id === next.id ? result : s)) },
+        true,
+        true,
+      );
+      return true;
+    } catch (error) {
+      notify(error instanceof Error ? error.message : '修改未完成，请检查输入');
+      return false;
     }
-    updateBook({ ...book, sheets: book.sheets.map((s) => (s.id === next.id ? next : s)) });
   }
   const applySheetPatches = useCallback(
     (
@@ -435,26 +509,24 @@ export default function App() {
       changes: Array<{ key: string; cell: import('./lib/types').Cell | null }>,
       dimensions?: { rowCount?: number; colCount?: number },
     ) => {
-      const target = book.sheets.find((item) => item.id === sheetId);
-      if (!target || changes.length > IMPORT_LIMITS.cells) return;
-      const cells = { ...target.cells };
-      for (const change of changes) {
-        if (change.cell === null) delete cells[change.key];
-        else cells[change.key] = change.cell;
-        persistence.current.queueCellPatch(book.id, sheetId, change.key, change.cell);
-      }
-      if (dimensions)
-        persistence.current.queuePatch(book.id, {
-          kind: 'sheet-meta',
-          sheetId,
-          changes: dimensions,
-        });
-      updateBook({
-        ...book,
-        sheets: book.sheets.map((item) =>
-          item.id === sheetId ? { ...item, ...dimensions, cells } : item,
-        ),
-      });
+      const planned = planWorkspaceCellChanges(book, sheetId, changes, dimensions);
+      if (!planned) return;
+      const patches: WorkbookPatch[] = planned.changes.map((change) => ({
+        kind: 'cell',
+        sheetId,
+        ...change,
+      }));
+      if (planned.dimensions)
+        patches.push({ kind: 'sheet-meta', sheetId, changes: planned.dimensions });
+      recordSave(saveQueue.current!.patches(book.id, patches));
+      updateBook(
+        {
+          ...book,
+          sheets: book.sheets.map((item) => (item.id === sheetId ? planned.sheet : item)),
+        },
+        true,
+        true,
+      );
     },
     [book, updateBook],
   );
@@ -464,7 +536,7 @@ export default function App() {
     redoStack.current.push(structuredClone(book));
     setBooks((prev) => prev.map((b) => (b.id === book.id ? previous : b)));
     setCalculationVersion((version) => version + 1);
-    void persistence.current.compact(previous).catch(() => undefined);
+    recordSave(saveQueue.current!.snapshot(previous));
     refreshHistory((n) => n + 1);
   }
   function redo() {
@@ -473,8 +545,23 @@ export default function App() {
     undoStack.current.push(structuredClone(book));
     setBooks((prev) => prev.map((b) => (b.id === book.id ? next : b)));
     setCalculationVersion((version) => version + 1);
-    void persistence.current.compact(next).catch(() => undefined);
+    recordSave(saveQueue.current!.snapshot(next));
     refreshHistory((n) => n + 1);
+  }
+  function saveNow() {
+    // Enqueue the current snapshot even while blocked, then explicitly retry the queue.
+    void saveQueue.current!.snapshot(book).catch(() => undefined);
+    const pending = saveQueue.current!.flush();
+    recordSave(pending);
+    void pending
+      .then(() =>
+        notify(
+          persistence.current.stats.backend === 'memory'
+            ? '当前仅保存在本次会话，请导出文件备份'
+            : '工作簿已保存到本地',
+        ),
+      )
+      .catch(() => notify('本地保存失败，请导出文件备份后重试'));
   }
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
@@ -486,10 +573,7 @@ export default function App() {
       }
       if (command && key === 's') {
         e.preventDefault();
-        void persistence.current
-          .compact(book)
-          .then(() => notify('工作簿已保存到本地'))
-          .catch(() => notify('本地保存失败，请导出文件备份'));
+        if (workspaceReady) saveNow();
       }
       const target = e.target as HTMLElement | null;
       const editing = target?.closest('input,textarea,select,[contenteditable="true"]');
@@ -502,9 +586,10 @@ export default function App() {
     };
     window.addEventListener('keydown', listener);
     return () => window.removeEventListener('keydown', listener);
-  }, [books, book, notify, modal]);
+  }, [books, book, notify, modal, workspaceReady]);
   function addBook(next: Workbook) {
     const unique = books.some((existing) => existing.id === next.id) ? independentCopy(next) : next;
+    recordSave(saveQueue.current!.snapshot(unique));
     setBooks((prev) => [unique, ...prev]);
     setActiveId(unique.id);
     setWorkspace('workspace');
@@ -548,7 +633,7 @@ export default function App() {
       return;
     }
     const key = cellKey(row, col);
-    changeSheet({
+    const applied = changeSheet({
       ...sheet,
       cells: {
         ...sheet.cells,
@@ -566,6 +651,7 @@ export default function App() {
       rowCount: Math.max(sheet.rowCount, row + 1),
       colCount: Math.max(sheet.colCount, col + 1),
     });
+    if (!applied) return;
     setSelection({ row, col });
     setFilter('');
     setSearch('');
@@ -654,6 +740,7 @@ export default function App() {
       workbook: structuredClone(book),
     };
     const list = [next, ...revisions].slice(0, 20);
+    historyRequest.current++;
     setRevisions(list);
     void persistence.current
       .saveRevisions(book.id, list)
@@ -661,15 +748,26 @@ export default function App() {
       .catch(() => notify('本地存储空间不足，请导出备份'));
   }
   function openHistory() {
-    void persistence.current.loadRevisions(book.id).then(setRevisions);
+    const version = ++historyRequest.current;
+    void persistence.current
+      .loadRevisions(book.id)
+      .then((items) => {
+        if (auxiliaryBook.current === book.id && version === historyRequest.current)
+          setRevisions(items);
+      })
+      .catch(() => notify('版本历史读取失败，请重试'));
     setModal('history');
   }
   function archiveBook() {
     const next = [book, ...trash];
+    if (!writeStored('trash', next)) {
+      notify('回收站保存失败，工作簿仍保留在工作空间');
+      return;
+    }
     setTrash(next);
-    writeStored('trash', next);
     const remaining = books.filter((b) => b.id !== book.id);
     const result = remaining.length ? remaining : [createBlankWorkbook()];
+    if (!remaining.length) recordSave(saveQueue.current!.snapshot(result[0]));
     setBooks(result);
     setActiveId(result[0].id);
     setMenu(null);
@@ -688,6 +786,7 @@ export default function App() {
         resolved: false,
       },
     ];
+    commentsRequest.current++;
     setComments(next);
     void persistence.current.saveComments(book.id, next);
     setCommentInput('');
@@ -734,8 +833,8 @@ export default function App() {
         ? overlaps[0]
         : undefined;
     if (existing) {
-      changeSheet({ ...sheet, merges: ranges.filter((merge) => merge !== existing) });
-      notify('已取消合并');
+      if (changeSheet({ ...sheet, merges: ranges.filter((merge) => merge !== existing) }))
+        notify('已取消合并');
       return;
     }
     if (overlaps.length) {
@@ -765,12 +864,12 @@ export default function App() {
       cells[targetKey] = { ...cells[targetKey], ...source };
       cells[sourceKey] = { ...source, value: '' };
     }
-    changeSheet({
+    const applied = changeSheet({
       ...sheet,
       cells,
       merges: [...ranges, { start: { row: r1, col: c1 }, end: { row: r2, col: c2 } }],
     });
-    setSelection({ row: r1, col: c1 });
+    if (applied) setSelection({ row: r1, col: c1 });
   }
   const stats = useMemo(() => {
     const analysis = readWorkbookAnalytics(book),
@@ -845,6 +944,27 @@ export default function App() {
       {children}
     </button>
   );
+  if (!workspaceReady)
+    return (
+      <div className="busy-indicator" role="status">
+        {workspaceLoadFailed ? (
+          <>
+            本地工作空间读取失败，尚未改动保存的数据。
+            <button
+              className="button"
+              onClick={() => setWorkspaceLoadAttempt((value) => value + 1)}
+            >
+              重试读取
+            </button>
+          </>
+        ) : (
+          <>
+            <span />
+            正在恢复本地工作空间…
+          </>
+        )}
+      </div>
+    );
   return (
     <div className={`app-shell ${sidebar ? '' : 'sidebar-collapsed'}`}>
       <input
@@ -1032,16 +1152,31 @@ export default function App() {
               {saveState === 'saving'
                 ? '正在保存…'
                 : saveState === 'error'
-                  ? '存储空间不足'
-                  : '已保存到本地'}
+                  ? '保存失败'
+                  : saveState === 'session'
+                    ? '仅保存在本次会话'
+                    : '已保存到本地'}
             </span>
+            {saveState === 'error' && (
+              <button className="button small" onClick={saveNow}>
+                重试保存
+              </button>
+            )}
             <span className="topbar-divider" />
             <IconBtn label="版本历史" onClick={openHistory}>
               <History size={18} />
             </IconBtn>
             <IconBtn
               label="通知"
-              onClick={() => notify('所有更改均已保存在当前浏览器，本地工作空间暂无新通知')}
+              onClick={() =>
+                notify(
+                  saveState === 'saved'
+                    ? '所有更改已保存到当前浏览器'
+                    : saveState === 'saving'
+                      ? '正在保存最新更改'
+                      : '更改尚未持久保存，请重试保存或导出备份',
+                )
+              }
             >
               <Bell size={18} />
             </IconBtn>
@@ -1070,8 +1205,11 @@ export default function App() {
                     className="button secondary"
                     onClick={() => {
                       const remaining = trash.filter((x) => x.id !== b.id);
+                      if (!writeStored('trash', remaining)) {
+                        notify('回收站更新失败，请重试');
+                        return;
+                      }
                       setTrash(remaining);
-                      writeStored('trash', remaining);
                       addBook(b);
                     }}
                   >
@@ -1375,7 +1513,23 @@ export default function App() {
                   <button
                     aria-label="批注"
                     onClick={() => {
-                      void persistence.current.loadComments(book.id).then(setComments);
+                      const version = ++commentsRequest.current;
+                      void persistence.current
+                        .loadComments(book.id)
+                        .then((items) => {
+                          if (
+                            auxiliaryBook.current === book.id &&
+                            version === commentsRequest.current
+                          )
+                            setComments(items);
+                        })
+                        .catch(() => {
+                          if (
+                            auxiliaryBook.current === book.id &&
+                            version === commentsRequest.current
+                          )
+                            notify('批注读取失败，请重试');
+                        });
                       setModal('comments');
                     }}
                   >
@@ -1590,53 +1744,19 @@ export default function App() {
                         </button>
                       </div>
                     )}
-                    <div className="formula-bar">
-                      <input
-                        className="cell-address"
-                        aria-label="单元格地址"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            const point = parseCellKey(address.toUpperCase());
-                            if (point && point.row < sheet.rowCount && point.col < sheet.colCount)
-                              setSelection(point);
-                            else notify('请输入工作表范围内的地址，例如 D2');
-                          }
-                        }}
-                      />
-                      <ChevronDown size={12} />
-                      <span className="formula-divider" />
-                      <span className="fx">ƒx</span>
-                      <input
-                        aria-label="公式编辑栏"
-                        placeholder="输入内容或公式，例如 =SUM(D2:D13)"
-                        value={formula}
-                        onChange={(e) => setFormula(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.nativeEvent.isComposing) return;
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            formulaBlurSkip.current = true;
-                            setCellValue(formula);
-                            (e.target as HTMLInputElement).blur();
-                          }
-                          if (e.key === 'Escape') {
-                            e.preventDefault();
-                            formulaBlurSkip.current = true;
-                            setFormula(String(selectedCell?.value ?? ''));
-                            (e.target as HTMLInputElement).blur();
-                          }
-                        }}
-                        onBlur={() => {
-                          if (formulaBlurSkip.current) {
-                            formulaBlurSkip.current = false;
-                            return;
-                          }
-                          if (formula !== String(selectedCell?.value ?? '')) setCellValue(formula);
-                        }}
-                      />
-                    </div>
+                    <FormulaBar
+                      address={address}
+                      onAddressChange={setAddress}
+                      onAddressSubmit={() => {
+                        const point = parseCellKey(address.toUpperCase());
+                        if (point && point.row < sheet.rowCount && point.col < sheet.colCount)
+                          setSelection(point);
+                        else notify('请输入工作表范围内的地址，例如 D2');
+                      }}
+                      cellId={`${book.id}:${sheet.id}:${cellKey(selection.row, selection.col)}`}
+                      value={String(selectedCell?.value ?? '')}
+                      onCommit={setCellValue}
+                    />
                     <div className="grid-container">
                       <Spreadsheet
                         workbook={book}
@@ -2094,6 +2214,7 @@ export default function App() {
                           const next = comments.map((item) =>
                             item.id === c.id ? { ...item, resolved: true } : item,
                           );
+                          commentsRequest.current++;
                           setComments(next);
                           void persistence.current.saveComments(book.id, next);
                         }}

@@ -14,6 +14,7 @@ import { copyPrintSettings } from '../lib/print-settings';
 import { planStructureEdit, transformPosition, transformRange } from '../lib/structure-edit';
 import type { RowSortRequest } from '../lib/row-sort';
 import { planWorkbookRowSort, WorkbookSortValidationError } from '../lib/workbook-sort';
+import { validateWorkbookCellChanges } from '../lib/workbook-validation';
 import type { StructureEdit } from '../lib/formula-structure';
 import {
   checkValue,
@@ -1062,37 +1063,13 @@ export class LuminaSpreadsheet {
     validateDimensions(after);
     if (targetMetadata) validateSheetMetadata({ ...sheet, ...after, ...targetMetadata });
     if (track && normalized.size && sheet.dataValidations?.length) {
-      // An overlay makes every formula see the entire proposed batch without
-      // copying or mutating the retained workbook before validation succeeds.
-      const cells = new Proxy(sheet.cells, {
-        get: (target, key) =>
-          typeof key === 'string' && normalized.has(key)
-            ? (normalized.get(key) ?? undefined)
-            : Reflect.get(target, key),
-      });
-      const candidate = { ...sheet, ...after, cells };
-      const workbook = {
-        ...this.workbook,
-        sheets: this.workbook.sheets.map((item) => (item.id === sheet.id ? candidate : item)),
-      };
-      const evaluate = createEvaluator(workbook, { managedMutations: true });
-      const failures: DataValidationFailure[] = [];
-      for (const key of normalized.keys()) {
-        const point = parseCellKey(key)!;
-        const matches = sheet.dataValidations.filter(
-          (rule) =>
-            (!rule.sheetId || rule.sheetId === sheet.id) &&
-            point.row >= rule.range.start.row &&
-            point.row <= rule.range.end.row &&
-            point.col >= rule.range.start.col &&
-            point.col <= rule.range.end.col,
-        );
-        if (matches.length)
-          failures.push(...checkValue(sheet.id, key, evaluate(candidate, key), matches));
-        // Bound error output while still rejecting the complete transaction.
-        if (failures.length >= 100) break;
-      }
-      if (failures.length) throw new DataValidationError(failures.slice(0, 100));
+      const failures = validateWorkbookCellChanges(
+        this.workbook,
+        sheet.id,
+        [...normalized].map(([key, cell]) => ({ key, cell })),
+        { dimensions: after },
+      );
+      if (failures.length) throw new DataValidationError(failures);
     }
     if (
       !normalized.size &&

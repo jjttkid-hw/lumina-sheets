@@ -1,6 +1,6 @@
 import { createEvaluator, parseCellKey } from './engine';
-import { checkValue } from './data-validation';
 import type { DataValidationFailure } from './data-validation';
+import { validateWorkbookCellChanges } from './workbook-validation';
 import { planRowSort } from './row-sort';
 import type { RowSortPlan, RowSortRequest } from './row-sort';
 import type { Workbook } from './types';
@@ -31,43 +31,16 @@ export function planWorkbookRowSort(
   const planned = planRowSort(sheet, request, (key) => evaluate(sheet, key));
   if (!planned.changes.length || !sheet.dataValidations?.length) return planned;
 
-  const patches = new Map(planned.changes.map(({ key, cell }) => [key, cell]));
-  const validationKeys = new Set(patches.keys());
+  const validationKeys = new Set(planned.changes.map(({ key }) => key));
   const moved = new Set(planned.targetRows.filter((row, index) => row !== planned.rowOrder[index]));
   for (const key in sheet.cells) {
     if (!Object.hasOwn(sheet.cells, key)) continue;
     const point = parseCellKey(key);
     if (point && moved.has(point.row)) validationKeys.add(key);
   }
-  // Existing formulas can keep their raw text but compute differently after
-  // their peer cells move. Every read sees all patches, including deletions.
-  const cells = new Proxy(sheet.cells, {
-    get: (target, key) =>
-      typeof key === 'string' && patches.has(key)
-        ? (patches.get(key) ?? undefined)
-        : Reflect.get(target, key),
+  const failures = validateWorkbookCellChanges(workbook, sheetId, planned.changes, {
+    validationKeys,
   });
-  const candidate = { ...sheet, cells };
-  const candidateBook = {
-    ...workbook,
-    sheets: workbook.sheets.map((item) => (item.id === sheetId ? candidate : item)),
-  };
-  const evaluateCandidate = createEvaluator(candidateBook, { managedMutations: true });
-  const failures: DataValidationFailure[] = [];
-  for (const key of validationKeys) {
-    const point = parseCellKey(key)!;
-    const matches = sheet.dataValidations.filter(
-      (rule) =>
-        (!rule.sheetId || rule.sheetId === sheetId) &&
-        point.row >= rule.range.start.row &&
-        point.row <= rule.range.end.row &&
-        point.col >= rule.range.start.col &&
-        point.col <= rule.range.end.col,
-    );
-    if (matches.length)
-      failures.push(...checkValue(sheetId, key, evaluateCandidate(candidate, key), matches));
-    if (failures.length >= 100) break;
-  }
-  if (failures.length) throw new WorkbookSortValidationError(failures.slice(0, 100));
+  if (failures.length) throw new WorkbookSortValidationError(failures);
   return planned;
 }

@@ -357,8 +357,8 @@ export class LuminaPersistence {
     };
     this.pending.push(record);
     if (this.flushTimer) clearTimeout(this.flushTimer);
-    this.flushTimer = setTimeout(() => void this.flush(), this.flushDelayMs);
-    if (this.pending.length >= MAX_PATCHES_BEFORE_COMPACT) void this.flush();
+    this.flushTimer = setTimeout(() => void this.flush().catch(() => undefined), this.flushDelayMs);
+    if (this.pending.length >= MAX_PATCHES_BEFORE_COMPACT) void this.flush().catch(() => undefined);
   }
 
   queueCellPatch(workbookId: string, sheetId: string, key: string, cell: Cell | null): void {
@@ -372,41 +372,49 @@ export class LuminaPersistence {
     }
     if (this.flushPromise) return this.flushPromise;
     if (!this.pending.length) return;
-    const batch = this.pending.splice(0);
-    this.flushPromise = (async () => {
+    // Defer execution until flushPromise is assigned. The memory path has no
+    // await; an immediately invoked async function would clear the field in
+    // finally before the assignment reinstated its already-resolved promise.
+    this.flushPromise = Promise.resolve().then(async () => {
       try {
-        if (this.memory) {
-          for (const record of batch) {
-            const list = this.memory.patches.get(record.workbookId) ?? [];
-            list.push(record);
-            this.memory.patches.set(record.workbookId, list);
-          }
-        } else {
-          const db = await this.openDb();
-          if (db) {
-            await this.transaction(db, ['patches'], 'readwrite', (tx) => {
-              const store = tx.objectStore('patches');
-              for (const record of batch)
-                store.put({ ...record, id: undefined, key: patchKey(record) });
-            });
-          } else {
-            // IndexedDB may become unavailable after construction (privacy mode, quota or a
-            // browser policy). Continue with the in-memory adapter instead of dropping edits.
-            const memory = this.memory ?? createMemoryState();
-            this.memory = memory;
+        // queuePatch can auto-start a flush at 500 entries while its caller is
+        // still enqueuing a larger batch. Drain every batch that arrives before
+        // completion so the awaited promise cannot leave an unsaved tail.
+        while (this.pending.length) {
+          const batch = this.pending.splice(0);
+          if (this.memory) {
             for (const record of batch) {
-              const list = memory.patches.get(record.workbookId) ?? [];
+              const list = this.memory.patches.get(record.workbookId) ?? [];
               list.push(record);
-              memory.patches.set(record.workbookId, list);
+              this.memory.patches.set(record.workbookId, list);
+            }
+          } else {
+            const db = await this.openDb();
+            if (db) {
+              await this.transaction(db, ['patches'], 'readwrite', (tx) => {
+                const store = tx.objectStore('patches');
+                for (const record of batch)
+                  store.put({ ...record, id: undefined, key: patchKey(record) });
+              });
+            } else {
+              // IndexedDB may become unavailable after construction (privacy mode, quota or a
+              // browser policy). Continue with the in-memory adapter instead of dropping edits.
+              const memory = this.memory ?? createMemoryState();
+              this.memory = memory;
+              for (const record of batch) {
+                const list = memory.patches.get(record.workbookId) ?? [];
+                list.push(record);
+                memory.patches.set(record.workbookId, list);
+              }
             }
           }
+          this.persistedPatches += batch.length;
+          this.lastFlushAt = Date.now();
         }
-        this.persistedPatches += batch.length;
-        this.lastFlushAt = Date.now();
       } finally {
         this.flushPromise = null;
       }
-    })();
+    });
     return this.flushPromise;
   }
 
@@ -509,82 +517,90 @@ export class LuminaPersistence {
 
   private async migrateLegacy(): Promise<void> {
     if (this.migrationPromise) return this.migrationPromise;
-    this.migrationPromise = (async () => {
-      if (!this.storage) return;
-      let raw: string | null = null;
-      try {
-        raw = this.storage.getItem(`${PREFIX}.workbooks`);
-      } catch {
-        return;
-      }
-      if (!raw) return;
-      let books: Workbook[];
-      try {
-        const value: unknown = JSON.parse(raw);
-        if (!Array.isArray(value)) return;
-        books = value as Workbook[];
-      } catch {
-        return;
-      }
-      // Do not repeatedly parse or write the legacy payload. The source remains as a recovery
-      // backup until the user clears browser data. The marker lives in IndexedDB so a stale
-      // localStorage snapshot can never overwrite edits after a browser restart.
-      if (this.memory) {
-        for (const book of books)
-          if (book && typeof book.id === 'string') this.memory.workbooks.set(book.id, clone(book));
-        for (const book of books)
-          if (book && typeof book.id === 'string') this.migrateLegacyAuxiliary(book.id);
-      } else {
-        const db = await this.openDb();
-        if (db) {
-          const marker = await this.request<MetaRow | undefined>(
-            db.transaction('meta').objectStore('meta').get('legacy-v1-migrated'),
-          );
-          if (marker?.value === true) return;
-          await this.transaction(
-            db,
-            ['workbooks', 'revisions', 'comments', 'meta'],
-            'readwrite',
-            (tx) => {
-              const store = tx.objectStore('workbooks');
-              for (const book of books)
-                if (book && typeof book.id === 'string')
-                  store.put({ id: book.id, workbook: clone(book) } satisfies WorkbookRow);
-              const revisions = tx.objectStore('revisions');
-              const comments = tx.objectStore('comments');
-              for (const book of books) {
-                if (!book || typeof book.id !== 'string') continue;
-                const oldRevisions = this.readLegacy<Revision[]>(`${PREFIX}.history.${book.id}`);
-                if (oldRevisions)
-                  revisions.put({
-                    key: book.id,
-                    workbookId: book.id,
-                    revisions: oldRevisions.slice(0, 20),
-                  } satisfies RevisionRow);
-                const oldComments = this.readLegacy<Comment[]>(`${PREFIX}.comments.${book.id}`);
-                if (oldComments)
-                  comments.put({
-                    key: book.id,
-                    workbookId: book.id,
-                    comments: oldComments,
-                  } satisfies CommentRow);
-              }
-              tx.objectStore('meta').put({
-                key: 'legacy-v1-migrated',
-                value: true,
-              } satisfies MetaRow);
-            },
-          );
-        } else {
-          const memory = this.memory ?? createMemoryState();
-          this.memory = memory;
+    this.migrationPromise = Promise.resolve()
+      .then(async () => {
+        if (!this.storage) return;
+        let raw: string | null = null;
+        try {
+          raw = this.storage.getItem(`${PREFIX}.workbooks`);
+        } catch {
+          return;
+        }
+        if (!raw) return;
+        let books: Workbook[];
+        try {
+          const value: unknown = JSON.parse(raw);
+          if (!Array.isArray(value)) return;
+          books = value as Workbook[];
+        } catch {
+          return;
+        }
+        // Do not repeatedly parse or write the legacy payload. The source remains as a recovery
+        // backup until the user clears browser data. The marker lives in IndexedDB so a stale
+        // localStorage snapshot can never overwrite edits after a browser restart.
+        if (this.memory) {
           for (const book of books)
-            if (book && typeof book.id === 'string') memory.workbooks.set(book.id, clone(book));
+            if (book && typeof book.id === 'string')
+              this.memory.workbooks.set(book.id, clone(book));
           for (const book of books)
             if (book && typeof book.id === 'string') this.migrateLegacyAuxiliary(book.id);
+        } else {
+          const db = await this.openDb();
+          if (db) {
+            const marker = await this.request<MetaRow | undefined>(
+              db.transaction('meta').objectStore('meta').get('legacy-v1-migrated'),
+            );
+            if (marker?.value === true) return;
+            await this.transaction(
+              db,
+              ['workbooks', 'revisions', 'comments', 'meta'],
+              'readwrite',
+              (tx) => {
+                const store = tx.objectStore('workbooks');
+                for (const book of books)
+                  if (book && typeof book.id === 'string')
+                    store.put({ id: book.id, workbook: clone(book) } satisfies WorkbookRow);
+                const revisions = tx.objectStore('revisions');
+                const comments = tx.objectStore('comments');
+                for (const book of books) {
+                  if (!book || typeof book.id !== 'string') continue;
+                  const oldRevisions = this.readLegacy<Revision[]>(`${PREFIX}.history.${book.id}`);
+                  if (oldRevisions)
+                    revisions.put({
+                      key: book.id,
+                      workbookId: book.id,
+                      revisions: oldRevisions.slice(0, 20),
+                    } satisfies RevisionRow);
+                  const oldComments = this.readLegacy<Comment[]>(`${PREFIX}.comments.${book.id}`);
+                  if (oldComments)
+                    comments.put({
+                      key: book.id,
+                      workbookId: book.id,
+                      comments: oldComments,
+                    } satisfies CommentRow);
+                }
+                tx.objectStore('meta').put({
+                  key: 'legacy-v1-migrated',
+                  value: true,
+                } satisfies MetaRow);
+              },
+            );
+          } else {
+            const memory = this.memory ?? createMemoryState();
+            this.memory = memory;
+            for (const book of books)
+              if (book && typeof book.id === 'string') memory.workbooks.set(book.id, clone(book));
+            for (const book of books)
+              if (book && typeof book.id === 'string') this.migrateLegacyAuxiliary(book.id);
+          }
         }
-      }
-    })();
+      })
+      .catch((error) => {
+        // Failed IndexedDB reads or transactions can be retried by the caller.
+        // The microtask above ensures this cache is assigned before it is cleared.
+        this.migrationPromise = null;
+        throw error;
+      });
     return this.migrationPromise;
   }
 
