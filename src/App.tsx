@@ -106,6 +106,7 @@ import type { RowSortRequest } from './lib/row-sort';
 import SortDialog from './components/SortDialog';
 import FormulaBar from './components/FormulaBar';
 import { planWorkspaceCellChanges } from './lib/workspace-edit';
+import { workspaceRoutes } from './lib/workspace-routes';
 import Spreadsheet from './components/Spreadsheet';
 import Analytics, { readWorkbookAnalytics } from './components/Analytics';
 import Insights from './components/Insights';
@@ -1051,10 +1052,10 @@ export default function App() {
             <LayoutTemplate size={18} />
             模板中心<span className="nav-new">NEW</span>
           </button>
-          <a className="nav-item" href="/examples/report.html">
+          <a className="nav-item" href={workspaceRoutes().report}>
             报表 JS 组件
           </a>
-          <a className="nav-item" href="/performance">
+          <a className="nav-item" href={workspaceRoutes().performance}>
             性能实验室
           </a>
         </nav>

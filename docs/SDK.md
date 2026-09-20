@@ -1,5 +1,21 @@
 # JavaScript SDK 接入
 
+SDK 包名为 `lumina-report-sdk`。首次 npm 发布前，从 CI 的 `npm-package` 产物下载 `.tgz`，或本地执行 `npm run build:sdk && npm run check:sdk` 生成可安装包：
+
+```sh
+npm install ./lumina-report-sdk-0.14.0.tgz
+```
+
+在支持 CSS 的浏览器打包项目中接入：
+
+```js
+import { createSpreadsheet } from 'lumina-report-sdk';
+import 'lumina-report-sdk/style.css';
+const grid = createSpreadsheet(document.getElementById('sheet'));
+```
+
+包含严格 TypeScript 类型，支持 `NodeNext` 和 `Bundler` 模块解析；宿主不需要 `react` 或 `@types/react`。挂载仅适用于浏览器 DOM/Canvas，不支持服务端渲染或 CommonJS。安装说明见 [NPM-README.md](NPM-README.md)，发布步骤见 [RELEASING.md](RELEASING.md)。
+
 交付目录 `dist/sdk/` 可以整体放到任意静态网站；通过 HTTP(S) 加载，包含 ES module、CSS、可选 XLSX 分包与类型声明。宿主不必安装 React，组件内部已打包。使用前给容器明确高度。
 
 ```html

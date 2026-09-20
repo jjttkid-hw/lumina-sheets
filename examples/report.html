@@ -212,7 +212,7 @@
       <p>
         本页通过普通 JavaScript 调用组件。报表布局、条件格式、数据分页和文件导出在浏览器内执行。
       </p>
-      <a href="/">返回工作空间</a>
+      <a href="%BASE_URL%">返回工作空间</a>
     </header>
     <main>
       <div class="bar" role="group" aria-label="报表类型">
@@ -439,7 +439,7 @@
         cellKey,
         validateWorkbook,
         workbookFromXlsx,
-      } from '/src/sdk/index.tsx';
+      } from '../src/sdk/index.tsx';
       const $ = (selector) => document.querySelector(selector);
       const status = $('#status');
       let currentLayout = 'list',

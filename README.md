@@ -1,12 +1,15 @@
 # Lumina 灵表
 
 [![CI](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml)
-[![CD: not configured](https://img.shields.io/badge/CD-not_configured-lightgrey?logo=githubactions)](https://github.com/jjttkid-hw/lumina-sheets/actions)
+[![CD](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/cd.yml/badge.svg)](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/cd.yml)
+[![npm release](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/npm.yml/badge.svg)](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/npm.yml)
 [![npm: not published](https://img.shields.io/badge/npm-not_published-lightgrey?logo=npm)](docs/SDK.md)
 [![npm downloads: not available](https://img.shields.io/badge/npm_downloads-not_available-lightgrey)](docs/SDK.md)
 [![GitHub forks](https://img.shields.io/github/forks/jjttkid-hw/lumina-sheets?style=flat&logo=github)](https://github.com/jjttkid-hw/lumina-sheets/forks)
 
-CI 与 Fork 数实时更新；CD 尚未配置，SDK 包 `lumina-report-sdk` 尚未发布到 npm，因此暂未提供 npm 下载量。
+CI、CD 与 Fork 数实时更新。主分支检查通过后，CD 将同一份验证产物自动部署到 GitHub Pages。SDK 包 `lumina-report-sdk` 尚待首次 npm 账号授权发布，因此暂未提供 npm 版本和下载量；发布流程见 [发布与交付](docs/RELEASING.md)。
+
+[在线工作空间](https://jjttkid-hw.github.io/lumina-sheets/) · [JavaScript 报表示例](https://jjttkid-hw.github.io/lumina-sheets/examples/report.html) · [性能实验室](https://jjttkid-hw.github.io/lumina-sheets/?view=performance)
 
 Lumina 是一个可直接嵌入网页的 JavaScript 表格与报表组件，目标是对齐 SpreadJS Report 性能页描述的前端能力：Canvas 视区绘制、百万逻辑行、分片数据、浏览器内公式和文件导出。后端只需提供分页数据接口，宿主网页不需要 React。本项目为独立开源项目，非葡萄城官方产品，与葡萄城及 SpreadJS 无隶属或授权背书关系。
 
@@ -17,9 +20,12 @@ npm install
 npm run dev
 npm test
 npm run build:all
+npm run check:sdk
 ```
 
-开发页：`http://127.0.0.1:5173/examples/report.html`。其中“行列编辑”工具可直接插入、删除当前选区所在行列并撤销。性能实验室：`http://127.0.0.1:5173/performance`。
+开发页：`http://127.0.0.1:5173/examples/report.html`。其中“行列编辑”工具可直接插入、删除当前选区所在行列并撤销。性能实验室：`http://127.0.0.1:5173/?view=performance`。
+
+`npm run check:sdk` 将真实安装包安装到隔离目录，验证严格 TypeScript、ES module、声明与分包完整性，并将已验证的 `.tgz` 与 SHA-256 留在 `artifacts/`。可以将该包直接安装到业务项目；npm 首发前也可从通过的 [CI 运行](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml) 下载 `npm-package` 产物。SDK 安装与使用见 [npm 接入文档](docs/NPM-README.md)。
 
 `npm run build:all` 会生成 `dist/sdk/`：
 
@@ -66,6 +72,7 @@ npm run build:all
 - v0.11 增加可撤销的多列整行排序：按计算值稳定排序，默认跳过隐藏行，整行单元格及样式一起移动；公式相对引用按行平移，冻结表头和合并冲突明确拒绝。
 - v0.12 主工作空间接入相同的排序与候选校验：明确选择起止行和两级条件，保留公式与整行样式，失败不改数据；一次撤销或重做整次排序。行为与边界见 [工作空间排序](docs/WORKSPACE-SORT.md)。
 - v0.13 主工作空间统一公式栏、画布和批量编辑的输入校验，失败保留原数据；公式栏支持修改重试。修复新建工作簿、新增表和元数据的自动保存，快照与补丁按顺序落盘，失败可重试。见 [填报与保存](docs/WORKSPACE-EDIT.md)。
+- v0.14 修复 SDK 安装后的类型依赖和独立示例路径，宿主无需安装 React 类型；支持严格 NodeNext/Bundler。工作空间、报表与性能页支持子目录托管；CI 验证实际安装包，CD 自动交付已验证演示站，npm 工作流支持来源证明。
 - SDK 编辑按依赖失效缓存，独立公式保留结果；范围依赖使用动态 AVL 矩形索引，公式解析缓存限制为 4,096 条。
 - 订单填报支持列表、整数、小数、文本长度校验；粘贴和批量写入先验证全部候选值，失败整批拒绝。
 - 打印设置支持 A4/A3/Letter、横竖方向、页边距、重复行列和手动分页，随 JSON 保存并可撤销重做。

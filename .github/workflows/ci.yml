@@ -4,20 +4,42 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
       - run: npm ci
       - run: npm test
       - run: npm run format:check
-      - run: npm run build:all
+      - run: npm run build:site
+      - run: npm run check:sdk
+      - name: Record tested build
+        run: node scripts/build-info.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: npm-package
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        with:
+          name: lumina-site
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
