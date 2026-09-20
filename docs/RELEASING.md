@@ -34,7 +34,7 @@ GitHub 登录不能代替 npm 登录。首次创建包需要包维护者完成 n
 ```sh
 npm login --auth-type=web
 npm whoami
-npm publish artifacts/lumina-report-sdk-<版本>.tgz --access public
+npm publish ./artifacts/lumina-report-sdk-<版本>.tgz --access public
 npm view lumina-report-sdk version
 ```
 

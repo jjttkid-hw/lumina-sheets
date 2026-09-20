@@ -53,4 +53,4 @@ jobs:
         env:
           # Prefer npm Trusted Publishing (OIDC). A granular token is optional.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish artifacts/*.tgz --access public --provenance
+        run: npm publish ./artifacts/*.tgz --access public --provenance
