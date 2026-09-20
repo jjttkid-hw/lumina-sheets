@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" />
+  <title>PDF 导出验收</title>
+  <style>
+    body {
+      font: 16px system-ui;
+      margin: 40px;
+    }
+    button {
+      font: inherit;
+      padding: 10px;
+    }
+    #result {
+      white-space: pre-wrap;
+    }
+  </style>
+  <h1>中文网格 PDF 导出验收</h1>
+  <p>70 行 × 12 列，含重复行列标题、中文长文本、样式、合并、公式和末尾标记。</p>
+  <button id="export">生成验收 PDF</button>
+  <p id="result">尚未生成</p>
+  <script type="module">
+    import { workbookToPdf, planPdfPages } from '/src/lib/report-pdf.ts';
+    import { createBlankWorkbook } from '/src/lib/seed.ts';
+    import { cellKey } from '/src/lib/engine.ts';
+    const workbook = createBlankWorkbook('中文网格分页验收');
+    const sheet = workbook.sheets[0];
+    sheet.name = '销售汇总';
+    sheet.cells = {};
+    sheet.rowCount = 100;
+    sheet.colCount = 16;
+    sheet.frozenRows = 1;
+    for (let row = 0; row < 70; row++)
+      for (let col = 0; col < 12; col++) {
+        sheet.cells[cellKey(row, col)] = {
+          value: row === 0 ? `第 ${col + 1} 列` : col === 0 ? `项目 ${row}` : row * 100 + col,
+          style:
+            row === 0
+              ? { bold: true, background: '#dcece5', color: '#17634a', align: 'center' }
+              : row % 2 === 0
+                ? { background: '#f4f7f5' }
+                : undefined,
+        };
+      }
+    sheet.cells.B2 = {
+      value:
+        '中文换行内容，包含逗号，测试完整呈现，不丢失任何文本。第二段说明用于检查自动增高和跨页分页。',
+      style: { bold: true, color: '#b74727' },
+    };
+    sheet.cells.C3 = {
+      value: '合并表头：华东大区',
+      style: { bold: true, background: '#fff1c8', align: 'center' },
+    };
+    sheet.cells.D3 = { value: '' };
+    sheet.merges = [{ start: { row: 2, col: 2 }, end: { row: 2, col: 3 } }];
+    sheet.cells.D4 = { value: '=B4+C4', style: { format: 'currency', underline: true } };
+    sheet.cells.L70 = { value: '最终标记：完整结束', style: { bold: true, color: '#aa2244' } };
+    document.querySelector('#export').onclick = async () => {
+      const status = document.querySelector('#result');
+      try {
+        const bytes = await workbookToPdf(workbook, {
+          repeatRows: 1,
+          repeatColumns: 1,
+          onProgress: (done, total) => (status.textContent = `${done}/${total} 页`),
+        });
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'lumina-pdf-acceptance.pdf';
+        link.click();
+        status.textContent = `生成成功：${bytes.byteLength} 字节；中文、横纵分页、重复标题、合并和末尾标记。`;
+        const preview = document.createElement('a');
+        preview.href = link.href;
+        preview.textContent = '查看生成的 PDF';
+        preview.target = '_blank';
+        status.append(preview);
+      } catch (error) {
+        status.textContent = `失败：${error.message}`;
+      }
+    };
+  </script>
+</html>

@@ -1,0 +1,1349 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lumina JS 报表组件</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f2f6f3;
+        color: #203c2d;
+        font:
+          14px system-ui,
+          sans-serif;
+      }
+      header {
+        padding: 28px 32px;
+        background: white;
+        border-bottom: 1px solid #dce7df;
+      }
+      h1 {
+        font-size: 25px;
+        margin: 8px 0;
+      }
+      p {
+        color: #607266;
+        line-height: 1.6;
+        margin: 8px 0;
+      }
+      main {
+        padding: 24px 32px;
+      }
+      .bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin: 16px 0;
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+        border: 1px solid #ceded2;
+        background: white;
+        border-radius: 7px;
+        padding: 9px 13px;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button.primary {
+        background: #246c4f;
+        color: white;
+        border-color: #246c4f;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      button[aria-pressed='true'] {
+        background: #246c4f;
+        color: white;
+        border-color: #246c4f;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 2px solid #246c4f;
+        outline-offset: 2px;
+      }
+      #formula {
+        flex: 1;
+        min-width: 180px;
+      }
+      .settings {
+        margin: 18px 0;
+        padding: 14px 18px;
+        border: 1px solid #ccdbd0;
+        border-radius: 8px;
+        background: #fff;
+      }
+      #validation-note {
+        min-height: 24px;
+      }
+      #status[data-error='true'] {
+        background: #fbe9e5;
+        color: #912e20;
+      }
+      #formula-bar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      #selected {
+        min-width: 64px;
+        font-weight: 650;
+      }
+      #metrics {
+        font-size: 12px;
+        color: #607266;
+        min-height: 22px;
+        margin: 10px 0;
+      }
+      details {
+        margin-top: 18px;
+      }
+      summary {
+        cursor: pointer;
+      }
+      progress {
+        accent-color: #246c4f;
+        width: 180px;
+      }
+      #report {
+        height: 55vh;
+        min-height: 320px;
+        border: 1px solid #ccdbd0;
+        border-radius: 8px;
+        overflow: hidden;
+        background: white;
+      }
+      #status {
+        padding: 10px;
+        background: #e7f1e9;
+        border-radius: 8px;
+        min-height: 40px;
+      }
+      .tag {
+        font-size: 11px;
+        color: #387957;
+        letter-spacing: 2px;
+      }
+      pre {
+        white-space: pre-wrap;
+        font:
+          12px/1.8 ui-monospace,
+          monospace;
+        background: #233d30;
+        color: #e1f0e7;
+        padding: 18px;
+        border-radius: 8px;
+      }
+      a {
+        color: #28694c;
+      }
+      @media (max-width: 700px) {
+        main,
+        header {
+          padding: 18px;
+        }
+        button:disabled {
+          opacity: 0.45;
+          cursor: default;
+        }
+        button[aria-pressed='true'] {
+          background: #246c4f;
+          color: white;
+          border-color: #246c4f;
+        }
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+          outline: 2px solid #246c4f;
+          outline-offset: 2px;
+        }
+        #formula {
+          flex: 1;
+          min-width: 180px;
+        }
+        #formula-bar {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        #selected {
+          min-width: 64px;
+          font-weight: 650;
+        }
+        #metrics {
+          font-size: 12px;
+          color: #607266;
+          min-height: 22px;
+          margin: 10px 0;
+        }
+        details {
+          margin-top: 18px;
+        }
+        summary {
+          cursor: pointer;
+        }
+        progress {
+          accent-color: #246c4f;
+          width: 180px;
+        }
+        #report {
+          height: 55vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="tag">LUMINA / JAVASCRIPT REPORT SDK · 0.11</div>
+      <h1>在你的网页里，生成和嵌入报表。</h1>
+      <p>
+        本页通过普通 JavaScript 调用组件。报表布局、条件格式、数据分页和文件导出在浏览器内执行。
+      </p>
+      <a href="/">返回工作空间</a>
+    </header>
+    <main>
+      <div class="bar" role="group" aria-label="报表类型">
+        <button data-layout="list">行式明细</button>
+        <button data-layout="group">分组汇总</button>
+        <button data-layout="nested">多级分组</button>
+        <button data-layout="cross">交叉统计</button>
+        <button data-layout="formulas">公式示例</button>
+        <button data-layout="validation">订单填报</button>
+        <button data-layout="print">打印版式</button>
+        <button data-layout="filter">筛选合并区域</button>
+        <button data-layout="sort">多列排序</button>
+        <button data-layout="paged">百万行分页数据</button>
+      </div>
+      <details class="settings" id="print-panel">
+        <summary>打印设置 · 随报表保存</summary>
+        <div class="bar">
+          <label
+            >纸张
+            <select id="paper">
+              <option>A4</option>
+              <option>A3</option>
+              <option>Letter</option>
+            </select></label
+          >
+          <label
+            >方向
+            <select id="orientation">
+              <option value="landscape">横向</option>
+              <option value="portrait">纵向</option>
+            </select></label
+          >
+          <label
+            >四边距（毫米）
+            <input id="margin" type="number" min="0" max="100" value="10" style="width: 80px"
+          /></label>
+          <label
+            >重复首部行 <input id="repeat-rows" type="number" min="0" value="1" style="width: 70px"
+          /></label>
+          <label>行前分页 <input id="row-breaks" placeholder="如 15,29" size="12" /></label>
+          <button id="save-print">保存打印设置</button>
+        </div>
+        <p>行前分页使用表格行号；PDF 会自动分页并保留合并区域。设置可撤销，也会保存在 JSON 中。</p>
+      </details>
+      <div class="bar">
+        <label
+          >重复表头间隔
+          <select id="page-size">
+            <option value="0">不重复</option>
+            <option value="12">每 12 条明细</option>
+            <option value="24">每 24 条明细</option>
+          </select></label
+        >
+        <span id="layout-note">区域 → 产品分组，支持各级汇总与编辑后重算。</span>
+      </div>
+      <div class="bar">
+        <label>跳转地址 <input id="address" value="A1" size="12" /></label>
+        <button id="jump">定位</button><button id="undo">撤销</button
+        ><button id="redo">重做</button> <button id="retry" hidden>重试加载</button
+        ><button id="refresh" hidden>刷新缓存</button>
+        <select id="format" aria-label="导出格式">
+          <option value="xlsx">Excel</option>
+          <option value="csv">CSV</option>
+          <option value="pdf">PDF</option>
+          <option value="json">JSON</option>
+        </select>
+        <button id="export">导出报表</button><button id="cancel" hidden>取消导出</button
+        ><progress id="progress" hidden max="1" value="0" aria-label="导出进度"></progress>
+        <button id="import-json">打开 Excel / JSON</button
+        ><input
+          id="json-file"
+          type="file"
+          accept=".xlsx,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          hidden
+        />
+      </div>
+      <div id="status" role="status">准备就绪</div>
+      <div class="bar" role="group" aria-label="行列编辑" id="structure-tools">
+        <label
+          >数量
+          <input
+            id="structure-count"
+            type="number"
+            min="1"
+            max="1000"
+            value="1"
+            style="width: 80px"
+        /></label>
+        <button data-structure="insertRows">在当前行前插入</button>
+        <button data-structure="deleteRows">删除当前行</button>
+        <button data-structure="insertColumns">在当前列前插入</button>
+        <button data-structure="deleteColumns">删除当前列</button>
+        <span>公式、规则和打印设置随位置更新，可撤销。</span>
+      </div>
+      <div class="bar" role="group" aria-label="行列布局">
+        <label
+          >行高
+          <input id="row-height" type="number" min="1" max="600" value="36" style="width: 70px" />
+          px</label
+        >
+        <button id="apply-row-height">设置当前行高</button>
+        <button id="hide-row">隐藏当前行</button>
+        <button id="hide-column">隐藏当前列</button>
+        <button id="show-all-axes">显示全部行列</button>
+        <span>行高与隐藏状态支持撤销、重做及 XLSX 往返。</span>
+      </div>
+      <details class="settings" id="sort-panel">
+        <summary>整行排序 · 可一次撤销</summary>
+        <div class="bar">
+          <label
+            >起始行 <input id="sort-start" type="number" min="1" value="2" style="width: 80px"
+          /></label>
+          <label
+            >行数
+            <input id="sort-count" type="number" min="1" max="100000" value="6" style="width: 80px"
+          /></label>
+          <label>主要列 <input id="sort-column" value="B" size="3" /></label>
+          <select id="sort-direction" aria-label="主要排序方向">
+            <option value="asc">升序</option>
+            <option value="desc">降序</option>
+          </select>
+          <label
+            >次要列 <input id="sort-secondary" value="E" size="3" placeholder="可留空"
+          /></label>
+          <select id="sort-secondary-direction" aria-label="次要排序方向">
+            <option value="desc">降序</option>
+            <option value="asc">升序</option>
+          </select>
+          <label><input id="sort-hidden" type="checkbox" /> 包含隐藏行</label>
+          <button id="apply-sort">按以上条件排序</button>
+        </div>
+        <p>
+          范围内整行数据与样式一起移动，公式按行平移；默认保留隐藏行原位。排序不受文本筛选影响，表头和合计请留在范围外。
+        </p>
+        <p>
+          行高、隐藏状态、输入规则和打印设置保留在原位置。包含冻结表头或合并区域时会提示调整范围。
+        </p>
+      </details>
+      <details class="settings">
+        <summary>批量布局 · 一次撤销恢复全部设置</summary>
+        <div class="bar">
+          <label
+            >当前列宽
+            <input
+              id="column-width"
+              type="number"
+              min="32"
+              max="2000"
+              value="160"
+              style="width: 80px"
+            />
+            px</label
+          >
+          <label
+            >冻结首部行 <input id="freeze-rows" type="number" min="0" value="1" style="width: 80px"
+          /></label>
+          <button id="apply-layout">应用行高、列宽与冻结</button>
+        </div>
+        <p>使用上方行高值和这里的列宽、冻结行数，一次保存；撤销一次即可恢复。</p>
+      </details>
+      <div class="bar" role="group" aria-label="报表筛选">
+        <label>筛选内容 <input id="filter-text" placeholder="如 企业服务" size="16" /></label>
+        <button id="apply-filter">应用筛选</button><button id="clear-filter">清除筛选</button>
+        <span id="filter-note">筛选仅影响显示；导出保留完整报表，隐藏行列按文件格式处理。</span>
+      </div>
+      <div class="bar" role="group" aria-label="单元格操作范围">
+        <label
+          >操作范围
+          <select id="clipboard-mode">
+            <option value="visible" selected>仅可见单元格</option>
+            <option value="all">全部单元格</option>
+          </select></label
+        >
+        <span id="clipboard-note" aria-live="polite">
+          复制、粘贴、删除和填充仅操作可见单元格；导出仍保留完整报表。
+        </span>
+      </div>
+      <div class="settings" id="filter-operations" hidden>
+        <div class="bar">
+          <button id="select-filter-amounts">选择金额 D3:D8</button>
+          <button id="select-filter-notes">选择备注 E4</button>
+        </div>
+        <p>
+          初始示例筛选“保留”并隐藏第 5 行，D3:D8 的可见金额为 D4 = 200、D6 = 400、D8 =
+          600；选择“仅可见单元格”后复制得到 3 行，合计 1,200。选择“全部单元格”则包含 D3:D8 的 6
+          行，合计 2,100。
+        </p>
+        <p>
+          选中后按 Ctrl/Cmd+C 复制，按 Delete 删除，再用“撤销”恢复。E 列备注没有合并：从 E4
+          粘贴三行内容，或在该列拖动填充柄，可验证所选操作范围；仅可见模式会跳过筛掉的行和隐藏行。
+        </p>
+      </div>
+      <div id="metrics" aria-live="off"></div>
+      <button id="check-idle">检查空闲绘制</button
+      ><output id="idle-result" aria-live="polite"></output>
+      <div id="formula-bar">
+        <output id="selected">A1</output
+        ><input
+          id="formula"
+          aria-label="单元格内容或公式"
+          placeholder="选择单元格查看内容；以 = 开始输入公式"
+        /><button id="apply">应用</button><output id="value" aria-label="计算结果"></output>
+      </div>
+      <div id="validation-note" aria-live="polite"></div>
+      <label id="list-picker" hidden
+        >选择允许值
+        <select id="allowed-values" aria-label="允许值"></select
+        ><button id="apply-list">填入</button></label
+      >
+      <div id="report"></div>
+      <p>
+        报表数据均为演示数据。百万行模式按需取数，最多缓存 6 页；完整 CSV
+        导出会逐页读取全部数据。重复表头间隔控制明细排版，PDF 根据纸张重新分页。
+      </p>
+      <details>
+        <summary>查看 JavaScript 接入示例</summary>
+        <pre id="code"></pre>
+      </details>
+    </main>
+    <script type="module">
+      import {
+        createSpreadsheet,
+        parseCellKey,
+        cellKey,
+        validateWorkbook,
+        workbookFromXlsx,
+      } from '/src/sdk/index.tsx';
+      const $ = (selector) => document.querySelector(selector);
+      const status = $('#status');
+      let currentLayout = 'list',
+        reportGeneration = 0,
+        isPaged = false,
+        paints = 0,
+        lastMs = 0,
+        exporting = null,
+        selection = { row: 0, col: 0 },
+        selectionDirty = true,
+        allowedValues = [];
+      const showError = (error) => {
+        status.dataset.error = 'true';
+        status.textContent =
+          error.code === 'EXPORT_CANCELLED' || error.name === 'AbortError'
+            ? '操作已取消'
+            : error.message;
+      };
+      function stopExport() {
+        exporting?.abort();
+        exporting = null;
+        $('#export').disabled = false;
+        $('#cancel').hidden = true;
+        $('#progress').hidden = true;
+      }
+      const grid = createSpreadsheet($('#report'), {
+        onError: showError,
+        onRender: (metrics) => {
+          paints++;
+          lastMs = metrics.drawMs;
+          selectionDirty = true;
+        },
+        onSelectionChange: (next) => {
+          selection = next;
+          selectionDirty = true;
+          syncSelection(true);
+          syncLayout();
+        },
+        onChange: ({ changes }) => {
+          status.dataset.error = 'false';
+          status.textContent = changes.length
+            ? '单元格已更新 · 相关公式随之重算'
+            : '报表设置已更新';
+          selectionDirty = true;
+          syncSelection(true);
+          syncLayout();
+        },
+        onStructureChange: (event) => {
+          selection = grid.selectedRange;
+          selectionDirty = true;
+          syncPrint();
+          syncSelection(true);
+          syncLayout();
+          status.dataset.error = 'false';
+          const phase = { apply: '已完成', undo: '已撤销', redo: '已重做' }[event.phase];
+          status.textContent = `${phase}${event.kind === 'insert' ? '插入' : '删除'} ${event.count} ${event.axis === 'row' ? '行' : '列'} · 公式和设置已同步`;
+          $('#layout-note').textContent = '报表结构已调整；插入为空白行列，已有引用随位置更新。';
+        },
+        onDataStateChange: (state) => {
+          $('#retry').hidden = state.status !== 'error';
+          if (state.status === 'error' && state.error) showError(state.error);
+        },
+      });
+      const records = Array.from({ length: 36 }, (_, i) => ({
+        month: `${1 + Math.floor(i / 6)}月`,
+        product: ['云端协作', '企业服务', '数据智能'][i % 3],
+        region: ['华东', '华南'][i % 2],
+        revenue: 100000 + i * 7300,
+        cost: 60000 + i * 2900,
+      }));
+      const columns = [
+        { field: 'month', title: '月份', width: 90 },
+        { field: 'product', title: '产品', width: 140 },
+        { field: 'revenue', title: '营收', format: 'currency', aggregate: 'sum', width: 140 },
+        { field: 'cost', title: '成本', format: 'currency', aggregate: 'sum', width: 140 },
+        {
+          field: 'profit',
+          title: '利润',
+          formula: '=C{row}-D{row}',
+          aggregate: 'sum',
+          format: 'currency',
+          width: 140,
+        },
+      ];
+      const labels = {
+        list: '行式明细',
+        group: '分组汇总',
+        nested: '多级分组',
+        cross: '交叉统计',
+        formulas: '公式示例',
+        validation: '订单填报',
+        print: '打印版式',
+        filter: '筛选合并区域',
+        sort: '多列排序',
+        paged: '百万行分页数据',
+      };
+      const formulaExamples = [
+        ['条件汇总', '=SUMIFS(D2:D5,C2:C5,"华东")', '华东', 10, '依据区域加总 D 列'],
+        ['条件计数', '=COUNTIFS(C2:C5,"华东",D2:D5,">=10")', '华南', 20, '同时满足区域与金额条件'],
+        ['精确查找', '=XLOOKUP("华南",C2:C5,D2:D5,"未找到")', '华东', 30, '找到华南对应的金额'],
+        ['引用组合', '=INDEX(D2:D5,MATCH("华南",C2:C5,0))', '华北', 40, 'INDEX 与 MATCH 组合'],
+        ['向外舍入', '=ROUNDUP(-1.21,1)', '', '', '负数向远离零的方向舍入'],
+        ['闰年日期', '=DAY(DATE(2024,2,29))', '', '', 'UTC 日期计算'],
+        ['月末日期', '=DAY(EOMONTH(DATE(2024,2,1),0))', '', '', '2024 年 2 月共 29 天'],
+        ['加权合计', '=SUMPRODUCT(D2:D5,F2:F5)', '', '', '金额 × 权重合计 = 30，可修改 D/F 列'],
+        ['分批余量', '=MOD(103,12)', '', '', '103 件商品，每箱 12 件，剩余 7 件'],
+        ['向下取整', '=INT(-3.1)', '', '', '向负无穷取整，结果为 -4'],
+        [
+          '逻辑判断',
+          '=IF(AND(D2>=10,D3>=20),"达标","未达标")',
+          '',
+          '',
+          '编辑 D2 或 D3 检查依赖重算',
+        ],
+      ].map(([name, result, region, amount, note], index) => ({
+        name,
+        result,
+        region,
+        amount,
+        note,
+        weight: index < 4 ? (index + 1) / 10 : '',
+      }));
+      const dataSource = {
+        rowCount: 1000000,
+        columnCount: 12,
+        async fetchPage(offset, limit, signal) {
+          await new Promise((resolve, reject) => {
+            const abort = () => {
+              clearTimeout(timer);
+              reject(new DOMException('Cancelled', 'AbortError'));
+            };
+            const timer = setTimeout(() => {
+              signal?.removeEventListener('abort', abort);
+              resolve();
+            }, 20);
+            if (signal?.aborted) abort();
+            else signal?.addEventListener('abort', abort, { once: true });
+          });
+          return {
+            totalRows: 1000000,
+            rows: Array.from({ length: Math.min(limit, 1000000 - offset) }, (_, i) => [
+              offset + i + 1,
+              `订单-${String(offset + i + 1).padStart(7, '0')}`,
+              '华东',
+              (offset + i + 1) * 17,
+              ...Array.from({ length: 8 }, (_, c) => (offset + i + c) % 1000),
+            ]),
+          };
+        },
+      };
+      function updateControls() {
+        for (const button of document.querySelectorAll('[data-layout]'))
+          button.setAttribute('aria-pressed', String(button.dataset.layout === currentLayout));
+        $('#page-size').disabled = !['list', 'group', 'nested'].includes(currentLayout);
+        $('#print-panel').hidden = isPaged;
+        $('#sort-panel').hidden = isPaged;
+        for (const control of $('#sort-panel').querySelectorAll('input, select, button'))
+          control.disabled = isPaged;
+        $('#filter-operations').hidden = currentLayout !== 'filter';
+        for (const selector of ['#select-filter-amounts', '#select-filter-notes'])
+          $(selector).disabled = isPaged || currentLayout !== 'filter';
+        syncClipboardMode();
+        for (const selector of ['#undo', '#redo', '#formula', '#apply'])
+          $(selector).disabled = isPaged;
+        for (const button of document.querySelectorAll('[data-structure]'))
+          button.disabled = isPaged;
+        $('#structure-count').disabled = isPaged;
+        for (const selector of [
+          '#row-height',
+          '#apply-row-height',
+          '#hide-row',
+          '#hide-column',
+          '#show-all-axes',
+          '#column-width',
+          '#freeze-rows',
+          '#apply-layout',
+          '#filter-text',
+          '#apply-filter',
+          '#clear-filter',
+        ])
+          $(selector).disabled = isPaged;
+        $('#refresh').hidden = !isPaged;
+        for (const option of $('#format').options)
+          option.disabled = isPaged && option.value !== 'csv';
+        if (isPaged) $('#format').value = 'csv';
+        $('#address').value = 'A1';
+        $('#filter-text').value = '';
+        $('#idle-result').textContent = '';
+        selection = { row: 0, col: 0 };
+        selectionDirty = true;
+      }
+      async function report(mode) {
+        const generation = ++reportGeneration;
+        try {
+          stopExport();
+          currentLayout = mode;
+          isPaged = mode === 'paged';
+          updateControls();
+          if (isPaged) {
+            grid.setConditionalRules([]);
+            $('#layout-note').textContent = '只读数据源 · 每页 128 行 · 缓存上限 6 页';
+            $('#code').textContent =
+              'await grid.bindData(source, { pageSize: 128, maxPages: 6 });\ngrid.select({ row: 999999, col: 0 });\nawait grid.export("csv", { signal, onProgress });';
+            await grid.bindData(dataSource, { pageSize: 128, maxPages: 6 });
+            if (generation !== reportGeneration) return;
+          } else if (mode === 'sort') {
+            grid.report(
+              {
+                name: '项目回款排序',
+                layout: 'list',
+                columns: [
+                  { field: 'id', title: '项目编号', width: 120 },
+                  { field: 'region', title: '区域', width: 100 },
+                  { field: 'quantity', title: '数量', width: 90 },
+                  { field: 'price', title: '单价', width: 110, format: 'currency' },
+                  {
+                    field: 'amount',
+                    title: '金额',
+                    width: 120,
+                    formula: '=C{row}*D{row}',
+                    aggregate: 'sum',
+                    format: 'currency',
+                  },
+                  { field: 'note', title: '备注', width: 320 },
+                ],
+              },
+              [
+                { id: '项目-10', region: '华南', quantity: 2, price: 300, note: '金额 600' },
+                {
+                  id: '项目-2',
+                  region: '华东',
+                  quantity: 3,
+                  price: 400,
+                  note: '金额 1,200；同值保持原顺序',
+                },
+                {
+                  id: '内部项目',
+                  region: '华北',
+                  quantity: 1,
+                  price: 50,
+                  note: '本行默认隐藏且不参与排序',
+                },
+                {
+                  id: '项目-3',
+                  region: '华东',
+                  quantity: 2,
+                  price: 600,
+                  note: '金额 1,200；位于项目-2之后',
+                },
+                { id: '项目-1', region: '华南', quantity: 4, price: 200, note: '金额 800' },
+                { id: '项目-20', region: '华东', quantity: 1, price: 500, note: '金额 500' },
+              ],
+            );
+            grid.setSheetLayout({ hiddenRows: [3] });
+            $('#sort-panel').open = true;
+            $('#sort-start').value = '2';
+            $('#sort-count').value = '6';
+            $('#sort-column').value = 'B';
+            $('#sort-direction').value = 'asc';
+            $('#sort-secondary').value = 'E';
+            $('#sort-secondary-direction').value = 'desc';
+            $('#sort-hidden').checked = false;
+            $('#layout-note').textContent =
+              '按区域升序、金额降序排列；相同金额保持原顺序，合计始终为 4,350。';
+            $('#code').textContent =
+              "grid.sortRows({ startRow: 1, rowCount: 6, keys: [{column: 1, direction: 'asc'}, {column: 4, direction: 'desc'}] });\ngrid.undo(); // 一次恢复整批行数据";
+          } else if (mode === 'filter') {
+            const workbook = grid.toJSON();
+            workbook.name = '项目审批明细';
+            const id = workbook.activeSheetId;
+            const rows = [
+              ['项目组', '筛选标记', '事项', '金额', '备注'],
+              ['独立事项', '归档', '历史记录', 80, '筛选后不显示'],
+              ['华东项目组', '归档', '项目合并区起点', 100, '合并锚点本身不命中筛选'],
+              ['', '保留', '第一阶段', 200, '筛选后仍显示左侧项目组'],
+              ['', '保留', '内部核对', 300, '此行还设置了隐藏'],
+              ['', '保留', '第二阶段', 400, '双击左侧可编辑原合并锚点'],
+              ['', '归档', '项目合并区终点', 500, '合并区末行不命中筛选'],
+              ['华南项目组', '保留', '立项', 600, '普通明细'],
+              ['全部归档的合并区域', '', '已结项', 700, '筛选后整块消失'],
+              ['', '', '已结项', 800, '筛选后整块消失'],
+              ['完整金额合计', '归档', '', '=SUM(D2:D10)', '筛选不会改变计算来源'],
+            ];
+            const cells = {};
+            rows.forEach((row, r) =>
+              row.forEach((value, c) => {
+                if (value === '') return;
+                cells[cellKey(r, c)] = {
+                  value,
+                  style: {
+                    ...(r === 0 ? { bold: true, background: '#e8f2ec', color: '#23644d' } : {}),
+                    ...(c === 3 && r > 0 ? { format: 'currency' } : {}),
+                  },
+                };
+              }),
+            );
+            workbook.sheets = [
+              {
+                id,
+                name: '项目审批',
+                cells,
+                rowCount: 11,
+                colCount: 5,
+                columnWidths: { 0: 190, 1: 110, 2: 170, 3: 120, 4: 300 },
+                rowHeights: { 3: 48, 5: 64 },
+                hiddenRows: [4],
+                frozenRows: 1,
+                merges: [
+                  { start: { row: 2, col: 0 }, end: { row: 6, col: 0 } },
+                  { start: { row: 8, col: 0 }, end: { row: 9, col: 1 } },
+                ],
+              },
+            ];
+            grid.load(workbook);
+            grid.setConditionalRules([]);
+            grid.setFilter('保留');
+            $('#filter-text').value = '保留';
+            $('#layout-note').textContent =
+              '只保留匹配明细，合并项目组仍显示；可选择 D3:D8 验证操作范围，双击“华东项目组”编辑 A3。';
+            $('#code').textContent =
+              "grid.setFilter('保留');\ngrid.setClipboardMode('visible'); // 或 'all'\ngrid.select({ row: 2, col: 3, endRow: 7, endCol: 3 });\n// 初始可见金额：D4=200、D6=400、D8=600。\n// E 列备注可验证粘贴和填充；合并项目组仍写回原锚点 A3。";
+          } else if (mode === 'print') {
+            const workbook = grid.toJSON();
+            workbook.name = '销售结算单';
+            const id = workbook.activeSheetId;
+            const headings = ['项目', '内部编码', '数量', '单价', '金额', '说明'];
+            const rows = [
+              ['销售结算单 · 2026 年 9 月', '', '', '', '', ''],
+              headings,
+              ['企业服务', 'IN-001', 2, 500, '=C3*D3', '本期服务'],
+              ['数据智能', 'IN-002', 3, 800, '=C4*D4', '订阅续费'],
+              ['云端协作', 'IN-003', 5, 200, '=C5*D5', '团队席位'],
+              ['内部调整', 'ADJ-001', 1, -100, '=C6*D6', '隐藏的调整行'],
+              ['结算合计', '', '', '', '=SUM(E3:E6)', '含内部调整 -100'],
+              ['说明：内部编码列和调整行不打印；公式仍引用完整数据。', '', '', '', '', ''],
+            ];
+            const cells = {};
+            rows.forEach((row, r) =>
+              row.forEach((value, c) => {
+                if (value === '') return;
+                cells[cellKey(r, c)] = {
+                  value,
+                  style: {
+                    ...(r < 2 || r === 6
+                      ? { bold: true, background: '#e8f2ec', color: '#23644d' }
+                      : {}),
+                    ...(r === 0 ? { fontSize: 18 } : {}),
+                    ...(r >= 2 && r <= 6 && (c === 3 || c === 4) ? { format: 'currency' } : {}),
+                  },
+                };
+              }),
+            );
+            workbook.sheets = [
+              {
+                id,
+                name: '结算单',
+                cells,
+                rowCount: 8,
+                colCount: 6,
+                columnWidths: { 0: 180, 1: 110, 2: 80, 3: 100, 4: 120, 5: 180 },
+                rowHeights: { 0: 56, 2: 48, 6: 48, 7: 44 },
+                hiddenRows: [5],
+                hiddenColumns: [1],
+                frozenRows: 2,
+                merges: [
+                  { start: { row: 0, col: 0 }, end: { row: 0, col: 5 } },
+                  { start: { row: 7, col: 0 }, end: { row: 7, col: 5 } },
+                ],
+                printSettings: {
+                  paperSize: 'A4',
+                  orientation: 'landscape',
+                  repeatRows: 2,
+                  margins: { top: 28, right: 28, bottom: 28, left: 28 },
+                },
+              },
+            ];
+            grid.load(workbook);
+            grid.setConditionalRules([]);
+            $('#format').value = 'pdf';
+            $('#layout-note').textContent =
+              '隐藏内部编码和调整行，结算合计 4,300；可导出 PDF 检查可见版式。';
+            $('#code').textContent =
+              "grid.setRowsHidden(5, 1);\ngrid.setColumnsHidden(1, 1);\nawait grid.export('pdf'); // 隐藏轴不打印，公式使用全部数据";
+          } else if (mode === 'validation') {
+            grid.report(
+              {
+                name: '订单填报',
+                layout: 'list',
+                columns: [
+                  { field: 'product', title: '产品', width: 150 },
+                  { field: 'quantity', title: '数量', width: 100 },
+                  { field: 'price', title: '单价', width: 120, format: 'currency' },
+                  { field: 'state', title: '状态', width: 120 },
+                  {
+                    field: 'amount',
+                    title: '金额',
+                    width: 130,
+                    formula: '=B{row}*C{row}',
+                    aggregate: 'sum',
+                    format: 'currency',
+                  },
+                  { field: 'note', title: '备注', width: 260 },
+                ],
+              },
+              [
+                {
+                  product: '企业服务',
+                  quantity: 2,
+                  price: 500,
+                  state: '待审核',
+                  note: '编辑数量或选择状态',
+                },
+                { product: '数据智能', quantity: 3, price: 800, state: '已确认', note: '' },
+                { product: '云端协作', quantity: 5, price: 200, state: '待审核', note: '' },
+              ],
+            );
+            const range = (col) => ({ start: { row: 1, col }, end: { row: 3, col } });
+            grid.setDataValidation([
+              {
+                id: 'quantity',
+                range: range(1),
+                kind: 'whole',
+                operator: 'between',
+                min: 1,
+                max: 1000,
+                allowBlank: false,
+                message: '数量须为 1–1000 的整数',
+              },
+              {
+                id: 'price',
+                range: range(2),
+                kind: 'decimal',
+                operator: 'between',
+                min: 0,
+                max: 1000000,
+                allowBlank: false,
+                message: '单价须为 0–1,000,000 的数字',
+              },
+              {
+                id: 'state',
+                range: range(3),
+                kind: 'list',
+                values: ['待审核', '已确认', '已取消'],
+                allowBlank: false,
+                message: '状态请选择待审核、已确认或已取消',
+              },
+              {
+                id: 'note',
+                range: range(5),
+                kind: 'textLength',
+                operator: 'lessThanOrEqual',
+                value: 40,
+                message: '备注最多 40 个 Unicode 码点',
+              },
+            ]);
+            $('#layout-note').textContent =
+              '数量、单价、状态与备注均有输入规则；粘贴不合规则时整批拒绝。Excel / JSON 均可保存并重新打开此示例。';
+            $('#code').textContent =
+              `grid.setDataValidation([{ id: 'quantity', range: { start: {row:1,col:1}, end: {row:3,col:1} }, kind:'whole', operator:'between', min:1, max:1000, allowBlank:false }]);\ntry { grid.setCell('B2', -1); } catch (error) { console.log(error.code, error.failures); }`;
+          } else if (mode === 'formulas') {
+            grid.report(
+              {
+                name: '公式示例',
+                layout: 'list',
+                columns: [
+                  { field: 'name', title: '场景', width: 140 },
+                  { field: 'result', title: '计算结果', width: 160 },
+                  { field: 'region', title: '区域', width: 100 },
+                  { field: 'amount', title: '金额', width: 100 },
+                  { field: 'note', title: '说明', width: 300 },
+                  { field: 'weight', title: '权重', width: 100, format: 'percent' },
+                ],
+              },
+              formulaExamples,
+            );
+            $('#layout-note').textContent = '选择 B 列查看公式，编辑 D 列验证相关结果更新。';
+            $('#code').textContent =
+              `grid.setCell('B2', '=SUMIFS(D2:D5,C2:C5,"华东")');\nconst result = grid.getValue('B2');`;
+          } else {
+            const interval = Number($('#page-size').value);
+            const definition = {
+              name: '经营报表',
+              layout: mode === 'nested' ? 'group' : mode,
+              columns,
+              groupBy: mode === 'nested' ? ['region', 'product'] : 'product',
+              cross: { rows: 'product', columns: 'month', value: 'revenue' },
+              ...(interval && mode !== 'cross' ? { pagination: { rowsPerPage: interval } } : {}),
+              conditionalRules:
+                mode === 'cross'
+                  ? []
+                  : [
+                      {
+                        range: { start: { row: 1, col: 4 }, end: { row: 200, col: 4 } },
+                        operator: 'greaterThan',
+                        value: 120000,
+                        style: { background: '#d8f1df', color: '#146440', bold: true },
+                      },
+                    ],
+            };
+            grid.report(definition, records);
+            $('#layout-note').textContent =
+              mode === 'nested'
+                ? '区域 → 产品两级分组；父级小计只统计明细，避免重复累计。'
+                : '36 条明细 · 营收合计 8,199,000 · 利润合计 4,212,000';
+            $('#code').textContent =
+              `grid.report(${JSON.stringify({ ...definition, columns: '[columns]', conditionalRules: undefined }, null, 2)}, records);\nawait grid.export('xlsx');`;
+          }
+          syncPrint();
+          selectionDirty = true;
+          syncSelection(true);
+          syncLayout();
+          status.dataset.error = 'false';
+          status.textContent = `已生成${labels[mode]}${isPaged ? ' · 只加载当前视区' : ' · 可直接编辑或导出'}`;
+        } catch (error) {
+          if (generation === reportGeneration) showError(error);
+        }
+      }
+      for (const button of document.querySelectorAll('[data-layout]'))
+        button.onclick = () => report(button.dataset.layout);
+      $('#page-size').onchange = () => report(currentLayout);
+      $('#jump').onclick = () => {
+        try {
+          const point = parseCellKey($('#address').value);
+          if (!point) throw new Error('请输入有效地址');
+          grid.select(point);
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#address').onkeydown = (event) => {
+        if (event.key === 'Enter') $('#jump').click();
+      };
+      $('#apply').onclick = () => {
+        try {
+          const raw = $('#formula').value;
+          const value = raw !== '' && /^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw) ? Number(raw) : raw;
+          grid.setCell(cellKey(selection.row, selection.col), value);
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#formula').onkeydown = (event) => {
+        if (event.key === 'Enter') $('#apply').click();
+      };
+      $('#undo').onclick = () => {
+        try {
+          grid.undo();
+          syncPrint();
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#redo').onclick = () => {
+        try {
+          grid.redo();
+          syncPrint();
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#apply-row-height').onclick = () => {
+        try {
+          grid.setRowHeight(selection.row, Number($('#row-height').value));
+          status.dataset.error = 'false';
+          status.textContent = `第 ${selection.row + 1} 行高度已更新`;
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#hide-row').onclick = () => {
+        try {
+          grid.setRowsHidden(selection.row, 1, true);
+          status.dataset.error = 'false';
+          status.textContent = `第 ${selection.row + 1} 行已隐藏`;
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#hide-column').onclick = () => {
+        try {
+          grid.setColumnsHidden(selection.col, 1, true);
+          status.dataset.error = 'false';
+          status.textContent = `第 ${selection.col + 1} 列已隐藏`;
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#show-all-axes').onclick = () => {
+        try {
+          grid.setSheetLayout({ hiddenRows: [], hiddenColumns: [] });
+          status.dataset.error = 'false';
+          status.textContent = '全部行列已显示';
+        } catch (error) {
+          showError(error);
+        }
+      };
+      for (const button of document.querySelectorAll('[data-structure]')) {
+        button.onclick = () => {
+          try {
+            const action = button.dataset.structure;
+            const count = Number($('#structure-count').value);
+            grid[action](action.endsWith('Rows') ? selection.row : selection.col, count);
+          } catch (error) {
+            showError(error);
+          }
+        };
+      }
+      $('#apply-layout').onclick = () => {
+        try {
+          const layout = grid.getSheetLayout();
+          const height = Number($('#row-height').value);
+          const width = Number($('#column-width').value);
+          const frozenRows = Number($('#freeze-rows').value);
+          const unchanged =
+            layout.rowHeights?.[selection.row] === height &&
+            layout.columnWidths?.[selection.col] === width &&
+            layout.frozenRows === frozenRows;
+          grid.setSheetLayout({
+            rowHeights: { ...layout.rowHeights, [selection.row]: height },
+            columnWidths: {
+              ...layout.columnWidths,
+              [selection.col]: width,
+            },
+            frozenRows,
+          });
+          status.dataset.error = 'false';
+          status.textContent = unchanged
+            ? '布局与当前设置相同 · 没有新增撤销记录'
+            : '行高、列宽与冻结已一次保存 · 撤销一次即可恢复';
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#apply-sort').onclick = () => {
+        try {
+          const column = (text) => {
+            const label = text.trim().toUpperCase();
+            if (!/^[A-Z]{1,3}$/.test(label)) throw new Error('排序列请输入 A、B 等列标');
+            const point = parseCellKey(`${label}1`);
+            if (!point) throw new Error('排序列超出范围');
+            return point.col;
+          };
+          const keys = [
+            { column: column($('#sort-column').value), direction: $('#sort-direction').value },
+          ];
+          if ($('#sort-secondary').value.trim())
+            keys.push({
+              column: column($('#sort-secondary').value),
+              direction: $('#sort-secondary-direction').value,
+            });
+          const result = grid.sortRows({
+            startRow: Number($('#sort-start').value) - 1,
+            rowCount: Number($('#sort-count').value),
+            keys,
+            includeHidden: $('#sort-hidden').checked,
+          });
+          status.dataset.error = 'false';
+          status.textContent = result.changedCells
+            ? `已移动 ${result.movedRows} 行，整行数据已同步 · 一次撤销即可恢复`
+            : '当前顺序已符合条件 · 没有新增撤销记录';
+          syncSelection(true);
+          syncLayout();
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#apply-filter').onclick = () => {
+        try {
+          grid.setFilter($('#filter-text').value);
+          status.dataset.error = 'false';
+          status.textContent = grid.filterText
+            ? `已应用筛选：${grid.filterText} · 正在更新视区`
+            : '已清除筛选';
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#clear-filter').onclick = () => {
+        $('#filter-text').value = '';
+        $('#apply-filter').click();
+      };
+      $('#filter-text').onkeydown = (event) => {
+        if (event.key === 'Enter') $('#apply-filter').click();
+      };
+      function syncClipboardMode() {
+        $('#clipboard-mode').value = grid.clipboardMode;
+        $('#clipboard-note').textContent =
+          (grid.clipboardMode === 'visible'
+            ? '复制、粘贴、删除和填充仅操作可见单元格；'
+            : '复制、粘贴、删除和填充包含筛掉的单元格及隐藏行列；') +
+          '导出仍保留完整报表。' +
+          (isPaged ? ' 当前分页数据只读，无法粘贴、删除或填充。' : '');
+      }
+      $('#clipboard-mode').onchange = () => {
+        try {
+          grid.setClipboardMode($('#clipboard-mode').value);
+          syncClipboardMode();
+          status.dataset.error = 'false';
+          status.textContent = `操作范围已设为${grid.clipboardMode === 'visible' ? '仅可见单元格' : '全部单元格'} · 切换报表后继续保留`;
+        } catch (error) {
+          syncClipboardMode();
+          showError(error);
+        }
+      };
+      function selectFilterDemo(range) {
+        if (isPaged || currentLayout !== 'filter') return;
+        try {
+          grid.select(range);
+          $('#report .spreadsheet-viewport')?.focus({ preventScroll: true });
+          status.dataset.error = 'false';
+          status.textContent =
+            range.col === 3
+              ? '已选中 D3:D8 · 可复制或按 Delete 删除，操作后可撤销'
+              : '已选中备注 E4 · 可粘贴三行内容，或在 E 列拖动填充柄';
+        } catch (error) {
+          showError(error);
+        }
+      }
+      $('#select-filter-amounts').onclick = () =>
+        selectFilterDemo({ row: 2, col: 3, endRow: 7, endCol: 3 });
+      $('#select-filter-notes').onclick = () => selectFilterDemo({ row: 3, col: 4 });
+      $('#retry').onclick = () => grid.retryData();
+      $('#refresh').onclick = () => grid.clearDataCache();
+      function syncLayout() {
+        const layout = grid.getSheetLayout();
+        $('#row-height').value = layout.rowHeights?.[selection.row] ?? 36;
+        $('#column-width').value =
+          layout.columnWidths?.[selection.col] ??
+          [96, 132, 112, 124, 124, 124, 96, 124, 106, 220][selection.col] ??
+          120;
+        $('#freeze-rows').value = layout.frozenRows ?? 0;
+        $('#freeze-rows').max = grid.activeSheetInfo.rowCount;
+      }
+      function syncPrint() {
+        const settings = grid.getPrintSettings();
+        $('#paper').value = settings?.paperSize ?? 'A4';
+        $('#orientation').value = settings?.orientation ?? 'landscape';
+        $('#margin').value = (((settings?.margins?.top ?? 28) * 25.4) / 72).toFixed(1);
+        $('#repeat-rows').value = settings?.repeatRows ?? grid.activeSheetInfo.frozenRows;
+        $('#row-breaks').value = (settings?.rowBreaks ?? []).map((row) => row + 1).join(',');
+      }
+      $('#save-print').onclick = () => {
+        try {
+          const margin = (Number($('#margin').value) * 72) / 25.4;
+          const text = $('#row-breaks').value.trim();
+          grid.setPrintSettings({
+            ...grid.getPrintSettings(),
+            paperSize: $('#paper').value,
+            orientation: $('#orientation').value,
+            margins: { top: margin, right: margin, bottom: margin, left: margin },
+            repeatRows: Number($('#repeat-rows').value),
+            rowBreaks: text ? text.split(/[,，]/).map((value) => Number(value.trim()) - 1) : [],
+          });
+          status.dataset.error = 'false';
+          status.textContent = '打印设置已保存 · 可导出 PDF，或保存 JSON 后重新打开';
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#import-json').onclick = () => $('#json-file').click();
+      $('#json-file').onchange = async () => {
+        const file = $('#json-file').files[0];
+        if (!file) return;
+        const generation = ++reportGeneration;
+        $('#json-file').value = '';
+        stopExport();
+        try {
+          status.dataset.error = 'false';
+          status.textContent = '正在打开报表…';
+          if (file.size > 20 * 1024 * 1024) throw new Error('文件超过 20 MB 限制。');
+          const extension = file.name.split('.').pop()?.toLowerCase();
+          let workbook;
+          if (extension === 'json') workbook = validateWorkbook(JSON.parse(await file.text()));
+          else if (extension === 'xlsx')
+            workbook = await workbookFromXlsx(
+              await file.arrayBuffer(),
+              file.name.replace(/\.[^.]+$/, ''),
+            );
+          else throw new Error('请选择 .xlsx 或 .json 文件。');
+          // Decode before committing: a newer mode or file choice owns the view.
+          if (generation !== reportGeneration) return;
+          grid.load(workbook);
+          grid.setConditionalRules([]);
+          currentLayout = 'imported';
+          isPaged = false;
+          updateControls();
+          syncPrint();
+          selectionDirty = true;
+          syncSelection(true);
+          syncLayout();
+          $('#code').textContent =
+            '// 解析文件后，确认用户未切换视图再载入。\ngrid.load(workbook);\nconst rules = grid.getDataValidation();\nconst print = grid.getPrintSettings();';
+          status.dataset.error = 'false';
+          status.textContent = '报表已恢复 · 已加载支持的数据校验和打印设置';
+          $('#layout-note').textContent = '已载入保存的报表；可继续编辑或导出。';
+        } catch (error) {
+          if (generation === reportGeneration) showError(error);
+        }
+      };
+      $('#apply-list').onclick = () => {
+        try {
+          grid.setCell(
+            cellKey(selection.row, selection.col),
+            allowedValues[Number($('#allowed-values').value)],
+          );
+        } catch (error) {
+          showError(error);
+        }
+      };
+      $('#cancel').onclick = () => exporting?.abort();
+      $('#export').onclick = async () => {
+        const generation = reportGeneration;
+        stopExport();
+        const controller = new AbortController();
+        exporting = controller;
+        const current = () => generation === reportGeneration && exporting === controller;
+        $('#export').disabled = true;
+        $('#cancel').hidden = false;
+        $('#progress').hidden = false;
+        $('#progress').removeAttribute('value');
+        try {
+          status.dataset.error = 'false';
+          status.textContent = '正在本地生成完整文件…';
+          await grid.export($('#format').value, {
+            signal: controller.signal,
+            onProgress: (completed, total) => {
+              if (!current()) return;
+              status.textContent = `已处理 ${completed.toLocaleString()}${total === undefined ? '' : ` / ${total.toLocaleString()}`} 项`;
+              if (total) $('#progress').value = completed / total;
+            },
+          });
+          if (current()) status.textContent = '完整文件已生成并开始下载';
+        } catch (error) {
+          if (current()) showError(error);
+        } finally {
+          if (exporting === controller) stopExport();
+        }
+      };
+      function syncSelection(force = false) {
+        if (!selectionDirty || (!force && document.activeElement === $('#formula'))) return;
+        const key = cellKey(selection.row, selection.col);
+        $('#selected').textContent = key;
+        $('#value').textContent = `结果：${grid.getValue(key)}`;
+        $('#formula').value = isPaged
+          ? String(grid.getValue(key))
+          : String(grid.getCell(key)?.value ?? '');
+        const rules = isPaged
+          ? []
+          : grid
+              .getDataValidation()
+              .filter(
+                (rule) =>
+                  (!rule.sheetId || rule.sheetId === grid.activeSheetInfo.id) &&
+                  selection.row >= rule.range.start.row &&
+                  selection.row <= rule.range.end.row &&
+                  selection.col >= rule.range.start.col &&
+                  selection.col <= rule.range.end.col,
+              );
+        $('#validation-note').textContent = rules
+          .map((rule) => rule.message ?? '此单元格有输入规则')
+          .join('；');
+        const list = rules.find((rule) => rule.kind === 'list');
+        $('#list-picker').hidden = !list;
+        $('#allowed-values').replaceChildren();
+        allowedValues = list?.values ?? [];
+        for (const [index, value] of allowedValues.entries()) {
+          const option = document.createElement('option');
+          option.value = String(index);
+          option.textContent = String(value);
+          $('#allowed-values').append(option);
+        }
+        if (list) $('#allowed-values').value = String(allowedValues.indexOf(grid.getValue(key)));
+        selectionDirty = false;
+      }
+      $('#check-idle').onclick = () => {
+        const button = $('#check-idle');
+        button.disabled = true;
+        $('#idle-result').textContent = ' 正在检查，请保持页面静止…';
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            const before = paints;
+            setTimeout(() => {
+              const extra = paints - before;
+              $('#idle-result').textContent =
+                ` 1 秒内额外绘制 ${extra} 次${extra === 0 ? ' · 空闲时停止绘制' : ' · 请保持页面静止后重试'}`;
+              button.disabled = false;
+            }, 1000);
+          }),
+        );
+      };
+      const metricsTimer = setInterval(() => {
+        const state = grid.dataSourceState,
+          info = grid.activeSheetInfo;
+        $('#metrics').textContent =
+          `${info.rowCount.toLocaleString()} 行 × ${info.colCount} 列${isPaged ? ` · 缓存 ${state.cachedPages}/6 页 · 请求 ${state.loading}` : ` · 公式计算 ${grid.calculationStats.formulaEvaluations} 次 · 缓存 ${grid.calculationStats.cacheEntries} 项`} · 最近绘制 ${lastMs.toFixed(2)} ms · ${paints} 次绘制`;
+        syncSelection();
+      }, 400);
+      window.addEventListener('pagehide', () => {
+        clearInterval(metricsTimer);
+        reportGeneration++;
+        stopExport();
+        grid.destroy();
+      });
+      report('list');
+    </script>
+  </body>
+</html>

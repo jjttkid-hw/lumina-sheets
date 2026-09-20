@@ -1,0 +1,19 @@
+.lumina-sdk {
+  position: relative;
+  min-height: 200px;
+  isolation: isolate;
+  font:
+    13px -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color: #243c30;
+}
+.lumina-sdk *,
+.lumina-sdk *::before,
+.lumina-sdk *::after {
+  box-sizing: border-box;
+}
+.lumina-sdk .spreadsheet-shell {
+  height: 100%;
+}

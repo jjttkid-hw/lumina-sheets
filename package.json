@@ -1,0 +1,45 @@
+{
+  "name": "lumina-sheets",
+  "version": "0.11.0",
+  "description": "Canvas-based JavaScript spreadsheet and reporting SDK",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jjttkid-hw/lumina-sheets.git"
+  },
+  "homepage": "https://github.com/jjttkid-hw/lumina-sheets#readme",
+  "bugs": {
+    "url": "https://github.com/jjttkid-hw/lumina-sheets/issues"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write src tests vite.config.ts",
+    "format:check": "prettier --check src tests vite.config.ts",
+    "build:sdk": "vite build --config vite.sdk.config.ts && tsc -p tsconfig.sdk.json && node scripts/package-sdk.mjs",
+    "build:all": "npm run build && npm run build:sdk"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "jszip": "3.10.1",
+    "lucide-react": "^0.468.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "saxes": "5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "prettier": "^3.9.8",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.0"
+  }
+}

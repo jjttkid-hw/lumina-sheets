@@ -1,0 +1,291 @@
+{
+  "id": "3a23f32b-8b77-460a-af5e-339d533609c0",
+  "name": "订单填报",
+  "description": "基于配置和结构化数据，在浏览器生成报表。",
+  "sheets": [
+    {
+      "id": "9a60bc86-e9ee-4293-9d58-94e38404eec5",
+      "name": "报表",
+      "cells": {
+        "A1": {
+          "value": "产品",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "B1": {
+          "value": "数量",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "C1": {
+          "value": "单价",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "D1": {
+          "value": "状态",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "E1": {
+          "value": "金额",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "F1": {
+          "value": "备注",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "A2": {
+          "value": "企业服务"
+        },
+        "B2": {
+          "value": 2
+        },
+        "C2": {
+          "value": 500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D2": {
+          "value": "已确认"
+        },
+        "E2": {
+          "value": "=B2*C2",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "F2": {
+          "value": "编辑数量或选择状态"
+        },
+        "A3": {
+          "value": "数据智能"
+        },
+        "B3": {
+          "value": 3
+        },
+        "C3": {
+          "value": 800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D3": {
+          "value": "已确认"
+        },
+        "E3": {
+          "value": "=B3*C3",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "F3": {
+          "value": ""
+        },
+        "A4": {
+          "value": "云端协作"
+        },
+        "B4": {
+          "value": 5
+        },
+        "C4": {
+          "value": 200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D4": {
+          "value": "待审核"
+        },
+        "E4": {
+          "value": "=B4*C4",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "F4": {
+          "value": ""
+        },
+        "A5": {
+          "value": "合计",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "B5": {
+          "value": "",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "C5": {
+          "value": "",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "D5": {
+          "value": "",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "E5": {
+          "value": "=SUM(E2:E4)",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "F5": {
+          "value": "",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        }
+      },
+      "rowCount": 5,
+      "colCount": 6,
+      "frozenRows": 1,
+      "columnWidths": {
+        "0": 150,
+        "1": 100,
+        "2": 120,
+        "3": 120,
+        "4": 130,
+        "5": 260
+      },
+      "merges": [],
+      "printSettings": {
+        "paperSize": "A3",
+        "orientation": "portrait",
+        "margins": {
+          "top": 34.01574803149607,
+          "right": 34.01574803149607,
+          "bottom": 34.01574803149607,
+          "left": 34.01574803149607
+        },
+        "repeatRows": 1,
+        "rowBreaks": [
+          3
+        ]
+      },
+      "dataValidations": [
+        {
+          "id": "quantity",
+          "range": {
+            "start": {
+              "row": 1,
+              "col": 1
+            },
+            "end": {
+              "row": 3,
+              "col": 1
+            }
+          },
+          "allowBlank": false,
+          "message": "数量须为 1–1000 的整数",
+          "kind": "whole",
+          "operator": "between",
+          "min": 1,
+          "max": 1000
+        },
+        {
+          "id": "price",
+          "range": {
+            "start": {
+              "row": 1,
+              "col": 2
+            },
+            "end": {
+              "row": 3,
+              "col": 2
+            }
+          },
+          "allowBlank": false,
+          "message": "单价须为 0–1,000,000 的数字",
+          "kind": "decimal",
+          "operator": "between",
+          "min": 0,
+          "max": 1000000
+        },
+        {
+          "id": "state",
+          "range": {
+            "start": {
+              "row": 1,
+              "col": 3
+            },
+            "end": {
+              "row": 3,
+              "col": 3
+            }
+          },
+          "allowBlank": false,
+          "message": "状态请选择待审核、已确认或已取消",
+          "kind": "list",
+          "values": [
+            "待审核",
+            "已确认",
+            "已取消"
+          ]
+        },
+        {
+          "id": "note",
+          "range": {
+            "start": {
+              "row": 1,
+              "col": 5
+            },
+            "end": {
+              "row": 3,
+              "col": 5
+            }
+          },
+          "allowBlank": true,
+          "message": "备注最多 40 个 Unicode 码点",
+          "kind": "textLength",
+          "operator": "lessThanOrEqual",
+          "value": 40
+        }
+      ]
+    }
+  ],
+  "activeSheetId": "9a60bc86-e9ee-4293-9d58-94e38404eec5",
+  "createdAt": "2026-09-18T07:32:17.584Z",
+  "updatedAt": "2026-09-18T07:33:20.644Z",
+  "category": "前端报表",
+  "starred": false
+}

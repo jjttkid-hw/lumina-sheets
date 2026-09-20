@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# Keep exported verification artifacts byte-for-byte, including CSV CRLF.
+docs/artifacts/** -text -whitespace
