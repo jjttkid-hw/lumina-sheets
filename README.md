@@ -1,5 +1,13 @@
 # Lumina 灵表
 
+[![CI](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml)
+[![CD: not configured](https://img.shields.io/badge/CD-not_configured-lightgrey?logo=githubactions)](https://github.com/jjttkid-hw/lumina-sheets/actions)
+[![npm: not published](https://img.shields.io/badge/npm-not_published-lightgrey?logo=npm)](docs/SDK.md)
+[![npm downloads: not available](https://img.shields.io/badge/npm_downloads-not_available-lightgrey)](docs/SDK.md)
+[![GitHub forks](https://img.shields.io/github/forks/jjttkid-hw/lumina-sheets?style=flat&logo=github)](https://github.com/jjttkid-hw/lumina-sheets/forks)
+
+CI 与 Fork 数实时更新；CD 尚未配置，SDK 包 `lumina-report-sdk` 尚未发布到 npm，因此暂未提供 npm 下载量。
+
 Lumina 是一个可直接嵌入网页的 JavaScript 表格与报表组件，目标是对齐 SpreadJS Report 性能页描述的前端能力：Canvas 视区绘制、百万逻辑行、分片数据、浏览器内公式和文件导出。后端只需提供分页数据接口，宿主网页不需要 React。本项目为独立开源项目，非葡萄城官方产品，与葡萄城及 SpreadJS 无隶属或授权背书关系。
 
 ## 运行与构建
