@@ -243,3 +243,29 @@ it('binds reviewed elliptic evidence to the complete real source map', async () 
     ),
   ).resolves.toBeNull();
 });
+
+it('binds every exact-source archive to the current ExcelJS map and notice text', async () => {
+  const mapBytes = readFileSync('node_modules/exceljs/dist/exceljs.min.js.map');
+  const sourceMap = JSON.parse(mapBytes.toString('utf8'));
+  const bundle = { sourceMapSha256: createHash('sha256').update(mapBytes).digest('hex') };
+  const manifest = JSON.parse(
+    readFileSync('docs/third-party/embedded/exact-sources/manifest.json', 'utf8'),
+  );
+  const reviewed = [];
+  for (const record of manifest.records) {
+    const result = await reviewedEmbeddedComponent(
+      process.cwd(),
+      bundle,
+      { name: record.name, bundledVersion: null },
+      sourceMap,
+    );
+    expect(result).toMatchObject({
+      status: 'upstream-source-and-license-reviewed',
+      provenance: { package: record.name, version: record.version },
+    });
+    expect(result.licenseEvidence.text.length).toBeGreaterThan(0);
+    reviewed.push(record.name);
+  }
+  expect(reviewed).toHaveLength(16);
+  expect(new Set(reviewed).size).toBe(reviewed.length);
+});
