@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.50",
+  "executedAt": "2026-09-21T03:06:30.866Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "406a14ff6cbbdf8d89a92c5479c5bea17837e166892ff6d7fad923c710c92e1b",
+  "artifactSha256": "3976d561c6153bb3f7df88f33cf1612ad3ce705149ed7672b670effcedce620f",
+  "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
+  "checks": [
+    {
+      "name": "workspace-render",
+      "status": "passed",
+      "elapsedMs": 802,
+      "details": {
+        "width": 860,
+        "height": 471
+      }
+    },
+    {
+      "name": "create-edit-history",
+      "status": "failed",
+      "elapsedMs": 30631,
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('gridcell').filter({ hasText: '84' }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "indexeddb-reload",
+      "status": "failed",
+      "elapsedMs": 5130,
+      "error": "page.waitForFunction: Timeout 5000ms exceeded."
+    },
+    {
+      "name": "zoom-narrow-layout",
+      "status": "passed",
+      "elapsedMs": 155,
+      "details": {
+        "client": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "name": "report-layouts",
+      "status": "passed",
+      "elapsedMs": 7212,
+      "details": [
+        {
+          "layout": "list",
+          "status": "已生成行式明细 · 可直接编辑或导出",
+          "metrics": "38 行 × 5 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 0.80 ms · 3 次绘制"
+        },
+        {
+          "layout": "group",
+          "status": "已生成分组汇总 · 可直接编辑或导出",
+          "metrics": "43 行 × 5 列 · 公式计算 15 次 · 缓存 15 项 · 最近绘制 0.80 ms · 5 次绘制"
+        },
+        {
+          "layout": "nested",
+          "status": "已生成多级分组 · 可直接编辑或导出",
+          "metrics": "53 行 × 5 列 · 公式计算 13 次 · 缓存 13 项 · 最近绘制 0.70 ms · 7 次绘制"
+        },
+        {
+          "layout": "cross",
+          "status": "已生成交叉统计 · 可直接编辑或导出",
+          "metrics": "5 行 × 8 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 0.30 ms · 9 次绘制"
+        },
+        {
+          "layout": "formulas",
+          "status": "已生成公式示例 · 可直接编辑或导出",
+          "metrics": "19 行 × 6 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 0.40 ms · 11 次绘制"
+        },
+        {
+          "layout": "sheets",
+          "status": "已生成多工作表 · 可直接编辑或导出",
+          "metrics": "30 行 × 6 列 · 公式计算 38 次 · 缓存 38 项 · 最近绘制 0.40 ms · 13 次绘制"
+        },
+        {
+          "layout": "validation",
+          "status": "已生成订单填报 · 可直接编辑或导出",
+          "metrics": "5 行 × 6 列 · 公式计算 4 次 · 缓存 4 项 · 最近绘制 0.30 ms · 15 次绘制"
+        },
+        {
+          "layout": "print",
+          "status": "已生成打印版式 · 可直接编辑或导出",
+          "metrics": "8 行 × 6 列 · 公式计算 5 次 · 缓存 5 项 · 最近绘制 2.80 ms · 16 次绘制"
+        },
+        {
+          "layout": "filter",
+          "status": "已生成筛选合并区域 · 可直接编辑或导出",
+          "metrics": "11 行 × 5 列 · 公式计算 1 次 · 缓存 1 项 · 最近绘制 1.50 ms · 17 次绘制"
+        },
+        {
+          "layout": "sort",
+          "status": "已生成多列排序 · 可直接编辑或导出",
+          "metrics": "8 行 × 6 列 · 公式计算 7 次 · 缓存 7 项 · 最近绘制 0.50 ms · 20 次绘制"
+        },
+        {
+          "layout": "paged",
+          "status": "已生成百万行分页数据 · 当前表格只读",
+          "metrics": "1,000,000 行 × 12 列 · 缓存 1/6 页 · 请求 0 · 最近绘制 0.80 ms · 22 次绘制"
+        },
+        {
+          "layout": "snapshot",
+          "status": "已生成分页生成完整报表 · 可直接编辑或导出",
+          "metrics": "200 行 × 4 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 0.30 ms · 23 次绘制"
+        }
+      ]
+    },
+    {
+      "name": "report-downloads-roundtrip",
+      "status": "passed",
+      "elapsedMs": 632,
+      "details": {
+        "downloads": [
+          {
+            "format": "json",
+            "bytes": 23158,
+            "sha256": "495ab8596ed95ab32508de418cb236b42409674aad9f069a21de92192e749c8a"
+          },
+          {
+            "format": "csv",
+            "bytes": 1484,
+            "sha256": "45bc3c55124ab193547e8a178b69674b1734f99f3f69ad7c6b1301c25a61b9ad"
+          },
+          {
+            "format": "xlsx",
+            "bytes": 8270,
+            "sha256": "a2ad95e6da56052a9a350be9bf1908d610498d1b381078cf37dcaa37dc91a505"
+          },
+          {
+            "format": "pdf",
+            "bytes": 382208,
+            "sha256": "fa15eab606cac38434d57a1a583be62cc768daea2a9627d0c6eac9759d4997bb"
+          }
+        ],
+        "importStatus": "报表已恢复 · 已加载支持的数据校验和打印设置"
+      }
+    },
+    {
+      "name": "report-idle",
+      "status": "passed",
+      "elapsedMs": 1079,
+      "details": " 1 秒内额外绘制 0 次 · 空闲时停止绘制"
+    },
+    {
+      "name": "packed-sdk-example",
+      "status": "passed",
+      "elapsedMs": 226,
+      "details": [
+        {
+          "value": "87b81b4b-b06c-4a49-800d-1fcf8efa6aab",
+          "name": "销售明细"
+        },
+        {
+          "value": "ba90c0f0-979c-425a-b53d-43a25a2fff54",
+          "name": "经营汇总"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "status": "failed"
+}

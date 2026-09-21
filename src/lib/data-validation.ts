@@ -253,6 +253,7 @@ export function checkValue(
   if (!point) throw new RangeError('无效单元格地址');
   cellValue(computedValue, 'computedValue');
   const failures: DataValidationFailure[] = [];
+  let textLength: number | undefined;
   for (const rule of rules) {
     if (rule.sheetId !== undefined && rule.sheetId !== sheetId) continue;
     const { start, end } = rule.range;
@@ -272,9 +273,11 @@ export function checkValue(
     } else if (rule.kind === 'textLength') {
       if (typeof computedValue !== 'string') code = 'TYPE_MISMATCH';
       else {
-        let length = 0;
-        for (const _point of computedValue) length++;
-        if (!numericMatch(rule, length)) code = 'OUT_OF_RANGE';
+        if (textLength === undefined) {
+          textLength = 0;
+          for (const _point of computedValue) textLength++;
+        }
+        if (!numericMatch(rule, textLength)) code = 'OUT_OF_RANGE';
       }
     } else if (
       typeof computedValue !== 'number' ||

@@ -286,7 +286,8 @@ describe('formula compatibility boundaries', () => {
     expect(evaluate('=XLOOKUP(3,A1:A2,B1:B2)', values)).toBe('#N/A');
     expect(evaluate('=XLOOKUP(1,A1:A2,B1:B2,"",0,2)', values)).toBe('#VALUE!');
     expect(evaluate('=XLOOKUP(1,A1:A2,B1:B2,"",0,-2)', values)).toBe('#VALUE!');
-    expect(evaluate('=XLOOKUP(1,A1:A2,B1:B2,"",2)', values)).toBe('#VALUE!');
+    expect(evaluate('=XLOOKUP(1,A1:A2,B1:B2,"",2)', values)).toBe('a');
+    expect(evaluate('=XLOOKUP(1,A1:A2,B1:B2,"",3)', values)).toBe('#VALUE!');
     expect(evaluate('=XLOOKUP(1,A1:A2,C1:D1)', values)).toBe('#VALUE!');
     expect(evaluate('=XLOOKUP(1,A1:B2,A1:B2)', values)).toBe('#VALUE!');
   });

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { rewriteFormulaReferences, type StructureEdit } from '../src/lib/formula-structure';
+import {
+  renameFormulaSheet,
+  validateFormulaReferences,
+  rewriteFormulaReferences,
+  type StructureEdit,
+} from '../src/lib/formula-structure';
 
 const rewrite = (
   formula: string,
@@ -33,6 +38,15 @@ const deleteColumns = (index: number, count = 1): StructureEdit => ({
 });
 
 describe('formula structural reference rewrites', () => {
+  it.each([':', '!', '(', ')', ',', ';', '[', ']'])(
+    'keeps quoted %s opaque during validation, renaming and row edits',
+    (symbol) => {
+      const formula = `=Data!A1&"${symbol}"`;
+      expect(() => validateFormulaReferences(formula, 'Data')).not.toThrow();
+      expect(renameFormulaSheet(formula, 'Data', 'Data', 'Next')).toBe(`='Next'!A1&"${symbol}"`);
+      expect(rewrite(formula, insertRows(0))).toBe(`=Data!A2&"${symbol}"`);
+    },
+  );
   it('moves absolute and relative references while preserving unchanged formatting', () => {
     expect(rewrite('=SUM( A1, $B$2 ,c$3,$d4 )', insertRows(1, 2))).toBe(
       '=SUM( A1, $B$4 ,c$5,$d6 )',

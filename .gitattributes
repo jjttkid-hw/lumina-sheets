@@ -2,3 +2,5 @@
 
 # Keep exported verification artifacts byte-for-byte, including CSV CRLF.
 docs/artifacts/** -text -whitespace
+docs/acceptance/** -text -whitespace
+docs/third-party/** -text -whitespace

@@ -31,6 +31,153 @@ afterEach(() => {
 });
 
 describe('commercial SDK boundaries', () => {
+  it.each(['ready', 'loading', 'error'] as const)(
+    'recomputes binding state as %s when leaving a failed viewport',
+    async (expected) => {
+      const workbook = createBlankWorkbook();
+      workbook.sheets.push({ ...createBlankWorkbook().sheets[0], id: 'other', name: 'Other' });
+      const onDataStateChange = vi.fn();
+      const instance = make({ workbook, onDataStateChange });
+      let resolve!: (value: { rows: number[][] }) => void;
+      const binding = instance
+        .bindData(
+          {
+            columnCount: 1,
+            rowCount: 100,
+            fetchPage: async () => {
+              if (expected === 'error') throw new Error('offline');
+              if (expected === 'loading')
+                return new Promise((done) => {
+                  resolve = done;
+                });
+              return { rows: [[0], [1]] };
+            },
+          },
+          { pageSize: 2, maxPages: 1 },
+        )
+        .catch((error) => error);
+      if (expected === 'loading') await Promise.resolve();
+      else await binding;
+      instance.viewport({ firstRow: 0, lastRow: 4 });
+      await tick();
+      expect(instance.dataSourceState.error?.message).toContain('缓存页数');
+      onDataStateChange.mockClear();
+      instance.setActiveSheet('other');
+      expect(instance.dataSourceState.status).toBe(expected);
+      if (expected === 'error')
+        expect(instance.dataSourceState.error?.message).toContain('offline');
+      else expect(instance.dataSourceState.error).toBeUndefined();
+      await tick();
+      expect(onDataStateChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ status: expected }),
+      );
+      if (expected === 'loading') {
+        resolve({ rows: [[0], [1]] });
+        await binding;
+        expect(instance.dataSourceState.status).toBe('ready');
+      }
+    },
+  );
+
+  it('exposes oversized viewport errors and recovers when the range fits the cache', async () => {
+    const onError = vi.fn();
+    const instance = make({ onError });
+    const fetchPage = vi.fn(async (offset: number, limit: number) => ({
+      rows: Array.from({ length: limit }, (_, i) => [offset + i]),
+    }));
+    await instance.bindData(
+      { columnCount: 2, rowCount: 100, fetchPage },
+      { maxPageCells: 4, maxPages: 2 },
+    );
+    expect(instance.dataSourceState.pageSize).toBe(2);
+    fetchPage.mockClear();
+    instance.viewport({ firstRow: 0, lastRow: 5 });
+    await tick();
+    expect(instance.dataSourceState.status).toBe('error');
+    expect(instance.dataSourceState.error).toMatchObject({ code: 'DATA_SOURCE' });
+    expect(fetchPage).not.toHaveBeenCalled();
+    expect(onError).toHaveBeenCalledOnce();
+    instance.viewport({ firstRow: 0, lastRow: 5 });
+    await tick();
+    expect(onError).toHaveBeenCalledOnce();
+    instance.viewport({ firstRow: 4, lastRow: 7 });
+    await tick();
+    expect(instance.dataSourceState.status).toBe('ready');
+    expect(instance.dataSourceState.error).toBeUndefined();
+    expect(instance.getValue('A8')).toBe(7);
+  });
+
+  it('keeps a viewport capacity error visible when an older initial page arrives', async () => {
+    const instance = make();
+    let resolve!: (value: { rows: number[][] }) => void;
+    const binding = instance.bindData(
+      {
+        columnCount: 1,
+        rowCount: 100,
+        fetchPage: () =>
+          new Promise((done) => {
+            resolve = done;
+          }),
+      },
+      { pageSize: 2, maxPages: 1 },
+    );
+    await Promise.resolve();
+    instance.viewport({ firstRow: 0, lastRow: 4 });
+    await tick();
+    expect(instance.dataSourceState.status).toBe('error');
+    resolve({ rows: [[0], [1]] });
+    await binding;
+    expect(instance.dataSourceState.status).toBe('error');
+    instance.viewport({ firstRow: 0, lastRow: 1 });
+    await tick();
+    expect(instance.dataSourceState.status).toBe('ready');
+    expect(instance.dataSourceState.error).toBeUndefined();
+    instance.load(createBlankWorkbook());
+    expect(instance.dataSourceState.status).toBe('idle');
+  });
+
+  it('rejects oversized CSV pages without download and retries using independent export budgets', async () => {
+    const instance = make();
+    const fetchPage = vi.fn(async (offset: number, limit: number) => ({
+      rows: Array.from({ length: limit }, (_, i) => [`R${offset + i}`]),
+    }));
+    await instance.bindData({ columnCount: 1, rowCount: 3, fetchPage });
+    fetchPage.mockClear();
+    const link = downloads();
+    await expect(instance.export('csv', { pagedCsv: { maxPageTextUnits: 2 } })).rejects.toThrow(
+      'maxPageTextUnits',
+    );
+    expect(link.click).not.toHaveBeenCalled();
+    expect(URL.createObjectURL).not.toHaveBeenCalled();
+    await instance.export('csv', { pagedCsv: { pageSize: 1, maxPageTextUnits: 2 } });
+    expect(fetchPage.mock.calls.map((call) => call.slice(0, 2))).toEqual([
+      [0, 3],
+      [0, 1],
+      [1, 1],
+      [2, 1],
+    ]);
+    expect(link.click).toHaveBeenCalledOnce();
+    const blob = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob;
+    expect(await blob.text()).toBe('R0\r\nR1\r\nR2\r\n');
+    expect(instance.getValue('A3')).toBe('R2');
+  });
+
+  it('cancels a PDF waiting for fonts when destroyed without allocating or downloading', async () => {
+    const instance = make();
+    const createElement = vi.fn();
+    vi.stubGlobal('document', {
+      fonts: { ready: new Promise(() => {}) },
+      createElement,
+    });
+    const outcome = instance.export('pdf').catch((error) => error);
+    instance.destroy();
+    const result = await Promise.race([
+      outcome,
+      new Promise((resolve) => setTimeout(() => resolve('pending'), 40)),
+    ]);
+    expect(result).toMatchObject({ code: 'EXPORT_CANCELLED' });
+    expect(createElement).not.toHaveBeenCalled();
+  });
   it('exposes stable read-only and destroyed error codes', () => {
     vi.stubGlobal('HTMLElement', Host);
     const readOnly = new LuminaSpreadsheet(new Host() as unknown as HTMLElement, {
@@ -135,6 +282,64 @@ describe('commercial SDK boundaries', () => {
     await tick();
     expect(fetchPage).toHaveBeenCalledTimes(3);
     expect(instance.dataSourceState.cachedPages).toBe(1);
+  });
+
+  it('reports short initial pages as errors and retries without retaining partial cells', async () => {
+    const instance = make();
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({ rows: [[1]], totalRows: 4 })
+      .mockResolvedValue({ rows: [[1], [2], [3], [4]], totalRows: 4 });
+    await expect(
+      instance.bindData({ columnCount: 1, rowCount: 4, fetchPage }, { pageSize: 4 }),
+    ).rejects.toMatchObject({ code: 'DATA_SOURCE' });
+    expect(instance.dataSourceState.status).toBe('error');
+    expect(instance.dataSourceState.cachedPages).toBe(0);
+    expect(instance.getValue('A1')).toBe('');
+    instance.retryData();
+    await tick();
+    expect(instance.dataSourceState.status).toBe('ready');
+    expect(instance.dataSourceState.cachedPages).toBe(1);
+    expect(instance.getValue('A4')).toBe(4);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+  });
+
+  it('updates SDK dimensions and reloads invalidated data when a remote source shrinks', async () => {
+    const instance = make();
+    let total = 64;
+    await instance.bindData(
+      {
+        columnCount: 1,
+        rowCount: 64,
+        fetchPage: async (offset, limit) => ({
+          rows: Array.from({ length: Math.max(0, Math.min(limit, total - offset)) }, (_, i) => [
+            `${total}:${offset + i}`,
+          ]),
+          totalRows: total,
+        }),
+      },
+      { pageSize: 32 },
+    );
+    expect(instance.getValue('A1')).toBe('64:0');
+    total = 2;
+    instance.viewport({ firstRow: 32, lastRow: 40 });
+    await tick();
+    expect(instance.activeSheetInfo.rowCount).toBe(2);
+    expect(instance.dataSourceState).toMatchObject({
+      rowCount: 2,
+      cachedPages: 0,
+      status: 'ready',
+    });
+    expect(instance.getValue('A1')).toBe('');
+    instance.viewport({ firstRow: 0, lastRow: 1 });
+    await tick();
+    expect(instance.getValue('A1')).toBe('2:0');
+    expect(instance.getValue('A2')).toBe('2:1');
+    expect(instance.dataSourceState).toMatchObject({
+      rowCount: 2,
+      cachedPages: 1,
+      status: 'ready',
+    });
   });
 
   it('publishes ready for an empty source and exposes only constant-size sheet metadata', async () => {

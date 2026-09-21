@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-21T02:47:46.761Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "8dd656afc3289e02241e9126bd1b7ac4fa3dda8944f1daffae993aa0f8b9da57",
+  "artifactSha256": "8371aab6f6db7e4aa6cf696c5c08f1b0c3b4d70c9bdc1a140fcd7a3eaf9bdabe",
+  "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
+  "checks": [
+    {
+      "name": "host-focus-enter",
+      "status": "failed",
+      "elapsedMs": 119,
+      "error": "Expected values to be strictly equal:\n\n'' !== 'host-input'\n"
+    },
+    {
+      "name": "host-focus-escape",
+      "status": "failed",
+      "elapsedMs": 65,
+      "error": "Expected values to be strictly equal:\n\n'' !== 'host-input'\n"
+    },
+    {
+      "name": "ordinary-focus-return",
+      "status": "passed",
+      "elapsedMs": 51
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "status": "failed"
+}

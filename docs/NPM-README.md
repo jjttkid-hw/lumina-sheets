@@ -79,16 +79,18 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 | `select({ row, col, endRow?, endCol? })`    | Select using zero-based coordinates.                                |
 | `undo()` / `redo()`                         | Undo or redo editing transactions.                                  |
 | `toJSON()` / `load(workbook)`               | Capture or restore a workbook snapshot; snapshots copy stored data. |
-| `import(file)` / `export(format, options?)` | Browser file import and XLSX, CSV, PDF, or JSON download.           |
+| `import(file, options?)` / `export(format, options?)` | Browser file import and XLSX, CSV, PDF, or JSON download.           |
 | `report(definition, records)`               | Generate list, grouped, or cross-tab reports.                       |
 | `bindData(source, options?)`                | Bind a read-only paged source with bounded viewport caching.        |
 | `destroy()`                                 | Release the instance; safe to call repeatedly.                      |
+
+Imports accept an AbortSignal. A newer import, successful workbook edit/replacement, data binding, or destruction cancels the pending import with `IMPORT_CANCELLED`; late parsing cannot overwrite current content. Parsing may continue after cancellation, but its result is discarded.
 
 Additional APIs cover layout, static row sorting, row/column insertion and deletion, input validation, conditional styles, print settings, data retries, and streaming CSV exports. [API documentation](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/SDK.md) describes contracts and examples. Errors from direct API calls should be handled by the caller; `onError` reports asynchronous data, interaction, and callback failures.
 
 ## Persistence and data ownership
 
-The SDK does not automatically save workbooks to a server or provide accounts, permissions, collaboration, or cloud storage. Use `toJSON()` and `load()` for explicit snapshots, and integrate the change callbacks with your own persistence. Structural changes have a separate `onStructureChange` callback. `readOnly` controls editor behavior; enforce access permissions in your service.
+The SDK does not automatically save workbooks to a server or provide accounts, permissions, collaboration, or cloud storage. Use `toJSON()` and `load()` for explicit snapshots, and integrate the change callbacks with your own persistence. Structural changes have a separate `onStructureChange` callback. Worksheet renames use `onSheetRename`; include both callbacks when saving snapshots. `readOnly` controls editor behavior; enforce access permissions in your service.
 
 For large remote datasets, implement the `ReportDataSource` interface or use `restDataSource`. Paging is read-only and cached cells are not a complete workbook. Provide a stable source snapshot when exporting. See [data-source and export documentation](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/SDK.md).
 
@@ -107,3 +109,32 @@ For large remote datasets, implement the `ReportDataSource` interface or use `re
 Project code is licensed under Apache-2.0. This package includes `LICENSE`, `NOTICE`, `THIRD_PARTY_NOTICES.txt`, and `dependency-inventory.json`. Third-party components retain their own licenses. The inventory identifies unresolved upstream notice/version review items; it is not a completed commercial redistribution audit. See [dependency review](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/DEPENDENCIES.md).
 
 Report reproducible issues with synthetic or redacted data at [GitHub Issues](https://github.com/jjttkid-hw/lumina-sheets/issues). No paid support service or enterprise SLA is currently provided by this package.
+
+
+## Rename worksheets
+
+Call `grid.renameSheet('Sales', sheetId)` or omit `sheetId` to rename the current static sheet. Explicit formula sheet qualifiers and single-cell internal hyperlink targets update atomically, with one undo/redo transaction. Sheet IDs, the active sheet and selection stay unchanged. Duplicate/invalid names and unsupported reference syntax reject the operation without modifying history. Equal names are a no-op. Successful renames cancel pending imports; readonly or paged targets cannot be renamed.
+
+`onSheetRename({ sheetId, previousName, name, affectedSheetIds, phase })` runs after the complete commit. `phase` is `apply`, `undo` or `redo`, and names describe that operation's before/after state. Renames do not emit synthetic cell or structure events. Renames and row/column structural edits share a limit of ten snapshot transactions within the overall 100-transaction history; dropping an old snapshot drops its preceding history prefix.
+
+
+## Rich text cells
+
+`Cell.richText` is an optional `RichTextRun[]`. Its concatenated text must exactly equal the cell's ordinary string `value`; formulas and numeric values cannot carry runs. Run styles support bold, italic, single underline, strike, six-digit RGB color, fontSize (6–96), and fontFamily. Use `setCells` to replace complete runs. Changing text via `setCell` clears previous runs; unchanged text preserves them, and undo restores them.
+
+Supported runs survive JSON/XLSX round trips and render through Canvas and raster PDF output. CSV and external plain-text clipboard operations carry text only. The Canvas text editor remains plain text. The workspace offers a separate selected-text formatting dialog; SDK hosts can supply runs through setCells. XLSX theme/index colors, double/accounting underlines, font scheme metadata and phonetic annotations are not supported and reject rich-text import instead of silently flattening it. Available system fonts determine appearance; fonts are not embedded. This is not complete Excel rich-text compatibility or browser certification.
+
+
+Rich runs also accept `verticalAlign: 'baseline' | 'superscript' | 'subscript'`, `fontFamilyClass` (0–5), and `charset` (0–255). These attributes round trip through XLSX; text remains Unicode. Canvas and PDF render scripts at 65% size with a 30% upward/downward offset and reserve line height. Font classification and charset are preserved metadata, not browser font selectors. Exact Excel typography and theme relationships remain unverified/unsupported.
+
+
+XLSX text export preserves CR/CRLF, XML control characters and literal escape-shaped strings such as `_x0041_` using OOXML string encoding. This applies to ordinary strings, hyperlink labels and rich runs. Rich text import decodes these escapes once; invalid Unicode units can be retained as data but may render as replacement glyphs. Actual Excel application compatibility remains pending.
+
+
+Formula string caches also use OOXML encoding; numeric, boolean and error caches keep their types. Export requests full recalculation on load in Excel. Lumina imports formulas and recomputes them with its supported engine subset. ExcelJS 4.4 does not itself decode ST_Xstring formula caches, so direct cache reads may expose escape strings; this is not Excel application certification.
+
+
+多工作表宿主可使用 `grid.sheetInfos` 创建目录，通过 `grid.setActiveSheet(id)` 切换，并监听 `onActiveSheetChange` 保存活动表偏好。切表保留工作簿撤销/重做与计算缓存，重置选区/筛选；只读也可切换。分页绑定期间整个实例保持只读；CSV 按当前表选择数据源，含分页表的完整工作簿导出需先生成静态报表。详见 SDK.md。浏览器切换交互仍待实际验收。
+
+
+安装包的 `example.html` 新增“多工作表”示例：销售明细与经营汇总通过跨表公式关联，可切表编辑、撤销及导出当前表 CSV。打开多工作表 Excel/JSON 后通过“当前工作表”选择器浏览其他表；导入期间若继续编辑，旧导入会取消以保留新编辑。需以 HTTP 服务打开示例。示例事件回归已执行，实际浏览器视觉/键盘/下载仍待验收。

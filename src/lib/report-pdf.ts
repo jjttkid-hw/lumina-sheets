@@ -1,3 +1,4 @@
+import { layoutRichText, drawRichTextLine } from './canvas/rich-text';
 import type { Cell, CellRange, PrintSettings, Sheet, Workbook } from './types';
 import { copyPrintSettings, validatePrintSettings } from './print-settings';
 import { MergeIndex } from './canvas/geometry';
@@ -48,6 +49,33 @@ function abortIfNeeded(signal?: AbortSignal) {
   const error = new Error('PDF 导出已取消');
   error.name = 'AbortError';
   throw error;
+}
+/** Stop waiting without pretending to cancel browser-owned font/encoding work.
+ * Late failures stay observed and cannot resume the export. */
+function waitForPdf<T>(work: Promise<T>, signal?: AbortSignal): Promise<T> {
+  if (!signal) return work;
+  return new Promise<T>((resolve, reject) => {
+    const abort = () => {
+      signal.removeEventListener('abort', abort);
+      try {
+        abortIfNeeded(signal);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    signal.addEventListener('abort', abort, { once: true });
+    work.then(
+      (value) => {
+        signal.removeEventListener('abort', abort);
+        resolve(value);
+      },
+      (error) => {
+        signal.removeEventListener('abort', abort);
+        reject(error);
+      },
+    );
+    if (signal.aborted) abort();
+  });
 }
 function positiveInteger(value: number | undefined, fallback: number, label: string): number {
   const actual = value ?? fallback;
@@ -409,7 +437,13 @@ async function measureRows(
       for (let r = row; r <= bottom; r++) allocated += heights[r];
       const lineHeight = (cell?.style?.fontSize ?? 12) * 0.75 * 1.4;
       const required =
-        linesFor(context, value, width - PADDING * 2).length * lineHeight + PADDING * 2;
+        (cell?.richText
+          ? layoutRichText(context, cell, 0.75, width - PADDING * 2).reduce(
+              (sum, line) => sum + line.height,
+              0,
+            )
+          : linesFor(context, value, width - PADDING * 2).length * lineHeight) +
+        PADDING * 2;
       if (required > allocated) {
         let lastVisible = bottom;
         while (lastVisible > row && heights[lastVisible] === 0) lastVisible--;
@@ -441,6 +475,19 @@ function drawCell(
   context.textBaseline = 'top';
   const align = cell?.style?.align ?? (typeof evaluated === 'number' ? 'right' : 'left');
   context.textAlign = align;
+  if (cell?.richText) {
+    const lines = layoutRichText(context, cell, 0.75, width - PADDING * 2);
+    if (lines.reduce((sum, line) => sum + line.height, 0) + PADDING * 2 > height + 0.01)
+      throw new Error('PDF 单元格内容超过分页后的可用高度，导出已停止。');
+    const anchor =
+      align === 'center' ? x + width / 2 : align === 'right' ? x + width - PADDING : x + PADDING;
+    let top = y + PADDING;
+    for (const line of lines) {
+      drawRichTextLine(context, line, anchor, top + line.height / 2, align, 0.75, '#192a24', 0.5);
+      top += line.height;
+    }
+    return;
+  }
   const lineHeight = (cell?.style?.fontSize ?? 12) * 0.75 * 1.4;
   const lines = linesFor(context, text, width - PADDING * 2);
   if (lines.length * lineHeight + PADDING * 2 > height + 0.01)
@@ -643,34 +690,42 @@ export async function workbookToPdf(
   if (!sheet) throw new Error('工作簿中没有可导出的工作表。');
   let layout = planPdfPages(sheet, options);
   if (typeof document === 'undefined') throw new Error('PDF 导出需要支持 Canvas 的浏览器。');
-  await document.fonts?.ready;
-  const canvas = document.createElement('canvas');
   const ratio = options.pixelRatio ?? 2;
   if (!Number.isFinite(ratio) || ratio < 1 || ratio > 3)
     throw new Error('PDF pixelRatio 必须在 1–3 之间。');
-  canvas.width = Math.ceil(layout.width * ratio);
-  canvas.height = Math.ceil(layout.height * ratio);
-  const context = canvas.getContext('2d');
-  if (!context) throw new Error('当前浏览器无法创建 Canvas PDF 页面。');
-  context.scale(ratio, ratio);
-  const evaluator = options.evaluator ?? createEvaluator(workbook);
-  const heights = await measureRows(context, sheet, layout, evaluator, options.signal);
-  layout = planPdfPages(sheet, options, heights);
-  const pages: PdfJpegPage[] = [];
+  await waitForPdf(Promise.resolve(document.fonts?.ready), options.signal);
+  abortIfNeeded(options.signal);
+  const canvas = document.createElement('canvas');
   try {
+    canvas.width = Math.ceil(layout.width * ratio);
+    canvas.height = Math.ceil(layout.height * ratio);
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('当前浏览器无法创建 Canvas PDF 页面。');
+    context.scale(ratio, ratio);
+    const evaluator = options.evaluator ?? createEvaluator(workbook);
+    const heights = await measureRows(context, sheet, layout, evaluator, options.signal);
+    layout = planPdfPages(sheet, options, heights);
+    const pages: PdfJpegPage[] = [];
     for (const [index, page] of layout.pages.entries()) {
       abortIfNeeded(options.signal);
       drawPage(context, workbook, sheet, layout, page, index, evaluator);
-      const blob = await new Promise<Blob>((resolve, reject) =>
-        canvas.toBlob(
-          (value) => (value ? resolve(value) : reject(new Error('PDF 页面编码失败。'))),
-          'image/jpeg',
-          0.94,
+      abortIfNeeded(options.signal);
+      const blob = await waitForPdf(
+        new Promise<Blob>((resolve, reject) =>
+          canvas.toBlob(
+            (value) => (value ? resolve(value) : reject(new Error('PDF 页面编码失败。'))),
+            'image/jpeg',
+            0.94,
+          ),
         ),
+        options.signal,
       );
+      abortIfNeeded(options.signal);
       if (blob.type !== 'image/jpeg') throw new Error('浏览器不支持 PDF 所需的 JPEG 编码。');
+      const bytes = new Uint8Array(await waitForPdf(blob.arrayBuffer(), options.signal));
+      abortIfNeeded(options.signal);
       pages.push({
-        bytes: new Uint8Array(await blob.arrayBuffer()),
+        bytes,
         pixelWidth: canvas.width,
         pixelHeight: canvas.height,
       });

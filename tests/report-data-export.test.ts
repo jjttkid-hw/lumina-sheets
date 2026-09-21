@@ -154,4 +154,84 @@ describe('complete paged-source CSV export', () => {
       name: 'AbortError',
     });
   });
+  it.each([true, false])(
+    'honors cancellation from empty-source progress (BOM %s)',
+    async (includeBom) => {
+      const controller = new AbortController();
+      const fetchPage = vi.fn(async () => ({ rows: [] }));
+      const iterator = iterateReportCsvChunks(
+        { rowCount: 0, columnCount: 1, fetchPage },
+        {
+          includeBom,
+          signal: controller.signal,
+          onProgress: () => controller.abort(),
+        },
+      );
+      await expect(iterator.next()).rejects.toMatchObject({ name: 'AbortError' });
+      expect(fetchPage).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(['empty', 'known', 'unknown'])(
+    'honors cancellation after the final chunk for %s totals',
+    async (mode) => {
+      const controller = new AbortController();
+      const fetchPage = vi.fn(async () => ({ rows: [[1]] }));
+      const iterator = iterateReportCsvChunks(
+        {
+          columnCount: 1,
+          fetchPage,
+          ...(mode === 'unknown' ? {} : { rowCount: mode === 'empty' ? 0 : 1 }),
+        },
+        { signal: controller.signal },
+      );
+      expect((await iterator.next()).done).toBe(false);
+      controller.abort();
+      await expect(iterator.next()).rejects.toMatchObject({ name: 'AbortError' });
+      expect(fetchPage).toHaveBeenCalledTimes(mode === 'empty' ? 0 : 1);
+    },
+  );
+
+  it('rejects a cancelled stream read after receiving its last bytes', async () => {
+    const controller = new AbortController();
+    const reader = reportDataCsvReadableStream(arrayDataSource([[1]]), {
+      signal: controller.signal,
+    }).getReader();
+    expect((await reader.read()).done).toBe(false);
+    controller.abort();
+    await expect(reader.read()).rejects.toMatchObject({ name: 'AbortError' });
+  });
+  it('isolates validated page values while yielding chunks to consumers', async () => {
+    const rows = Array.from({ length: 40 }, (_, index) => [String(index), 'x'.repeat(32767)]);
+    const original = rows.map((row) => [...row]);
+    const page = { rows, totalRows: 40 };
+    const source = { columnCount: 2, rowCount: 40, fetchPage: vi.fn(async () => page) };
+    const iterator = iterateReportCsvChunks(source, { pageSize: 40 });
+    const first = await iterator.next();
+    expect(first.done).toBe(false);
+    // The producer reuses its buffers after the consumer receives the first chunk.
+    rows[20][0] = 'changed';
+    rows[21].push('unexpected column');
+    rows[22][1] = NaN as never;
+    rows.splice(23);
+    page.totalRows = 23;
+    let result = first.value as string;
+    for await (const chunk of iterator) result += chunk;
+    expect(parseCsv(result)).toEqual(original);
+    expect(source.fetchPage).toHaveBeenCalledOnce();
+    // Export must not freeze or mutate the source's own buffers.
+    expect(rows[20][0]).toBe('changed');
+    expect(Object.isFrozen(rows)).toBe(false);
+  });
+
+  it('captures each new page at arrival without copying or loading the whole source', async () => {
+    const reused = { rows: [[0]], totalRows: 3 };
+    const fetchPage = vi.fn(async (offset: number) => {
+      reused.rows[0][0] = offset;
+      return reused;
+    });
+    const text = await collect({ rowCount: 3, columnCount: 1, fetchPage }, { pageSize: 1 });
+    expect(parseCsv(text)).toEqual([['0'], ['1'], ['2']]);
+    expect(fetchPage.mock.calls.map(([offset]) => offset)).toEqual([0, 1, 2]);
+  });
 });

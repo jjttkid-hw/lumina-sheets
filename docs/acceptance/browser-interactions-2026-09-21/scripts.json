@@ -1,0 +1,10 @@
+[
+  {
+    "path": "scripts/browser-smoke.mjs",
+    "sha256": "091b63a2576beb26bb179596dfb7fafdfe544f05502e740500a0a8ad4ee5ecc7"
+  },
+  {
+    "path": "scripts/browser-interactions.mjs",
+    "sha256": "38cbabef254520dc49880abf475930491e239d6c9a224bead7ee5af8102e442a"
+  }
+]

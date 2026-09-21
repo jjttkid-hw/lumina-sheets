@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Lumina JS 报表组件</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
     <style>
       * {
         box-sizing: border-box;
@@ -207,7 +208,7 @@
   </head>
   <body>
     <header>
-      <div class="tag">LUMINA / JAVASCRIPT REPORT SDK · 0.13</div>
+      <div class="tag">LUMINA / JAVASCRIPT REPORT SDK</div>
       <h1>在你的网页里，生成和嵌入报表。</h1>
       <p>
         本页通过普通 JavaScript 调用组件。报表布局、条件格式、数据分页和文件导出在浏览器内执行。
@@ -221,11 +222,13 @@
         <button data-layout="nested">多级分组</button>
         <button data-layout="cross">交叉统计</button>
         <button data-layout="formulas">公式示例</button>
+        <button data-layout="sheets">多工作表</button>
         <button data-layout="validation">订单填报</button>
         <button data-layout="print">打印版式</button>
         <button data-layout="filter">筛选合并区域</button>
         <button data-layout="sort">多列排序</button>
         <button data-layout="paged">百万行分页数据</button>
+        <button data-layout="snapshot">分页生成完整报表</button>
       </div>
       <details class="settings" id="print-panel">
         <summary>打印设置 · 随报表保存</summary>
@@ -279,7 +282,7 @@
           <option value="pdf">PDF</option>
           <option value="json">JSON</option>
         </select>
-        <button id="export">导出报表</button><button id="cancel" hidden>取消导出</button
+        <button id="export">导出报表</button><button id="cancel" hidden>取消操作</button
         ><progress id="progress" hidden max="1" value="0" aria-label="导出进度"></progress>
         <button id="import-json">打开 Excel / JSON</button
         ><input
@@ -288,6 +291,13 @@
           accept=".xlsx,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           hidden
         />
+      </div>
+      <div class="bar" role="group" aria-label="工作表导航">
+        <label
+          >当前工作表
+          <select id="sheet-select" aria-label="当前工作表"></select
+        ></label>
+        <span id="sheet-note">切表保留撤销记录；CSV 导出当前工作表。</span>
       </div>
       <div id="status" role="status">准备就绪</div>
       <div class="bar" role="group" aria-label="行列编辑" id="structure-tools">
@@ -417,11 +427,6 @@
         /><button id="apply">应用</button><output id="value" aria-label="计算结果"></output>
       </div>
       <div id="validation-note" aria-live="polite"></div>
-      <label id="list-picker" hidden
-        >选择允许值
-        <select id="allowed-values" aria-label="允许值"></select
-        ><button id="apply-list">填入</button></label
-      >
       <div id="report"></div>
       <p>
         报表数据均为演示数据。百万行模式按需取数，最多缓存 6 页；完整 CSV
@@ -436,9 +441,9 @@
       import {
         createSpreadsheet,
         parseCellKey,
+        parseCellInput,
         cellKey,
-        validateWorkbook,
-        workbookFromXlsx,
+        workbookFromReportData,
       } from '../src/sdk/index.tsx';
       const $ = (selector) => document.querySelector(selector);
       const status = $('#status');
@@ -448,25 +453,55 @@
         paints = 0,
         lastMs = 0,
         exporting = null,
+        snapshotting = null,
+        importing = null,
         selection = { row: 0, col: 0 },
-        selectionDirty = true,
-        allowedValues = [];
+        selectionDirty = true;
       const showError = (error) => {
         status.dataset.error = 'true';
         status.textContent =
-          error.code === 'EXPORT_CANCELLED' || error.name === 'AbortError'
+          error.code === 'EXPORT_CANCELLED' ||
+          error.code === 'IMPORT_CANCELLED' ||
+          error.name === 'AbortError'
             ? '操作已取消'
             : error.message;
       };
+      function syncCancel() {
+        $('#cancel').hidden = !(snapshotting || importing || exporting);
+      }
+      function stopImport() {
+        if (!importing) return;
+        reportGeneration++;
+        importing.abort();
+        importing = null;
+        syncCancel();
+      }
+      function stopSnapshot() {
+        if (!snapshotting) return;
+        reportGeneration++;
+        snapshotting.abort();
+        snapshotting = null;
+        syncCancel();
+      }
       function stopExport() {
         exporting?.abort();
         exporting = null;
         $('#export').disabled = false;
-        $('#cancel').hidden = true;
+        syncCancel();
         $('#progress').hidden = true;
       }
       const grid = createSpreadsheet($('#report'), {
         onError: showError,
+        onActiveSheetChange: () => {
+          stopSnapshot();
+          stopExport();
+          updateControls();
+          syncPrint();
+          syncSelection(true);
+          syncLayout();
+          status.dataset.error = 'false';
+          status.textContent = `已切换到 ${grid.activeSheetInfo.name} · 编辑历史保留`;
+        },
         onRender: (metrics) => {
           paints++;
           lastMs = metrics.drawMs;
@@ -479,6 +514,7 @@
           syncLayout();
         },
         onChange: ({ changes }) => {
+          stopSnapshot();
           status.dataset.error = 'false';
           status.textContent = changes.length
             ? '单元格已更新 · 相关公式随之重算'
@@ -488,6 +524,7 @@
           syncLayout();
         },
         onStructureChange: (event) => {
+          stopSnapshot();
           selection = grid.selectedRange;
           selectionDirty = true;
           syncPrint();
@@ -530,11 +567,13 @@
         nested: '多级分组',
         cross: '交叉统计',
         formulas: '公式示例',
+        sheets: '多工作表',
         validation: '订单填报',
         print: '打印版式',
         filter: '筛选合并区域',
         sort: '多列排序',
         paged: '百万行分页数据',
+        snapshot: '分页生成完整报表',
       };
       const formulaExamples = [
         ['条件汇总', '=SUMIFS(D2:D5,C2:C5,"华东")', '华东', 10, '依据区域加总 D 列'],
@@ -547,6 +586,30 @@
         ['加权合计', '=SUMPRODUCT(D2:D5,F2:F5)', '', '', '金额 × 权重合计 = 30，可修改 D/F 列'],
         ['分批余量', '=MOD(103,12)', '', '', '103 件商品，每箱 12 件，剩余 7 件'],
         ['向下取整', '=INT(-3.1)', '', '', '向负无穷取整，结果为 -4'],
+        ['提取订单编号', '=MID(TRIM("  CN-2026-001  "),4,8)', '', '', '清理 ASCII 空格后提取编号'],
+        [
+          '贷款月供',
+          '=PMT(0.08/12,120,10000)',
+          '',
+          '',
+          '年利率 8%，10 年，借入 10,000；付款为负数',
+        ],
+        ['还款期数', '=NPER(0.08/12,-200,10000)', '', '', '年利率 8%，每月还款 200，允许小数期数'],
+        ['年金现值', '=PV(0.08/12,240,500)', '', '', '每月收到 500、共 20 年，对应现值支出'],
+        [
+          '储蓄终值',
+          '=FV(0.06/12,120,-200,-1000)',
+          '',
+          '',
+          '初始投入 1,000，每月末投入 200，共 10 年',
+        ],
+        [
+          '投资净现值',
+          '=NPV(0.1,3000,4200,6800)-10000',
+          '',
+          '',
+          '折现率 10%，三期回款，期初投资 10,000',
+        ],
         [
           '逻辑判断',
           '=IF(AND(D2>=10,D3>=20),"达标","未达标")',
@@ -591,6 +654,21 @@
         },
       };
       function updateControls() {
+        isPaged = grid.activeSheetInfo.readOnly;
+        const sheets = grid.sheetInfos;
+        $('#sheet-select').replaceChildren(
+          ...sheets.map((sheet) => {
+            const option = document.createElement('option');
+            option.value = sheet.id;
+            option.textContent = sheet.name;
+            return option;
+          }),
+        );
+        $('#sheet-select').value = grid.activeSheetInfo.id;
+        $('#sheet-select').disabled = sheets.length < 2;
+        $('#sheet-note').textContent =
+          `${sheets.length} 张工作表 · 切表保留撤销记录；CSV 导出当前表`;
+        const hasPaged = sheets.some((sheet) => sheet.readOnly);
         for (const button of document.querySelectorAll('[data-layout]'))
           button.setAttribute('aria-pressed', String(button.dataset.layout === currentLayout));
         $('#page-size').disabled = !['list', 'group', 'nested'].includes(currentLayout);
@@ -621,30 +699,110 @@
           '#clear-filter',
         ])
           $(selector).disabled = isPaged;
-        $('#refresh').hidden = !isPaged;
+        $('#refresh').hidden = grid.dataSourceState.status === 'idle';
+        $('#retry').hidden = grid.dataSourceState.status !== 'error';
         for (const option of $('#format').options)
-          option.disabled = isPaged && option.value !== 'csv';
-        if (isPaged) $('#format').value = 'csv';
+          option.disabled = hasPaged && option.value !== 'csv';
+        if (hasPaged) $('#format').value = 'csv';
         $('#address').value = 'A1';
-        $('#filter-text').value = '';
+        $('#filter-text').value = grid.filterText;
         $('#idle-result').textContent = '';
-        selection = { row: 0, col: 0 };
+        selection = grid.selectedRange;
         selectionDirty = true;
       }
       async function report(mode) {
+        stopImport();
+        stopSnapshot();
         const generation = ++reportGeneration;
         try {
           stopExport();
-          currentLayout = mode;
-          isPaged = mode === 'paged';
-          updateControls();
-          if (isPaged) {
+          if (mode !== 'snapshot') currentLayout = mode;
+          if (mode === 'snapshot') {
+            const controller = new AbortController();
+            snapshotting = controller;
+            syncCancel();
+            status.dataset.error = 'false';
+            status.textContent = '正在读取完整报表…';
+            // Independent bounded query, not a sample of the million-row source.
+            const source = {
+              rowCount: 200,
+              columnCount: 4,
+              async fetchPage(offset, limit) {
+                return {
+                  rows: Array.from({ length: Math.min(limit, 200 - offset) }, (_, i) => {
+                    const row = offset + i;
+                    return [row + 1, ['华东', '华南'][row % 2], 1000 + row * 10, row % 3 === 0];
+                  }),
+                  totalRows: 200,
+                };
+              },
+            };
+            let workbook;
+            try {
+              workbook = await workbookFromReportData(source, {
+                name: '完整订单报表',
+                pageSize: 32,
+                maxRows: 1000,
+                maxCells: 4000,
+                signal: controller.signal,
+                onProgress: (rows, total) => {
+                  if (generation === reportGeneration)
+                    status.textContent = `已读取 ${rows} / ${total ?? '未知'} 行`;
+                },
+              });
+            } finally {
+              if (snapshotting === controller) {
+                snapshotting = null;
+                syncCancel();
+              }
+            }
+            if (generation !== reportGeneration) return;
+            currentLayout = mode;
+            grid.load(workbook);
+            grid.setConditionalRules([]);
+            $('#layout-note').textContent =
+              '独立查询完整读取 200 行 × 4 列 · 可编辑并导出 XLSX/PDF/CSV/JSON；超限明确拒绝。';
+            $('#code').textContent =
+              'const book = await workbookFromReportData(source, {\n  maxRows: 1000, maxCells: 4000, pageSize: 32, signal\n});\ngrid.load(book);\nawait grid.export("xlsx");';
+          } else if (mode === 'paged') {
             grid.setConditionalRules([]);
             $('#layout-note').textContent = '只读数据源 · 每页 128 行 · 缓存上限 6 页';
             $('#code').textContent =
               'await grid.bindData(source, { pageSize: 128, maxPages: 6 });\ngrid.select({ row: 999999, col: 0 });\nawait grid.export("csv", { signal, onProgress });';
-            await grid.bindData(dataSource, { pageSize: 128, maxPages: 6 });
+            const binding = grid.bindData(dataSource, { pageSize: 128, maxPages: 6 });
+            updateControls();
+            await binding;
             if (generation !== reportGeneration) return;
+          } else if (mode === 'sheets') {
+            grid.report({ name: '多工作表经营分析', layout: 'list', columns }, records);
+            const workbook = grid.toJSON();
+            workbook.sheets[0].name = '销售明细';
+            const summaryId = crypto.randomUUID();
+            workbook.sheets.push({
+              id: summaryId,
+              name: '经营汇总',
+              rowCount: 30,
+              colCount: 6,
+              frozenRows: 1,
+              columnWidths: { 0: 160, 1: 180, 2: 360 },
+              cells: {
+                A1: { value: '指标', style: { bold: true } },
+                B1: { value: '计算结果', style: { bold: true } },
+                C1: { value: '操作说明', style: { bold: true } },
+                A2: { value: '营收合计' },
+                B2: { value: "=SUM('销售明细'!C2:C37)", style: { format: 'currency' } },
+                C2: { value: '在销售明细修改 C2，然后切回来查看结果。' },
+                A3: { value: '利润合计' },
+                B3: { value: "=SUM('销售明细'!E2:E37)", style: { format: 'currency' } },
+                C3: { value: '在汇总表撤销，可恢复另一表的最近编辑。' },
+              },
+            });
+            grid.load(workbook);
+            grid.setActiveSheet(summaryId);
+            $('#layout-note').textContent =
+              '两张表共享计算与撤销历史；营收 8,199,000，利润 4,212,000。CSV 导出当前表，Excel/JSON 保留两表。';
+            $('#code').textContent =
+              'const sheets = grid.sheetInfos;\ngrid.setActiveSheet(sheets[1].id);\ngrid.undo(); // 撤销最近的工作簿编辑，保留当前活动表';
           } else if (mode === 'sort') {
             grid.report(
               {
@@ -896,7 +1054,7 @@
               },
             ]);
             $('#layout-note').textContent =
-              '数量、单价、状态与备注均有输入规则；粘贴不合规则时整批拒绝。Excel / JSON 均可保存并重新打开此示例。';
+              '选中状态列 D2:D4 中的一格，点击格内箭头或按 Alt+↓，搜索并选择状态；Enter 确定、Esc 取消。数量、单价、状态与备注均有输入规则，粘贴不合规则时整批拒绝。';
             $('#code').textContent =
               `grid.setDataValidation([{ id: 'quantity', range: { start: {row:1,col:1}, end: {row:3,col:1} }, kind:'whole', operator:'between', min:1, max:1000, allowBlank:false }]);\ntry { grid.setCell('B2', -1); } catch (error) { console.log(error.code, error.failures); }`;
           } else if (mode === 'formulas') {
@@ -947,12 +1105,13 @@
             $('#code').textContent =
               `grid.report(${JSON.stringify({ ...definition, columns: '[columns]', conditionalRules: undefined }, null, 2)}, records);\nawait grid.export('xlsx');`;
           }
+          updateControls();
           syncPrint();
           selectionDirty = true;
           syncSelection(true);
           syncLayout();
           status.dataset.error = 'false';
-          status.textContent = `已生成${labels[mode]}${isPaged ? ' · 只加载当前视区' : ' · 可直接编辑或导出'}`;
+          status.textContent = `已生成${labels[mode]}${isPaged ? ' · 当前表格只读' : ' · 可直接编辑或导出'}`;
         } catch (error) {
           if (generation === reportGeneration) showError(error);
         }
@@ -960,6 +1119,15 @@
       for (const button of document.querySelectorAll('[data-layout]'))
         button.onclick = () => report(button.dataset.layout);
       $('#page-size').onchange = () => report(currentLayout);
+      $('#sheet-select').onchange = () => {
+        try {
+          grid.setActiveSheet($('#sheet-select').value);
+        } catch (error) {
+          showError(error);
+        } finally {
+          $('#sheet-select').value = grid.activeSheetInfo.id;
+        }
+      };
       $('#jump').onclick = () => {
         try {
           const point = parseCellKey($('#address').value);
@@ -970,19 +1138,21 @@
         }
       };
       $('#address').onkeydown = (event) => {
-        if (event.key === 'Enter') $('#jump').click();
+        if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229)
+          $('#jump').click();
       };
       $('#apply').onclick = () => {
         try {
           const raw = $('#formula').value;
-          const value = raw !== '' && /^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw) ? Number(raw) : raw;
+          const value = parseCellInput(raw);
           grid.setCell(cellKey(selection.row, selection.col), value);
         } catch (error) {
           showError(error);
         }
       };
       $('#formula').onkeydown = (event) => {
-        if (event.key === 'Enter') $('#apply').click();
+        if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229)
+          $('#apply').click();
       };
       $('#undo').onclick = () => {
         try {
@@ -1122,7 +1292,8 @@
         $('#apply-filter').click();
       };
       $('#filter-text').onkeydown = (event) => {
-        if (event.key === 'Enter') $('#apply-filter').click();
+        if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229)
+          $('#apply-filter').click();
       };
       function syncClipboardMode() {
         $('#clipboard-mode').value = grid.clipboardMode;
@@ -1203,61 +1374,57 @@
       $('#json-file').onchange = async () => {
         const file = $('#json-file').files[0];
         if (!file) return;
+        stopImport();
+        stopSnapshot();
         const generation = ++reportGeneration;
         $('#json-file').value = '';
         stopExport();
+        const controller = new AbortController();
+        importing = controller;
+        syncCancel();
         try {
           status.dataset.error = 'false';
           status.textContent = '正在打开报表…';
-          if (file.size > 20 * 1024 * 1024) throw new Error('文件超过 20 MB 限制。');
-          const extension = file.name.split('.').pop()?.toLowerCase();
-          let workbook;
-          if (extension === 'json') workbook = validateWorkbook(JSON.parse(await file.text()));
-          else if (extension === 'xlsx')
-            workbook = await workbookFromXlsx(
-              await file.arrayBuffer(),
-              file.name.replace(/\.[^.]+$/, ''),
-            );
-          else throw new Error('请选择 .xlsx 或 .json 文件。');
-          // Decode before committing: a newer mode or file choice owns the view.
+          await grid.import(file, { signal: controller.signal });
           if (generation !== reportGeneration) return;
-          grid.load(workbook);
           grid.setConditionalRules([]);
           currentLayout = 'imported';
-          isPaged = false;
           updateControls();
           syncPrint();
           selectionDirty = true;
           syncSelection(true);
           syncLayout();
           $('#code').textContent =
-            '// 解析文件后，确认用户未切换视图再载入。\ngrid.load(workbook);\nconst rules = grid.getDataValidation();\nconst print = grid.getPrintSettings();';
+            'await grid.import(file, { signal }); // 可主动取消；编辑、重载和新导入也会取消旧导入。\nconst rules = grid.getDataValidation();\nconst print = grid.getPrintSettings();';
           status.dataset.error = 'false';
           status.textContent = '报表已恢复 · 已加载支持的数据校验和打印设置';
-          $('#layout-note').textContent = '已载入保存的报表；可继续编辑或导出。';
+          $('#layout-note').textContent = isPaged
+            ? '已载入只读分页快照；完整数据需重新绑定原数据源。'
+            : '已载入保存的报表；可切换工作表、继续编辑或导出。';
         } catch (error) {
           if (generation === reportGeneration) showError(error);
+        } finally {
+          if (importing === controller) {
+            importing = null;
+            syncCancel();
+          }
         }
       };
-      $('#apply-list').onclick = () => {
-        try {
-          grid.setCell(
-            cellKey(selection.row, selection.col),
-            allowedValues[Number($('#allowed-values').value)],
-          );
-        } catch (error) {
-          showError(error);
-        }
+      $('#cancel').onclick = () => {
+        importing?.abort();
+        exporting?.abort();
+        snapshotting?.abort();
       };
-      $('#cancel').onclick = () => exporting?.abort();
       $('#export').onclick = async () => {
+        stopImport();
+        stopSnapshot();
         const generation = reportGeneration;
         stopExport();
         const controller = new AbortController();
         exporting = controller;
         const current = () => generation === reportGeneration && exporting === controller;
         $('#export').disabled = true;
-        $('#cancel').hidden = false;
+        syncCancel();
         $('#progress').hidden = false;
         $('#progress').removeAttribute('value');
         try {
@@ -1301,17 +1468,6 @@
         $('#validation-note').textContent = rules
           .map((rule) => rule.message ?? '此单元格有输入规则')
           .join('；');
-        const list = rules.find((rule) => rule.kind === 'list');
-        $('#list-picker').hidden = !list;
-        $('#allowed-values').replaceChildren();
-        allowedValues = list?.values ?? [];
-        for (const [index, value] of allowedValues.entries()) {
-          const option = document.createElement('option');
-          option.value = String(index);
-          option.textContent = String(value);
-          $('#allowed-values').append(option);
-        }
-        if (list) $('#allowed-values').value = String(allowedValues.indexOf(grid.getValue(key)));
         selectionDirty = false;
       }
       $('#check-idle').onclick = () => {
@@ -1339,6 +1495,8 @@
       }, 400);
       window.addEventListener('pagehide', () => {
         clearInterval(metricsTimer);
+        stopImport();
+        stopSnapshot();
         reportGeneration++;
         stopExport();
         grid.destroy();

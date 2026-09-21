@@ -26,14 +26,34 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run format:check
+      - name: Use accepted candidate source time when configured
+        env:
+          CANDIDATE_SOURCE_EPOCH: ${{ vars.RELEASE_SOURCE_DATE_EPOCH }}
+        run: |
+          if [ -n "$CANDIDATE_SOURCE_EPOCH" ]; then
+            node --input-type=module -e 'import { sourceTimestamp } from "./scripts/build-time.mjs"; sourceTimestamp(process.env.CANDIDATE_SOURCE_EPOCH);'
+            echo "SOURCE_DATE_EPOCH=$CANDIDATE_SOURCE_EPOCH" >> "$GITHUB_ENV"
+          fi
       - run: npm run build:site
+      - run: npm run check:api
       - run: npm run check:sdk
+      - name: Require complete dependency-license evidence
+        run: npm run check:licenses
+      - name: Verify reproducible site and package build
+        run: npm run check:reproducibility
+      - name: Smoke-test the final Pages build over HTTP
+        run: npm run check:site-runtime
       - name: Record tested build
         run: node scripts/build-info.mjs
+      - name: Require accepted site and package for stable 1.x and later
+        run: node scripts/check-stable-release.mjs --site
       - uses: actions/upload-artifact@v7
         with:
           name: npm-package
-          path: artifacts/
+          path: |
+            artifacts/*.tgz
+            artifacts/*.sha256
+            artifacts/reproducibility/
           if-no-files-found: error
           retention-days: 14
       - uses: actions/upload-artifact@v7

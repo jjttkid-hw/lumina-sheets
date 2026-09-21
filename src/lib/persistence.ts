@@ -1,4 +1,5 @@
 import type { Cell, Comment, Revision, Workbook } from './types';
+import { parseCellKey } from './engine';
 
 /** A small, structured-cloneable edit. Keeping edits as patches means a keypress does not
  * stringify or rewrite an entire workbook. Patches are compacted into a workbook snapshot
@@ -26,6 +27,7 @@ export interface SheetMetaPatch {
       | 'hiddenColumns'
       | 'frozenRows'
       | 'merges'
+      | 'dataValidations'
     >
   >;
 }
@@ -45,6 +47,8 @@ export interface HistoryResult {
 
 export interface QueuedPatch {
   id?: number;
+  /** Stable edit identity for retries; absent on legacy journals. */
+  operationId?: string;
   workbookId: string;
   seq: number;
   at: number;
@@ -86,6 +90,19 @@ function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
+/** Absence is empty; malformed present values must reach validation/recovery unchanged. */
+function readMemoryList<T>(records: Map<string, T[]> | undefined, key: string): T[] {
+  return clone(records?.has(key) ? records.get(key)! : []);
+}
+function readStoredList<T>(row: unknown, field: string): T[] {
+  if (row === undefined) return [];
+  const value =
+    row && typeof row === 'object' && Object.prototype.hasOwnProperty.call(row, field)
+      ? (row as Record<string, unknown>)[field]
+      : row;
+  return clone(value) as T[];
+}
+
 function defaultStorage(): StorageLike | undefined {
   try {
     if (typeof localStorage !== 'undefined') return localStorage;
@@ -100,33 +117,83 @@ function isIndexedDbAvailable(): boolean {
 }
 
 function patchKey(record: QueuedPatch): string {
+  if (record.operationId !== undefined)
+    return JSON.stringify([record.workbookId, record.operationId]);
   return `${record.workbookId}:${record.seq}`;
 }
 
-/** Apply a patch while rebuilding only the affected sheet/cell. This is used during startup
- * replay and by tests; the editor can keep its own immutable state and only enqueue the patch. */
-export function applyWorkbookPatch(workbook: Workbook, patch: WorkbookPatch): Workbook {
-  const sheetIndex = workbook.sheets.findIndex((sheet) => sheet.id === patch.sheetId);
-  if (sheetIndex < 0) return workbook;
-  const sourceSheet = workbook.sheets[sheetIndex];
-  const cells = { ...sourceSheet.cells };
-  const nextSheet = { ...sourceSheet, cells };
-  if (patch.kind === 'cell') {
-    if (patch.cell === null) delete cells[patch.key];
-    else cells[patch.key] = clone(patch.cell);
-  } else {
-    Object.assign(nextSheet, clone(patch.changes));
+function assertPatch(value: unknown): asserts value is WorkbookPatch {
+  const object = (item: unknown): item is Record<string, unknown> =>
+    !!item && typeof item === 'object' && !Array.isArray(item);
+  if (!object(value) || typeof value.sheetId !== 'string' || !value.sheetId)
+    throw new Error('Invalid workbook patch target');
+  if (value.kind === 'cell') {
+    if (
+      typeof value.key !== 'string' ||
+      !/^[A-Z]+[1-9]\d*$/.test(value.key) ||
+      !parseCellKey(value.key) ||
+      (value.cell !== null && (!object(value.cell) || !Object.hasOwn(value.cell, 'value')))
+    )
+      throw new Error('Invalid workbook patch cell');
+  } else if (value.kind === 'sheet-meta') {
+    if (!object(value.changes)) throw new Error('Invalid workbook patch metadata');
+  } else throw new Error('Invalid workbook patch kind');
+}
+
+/** Replay an ordered batch without copying the same cell dictionary for every edit.
+ * Inputs are immutable; each affected sheet/cell dictionary is copied at most once.
+ * Metadata-only batches do not enumerate stored cells. */
+export function applyWorkbookPatches(
+  workbook: Workbook,
+  patches: readonly WorkbookPatch[],
+): Workbook {
+  if (!patches.length) return workbook;
+  for (const patch of patches) assertPatch(patch);
+  const indexes = new Map(workbook.sheets.map((sheet, index) => [sheet.id, index]));
+  let sheets: Workbook['sheets'] | undefined;
+  const changedSheets = new Set<number>();
+  const changedCells = new Set<number>();
+  for (const patch of patches) {
+    const index = indexes.get(patch.sheetId);
+    if (index === undefined) continue;
+    sheets ??= workbook.sheets.slice();
+    if (!changedSheets.has(index)) {
+      sheets[index] = { ...sheets[index] };
+      changedSheets.add(index);
+    }
+    const sheet = sheets[index];
+    if (patch.kind === 'cell') {
+      if (!changedCells.has(index)) {
+        sheet.cells = { ...sheet.cells };
+        changedCells.add(index);
+      }
+      if (patch.cell === null) delete sheet.cells[patch.key];
+      else sheet.cells[patch.key] = clone(patch.cell);
+    } else Object.assign(sheet, clone(patch.changes));
   }
-  const sheets = workbook.sheets.slice();
-  sheets[sheetIndex] = nextSheet;
-  return { ...workbook, sheets };
+  return sheets ? { ...workbook, sheets } : workbook;
+}
+
+export function applyWorkbookPatch(workbook: Workbook, patch: WorkbookPatch): Workbook {
+  return applyWorkbookPatches(workbook, [patch]);
 }
 
 function applyPatches(workbook: Workbook, patches: QueuedPatch[]): Workbook {
-  let next = workbook;
-  for (const record of patches.sort((a, b) => a.seq - b.seq))
-    next = applyWorkbookPatch(next, record.patch);
-  return next;
+  // An in-flight write may already be visible in IndexedDB before its promise
+  // settles. Deduplicate that edit by identity, not by a cross-page sequence.
+  const ordered = [...new Map(patches.map((record) => [patchKey(record), record])).values()].sort(
+    (a, b) =>
+      a.seq - b.seq ||
+      ((a.operationId ?? '') < (b.operationId ?? '')
+        ? -1
+        : (a.operationId ?? '') > (b.operationId ?? '')
+          ? 1
+          : 0),
+  );
+  return applyWorkbookPatches(
+    workbook,
+    ordered.map((record) => record.patch),
+  );
 }
 
 /**
@@ -164,21 +231,23 @@ export class PatchHistory {
   }
 
   undo(workbook: Workbook): HistoryResult | null {
-    const transaction = this.undoStack.pop();
+    const transaction = this.undoStack.at(-1);
     if (!transaction) return null;
-    let next = workbook;
-    for (const patch of [...transaction.inverse].reverse()) next = applyWorkbookPatch(next, patch);
+    const next = applyWorkbookPatches(workbook, [...transaction.inverse].reverse());
+    const result = { workbook: next, transaction: clone(transaction) };
+    this.undoStack.pop();
     this.redoStack.push(transaction);
-    return { workbook: next, transaction };
+    return result;
   }
 
   redo(workbook: Workbook): HistoryResult | null {
-    const transaction = this.redoStack.pop();
+    const transaction = this.redoStack.at(-1);
     if (!transaction) return null;
-    let next = workbook;
-    for (const patch of transaction.forward) next = applyWorkbookPatch(next, patch);
+    const next = applyWorkbookPatches(workbook, transaction.forward);
+    const result = { workbook: next, transaction: clone(transaction) };
+    this.redoStack.pop();
     this.undoStack.push(transaction);
-    return { workbook: next, transaction };
+    return result;
   }
 
   clear(): void {
@@ -231,11 +300,14 @@ export class LuminaPersistence {
   private readonly storage?: StorageLike;
   private memory: MemoryState | null;
   private dbPromise: Promise<IDBDatabase | null> | null = null;
+  private hasOpenedDatabase = false;
   private pending: QueuedPatch[] = [];
+  private flushing: QueuedPatch[] = [];
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
   private flushPromise: Promise<void> | null = null;
-  // Millisecond epoch makes journal keys unique across tabs/processes while preserving
-  // deterministic ordering for patches emitted by this editor instance.
+  private snapshotTail: Promise<void> = Promise.resolve();
+  // Seed local ordering from time; observed persisted sequences advance this floor.
+  // This is not a cross-tab atomic sequence allocator.
   private seq = Date.now() * 1000 + Math.floor(Math.random() * 1000);
   private persistedPatches = 0;
   private lastFlushAt: number | null = null;
@@ -250,106 +322,166 @@ export class LuminaPersistence {
 
   get stats(): PersistenceStats {
     return {
-      pendingPatches: this.pending.length,
+      pendingPatches: this.pending.length + this.flushing.length,
       persistedPatches: this.persistedPatches,
       lastFlushAt: this.lastFlushAt,
       backend: this.memory ? 'memory' : 'indexeddb',
     };
   }
 
+  /** Read raw recovery material without applying journals or running migration. */
+  async readRecoveryStorage() {
+    // Do not migrate, replay, flush or normalize damaged records on this rescue path.
+    const result: { stores: Record<string, unknown>; warnings: string[]; pending: QueuedPatch[] } =
+      {
+        stores: {},
+        warnings: [],
+        pending: clone([...this.flushing, ...this.pending]),
+      };
+    const db = this.memory ? null : await this.openDb();
+    const memory = this.memory;
+    const names = ['workbooks', 'patches', 'comments', 'revisions'] as const;
+    const reads = await Promise.allSettled(
+      names.map(async (name) => {
+        if (memory)
+          return clone([...memory[name].entries()].map(([key, value]) => ({ key, value })));
+        if (!db) throw new Error('No recovery backend');
+        return this.request<unknown[]>(db.transaction(name).objectStore(name).getAll());
+      }),
+    );
+    reads.forEach((read, index) => {
+      if (read.status === 'fulfilled') result.stores[names[index]] = read.value;
+      else result.warnings.push(`原始存储读取失败：${names[index]}`);
+    });
+    return { ...result, backend: memory ? ('memory' as const) : ('indexeddb' as const) };
+  }
+
   /** Load all books and replay pending patches. The old localStorage format is migrated once. */
   async loadWorkbooks(): Promise<Workbook[]> {
     await this.migrateLegacy();
     const base = this.memory
-      ? [...this.memory.workbooks.values()]
+      ? [...this.memory.workbooks.values()].map((book) => clone(book))
       : await this.idbGetAllWorkbooks();
     const allPatches = this.memory
       ? [...this.memory.patches.values()].flat()
       : await this.idbGetAllPatches();
     // Include edits waiting for the debounce timer so callers always observe their own writes.
-    allPatches.push(...this.pending);
+    allPatches.push(...this.flushing, ...this.pending);
+    this.observeSequences(allPatches);
     const byBook = new Map<string, QueuedPatch[]>();
     for (const patch of allPatches) {
       const list = byBook.get(patch.workbookId) ?? [];
       list.push(patch);
       byBook.set(patch.workbookId, list);
     }
-    return base.map((book) => applyPatches(book, byBook.get(book.id) ?? []));
+    return base.map((book) => {
+      // Retain malformed snapshots for validation/recovery instead of letting a
+      // null entry prevent every other document from being read.
+      if (!book || typeof book !== 'object' || typeof book.id !== 'string') return book;
+      return applyPatches(book, byBook.get(book.id) ?? []);
+    });
   }
 
   async loadWorkbook(workbookId: string): Promise<Workbook | null> {
     await this.migrateLegacy();
+    const memoryBase = this.memory?.workbooks.get(workbookId);
     const base = this.memory
-      ? this.memory.workbooks.get(workbookId)
+      ? memoryBase
+        ? clone(memoryBase)
+        : undefined
       : await this.idbGetWorkbook(workbookId);
     if (!base) return null;
     const patches = this.memory
       ? [...(this.memory.patches.get(workbookId) ?? [])]
       : await this.idbGetPatches(workbookId);
+    patches.push(...this.flushing.filter((record) => record.workbookId === workbookId));
     patches.push(...this.pending.filter((record) => record.workbookId === workbookId));
+    this.observeSequences(patches);
     return applyPatches(base, patches);
+  }
+
+  private observeSequences(patches: QueuedPatch[]): void {
+    for (const record of patches) {
+      if (!Number.isSafeInteger(record?.seq) || record.seq < 0)
+        throw new Error('Invalid persisted journal sequence; retain storage for recovery');
+      if (
+        record.operationId !== undefined &&
+        (typeof record.operationId !== 'string' || !record.operationId)
+      )
+        throw new Error('Invalid persisted journal identity; retain storage for recovery');
+      this.seq = Math.max(this.seq, record.seq);
+    }
   }
 
   /** Write a full snapshot for imports, initial migration or explicit backup. */
   async putWorkbook(workbook: Workbook): Promise<void> {
-    await this.migrateLegacy();
-    const book = clone(workbook);
-    this.discardPending(book.id);
-    if (this.memory) {
-      this.memory.workbooks.set(book.id, book);
-      this.memory.patches.delete(book.id);
-      return;
-    }
-    const db = await this.openDb();
-    if (!db) return this.putWorkbookInMemory(book);
-    await this.transaction(db, ['workbooks', 'patches'], 'readwrite', (tx) => {
-      tx.objectStore('workbooks').put({ id: book.id, workbook: book } satisfies WorkbookRow);
-      const request = tx.objectStore('patches').openCursor();
-      request.onsuccess = () => {
-        const cursor = request.result;
-        if (!cursor) return;
-        const value = cursor.value as QueuedPatch;
-        if (value.workbookId === book.id) cursor.delete();
-        cursor.continue();
-      };
-    });
+    return this.putWorkbooks([workbook]);
   }
 
   async putWorkbooks(workbooks: Workbook[]): Promise<void> {
-    await this.migrateLegacy();
-    for (const workbook of workbooks) this.discardPending(workbook.id);
-    if (this.memory) {
-      for (const book of workbooks) {
-        const copy = clone(book);
-        this.memory.workbooks.set(copy.id, copy);
-        this.memory.patches.delete(copy.id);
+    // Capture before the first await: later caller mutations or patches belong
+    // after this snapshot, even if migration/opening the database is delayed.
+    const copies = clone(workbooks);
+    const cutoff = this.seq;
+    const ids = new Set(copies.map((book) => book.id));
+    if (ids.size !== copies.length) throw new Error('Snapshot workbook IDs must be unique');
+    const activeFlush = this.flushPromise;
+    const operation = this.snapshotTail.then(async () => {
+      // A prior flush must settle before replacing its base. A failed flush
+      // retains its records; a successful snapshot can supersede those records.
+      await activeFlush?.catch(() => undefined);
+      await this.migrateLegacy();
+      const db = this.memory ? null : await this.openDb();
+      if (db) {
+        await this.transaction(db, ['workbooks', 'patches'], 'readwrite', (tx) => {
+          const store = tx.objectStore('workbooks');
+          for (const book of copies)
+            store.put({ id: book.id, workbook: book } satisfies WorkbookRow);
+          const request = tx.objectStore('patches').openCursor();
+          request.onsuccess = () => {
+            try {
+              const cursor = request.result;
+              if (!cursor) return;
+              const record = cursor.value as QueuedPatch;
+              if (ids.has(record.workbookId)) {
+                // Never coerce malformed persisted sequences while deleting
+                // journals: retain the snapshot and journal together for rescue.
+                if (!Number.isSafeInteger(record.seq) || record.seq < 0)
+                  throw new Error('Invalid persisted journal sequence');
+                if (record.seq <= cutoff) cursor.delete();
+              }
+              cursor.continue();
+            } catch {
+              tx.abort();
+            }
+          };
+        });
+      } else {
+        const memory = this.memory ?? createMemoryState();
+        this.memory = memory;
+        // All cloning completed before touching any stored workbook.
+        for (const book of copies) {
+          memory.workbooks.set(book.id, book);
+          memory.patches.set(
+            book.id,
+            (memory.patches.get(book.id) ?? []).filter((record) => record.seq > cutoff),
+          );
+        }
       }
-      return;
-    }
-    const db = await this.openDb();
-    if (!db) {
-      for (const book of workbooks) this.putWorkbookInMemory(clone(book));
-      return;
-    }
-    await this.transaction(db, ['workbooks', 'patches'], 'readwrite', (tx) => {
-      const store = tx.objectStore('workbooks');
-      for (const workbook of workbooks)
-        store.put({ id: workbook.id, workbook: clone(workbook) } satisfies WorkbookRow);
-      // Base snapshots supersede all patches for these books.
-      const ids = new Set(workbooks.map((book) => book.id));
-      const request = tx.objectStore('patches').openCursor();
-      request.onsuccess = () => {
-        const cursor = request.result;
-        if (!cursor) return;
-        if (ids.has((cursor.value as QueuedPatch).workbookId)) cursor.delete();
-        cursor.continue();
-      };
+      // Commit acknowledged: retain every patch queued after this invocation.
+      for (const id of ids) this.discardPending(id, cutoff);
     });
+    this.snapshotTail = operation.catch(() => undefined);
+    return operation;
   }
 
   /** Queue a tiny edit. It returns immediately; writes are coalesced into one transaction. */
   queuePatch(workbookId: string, patch: WorkbookPatch): void {
+    assertPatch(patch);
+    if (!Number.isSafeInteger(this.seq + 1))
+      throw new Error('Journal sequence capacity exceeded; retain storage for recovery');
     const record: QueuedPatch = {
+      operationId: crypto.randomUUID(),
       workbookId,
       patch: clone(patch),
       seq: ++this.seq,
@@ -375,13 +507,16 @@ export class LuminaPersistence {
     // Defer execution until flushPromise is assigned. The memory path has no
     // await; an immediately invoked async function would clear the field in
     // finally before the assignment reinstated its already-resolved promise.
+    const snapshots = this.snapshotTail;
     this.flushPromise = Promise.resolve().then(async () => {
+      await snapshots;
       try {
         // queuePatch can auto-start a flush at 500 entries while its caller is
         // still enqueuing a larger batch. Drain every batch that arrives before
         // completion so the awaited promise cannot leave an unsaved tail.
         while (this.pending.length) {
           const batch = this.pending.splice(0);
+          this.flushing = batch;
           if (this.memory) {
             for (const record of batch) {
               const list = this.memory.patches.get(record.workbookId) ?? [];
@@ -410,7 +545,18 @@ export class LuminaPersistence {
           }
           this.persistedPatches += batch.length;
           this.lastFlushAt = Date.now();
+          this.flushing = [];
         }
+      } catch (error) {
+        // Preserve original sequence numbers for an idempotent retry, ahead of
+        // newer edits queued while the transaction was in flight.
+        this.pending = [...this.flushing, ...this.pending];
+        this.flushing = [];
+        if (this.flushTimer) {
+          clearTimeout(this.flushTimer);
+          this.flushTimer = null;
+        }
+        throw error;
       } finally {
         this.flushPromise = null;
       }
@@ -420,8 +566,11 @@ export class LuminaPersistence {
 
   /** Compact patches into the supplied current workbook and remove its journal. */
   async compact(workbook: Workbook): Promise<void> {
-    await this.flush();
+    // Capture the snapshot and journal cutoff before waiting. putWorkbook
+    // serializes against active flushes and replaces only older target patches;
+    // a subsequent flush persists edits queued after this invocation.
     await this.putWorkbook(workbook);
+    await this.flush();
   }
 
   async saveRevisions(workbookId: string, revisions: Revision[]): Promise<void> {
@@ -447,16 +596,16 @@ export class LuminaPersistence {
   }
 
   async loadRevisions(workbookId: string): Promise<Revision[]> {
-    if (this.memory) return clone(this.memory.revisions.get(workbookId) ?? []);
+    if (this.memory) return readMemoryList(this.memory.revisions, workbookId);
     const db = await this.openDb();
     if (!db) {
       const fallbackMemory = (this as unknown as { memory: MemoryState | null }).memory;
-      return clone(fallbackMemory?.revisions.get(workbookId) ?? []);
+      return readMemoryList(fallbackMemory?.revisions, workbookId);
     }
     const row = await this.request<RevisionRow | undefined>(
       db.transaction('revisions').objectStore('revisions').get(workbookId),
     );
-    return clone(row?.revisions ?? []);
+    return readStoredList<Revision>(row, 'revisions');
   }
 
   async saveComments(workbookId: string, comments: Comment[]): Promise<void> {
@@ -482,33 +631,47 @@ export class LuminaPersistence {
   }
 
   async loadComments(workbookId: string): Promise<Comment[]> {
-    if (this.memory) return clone(this.memory.comments.get(workbookId) ?? []);
+    if (this.memory) return readMemoryList(this.memory.comments, workbookId);
     const db = await this.openDb();
     if (!db) {
       const fallbackMemory = (this as unknown as { memory: MemoryState | null }).memory;
-      return clone(fallbackMemory?.comments.get(workbookId) ?? []);
+      return readMemoryList(fallbackMemory?.comments, workbookId);
     }
     const row = await this.request<CommentRow | undefined>(
       db.transaction('comments').objectStore('comments').get(workbookId),
     );
-    return clone(row?.comments ?? []);
+    return readStoredList<Comment>(row, 'comments');
   }
 
   async close(): Promise<void> {
-    await this.flush();
-    if (this.dbPromise) (await this.dbPromise)?.close();
+    let failure: unknown;
+    try {
+      await this.snapshotTail;
+      await this.flush();
+    } catch (error) {
+      // Closing is still a resource-lifecycle operation after a failed save.
+      // Preserve the error for the caller, but do not leave the connection
+      // open and blocking another page's upgrade/retry.
+      failure = error;
+    } finally {
+      const connection = this.dbPromise;
+      if (connection) {
+        try {
+          const db = await connection;
+          if (this.dbPromise === connection) this.dbPromise = null;
+          db?.close();
+        } catch (error) {
+          if (failure === undefined) failure = error;
+        }
+      }
+    }
+    if (failure !== undefined) throw failure;
   }
 
-  private putWorkbookInMemory(book: Workbook): void {
-    // This path is only reached when indexedDB disappears during a session.
-    if (!this.memory) return;
-    this.memory.workbooks.set(book.id, clone(book));
-    this.memory.patches.delete(book.id);
-  }
-
-  private discardPending(workbookId: string): void {
-    if (!this.pending.some((record) => record.workbookId === workbookId)) return;
-    this.pending = this.pending.filter((record) => record.workbookId !== workbookId);
+  private discardPending(workbookId: string, cutoff: number): void {
+    this.pending = this.pending.filter(
+      (record) => record.workbookId !== workbookId || record.seq > cutoff,
+    );
     if (!this.pending.length && this.flushTimer) {
       clearTimeout(this.flushTimer);
       this.flushTimer = null;
@@ -531,7 +694,16 @@ export class LuminaPersistence {
         try {
           const value: unknown = JSON.parse(raw);
           if (!Array.isArray(value)) return;
-          books = value as Workbook[];
+          // Queue each ID once: multiple getKey requests queued before their puts
+          // can all see an absent key within the same IndexedDB transaction.
+          // Keep the first legacy snapshot, matching memory migration; raw storage
+          // retains every version for explicit recovery selection.
+          const seen = new Set<string>();
+          books = (value as Workbook[]).filter((book) => {
+            if (!book || typeof book.id !== 'string' || seen.has(book.id)) return false;
+            seen.add(book.id);
+            return true;
+          });
         } catch {
           return;
         }
@@ -540,7 +712,7 @@ export class LuminaPersistence {
         // localStorage snapshot can never overwrite edits after a browser restart.
         if (this.memory) {
           for (const book of books)
-            if (book && typeof book.id === 'string')
+            if (book && typeof book.id === 'string' && !this.memory.workbooks.has(book.id))
               this.memory.workbooks.set(book.id, clone(book));
           for (const book of books)
             if (book && typeof book.id === 'string') this.migrateLegacyAuxiliary(book.id);
@@ -556,40 +728,70 @@ export class LuminaPersistence {
               ['workbooks', 'revisions', 'comments', 'meta'],
               'readwrite',
               (tx) => {
-                const store = tx.objectStore('workbooks');
-                for (const book of books)
-                  if (book && typeof book.id === 'string')
-                    store.put({ id: book.id, workbook: clone(book) } satisfies WorkbookRow);
-                const revisions = tx.objectStore('revisions');
-                const comments = tx.objectStore('comments');
-                for (const book of books) {
-                  if (!book || typeof book.id !== 'string') continue;
-                  const oldRevisions = this.readLegacy<Revision[]>(`${PREFIX}.history.${book.id}`);
-                  if (oldRevisions)
-                    revisions.put({
-                      key: book.id,
-                      workbookId: book.id,
-                      revisions: oldRevisions.slice(0, 20),
-                    } satisfies RevisionRow);
-                  const oldComments = this.readLegacy<Comment[]>(`${PREFIX}.comments.${book.id}`);
-                  if (oldComments)
-                    comments.put({
-                      key: book.id,
-                      workbookId: book.id,
-                      comments: oldComments,
-                    } satisfies CommentRow);
-                }
-                tx.objectStore('meta').put({
-                  key: 'legacy-v1-migrated',
-                  value: true,
-                } satisfies MetaRow);
+                // Recheck after acquiring the write transaction: another page may
+                // have completed migration since the optimistic read above.
+                const meta = tx.objectStore('meta');
+                const currentMarker = meta.get('legacy-v1-migrated');
+                currentMarker.onsuccess = () => {
+                  if (currentMarker.result?.value === true) return;
+                  try {
+                    const putIfAbsent = (store: IDBObjectStore, key: string, value: unknown) => {
+                      const existing = store.getKey(key);
+                      existing.onsuccess = () => {
+                        if (existing.result !== undefined) return;
+                        try {
+                          store.put(value);
+                        } catch {
+                          tx.abort();
+                        }
+                      };
+                    };
+                    const store = tx.objectStore('workbooks');
+                    for (const book of books)
+                      if (book && typeof book.id === 'string')
+                        putIfAbsent(store, book.id, {
+                          id: book.id,
+                          workbook: clone(book),
+                        } satisfies WorkbookRow);
+                    const revisions = tx.objectStore('revisions');
+                    const comments = tx.objectStore('comments');
+                    for (const book of books) {
+                      if (!book || typeof book.id !== 'string') continue;
+                      const oldRevisions = this.readLegacyList<Revision>(
+                        `${PREFIX}.history.${book.id}`,
+                      );
+                      if (oldRevisions)
+                        putIfAbsent(revisions, book.id, {
+                          key: book.id,
+                          workbookId: book.id,
+                          revisions: oldRevisions.slice(0, 20),
+                        } satisfies RevisionRow);
+                      const oldComments = this.readLegacyList<Comment>(
+                        `${PREFIX}.comments.${book.id}`,
+                      );
+                      if (oldComments)
+                        putIfAbsent(comments, book.id, {
+                          key: book.id,
+                          workbookId: book.id,
+                          comments: oldComments,
+                        } satisfies CommentRow);
+                    }
+                    tx.objectStore('meta').put({
+                      key: 'legacy-v1-migrated',
+                      value: true,
+                    } satisfies MetaRow);
+                  } catch {
+                    tx.abort();
+                  }
+                };
               },
             );
           } else {
             const memory = this.memory ?? createMemoryState();
             this.memory = memory;
             for (const book of books)
-              if (book && typeof book.id === 'string') memory.workbooks.set(book.id, clone(book));
+              if (book && typeof book.id === 'string' && !memory.workbooks.has(book.id))
+                memory.workbooks.set(book.id, clone(book));
             for (const book of books)
               if (book && typeof book.id === 'string') this.migrateLegacyAuxiliary(book.id);
           }
@@ -607,10 +809,23 @@ export class LuminaPersistence {
   private openDb(): Promise<IDBDatabase | null> {
     if (this.memory) return Promise.resolve(null);
     if (this.dbPromise) return this.dbPromise;
-    this.dbPromise = new Promise((resolve) => {
+    const opening = new Promise<IDBDatabase | null>((resolve, reject) => {
+      const release = () => {
+        if (this.dbPromise === opening) this.dbPromise = null;
+      };
+      let abandoned = false;
       try {
         const request = indexedDB.open(this.dbName, DB_VERSION);
+        request.onblocked = () => {
+          if (abandoned) return;
+          abandoned = true;
+          reject(new Error('数据库升级被其他页面占用，请关闭其他 Lumina 页面后重试。'));
+        };
         request.onupgradeneeded = () => {
+          if (abandoned) {
+            request.transaction?.abort();
+            return;
+          }
           const db = request.result;
           if (!db.objectStoreNames.contains('workbooks'))
             db.createObjectStore('workbooks', { keyPath: 'id' });
@@ -626,33 +841,69 @@ export class LuminaPersistence {
             db.createObjectStore('meta', { keyPath: 'key' });
         };
         request.onerror = () => {
+          if (abandoned) return;
+          if (request.error?.name === 'VersionError') {
+            reject(new Error('数据库已被较新版本升级，请更新或刷新 Lumina 后重试。'));
+            return;
+          }
+          if (this.hasOpenedDatabase) {
+            reject(new Error('数据库重新连接失败，请重试；原有数据未切换到内存存储。'));
+            return;
+          }
           this.memory = this.memory ?? createMemoryState();
           resolve(null);
         };
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = () => {
+          const db = request.result;
+          if (abandoned) {
+            db.close();
+            return;
+          }
+          this.hasOpenedDatabase = true;
+          db.onversionchange = () => {
+            release();
+            db.close();
+          };
+          db.onclose = release;
+          resolve(db);
+        };
       } catch {
+        if (this.hasOpenedDatabase) {
+          reject(new Error('数据库重新连接失败，请重试；原有数据未切换到内存存储。'));
+          return;
+        }
         this.memory = this.memory ?? createMemoryState();
         resolve(null);
       }
     });
-    return this.dbPromise;
+    this.dbPromise = opening;
+    // Also clear synchronous open failures, after the promise has been assigned.
+    void opening.catch(() => {
+      if (this.dbPromise === opening) this.dbPromise = null;
+    });
+    return opening;
   }
 
-  private readLegacy<T>(key: string): T | null {
+  private readLegacyList<T>(key: string): T[] | null {
     if (!this.storage) return null;
     try {
       const raw = this.storage.getItem(key);
-      return raw ? (JSON.parse(raw) as T) : null;
+      const value: unknown = raw ? JSON.parse(raw) : null;
+      // Corrupt auxiliary containers must not abort workbook migration or be
+      // persisted as lists. Keep the untouched legacy source available to recovery.
+      return Array.isArray(value) ? (value as T[]) : null;
     } catch {
       return null;
     }
   }
 
   private migrateLegacyAuxiliary(workbookId: string): void {
-    const revisions = this.readLegacy<Revision[]>(`${PREFIX}.history.${workbookId}`);
-    if (revisions) this.memory?.revisions.set(workbookId, clone(revisions.slice(0, 20)));
-    const comments = this.readLegacy<Comment[]>(`${PREFIX}.comments.${workbookId}`);
-    if (comments) this.memory?.comments.set(workbookId, clone(comments));
+    const revisions = this.readLegacyList<Revision>(`${PREFIX}.history.${workbookId}`);
+    if (revisions && !this.memory?.revisions.has(workbookId))
+      this.memory?.revisions.set(workbookId, clone(revisions.slice(0, 20)));
+    const comments = this.readLegacyList<Comment>(`${PREFIX}.comments.${workbookId}`);
+    if (comments && !this.memory?.comments.has(workbookId))
+      this.memory?.comments.set(workbookId, clone(comments));
   }
 
   private async idbGetAllWorkbooks(): Promise<Workbook[]> {
@@ -661,7 +912,9 @@ export class LuminaPersistence {
     const rows = await this.request<WorkbookRow[]>(
       db.transaction('workbooks').objectStore('workbooks').getAll(),
     );
-    return rows.map((row) => clone(row.workbook));
+    return rows.map((row) =>
+      clone(row && Object.prototype.hasOwnProperty.call(row, 'workbook') ? row.workbook : row),
+    ) as Workbook[];
   }
 
   private async idbGetWorkbook(workbookId: string): Promise<Workbook | null> {
@@ -694,14 +947,21 @@ export class LuminaPersistence {
     setup: (tx: IDBTransaction) => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      let tx: IDBTransaction;
+      let tx: IDBTransaction | undefined;
       try {
         tx = db.transaction(stores, mode);
         tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error ?? new Error('IndexedDB transaction failed'));
-        tx.onabort = () => reject(tx.error ?? new Error('IndexedDB transaction aborted'));
+        tx.onerror = () => reject(tx?.error ?? new Error('IndexedDB transaction failed'));
+        tx.onabort = () => reject(tx?.error ?? new Error('IndexedDB transaction aborted'));
         setup(tx);
       } catch (error) {
+        // A synchronous setup/DataClone error after earlier puts must not let
+        // the still-active transaction commit a partial snapshot batch.
+        try {
+          tx?.abort();
+        } catch {
+          // An already inactive transaction cannot be aborted again.
+        }
         reject(error);
       }
     });

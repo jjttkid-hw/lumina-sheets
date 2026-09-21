@@ -1,0 +1,93 @@
+{
+  "environment": {
+    "model": "Mac17,9",
+    "memoryBytes": 25769803776,
+    "logicalProcessors": 15,
+    "os": "macOS 26.7",
+    "node": "v24.14.0",
+    "headless": true,
+    "powerMode": "not recorded",
+    "otherApplications": "not controlled"
+  },
+  "scriptSha256": "f32fe9e7409c97c6c05e31835a8b2a77b6eb107c954b4ed6886fe70f2082ff63",
+  "rows": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.50",
+      "cells": 100000,
+      "dataReadyMs": 181.20000004768372,
+      "firstDrawMs": 204.10000002384186,
+      "canvasP95Ms": 1.0999999046325684,
+      "canvasSamples": 79,
+      "editP95Ms": 12.799999952316284,
+      "editSamples": 5,
+      "workerRoundTripMs": 52.300000071525574,
+      "workerCalculationMs": 51.200000047683716
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.50",
+      "cells": 1000000,
+      "dataReadyMs": 1726.8999999761581,
+      "firstDrawMs": 1732.3999999761581,
+      "canvasP95Ms": 9.900000095367432,
+      "canvasSamples": 79,
+      "editP95Ms": 11.099999904632568,
+      "editSamples": 5,
+      "workerRoundTripMs": 671.5,
+      "workerCalculationMs": 664.8999999761581
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "cells": 100000,
+      "dataReadyMs": 139,
+      "firstDrawMs": 151,
+      "canvasP95Ms": 4,
+      "canvasSamples": 79,
+      "editP95Ms": 7,
+      "editSamples": 5,
+      "workerRoundTripMs": 103,
+      "workerCalculationMs": 103
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "cells": 1000000,
+      "dataReadyMs": 1588,
+      "firstDrawMs": 1601,
+      "canvasP95Ms": 5,
+      "canvasSamples": 79,
+      "editP95Ms": 7,
+      "editSamples": 5,
+      "workerRoundTripMs": 2509,
+      "workerCalculationMs": 2499
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "cells": 100000,
+      "dataReadyMs": 134,
+      "firstDrawMs": 145,
+      "canvasP95Ms": 2.0000000000004547,
+      "canvasSamples": 79,
+      "editP95Ms": 14.99999999999909,
+      "editSamples": 5,
+      "workerRoundTripMs": 109.99999999999909,
+      "workerCalculationMs": 87
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "cells": 1000000,
+      "dataReadyMs": 1626,
+      "firstDrawMs": 1645,
+      "canvasP95Ms": 2.999999999998181,
+      "canvasSamples": 79,
+      "editP95Ms": 11,
+      "editSamples": 5,
+      "workerRoundTripMs": 965.9999999999982,
+      "workerCalculationMs": 958.0000000000009
+    }
+  ]
+}

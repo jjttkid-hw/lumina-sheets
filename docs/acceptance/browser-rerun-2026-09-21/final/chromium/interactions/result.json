@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.50",
+  "executedAt": "2026-09-21T03:13:03.715Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "b71d36ea270ccefcf2e858eee6f2213f65b9e46c8bd5863d1eceeae6f3ce14a8",
+  "artifactSha256": "3976d561c6153bb3f7df88f33cf1612ad3ce705149ed7672b670effcedce620f",
+  "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
+  "checks": [
+    {
+      "name": "validation-editor-recovery",
+      "status": "passed",
+      "elapsedMs": 203
+    },
+    {
+      "name": "validation-list-keyboard",
+      "status": "passed",
+      "elapsedMs": 116
+    },
+    {
+      "name": "native-clipboard-atomic-validation",
+      "status": "passed",
+      "elapsedMs": 367,
+      "details": {
+        "transport": "native keyboard copy/paste",
+        "rejected": "B2:C2 unchanged",
+        "accepted": "both cells changed, one undo restores both"
+      }
+    },
+    {
+      "name": "native-copy-cut-paste",
+      "status": "passed",
+      "elapsedMs": 104
+    },
+    {
+      "name": "sdk-mount-isolation-destroy",
+      "status": "passed",
+      "elapsedMs": 33,
+      "details": {
+        "duplicate": "INVALID_ARGUMENT",
+        "empty": 0,
+        "restored": "customer-host",
+        "destroyed": "DESTROYED",
+        "other": 22
+      }
+    },
+    {
+      "name": "sdk-pending-source-destroy",
+      "status": "passed",
+      "elapsedMs": 158,
+      "details": {
+        "outcome": "AbortError",
+        "lateCallbacks": 0,
+        "value": "new session"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "status": "passed"
+}

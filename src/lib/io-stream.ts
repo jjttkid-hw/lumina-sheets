@@ -3,11 +3,12 @@ import { cellKey, createEvaluator, parseCellKey, type Evaluator } from './engine
 
 /** Options for the streaming CSV exporter.
  *
- * The exporter works a row at a time and yields bounded text chunks. It never builds a
- * two-dimensional array for the used range, which keeps memory stable for large sheets.
+ * The exporter evaluates fields incrementally without building a used-range matrix.
+ * Chunk size is bounded by a text threshold plus one escaped field; source data,
+ * evaluator caches and the complete Blob (if requested) have separate memory costs.
  */
 export interface CsvStreamOptions {
-  /** Number of rows emitted per chunk. Defaults to 256. */
+  /** Completed-row flush threshold. Text-heavy rows can span chunks. Defaults to 256. */
   chunkRows?: number;
   /** CSV separator. Defaults to comma. */
   delimiter?: string;
@@ -79,57 +80,80 @@ function usedBounds(sheet: Sheet): { lastRow: number; lastCol: number } | null {
 /**
  * Async iterator over evaluated CSV chunks for a single sheet.
  *
- * Chunks end at a row boundary and contain at most `chunkRows` rows. The final chunk may
- * end in a line ending; consumers should treat the output as a text stream rather than
- * concatenate it into a giant intermediate matrix.
+ * Flushes at chunkRows completed rows or the text threshold, including within wide
+ * rows. Chunks end between fields, so consumers must concatenate/write them in order
+ * rather than parse each chunk as a standalone CSV document.
  */
 export async function* iterateCsvChunks(
   sheet: Sheet,
   workbook?: Workbook,
   options: CsvStreamOptions = {},
 ): AsyncGenerator<string, CsvStreamResult, void> {
-  const chunkRows = Math.max(1, Math.floor(options.chunkRows ?? 256));
+  throwIfAborted(options.signal);
+  if (sheet.dataSource?.kind === 'paged')
+    throw new Error(
+      '分页工作表缓存不能代表完整 CSV，请使用 reportDataCsvReadableStream 或 reportDataCsvBlob 导出完整数据源。',
+    );
+  const chunkRows = options.chunkRows ?? 256;
+  if (!Number.isSafeInteger(chunkRows) || chunkRows < 1)
+    throw new RangeError('CSV 分块行数必须是正安全整数。');
   const delimiter = options.delimiter ?? ',';
-  if (delimiter.length !== 1) throw new Error('CSV 分隔符必须是一个字符。');
+  if (typeof delimiter !== 'string' || delimiter.length !== 1 || /["\r\n]/.test(delimiter))
+    throw new TypeError('CSV 分隔符必须是一个非引号、非换行字符。');
   const lineEnding = options.lineEnding ?? '\r\n';
+  if (!['\n', '\r\n'].includes(lineEnding)) throw new TypeError('CSV 行分隔符无效。');
   const bounds = usedBounds(sheet);
   if (!bounds) {
     if (options.includeBom !== false) yield '\uFEFF';
+    throwIfAborted(options.signal);
     return { rows: 0, columns: 0 };
   }
   const evaluator = options.evaluator ?? createEvaluator(workbook);
   const totalRows = bounds.lastRow + 1;
-  let chunk: string[] = [];
+  let chunk = options.includeBom === false ? '' : '\uFEFF';
+  let chunkCompletedRows = 0;
   let completedRows = 0;
-  let emittedBom = options.includeBom === false;
 
   const flush = async function* (): AsyncGenerator<string, void, void> {
+    throwIfAborted(options.signal);
     if (!chunk.length) return;
-    const text = `${emittedBom ? '' : '\uFEFF'}${chunk.join(lineEnding)}${lineEnding}`;
-    emittedBom = true;
-    chunk = [];
+    const text = chunk;
+    chunk = '';
+    chunkCompletedRows = 0;
     yield text;
     // Give the browser event loop an opportunity to paint and process input between chunks.
     await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    throwIfAborted(options.signal);
   };
 
   for (let row = 0; row <= bounds.lastRow; row++) {
     throwIfAborted(options.signal);
-    const fields = new Array<string>(bounds.lastCol + 1);
     for (let col = 0; col <= bounds.lastCol; col++) {
       throwIfAborted(options.signal);
       const key = cellKey(row, col);
       const source = sheet.cells[key];
-      fields[col] = csvField(source ? evaluator(sheet, key) : '', delimiter);
+      chunk += (col ? delimiter : '') + csvField(source ? evaluator(sheet, key) : '', delimiter);
+      if (chunk.length >= 256 * 1024) {
+        for await (const text of flush()) yield text;
+      } else if (col % 256 === 255) {
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        throwIfAborted(options.signal);
+      }
     }
-    chunk.push(fields.join(delimiter));
+    chunk += lineEnding;
+    chunkCompletedRows++;
     completedRows++;
     options.onProgress?.(completedRows, totalRows);
-    if (chunk.length >= chunkRows) {
+    throwIfAborted(options.signal);
+    if (chunkCompletedRows >= chunkRows || chunk.length >= 256 * 1024) {
       for await (const text of flush()) yield text;
+    } else if (completedRows % 32 === 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      throwIfAborted(options.signal);
     }
   }
   for await (const text of flush()) yield text;
+  throwIfAborted(options.signal);
   return { rows: completedRows, columns: bounds.lastCol + 1 };
 }
 
@@ -141,25 +165,64 @@ export function workbookCsvReadableStream(
   const sheet =
     workbook.sheets.find((candidate) => candidate.id === workbook.activeSheetId) ??
     workbook.sheets[0];
+  const cancellation = new AbortController();
   const encoder = new TextEncoder();
-  const iterator = iterateCsvChunks(sheet, workbook, options);
-  return new ReadableStream<Uint8Array>({
-    async pull(controller) {
-      try {
-        const next = await iterator.next();
-        if (next.done) controller.close();
-        else controller.enqueue(encoder.encode(next.value));
-      } catch (error) {
-        controller.error(error);
-      }
+  const iterator = iterateCsvChunks(sheet, workbook, { ...options, signal: cancellation.signal });
+  let finished = false;
+  let cleaned = false;
+  let streamController: ReadableStreamDefaultController<Uint8Array>;
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
+    options.signal?.removeEventListener('abort', externalAbort);
+  };
+  const finishIterator = () => iterator.return({ rows: 0, columns: 0 });
+  const externalAbort = () => {
+    if (finished) return;
+    finished = true;
+    cleanup();
+    cancellation.abort();
+    // Error the stream even while no pull is pending. Otherwise reader.closed
+    // never settles and a suspended generator retains its current page/chunk.
+    streamController.error(abortError());
+    void finishIterator().catch(() => {});
+  };
+  return new ReadableStream<Uint8Array>(
+    {
+      start(controller) {
+        streamController = controller;
+        options.signal?.addEventListener('abort', externalAbort, { once: true });
+        if (options.signal?.aborted) externalAbort();
+      },
+      async pull(controller) {
+        try {
+          const next = await iterator.next();
+          if (finished) return;
+          if (next.done) {
+            finished = true;
+            cleanup();
+            controller.close();
+          } else controller.enqueue(encoder.encode(next.value));
+        } catch (error) {
+          if (finished) return;
+          finished = true;
+          cleanup();
+          controller.error(error);
+        }
+      },
+      async cancel() {
+        if (finished) return;
+        finished = true;
+        cleanup();
+        cancellation.abort();
+        await finishIterator();
+      },
     },
-    async cancel(reason) {
-      await iterator.return?.(reason);
-    },
-  });
+    { highWaterMark: 0 },
+  );
 }
 
-/** Convenience helper for callers that need a Blob while retaining row-bounded work. */
+/** Convenience helper that retains the completed file in memory as a Blob. */
 export async function workbookCsvBlob(
   workbook: Workbook,
   options: CsvStreamOptions = {},

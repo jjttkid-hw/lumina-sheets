@@ -1,0 +1,122 @@
+[
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic.js",
+    "relative": "lib/elliptic.js",
+    "sourceSha256": "4e8c1663591fb20084135f56edbb5aa7425f2b4e6e11f70c23a94c94f7f6d946",
+    "upstreamTarballSha256": "4e8c1663591fb20084135f56edbb5aa7425f2b4e6e11f70c23a94c94f7f6d946",
+    "bytes": 371,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/curve/base.js",
+    "relative": "lib/elliptic/curve/base.js",
+    "sourceSha256": "14aeb577b6509519d50c2c3f6c17faeef3e29d4fe126c8b60435f547fa76a2f5",
+    "upstreamTarballSha256": "14aeb577b6509519d50c2c3f6c17faeef3e29d4fe126c8b60435f547fa76a2f5",
+    "bytes": 9202,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/curve/edwards.js",
+    "relative": "lib/elliptic/curve/edwards.js",
+    "sourceSha256": "0efb2fc9bf9b4200daefa187c9aabdbf957e6c0adac99c14dfb26a2132efebe7",
+    "upstreamTarballSha256": "0efb2fc9bf9b4200daefa187c9aabdbf957e6c0adac99c14dfb26a2132efebe7",
+    "bytes": 10908,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/curve/index.js",
+    "relative": "lib/elliptic/curve/index.js",
+    "sourceSha256": "7fbd44a1c712c2b651dffab914b156e4f0bcc8ca09f4d9e422e8542ca770f829",
+    "upstreamTarballSha256": "7fbd44a1c712c2b651dffab914b156e4f0bcc8ca09f4d9e422e8542ca770f829",
+    "bytes": 173,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/curve/mont.js",
+    "relative": "lib/elliptic/curve/mont.js",
+    "sourceSha256": "adc64d96bd2a3530559e1e9db9fd11fb79b8ecb6914ccd7ff07ca4519e0e5ffe",
+    "upstreamTarballSha256": "adc64d96bd2a3530559e1e9db9fd11fb79b8ecb6914ccd7ff07ca4519e0e5ffe",
+    "bytes": 4581,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/curve/short.js",
+    "relative": "lib/elliptic/curve/short.js",
+    "sourceSha256": "ff57ccea34340311c170dbfc2d249a261590deda75f8c586e5f3d7d679b79890",
+    "upstreamTarballSha256": "ff57ccea34340311c170dbfc2d249a261590deda75f8c586e5f3d7d679b79890",
+    "bytes": 22969,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/curves.js",
+    "relative": "lib/elliptic/curves.js",
+    "sourceSha256": "7b2955d3137649d603d890e25e96d199148a93255e98ea9a495bdb4f1f0ffdf1",
+    "upstreamTarballSha256": "7b2955d3137649d603d890e25e96d199148a93255e98ea9a495bdb4f1f0ffdf1",
+    "bytes": 6453,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/ec/index.js",
+    "relative": "lib/elliptic/ec/index.js",
+    "sourceSha256": "3f30208a8c0137e84c9bc5a65e900eafe970a0ea9cafe284fc5d4cd31907418b",
+    "upstreamTarballSha256": "3f30208a8c0137e84c9bc5a65e900eafe970a0ea9cafe284fc5d4cd31907418b",
+    "bytes": 6246,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/ec/key.js",
+    "relative": "lib/elliptic/ec/key.js",
+    "sourceSha256": "851d3c65356443669b314410c36266d2ae305de763ed4033c8dcc8df1275f02f",
+    "upstreamTarballSha256": "851d3c65356443669b314410c36266d2ae305de763ed4033c8dcc8df1275f02f",
+    "bytes": 3117,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/ec/signature.js",
+    "relative": "lib/elliptic/ec/signature.js",
+    "sourceSha256": "2640d437e1852a70d1eef14e8ec47248cb6ddced1d52c3b6a904d10195588ffa",
+    "upstreamTarballSha256": "2640d437e1852a70d1eef14e8ec47248cb6ddced1d52c3b6a904d10195588ffa",
+    "bytes": 3261,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/eddsa/index.js",
+    "relative": "lib/elliptic/eddsa/index.js",
+    "sourceSha256": "1690e933d7d4ad56c2549188b76102d4f2c74eaa564867ac9707f0b2fd7ddd9b",
+    "upstreamTarballSha256": "1690e933d7d4ad56c2549188b76102d4f2c74eaa564867ac9707f0b2fd7ddd9b",
+    "bytes": 3497,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/eddsa/key.js",
+    "relative": "lib/elliptic/eddsa/key.js",
+    "sourceSha256": "5f60791423f74be8b8792b50d54bec96dc8b11d0f4979761a91ec810d4f051d3",
+    "upstreamTarballSha256": "5f60791423f74be8b8792b50d54bec96dc8b11d0f4979761a91ec810d4f051d3",
+    "bytes": 2496,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/eddsa/signature.js",
+    "relative": "lib/elliptic/eddsa/signature.js",
+    "sourceSha256": "25cae20a9200380975c6447650275d765329be829db88cbdbd00139795595d5b",
+    "upstreamTarballSha256": "25cae20a9200380975c6447650275d765329be829db88cbdbd00139795595d5b",
+    "bytes": 1703,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/precomputed/secp256k1.js",
+    "relative": "lib/elliptic/precomputed/secp256k1.js",
+    "sourceSha256": "9e383365793650467605de197cdb71e09c22ebcdc02c5336873412c14c81bac7",
+    "upstreamTarballSha256": "9e383365793650467605de197cdb71e09c22ebcdc02c5336873412c14c81bac7",
+    "bytes": 32535,
+    "exactMatch": true
+  },
+  {
+    "sourcePath": "node_modules/elliptic/lib/elliptic/utils.js",
+    "relative": "lib/elliptic/utils.js",
+    "sourceSha256": "13b2bd425c1b77d5fccdd986e38c3d79e420e7fb32b71df080425a8d05272bcc",
+    "upstreamTarballSha256": "13b2bd425c1b77d5fccdd986e38c3d79e420e7fb32b71df080425a8d05272bcc",
+    "bytes": 2361,
+    "exactMatch": true
+  }
+]

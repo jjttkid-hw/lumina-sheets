@@ -73,3 +73,17 @@ Normal formula errors and cyclic references are cached with their dependency gra
 `tests/range-dependency-index.test.ts` separately checks 2,500 deterministic randomized insertion/removal operations against a brute-force query oracle, inclusive boundaries, million-row spans, owner deletion, stale handles, malformed rectangles, row/column-disjoint sets of 10,000 rectangles, and dense overlap. Its 1,001 overlapping rectangles report 1,001 candidate checks; no sublinear claim is made for that case.
 
 This is synchronous formula evaluation. Worker scheduling, workbook transfer protocols, and UI rendering metrics are separate from this cache contract.
+
+
+## Workspace Worker integration
+
+The workspace's `CalculationSession` retains a managed evaluator across accepted cell-patch messages. It applies all sheets before invalidating each patch's cells, then reads the requested targets. Full sheet replacements, directory/order changes, full resynchronization and local calendar-day changes rebuild the evaluator. The day check runs only when a request arrives; it does not schedule a midnight refresh.
+
+`tests/calculation-session.test.ts` compares session outputs with a fresh evaluator after each change, including cross-sheet ranges, deletion, formula replacement, dynamic branches, errors/cycles and repair. For 2,000 independent formulas a one-cell input edit executes one formula body, with 1,999 cache hits and zero recursive dependency checks. These are engine counters, not browser latency or memory measurements. Transfer still scans changed sheets and applies patches using a copied cell dictionary; all requested results are returned.
+
+`tests/calculation-thread.test.ts` bundles the production worker entry with Vite and executes it in real Node `worker_threads`, adapting only the host messaging API. Four integration tests cover structured-clone isolation, 30 queued patches with cross-sheet results, invalid-base recovery, termination/full resynchronization, legacy requests, and the production runtime's latest queue, cancellation and disposal. In a synchronous burst of 100 submissions, only the first and final requests are posted; the final result is compared with fresh synchronous evaluation. This is real isolated-thread evidence, but not browser Worker loading, Canvas interaction, IME, rendering, or browser performance acceptance.
+
+
+## External paged values
+
+`readPagedCell?: (sheet, canonicalKey) => CellValue | null | undefined` is a synchronous, cache-only hook used for sheets marked `dataSource.kind === 'paged'`. Null means a known blank; undefined (or no hook) means unavailable and yields typed #N/A. Strings, including leading `=` and error-shaped text, are literal values. Reads retain direct/range dependencies and lazy IF/lookup behavior. In managed mode, notify value availability, changes and evictions via invalidateCells or invalidate before reads. Default mode rechecks dependencies. The SDK conservatively invalidates all results on page cache notifications; evaluation does not fetch pages. This prevents incomplete snapshots from silently calculating missing remote cells as zeros, but does not implement asynchronous full-source aggregation.

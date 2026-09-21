@@ -2,8 +2,19 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildTimestamp } from './build-time.mjs';
+import { hasLicenseText, declaredLicenseCoverage } from './license-evidence.mjs';
+import { supplementalNotices } from './supplemental-notices.mjs';
+import {
+  embeddedComponentPaths,
+  embeddedPackageEvidence,
+  embeddedNoticeEvidence,
+  embeddedAttributionEvidence,
+  reviewedEmbeddedComponent,
+} from './vendor-evidence.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const buildTime = buildTimestamp(root);
 const output = path.join(root, 'dist/sdk');
 const manifest = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const lock = JSON.parse(await readFile(path.join(root, 'package-lock.json'), 'utf8'));
@@ -50,28 +61,24 @@ async function noticeFiles(packagePath) {
         const item = {
           path: relative,
           kind: 'notice-file',
+          hasLicenseText: hasLicenseText(text),
           sha256: sha256(text),
           bytes: Buffer.byteLength(text),
         };
         result.push(item);
         files.set(`${packagePath}/${relative}`, text);
-      } else if (
-        entry.isFile() &&
-        current.relative === '' &&
-        /^readme(?:\..*)?$/i.test(entry.name)
-      ) {
+      } else if (entry.isFile() && /^readme(?:\..*)?$/i.test(entry.name)) {
         const text = await readFile(absolute, 'utf8');
         const match = /^(?:#{1,6}\s+licen[cs]e[^\n]*|licen[cs]e\s*\n[-=]+)\s*$/im.exec(text);
-        if (match) {
-          const section = text.slice(match.index);
-          const fullText =
-            /permission is hereby granted|redistribution and use in source|permission to use, copy/i.test(
-              section,
-            );
+        if (match || hasLicenseText(text)) {
+          const start = match?.index ?? 0;
+          const section = text.slice(start);
+          const fullText = hasLicenseText(section);
           result.push({
             path: relative,
             kind: fullText ? 'readme-license-text' : 'readme-license-declaration',
-            excerptStartLine: text.slice(0, match.index).split('\n').length,
+            hasLicenseText: fullText,
+            excerptStartLine: text.slice(0, start).split('\n').length,
             sha256: sha256(section),
             bytes: Buffer.byteLength(section),
           });
@@ -110,6 +117,18 @@ async function visit(packagePath, requiredBy) {
       ? installed.licenses.map(normalizeLicense).filter(Boolean).join(' OR ') || null
       : null);
   const notices = await noticeFiles(packagePath);
+  for (const { notice, text } of await supplementalNotices(root, {
+    name,
+    version,
+    integrity: locked.integrity,
+  })) {
+    notices.push(notice);
+    files.set(`${packagePath}/${notice.path}`, text);
+  }
+  const licenseCoverage = declaredLicenseCoverage(
+    license,
+    notices.map((notice) => files.get(`${packagePath}/${notice.path}`)),
+  );
   const record = {
     name,
     version,
@@ -120,6 +139,7 @@ async function visit(packagePath, requiredBy) {
     resolved: locked.resolved ?? null,
     integrity: locked.integrity ?? null,
     licenseFiles: notices,
+    licenseCoverage,
     requiredBy: [requiredBy],
     dependencies: [],
   };
@@ -145,12 +165,19 @@ async function visit(packagePath, requiredBy) {
       packagePath,
       'License text exists but license identifier requires review',
     );
-  else if (!notices.some((notice) => notice.kind !== 'readme-license-declaration'))
+  else if (!notices.some((notice) => notice.hasLicenseText))
     issue(
       'review',
       'LICENSE_TEXT_MISSING',
       packagePath,
-      `Metadata declares ${license}; no license text shipped in installed package`,
+      `Metadata declares ${license}; collected files lack recognized grant and disclaimer text and require review`,
+    );
+  else if (licenseCoverage.status !== 'text-evidenced')
+    issue(
+      'review',
+      'LICENSE_DECLARATION_UNEVIDENCED',
+      packagePath,
+      `Collected text does not establish a supported route for declared license ${license}`,
     );
   if (license === 'UNLICENSED')
     issue('error', 'UNLICENSED_DEPENDENCY', packagePath, 'Package explicitly declares UNLICENSED');
@@ -219,35 +246,44 @@ for (const record of records.values()) {
   const sourceMapPath = `${browserEntry}.map`;
   try {
     const sourceMap = JSON.parse(await readFile(path.join(root, sourceMapPath), 'utf8'));
-    const components = new Map();
-    for (const source of sourceMap.sources ?? []) {
-      const relative = source.split('node_modules/').at(-1);
-      if (relative === source) continue;
-      const name = relative
-        .split('/')
-        .slice(0, relative.startsWith('@') ? 2 : 1)
-        .join('/');
-      let component = components.get(name);
-      if (!component)
-        components.set(
+    const browserBytes = await readFile(path.join(root, browserEntry));
+    const sourceMapBytes = await readFile(path.join(root, sourceMapPath));
+    const bundleEvidence = {
+      browserEntry,
+      browserEntrySha256: sha256(browserBytes),
+      browserEntryBytes: browserBytes.length,
+      sourceMapPath,
+      sourceMapSha256: sha256(sourceMapBytes),
+    };
+    const components = new Map(
+      embeddedComponentPaths(sourceMap).map(({ name, sourcePaths }) => [
+        name,
+        {
           name,
-          (component = {
-            name,
-            bundledVersion: null,
-            bundledLicense: null,
-            status: 'unresolved-vendor-bundle-review',
-            sourcePaths: [],
-          }),
-        );
-      component.sourcePaths.push(source);
+          bundledVersion: null,
+          bundledLicense: null,
+          status: 'unresolved-vendor-bundle-review',
+          sourcePaths,
+        },
+      ]),
+    );
+    for (const component of components.values()) {
+      Object.assign(component, embeddedPackageEvidence(sourceMap, component.name));
+      component.noticeEvidence = embeddedNoticeEvidence(sourceMap, component.name);
+      component.attributionEvidence = embeddedAttributionEvidence(sourceMap, component.name);
+      component.review = await reviewedEmbeddedComponent(
+        root,
+        bundleEvidence,
+        component,
+        sourceMap,
+      );
+      if (component.review) component.status = component.review.status;
     }
     const bundle = {
       package: `${record.name}@${record.version}`,
-      browserEntry,
-      sourceMapPath,
-      sourceMapSha256: sha256(await readFile(path.join(root, sourceMapPath))),
+      ...bundleEvidence,
       interpretation:
-        'Source-map component names are evidence of upstream embedded sources, not resolved local package versions or confirmed final-bundle inclusion.',
+        'Source-map paths identify embedded sources. Embedded package.json declarations, where available, are hashed metadata evidence; they do not establish complete license obligations or final-bundle inclusion. Local installed versions are never substituted.',
       components: [...components.values()].sort((a, b) => a.name.localeCompare(b.name)),
     };
     vendorBundles.push(bundle);
@@ -275,13 +311,14 @@ const summary = {
   errors: issues.filter((i) => i.severity === 'error').length,
   reviewItems: issues.filter((i) => i.severity === 'review').length,
   unresolvedVendorComponents: vendorBundles.reduce(
-    (count, bundle) => count + bundle.components.length,
+    (count, bundle) => count + bundle.components.filter((component) => !component.review).length,
     0,
   ),
 };
 const inventory = {
   schemaVersion: 1,
-  generatedAt: new Date().toISOString(),
+  generatedAt: buildTime.timestamp,
+  timestampSource: buildTime.source,
   scope:
     'Conservative installed production dependency closure: root dependencies recursively, including required peers and installed optional dependencies; dev-only roots excluded. This is not an exact tree-shaken browser bundle SBOM.',
   source: {
@@ -311,7 +348,35 @@ const text = [
     bundle.interpretation,
     ...bundle.components.map(
       (component) =>
-        `${component.name}: version/license UNRESOLVED (see dependency-inventory.json for source paths)`,
+        `${component.name}: embedded version ${component.bundledVersion ?? 'UNRESOLVED'}; declared license ${component.bundledLicense ?? 'UNRESOLVED'}; complete license review ${component.review ? 'UPSTREAM EVIDENCED' : 'UNRESOLVED'} (see dependency-inventory.json for hashed metadata and source paths)`,
+    ),
+    ...bundle.components.flatMap((component) =>
+      component.review?.licenseEvidence
+        ? [
+            '',
+            `--- Reviewed embedded upstream license: ${component.name}@${component.bundledVersion} ---`,
+            `Source SHA-256: ${component.review.licenseEvidence.sha256}; bytes: ${component.review.licenseEvidence.bytes}`,
+            component.review.licenseEvidence.text,
+          ]
+        : [],
+    ),
+    ...bundle.components.flatMap((component) =>
+      component.noticeEvidence.flatMap((notice) => [
+        '',
+        `--- Embedded upstream notice: ${notice.sourcePath} ---`,
+        `Source SHA-256: ${notice.sourceSha256}; notice SHA-256: ${notice.noticeSha256}`,
+        'Literal source comment; does not establish complete package license coverage.',
+        notice.text,
+      ]),
+    ),
+    ...bundle.components.flatMap((component) =>
+      component.attributionEvidence.flatMap((notice) => [
+        '',
+        `--- Partial embedded attribution: ${notice.sourcePath} ---`,
+        `Source SHA-256: ${notice.sourceSha256}; notice SHA-256: ${notice.noticeSha256}`,
+        notice.interpretation,
+        notice.text,
+      ]),
     ),
   ]),
   ...packages.flatMap((record) => [

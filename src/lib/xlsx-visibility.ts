@@ -18,11 +18,15 @@ export interface XlsxVisibility {
 }
 
 /** Read original XML because ExcelJS drops blank row hidden metadata from its model. */
-export function readXlsxVisibility(archive: XlsxArchive): Map<string, XlsxVisibility> {
+export function readXlsxVisibility(
+  archive: XlsxArchive,
+  limits = { rows: 1_048_576, columns: 16_384 },
+): Map<string, XlsxVisibility> {
   const result = new Map<string, XlsxVisibility>();
   const integer = (raw: string | undefined, max: number, label: string): number => {
-    if (!raw || !/^[1-9]\d*$/.test(raw) || Number(raw) > max)
-      throw new Error(`XLSX ${label}坐标无效。`);
+    if (!raw || !/^[1-9]\d*$/.test(raw)) throw new Error(`XLSX ${label}坐标无效。`);
+    if (Number(raw) > max)
+      throw new Error(`XLSX ${label}坐标超出 ${max.toLocaleString('en-US')} ${label}限制。`);
     return Number(raw);
   };
   const hidden = (raw: string | undefined): boolean => {
@@ -31,6 +35,11 @@ export function readXlsxVisibility(archive: XlsxArchive): Map<string, XlsxVisibi
     throw new Error('XLSX hidden 属性无效。');
   };
   for (const sheet of archive.sheets) {
+    for (const name of ['sheetData', 'cols']) {
+      const containers = xmlChildren(sheet.xml, name);
+      if (containers.length > 1 || containers.some((node) => node.uri !== MAIN))
+        throw new Error(`XLSX ${name} 容器重复或命名空间无效。`);
+    }
     const value: XlsxVisibility = {
       rowHeights: {},
       hiddenRows: [],
@@ -43,7 +52,7 @@ export function readXlsxVisibility(archive: XlsxArchive): Map<string, XlsxVisibi
       'row',
     )) {
       if (row.uri !== MAIN) throw new Error('XLSX 行布局命名空间无效。');
-      const number = integer(row.attributes.r, 1_048_576, '行');
+      const number = integer(row.attributes.r, limits.rows, '行');
       const isHidden = hidden(row.attributes.hidden);
       if (isHidden) value.hiddenRows.push(number - 1);
       if (row.attributes.ht !== undefined) {
@@ -58,12 +67,13 @@ export function readXlsxVisibility(archive: XlsxArchive): Map<string, XlsxVisibi
     }
     for (const col of xmlChildren(xmlChild(sheet.xml, 'cols') ?? xmlElement('cols'), 'col')) {
       if (col.uri !== MAIN) throw new Error('XLSX 列布局命名空间无效。');
-      if (!hidden(col.attributes.hidden)) continue;
-      const min = integer(col.attributes.min, 16_384, '列');
-      const max = integer(col.attributes.max, 16_384, '列');
-      if (max < min) throw new Error('XLSX 隐藏列范围无效。');
-      for (let index = min; index <= max; index++) value.hiddenColumns.push(index - 1);
+      // Visible columns also expand into Column objects in ExcelJS.
+      const min = integer(col.attributes.min, limits.columns, '列');
+      const max = integer(col.attributes.max, limits.columns, '列');
+      if (max < min) throw new Error('XLSX 列范围无效。');
       value.colCount = Math.max(value.colCount, max);
+      if (!hidden(col.attributes.hidden)) continue;
+      for (let index = min; index <= max; index++) value.hiddenColumns.push(index - 1);
     }
     value.hiddenRows = [...new Set(value.hiddenRows)].sort((a, b) => a - b);
     value.hiddenColumns = [...new Set(value.hiddenColumns)].sort((a, b) => a - b);

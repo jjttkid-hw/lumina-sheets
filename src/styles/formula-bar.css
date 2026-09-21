@@ -3,6 +3,22 @@
   min-width: 0;
 }
 
+.formula-bar-help {
+  margin: 0;
+  padding: 5px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  max-height: 68px;
+  overflow: auto;
+  border-bottom: 1px solid var(--border, #e3e6e9);
+  background: var(--bg-secondary, #f7f9fb);
+  color: var(--text-secondary, #536471);
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 .formula-bar input[aria-invalid='true'] {
   color: #963f30;
   background: #fff8f5;

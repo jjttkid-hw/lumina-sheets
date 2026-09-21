@@ -58,6 +58,9 @@ function compare(a: CellValue, b: CellValue): number {
 function sameCell(a: Cell | undefined, b: Cell | undefined): boolean {
   if (!a || !b) return a === b;
   if (a.value !== b.value) return false;
+  if (JSON.stringify(a.richText) !== JSON.stringify(b.richText)) return false;
+  if (a.hyperlink?.target !== b.hyperlink?.target || a.hyperlink?.tooltip !== b.hyperlink?.tooltip)
+    return false;
   if (!a.style || !b.style) return a.style === b.style;
   const keys = Object.keys(a.style) as Array<keyof NonNullable<Cell['style']>>;
   return (
@@ -196,7 +199,13 @@ export function planRowSort(
           value = translateFormula(value, target - source, 0);
           if (value.length > 32_767) fail('移动后的公式超过 32,767 个字符');
         }
-        next = { ...cell, ...(cell.style ? { style: { ...cell.style } } : {}), value };
+        next = {
+          ...cell,
+          ...(cell.style ? { style: { ...cell.style } } : {}),
+          ...(cell.hyperlink ? { hyperlink: { ...cell.hyperlink } } : {}),
+          ...(cell.richText ? { richText: structuredClone(cell.richText) } : {}),
+          value,
+        };
       }
       if (sameCell(previousCells?.get(col), next)) continue;
       if (changes.length >= MAX_SORT_PATCHES) fail('最终变更超过 100,000 个单元格');

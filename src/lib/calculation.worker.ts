@@ -1,9 +1,15 @@
 import { calculateSync, type CalculationRequest, type CalculationMessage } from './calculation';
+import type { CalculationTransfer } from './calculation-transfer';
+import { CalculationSession } from './calculation-session';
+const session = new CalculationSession();
 
-self.onmessage = (event: MessageEvent<CalculationRequest & { id: number }>) => {
+self.onmessage = (
+  event: MessageEvent<(CalculationRequest & { id: number }) | CalculationTransfer>,
+) => {
   const request = event.data;
   try {
-    const result = calculateSync(request);
+    const result =
+      request.type === 'calculate-sheets' ? session.calculate(request) : calculateSync(request);
     (self as unknown as { postMessage: (message: unknown) => void }).postMessage({
       ...result,
       id: request.id,

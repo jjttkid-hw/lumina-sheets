@@ -423,3 +423,24 @@
   z-index: 12;
   pointer-events: none;
 }
+.sheet-validation-trigger {
+  position: absolute;
+  z-index: 21;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #b7cdb8;
+  border-radius: 4px;
+  background: #f0f7ee;
+  color: #365e3c;
+  font: 16px/1 sans-serif;
+  cursor: pointer;
+}
+.sheet-validation-trigger:hover,
+.sheet-validation-trigger[aria-expanded='true'] {
+  background: #deeddc;
+}
+.sheet-validation-trigger:focus-visible {
+  outline: 2px solid #4c7d36;
+  outline-offset: 2px;
+}

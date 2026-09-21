@@ -12,9 +12,29 @@ export interface CellStyle {
   format?: CellFormat;
   fontSize?: number;
 }
+export interface RichTextStyle extends Pick<
+  CellStyle,
+  'bold' | 'italic' | 'underline' | 'color' | 'fontSize'
+> {
+  fontFamily?: string;
+  strike?: boolean;
+  verticalAlign?: 'baseline' | 'superscript' | 'subscript';
+  /** XLSX font classification, distinct from the font's typeface name. */
+  fontFamilyClass?: number;
+  /** XLSX charset code; text itself is always stored as Unicode. */
+  charset?: number;
+}
+export interface RichTextRun {
+  text: string;
+  style?: RichTextStyle;
+}
 export interface Cell {
   value: CellValue;
   style?: CellStyle;
+  /** Optional inline font runs for ordinary text cells. Concatenated text equals value. */
+  richText?: RichTextRun[];
+  /** Preserved link metadata; the renderer does not automatically navigate. */
+  hyperlink?: { target: string; tooltip?: string };
 }
 export interface CellRange {
   start: { row: number; col: number };

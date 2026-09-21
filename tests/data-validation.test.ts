@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   checkValue,
   copyDataValidationRules,
@@ -151,6 +151,97 @@ describe('computed value validation', () => {
     expect(failures('é', input)[0].code).toBe('OUT_OF_RANGE');
     expect(failures(12, input)[0].code).toBe('TYPE_MISMATCH');
     expect(failures('👨‍👩‍👧‍👦', input)[0].code).toBe('OUT_OF_RANGE');
+  });
+
+  it('iterates a text value once for 1,000 overlapping length rules and preserves every ordered failure', () => {
+    const target = `${'😀'.repeat(4096)}e\u0301中`;
+    const codePointLength = 4099;
+    const rules = copyDataValidationRules(
+      Array.from({ length: 1000 }, (_, i) => ({
+        id: `length-${i}`,
+        kind: 'textLength',
+        range,
+        operator: i % 2 ? 'equal' : 'lessThan',
+        value: codePointLength,
+        message: `长度规则 ${i}`,
+      })),
+    );
+    const originalIterator = String.prototype[Symbol.iterator];
+    let targetTraversals = 0;
+    const spy = vi.spyOn(String.prototype, Symbol.iterator).mockImplementation(function (
+      this: string,
+    ) {
+      if (String(this) === target) targetTraversals++;
+      return originalIterator.call(this);
+    });
+    try {
+      const result = checkValue('sales', 'A1', target, rules);
+      expect(targetTraversals).toBe(1);
+      expect(result).toEqual(
+        Array.from({ length: 500 }, (_, i) => ({
+          ruleId: `length-${i * 2}`,
+          sheetId: 'sales',
+          key: 'A1',
+          kind: 'textLength',
+          code: 'OUT_OF_RANGE',
+          message: `长度规则 ${i * 2}`,
+          value: target,
+        })),
+      );
+      expect(checkValue('sales', 'A1', target, rules)).toEqual(result);
+      expect(targetTraversals).toBe(2);
+      expect(checkValue('sales', 'A1', '😀中', rules)).toHaveLength(500);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('does not scan text when no applicable length rule needs it', () => {
+    const target = '😀e\u0301';
+    const rules = copyDataValidationRules([
+      { id: 'list', kind: 'list', range, values: [target] },
+      rule({ id: 'number' }),
+      rule({ id: 'other-sheet', kind: 'textLength', sheetId: 'other' }),
+      rule({
+        id: 'other-range',
+        kind: 'textLength',
+        range: { start: { row: 10, col: 0 }, end: { row: 20, col: 0 } },
+      }),
+    ]);
+    const originalIterator = String.prototype[Symbol.iterator];
+    let targetTraversals = 0;
+    const spy = vi.spyOn(String.prototype, Symbol.iterator).mockImplementation(function (
+      this: string,
+    ) {
+      if (String(this) === target) targetTraversals++;
+      return originalIterator.call(this);
+    });
+    try {
+      expect(checkValue('sales', 'A1', target, rules)).toEqual([
+        expect.objectContaining({ ruleId: 'number', code: 'TYPE_MISMATCH' }),
+      ]);
+      expect(targetTraversals).toBe(0);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('keeps blank policy and non-string type failures for overlapping length rules', () => {
+    const rules = copyDataValidationRules([
+      rule({ id: 'optional', kind: 'textLength' }),
+      rule({ id: 'required-a', kind: 'textLength', allowBlank: false }),
+      rule({ id: 'required-b', kind: 'textLength', allowBlank: false }),
+    ]);
+    expect(checkValue('sales', 'A1', '', rules)).toEqual([
+      expect.objectContaining({ ruleId: 'required-a', code: 'BLANK_NOT_ALLOWED' }),
+      expect.objectContaining({ ruleId: 'required-b', code: 'BLANK_NOT_ALLOWED' }),
+    ]);
+    for (const value of [0, false])
+      expect(checkValue('sales', 'A1', value, rules)).toEqual(
+        rules.map((rule) =>
+          expect.objectContaining({ ruleId: rule.id, code: 'TYPE_MISMATCH', value }),
+        ),
+      );
   });
 
   it('applies all overlapping rules, preserves messages, and filters by sheet and range', () => {

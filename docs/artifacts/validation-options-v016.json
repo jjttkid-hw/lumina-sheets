@@ -1,0 +1,59 @@
+{
+  "diagnostic": "validation-options-v016",
+  "measuredAt": "2026-09-20T08:14:29.786Z",
+  "singleSample": true,
+  "samplesPerOperation": 1,
+  "warmupCalls": 0,
+  "environment": {
+    "node": "v24.14.0",
+    "v8": "13.6.233.17-node.41",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "osRelease": "25.6.0",
+    "cpuModel": "Apple M5 Pro"
+  },
+  "input": {
+    "sheetId": "s",
+    "address": "A1",
+    "candidateCount": 1000,
+    "candidateCharactersEach": 32767,
+    "candidateUtf16CodeUnitsEach": 32767,
+    "candidateUtf8BytesEach": 32767,
+    "candidateUtf8BytesTotal": 32767000,
+    "candidateGenerator": "String(index).padStart(4, '0') + 'x'.repeat(32763), index 0 through 999; unique ASCII strings",
+    "rulesTotal": 1000,
+    "listRules": 1,
+    "textLengthRules": 999,
+    "textLengthConstraint": "lessThanOrEqual 32767",
+    "range": "A1 only; all rules overlap"
+  },
+  "measurements": {
+    "getValidationOptions": {
+      "milliseconds": 128.474,
+      "returnedCandidates": 1000,
+      "returnedOrderAndValuesMatchInput": true,
+      "unsupportedFormulaCount": 0
+    },
+    "isValidationOption": {
+      "milliseconds": 1.12,
+      "candidateIndex": 999,
+      "accepted": true
+    }
+  },
+  "methodology": {
+    "runtime": "Current TypeScript sources transpiled to CommonJS in memory with TypeScript 5.8.3",
+    "timer": "performance.now()",
+    "timedRegion": "Only each function call; source loading/transpilation, input construction, semantic checks and JSON writing excluded.",
+    "operationOrder": [
+      "getValidationOptions",
+      "isValidationOption"
+    ],
+    "notes": "Single local diagnostic, no warmup or repetitions. Second operation runs after the first and shares process/JIT state. Results are not a browser benchmark, percentile, regression threshold or performance guarantee.",
+    "sourceSha256": {
+      "src/lib/validation-options.ts": "a9c6719ab8f6e2e3a4a213ac7a0069fef2b35979a521b5b12b4c491ac137428a",
+      "src/lib/data-validation.ts": "2bb8373849881a9c9570839361ed4c9485dea5cb8fed963ef5a7505791a47ed7",
+      "src/lib/engine.ts": "81a39066c7329b22412bbe20d18b2ffb2c29b5f178c70eba996f3c1087b26248",
+      "src/lib/range-dependency-index.ts": "4fa178999a0c5263626bcd2eb48eed79f0b3c4f501571ae8d89e01c6e63b0916"
+    }
+  }
+}

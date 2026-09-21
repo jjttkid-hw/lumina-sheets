@@ -1,0 +1,14 @@
+{
+  "name": "saxes",
+  "version": "5.0.1",
+  "retrievedAt": "2026-09-21",
+  "repository": "https://github.com/lddubeau/saxes",
+  "tag": "v5.0.1",
+  "tagObject": "8c687ae8e2b9814da0928fff0faae1887a950200",
+  "commit": "6ef6a275b20f19cb67808daf0d8f64e06aaf5b0e",
+  "source": "https://raw.githubusercontent.com/lddubeau/saxes/6ef6a275b20f19cb67808daf0d8f64e06aaf5b0e/LICENSE",
+  "sha256": "0fac2374380621b22e6b50451057721a9c52935b02d16d106a9f04897f061d0e",
+  "scope": "Official tag and pinned commit license bytes match; source package declares saxes 5.0.1 / ISC. Official registry tarball integrity matches the lockfile. Unsigned tag; source license evidence, not a verified source-to-package reproducible build or legal approval.",
+  "integrity": "sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==",
+  "registry": "https://registry.npmjs.org/saxes/5.0.1"
+}

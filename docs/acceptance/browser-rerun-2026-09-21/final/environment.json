@@ -1,0 +1,23 @@
+{
+  "platform": "darwin",
+  "arch": "arm64",
+  "node": "v24.14.0",
+  "osRelease": "25.6.0",
+  "memoryBytes": 25769803776,
+  "logicalCPUs": 15,
+  "headless": true,
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "uncontrolled": [
+    "other application load",
+    "power mode"
+  ],
+  "scriptSha256": {
+    "scripts/browser-smoke.mjs": "ead8f06d80b06259bb3f70b67227741beda0f6d975b17e7b741a0569caeb0868",
+    "scripts/browser-interactions.mjs": "38cbabef254520dc49880abf475930491e239d6c9a224bead7ee5af8102e442a",
+    "scripts/browser-focus.mjs": "ff6dfe4f25d3aec8c4002c8d0efb1fc7c80907109f8b96f69878db9e20617d78",
+    "scripts/browser-performance.mjs": "f32fe9e7409c97c6c05e31835a8b2a77b6eb107c954b4ed6886fe70f2082ff63"
+  }
+}

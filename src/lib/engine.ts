@@ -1,3 +1,4 @@
+import { compileWildcard } from './wildcard';
 import { RangeDependencyIndex } from './range-dependency-index';
 import type { Cell, CellValue, Sheet, Workbook } from './types';
 
@@ -172,7 +173,7 @@ class Parser {
     return this.tokens[this.at++];
   }
   private consume(value: string) {
-    if (this.peek().value !== value) return false;
+    if (this.peek().type !== 'op' || this.peek().value !== value) return false;
     this.at++;
     return true;
   }
@@ -203,6 +204,7 @@ class Parser {
       '^': 5,
     };
     while (true) {
+      if (this.peek().type !== 'op') break;
       const op = this.peek().value;
       if (op === '%') {
         this.take();
@@ -219,9 +221,9 @@ class Parser {
   }
   private prefix(): Node {
     const token = this.take();
-    if (token.value === '+' || token.value === '-')
+    if (token.type === 'op' && (token.value === '+' || token.value === '-'))
       return { kind: 'unary', op: token.value, child: this.expression(6) };
-    if (token.value === '(') {
+    if (token.type === 'op' && token.value === '(') {
       const node = this.expression(0);
       this.expect(')');
       return node;
@@ -235,7 +237,7 @@ class Parser {
       if (!this.consume(')')) {
         do {
           args.push(
-            this.peek().value === ',' || this.peek().value === ')'
+            this.peek().type === 'op' && (this.peek().value === ',' || this.peek().value === ')')
               ? { kind: 'literal', value: null }
               : this.expression(0),
           );
@@ -248,19 +250,26 @@ class Parser {
     let key = token.value;
     if (this.consume('!')) {
       sheet = token.value;
-      key = this.take().value;
-    } else if (/^(TRUE|FALSE)$/i.test(key))
+      const address = this.take();
+      if (address.type !== 'word') fail('#REF!');
+      key = address.value;
+    } else if (token.type === 'quoted') fail('#ERROR!');
+    else if (/^(TRUE|FALSE)$/i.test(key))
       return { kind: 'literal', value: key.toUpperCase() === 'TRUE' };
     if (!parseCellKey(key)) fail(sheet ? '#REF!' : '#NAME?');
     const start: Reference = { kind: 'ref', key: key.replaceAll('$', '').toUpperCase(), sheet };
     if (!this.consume(':')) return start;
-    let endKey = this.take().value;
+    const endpoint = this.take();
+    if (endpoint.type !== 'word' && endpoint.type !== 'quoted') fail('#REF!');
+    let endKey = endpoint.value;
     let endSheet = sheet;
     if (this.consume('!')) {
       endSheet = endKey;
-      endKey = this.take().value;
-    }
-    if (!parseCellKey(endKey) || endSheet !== sheet) fail('#REF!');
+      const address = this.take();
+      if (address.type !== 'word') fail('#REF!');
+      endKey = address.value;
+    } else if (endpoint.type === 'quoted') fail('#REF!');
+    if (!parseCellKey(endKey) || endSheet?.toLowerCase() !== sheet?.toLowerCase()) fail('#REF!');
     return {
       kind: 'range',
       start,
@@ -282,6 +291,16 @@ const stringify = (value: Result): string => {
   const v = scalar(value);
   return v === null ? '' : typeof v === 'boolean' ? (v ? 'TRUE' : 'FALSE') : String(v);
 };
+const MAX_TEXT_LENGTH = 32767;
+function boundedText(text: string): string {
+  if (text.length > MAX_TEXT_LENGTH) fail('#VALUE!');
+  return text;
+}
+function appendText(left: string, right: string): string {
+  // Check before allocation: chained references must not grow exponentially.
+  if (left.length + right.length > MAX_TEXT_LENGTH) fail('#VALUE!');
+  return left + right;
+}
 const truthy = (value: Result): boolean => {
   const v = scalar(value);
   if (v === null) return false;
@@ -370,45 +389,38 @@ function compare(a: Scalar, b: Scalar): number {
   const order = (v: Scalar) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : 2);
   return order(a) - order(b);
 }
+function boundedWildcard(pattern: string, unicode: boolean) {
+  const match = compileWildcard(pattern, { unicode });
+  return (text: string) => {
+    try {
+      return match(text);
+    } catch (error) {
+      if (error instanceof RangeError) fail('#NUM!');
+      throw error;
+    }
+  };
+}
 function wildcardMatch(pattern: string): (value: Scalar) => boolean {
-  let source = '';
-  for (let i = 0; i < pattern.length; i++) {
-    const char = pattern[i];
-    if (char === '~' && i + 1 < pattern.length)
-      source += pattern[++i].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    else if (char === '*') source += '.*';
-    else if (char === '?') source += '.';
-    else source += char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-  const expression = new RegExp(`^${source}$`, 'iu');
-  return (value) => typeof value === 'string' && expression.test(value);
+  const match = boundedWildcard(pattern, true);
+  return (value) => typeof value === 'string' && match(value);
 }
 function criterion(test: Scalar): (value: Scalar) => boolean {
   if (typeof test !== 'string') return (value) => compare(value, test) === 0;
-  const match = /^(<=|>=|<>|=|<|>)(.*)$/.exec(test);
+  const match = /^(<=|>=|<>|=|<|>)([\s\S]*)$/.exec(test);
   const op = match?.[1] ?? '=';
   const raw = match?.[2] ?? test;
   const target: Scalar = raw.trim() !== '' && Number.isFinite(Number(raw)) ? Number(raw) : raw;
-  let wildcard: RegExp | undefined;
-  if (typeof target === 'string' && /[?*~]/.test(target) && (op === '=' || op === '<>')) {
-    let pattern = '';
-    for (let i = 0; i < target.length; i++) {
-      const c = target[i];
-      if (c === '~' && i + 1 < target.length)
-        pattern += target[++i].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      else if (c === '*') pattern += '.*';
-      else if (c === '?') pattern += '.';
-      else pattern += c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-    wildcard = new RegExp(`^${pattern}$`, 'i');
-  }
+  const wildcard =
+    typeof target === 'string' && /[?*~]/.test(target) && (op === '=' || op === '<>')
+      ? boundedWildcard(target, false)
+      : undefined;
   return (value) => {
     if (typeof target === 'number' && typeof value === 'string') {
       if (value.trim() !== '' && Number.isFinite(Number(value))) value = Number(value);
       else return op === '<>';
     }
     const c = wildcard
-      ? wildcard.test(value === null ? '' : String(value))
+      ? wildcard(value === null ? '' : String(value))
         ? 0
         : 1
       : compare(value, target);
@@ -436,6 +448,10 @@ export interface EvaluatorOptions {
   revision?: number;
   /** Every value edit must be followed by invalidateCells before any read. */
   managedMutations?: boolean;
+  /** Cached paged value only: null is blank, undefined is unavailable (#N/A).
+   * This synchronous hook must not fetch data. Managed hosts invalidate after changes.
+   */
+  readPagedCell?: (sheet: Sheet, key: string) => CellValue | null | undefined;
 }
 
 export interface EvaluatorStats {
@@ -456,8 +472,13 @@ export interface EvaluatorStats {
   parsedExpressions: number;
 }
 
+export type EvaluationResult =
+  { kind: 'value'; value: CellValue } | { kind: 'error'; error: string };
+
 export interface Evaluator {
   (sheet: Sheet, key: string): CellValue;
+  /** Distinguish literal error-looking text from a calculation error. */
+  result(sheet: Sheet, key: string): EvaluationResult;
   /** Clear all cached results after unknown or structural workbook mutations. */
   invalidate(revision?: number): void;
   /** Call after applying a batch of cell value changes, including deletions. */
@@ -585,6 +606,10 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
       if (error) fail(error);
       return value;
     };
+    if (sheet.dataSource?.kind === 'paged') {
+      const value = options.readPagedCell?.(sheet, canonical);
+      return value === undefined ? deliver(null, '#N/A') : deliver(value);
+    }
     if (stack.has(id)) return deliver(null, '#CYCLE!');
     if (stack.size > 256) {
       depthLimitGeneration++;
@@ -647,6 +672,7 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
         parsed.set(raw, ast);
       }
       value = scalar(evaluate(ast, sheet));
+      if (typeof value === 'string') boundedText(value);
     } catch (caught) {
       if (!(caught instanceof FormulaError)) throw caught;
       error = caught.code;
@@ -669,7 +695,10 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
     return deliver(value, error);
   };
   const evaluate = (node: Node, sheet: Sheet, arrayArithmetic = false): Result => {
-    if (node.kind === 'literal') return node.value;
+    // Validate when evaluated, not while parsing: unused IF/IFERROR branches
+    // must stay lazy, while evaluated overflow cannot become a value or text.
+    if (node.kind === 'literal')
+      return typeof node.value === 'number' ? finite(node.value) : node.value;
     if (node.kind === 'error') return fail(node.code);
     if (node.kind === 'ref') return read(resolveSheet(node.sheet, sheet), node.key);
     if (node.kind === 'range') {
@@ -706,7 +735,7 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
       const a = evaluate(node.left, sheet, arrayArithmetic);
       const b = evaluate(node.right, sheet, arrayArithmetic);
       const apply = (left: Scalar, right: Scalar): Scalar => {
-        if (node.op === '&') return stringify(left) + stringify(right);
+        if (node.op === '&') return appendText(stringify(left), stringify(right));
         if (['=', '<>', '!=', '<', '>', '<=', '>='].includes(node.op)) {
           const c = compare(left, right);
           return node.op === '='
@@ -749,10 +778,152 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
     }
     const args = node.args;
     const get = (index: number) => (args[index] ? evaluate(args[index], sheet) : null);
+    // Selection functions inspect range geometry before reading its values.
+    // Register the full range for invalidation, but evaluate only selected cells.
+    const grid = (arg: Node) => {
+      if (arg.kind === 'range') {
+        const a = parseCellKey(arg.start.key)!,
+          b = parseCellKey(arg.end.key)!;
+        const firstRow = Math.min(a.row, b.row),
+          firstCol = Math.min(a.col, b.col);
+        const rows = Math.abs(a.row - b.row) + 1,
+          cols = Math.abs(a.col - b.col) + 1;
+        if (rows * cols > MAX_RANGE_CELLS) fail('#NUM!');
+        const source = resolveSheet(arg.start.sheet, sheet);
+        const frame = frames[frames.length - 1];
+        const range = {
+          sheetId: source.id,
+          firstRow,
+          lastRow: firstRow + rows - 1,
+          firstCol,
+          lastCol: firstCol + cols - 1,
+        };
+        frame?.ranges.set(JSON.stringify(range), range);
+        return {
+          rows,
+          cols,
+          at: (r: number, c: number) => read(source, cellKey(firstRow + r, firstCol + c), 'range'),
+        };
+      }
+      const value = evaluate(arg, sheet);
+      const [rows, cols] = shape(value);
+      return {
+        rows,
+        cols,
+        at: (r: number, c: number) => (isMatrix(value) ? value.rows[r][c] : value),
+      };
+    };
     const count = (min: number, max = min) => {
       if (args.length < min || args.length > max) fail();
     };
     switch (node.name) {
+      case 'NPV': {
+        count(2, 255);
+        const rate = number(get(0));
+        if (rate === -1) fail('#DIV/0!');
+        if (rate < -1) fail('#NUM!');
+        const logarithm = Math.log1p(rate);
+        let period = 0,
+          visited = 0,
+          sum = 0,
+          correction = 0;
+        const add = (cash: number) => {
+          period++;
+          const discount = Math.exp(-period * logarithm);
+          // Avoid 0 * Infinity and recover representable products when the
+          // discount factor alone overflows or underflows.
+          const term =
+            cash === 0
+              ? 0
+              : finite(
+                  Number.isFinite(discount) && discount !== 0
+                    ? cash * discount
+                    : Math.sign(cash) * Math.exp(Math.log(Math.abs(cash)) - period * logarithm),
+                );
+          const next = finite(sum + term);
+          correction = finite(
+            correction + (Math.abs(sum) >= Math.abs(term) ? sum - next + term : term - next + sum),
+          );
+          sum = next;
+        };
+        for (let index = 1; index < args.length; index++) {
+          const value = get(index);
+          const referenced = args[index].kind === 'ref' || isMatrix(value);
+          for (const item of flatten([value])) {
+            if (++visited > 100_000) fail('#NUM!');
+            // Nonnumeric reference members neither contribute nor consume a period.
+            // A stored zero does consume a period.
+            if (referenced) {
+              if (typeof item === 'number') add(item);
+            } else add(number(item));
+          }
+        }
+        return finite(sum + correction) || 0;
+      }
+      case 'NPER': {
+        count(3, 5);
+        const rate = number(get(0));
+        const payment = number(get(1));
+        const present = number(get(2));
+        const future = args.length >= 4 ? number(get(3)) : 0;
+        const when = args.length >= 5 ? number(get(4)) : 0;
+        if (rate <= -1 || (when !== 0 && when !== 1)) fail('#NUM!');
+        // Normalize amounts before adding/multiplying to keep finite cash
+        // flows near Number.MAX_VALUE from overflowing intermediate terms.
+        const scale = Math.max(Math.abs(payment), Math.abs(present), Math.abs(future));
+        if (scale === 0) fail('#DIV/0!');
+        const pmt = payment / scale,
+          pv = present / scale,
+          fv = future / scale;
+        if (rate === 0) {
+          if (pmt === 0) fail('#DIV/0!');
+          const result = finite(-(pv + fv) / pmt);
+          if (result < 0) fail('#NUM!');
+          return result || 0;
+        }
+        const rateScale = Math.max(1, Math.abs(rate));
+        const r = rate / rateScale;
+        const annuity = pmt * (1 / rateScale + r * when);
+        const numerator = annuity - fv * r;
+        const denominator = annuity + pv * r;
+        if (numerator === 0 && denominator === 0) fail('#DIV/0!');
+        if (numerator === 0 || denominator === 0 || Math.sign(numerator) !== Math.sign(denominator))
+          fail('#NUM!');
+        const delta = (-(pv + fv) * r) / denominator;
+        // log1p preserves periods at tiny interest rates; logarithms of the
+        // separate magnitudes avoid overflowing a very large quotient.
+        const logarithm =
+          Math.abs(delta) <= 0.5
+            ? Math.log1p(delta)
+            : Math.log(Math.abs(numerator)) - Math.log(Math.abs(denominator));
+        const result = finite(logarithm / Math.log1p(rate));
+        if (result < 0) fail('#NUM!');
+        return result || 0;
+      }
+      case 'PMT':
+      case 'PV':
+      case 'FV': {
+        count(3, 5);
+        const rate = number(get(0));
+        const periods = number(get(1));
+        const amount = number(get(2));
+        const terminal = args.length >= 4 ? number(get(3)) : 0;
+        const when = args.length >= 5 ? number(get(4)) : 0;
+        // Explicit supported domain: periodic rates above -100%, nonnegative
+        // periods, and end/beginning payments. No implicit compounding schedule.
+        if (rate <= -1 || periods < 0 || (when !== 0 && when !== 1)) fail('#NUM!');
+        const exponent = periods * Math.log1p(rate);
+        const growth = finite(Math.exp(exponent));
+        const annuity = finite(rate === 0 ? periods : Math.expm1(exponent) / rate);
+        const paymentFactor = finite((1 + rate * when) * annuity);
+        if (node.name === 'FV') return finite(-(terminal * growth + amount * paymentFactor)) || 0;
+        if (node.name === 'PV') {
+          if (growth === 0) fail('#NUM!');
+          return finite(-(terminal + amount * paymentFactor) / growth) || 0;
+        }
+        if (paymentFactor === 0) fail('#DIV/0!');
+        return finite(-(amount * growth + terminal) / paymentFactor) || 0;
+      }
       case 'IF':
         count(2, 3);
         return truthy(get(0)) ? get(1) : args.length === 3 ? get(2) : false;
@@ -820,17 +991,101 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
       case 'LEN':
         count(1);
         return stringify(get(0)).length;
+      case 'TRIM':
+        count(1);
+        // Excel TRIM operates on ASCII spaces, not all Unicode whitespace.
+        return stringify(get(0))
+          .replace(/^ +| +$/g, '')
+          .replace(/ {2,}/g, ' ');
+      case 'CLEAN':
+        count(1);
+        return stringify(get(0)).replace(/[\u0000-\u001f]/g, '');
+      case 'LEFT':
+      case 'RIGHT': {
+        count(1, 2);
+        const text = stringify(get(0));
+        const rawLength = args.length === 2 ? number(get(1)) : 1;
+        if (rawLength < 0) fail('#VALUE!');
+        const length = Math.min(text.length, Math.trunc(rawLength));
+        return node.name === 'LEFT' ? text.slice(0, length) : text.slice(text.length - length);
+      }
+      case 'MID': {
+        count(3);
+        const text = stringify(get(0));
+        const start = Math.trunc(number(get(1)));
+        const rawLength = number(get(2));
+        if (start < 1 || rawLength < 0) fail('#VALUE!');
+        if (start > text.length) return '';
+        return text.slice(start - 1, start - 1 + Math.min(text.length, Math.trunc(rawLength)));
+      }
+      case 'FIND': {
+        count(2, 3);
+        const needle = stringify(get(0));
+        const text = stringify(get(1));
+        const start = args.length === 3 ? Math.trunc(number(get(2))) : 1;
+        if (start < 1 || start > text.length) fail('#VALUE!');
+        const found = text.indexOf(needle, start - 1);
+        if (found < 0) fail('#VALUE!');
+        return found + 1;
+      }
+      case 'REPLACE': {
+        count(4);
+        const text = stringify(get(0));
+        const start = Math.trunc(number(get(1)));
+        const rawLength = number(get(2));
+        const replacement = stringify(get(3));
+        if (start < 1 || rawLength < 0) fail('#VALUE!');
+        const offset = Math.min(start - 1, text.length);
+        return appendText(
+          appendText(text.slice(0, offset), replacement),
+          text.slice(offset + Math.min(text.length, Math.trunc(rawLength))),
+        );
+      }
+      case 'SUBSTITUTE': {
+        count(3, 4);
+        const text = stringify(get(0));
+        const needle = stringify(get(1));
+        const replacement = stringify(get(2));
+        const instance = args.length === 4 ? Math.trunc(number(get(3))) : undefined;
+        if (instance !== undefined && instance < 1) fail('#VALUE!');
+        if (!needle) return boundedText(text);
+        let result = '',
+          cursor = 0,
+          occurrence = 0;
+        while (cursor < text.length) {
+          const found = text.indexOf(needle, cursor);
+          if (found < 0) break;
+          occurrence++;
+          result = appendText(result, text.slice(cursor, found));
+          result = appendText(
+            result,
+            instance === undefined || occurrence === instance ? replacement : needle,
+          );
+          cursor = found + needle.length;
+          if (occurrence === instance) break;
+        }
+        return appendText(result, text.slice(cursor));
+      }
       case 'UPPER':
         count(1);
-        return stringify(get(0)).toUpperCase();
+        return boundedText(stringify(get(0)).toUpperCase());
       case 'LOWER':
         count(1);
-        return stringify(get(0)).toLowerCase();
+        return boundedText(stringify(get(0)).toLowerCase());
       case 'CONCAT':
-      case 'CONCATENATE':
-        return flatten(args.map((arg) => evaluate(arg, sheet)))
-          .map((v) => stringify(v))
-          .join('');
+      case 'CONCATENATE': {
+        count(1, 255);
+        let result = '';
+        // Evaluate one argument at a time rather than retaining every range.
+        for (const arg of args) {
+          const value = evaluate(arg, sheet);
+          if (isMatrix(value)) {
+            for (const row of value.rows)
+              for (const member of row) result = appendText(result, stringify(member));
+          } else result = appendText(result, stringify(value));
+        }
+        return result;
+      }
       case 'SUMIF':
       case 'COUNTIF': {
         count(2, node.name === 'SUMIF' ? 3 : 2);
@@ -916,35 +1171,37 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
       case 'VLOOKUP': {
         count(3, 4);
         const lookup = scalar(get(0));
-        const table = get(1);
+        const table = grid(args[1]);
         const column = Math.trunc(number(get(2)));
-        if (!isMatrix(table) || column < 1) fail();
-        if (column > (table.rows[0]?.length ?? 0)) fail('#REF!');
+        if (column < 1) fail();
+        if (column > table.cols) fail('#REF!');
         const approximate = args.length < 4 || number(get(3)) !== 0;
-        let found: Scalar[] | undefined;
-        for (const row of table.rows) {
-          const c = compare(row[0], lookup);
-          if (c === 0) return row[column - 1];
+        const matches =
+          !approximate && typeof lookup === 'string' && /[?*~]/.test(lookup)
+            ? wildcardMatch(lookup)
+            : undefined;
+        let found = -1;
+        for (let row = 0; row < table.rows; row++) {
+          const candidate = table.at(row, 0);
+          if (matches) {
+            if (matches(candidate)) return table.at(row, column - 1);
+            continue;
+          }
+          const c = compare(candidate, lookup);
+          if (c === 0) return table.at(row, column - 1);
           if (approximate && c < 0) found = row;
         }
-        return found ? found[column - 1] : fail('#N/A');
+        return found >= 0 ? table.at(found, column - 1) : fail('#N/A');
       }
       case 'INDEX': {
         count(2, 3);
-        const source = get(0);
-        if (!isMatrix(source)) fail('#VALUE!');
+        const source = grid(args[0]);
         const position = Math.trunc(number(get(1)));
-        const horizontal = args.length === 2 && source.rows.length === 1;
+        const horizontal = args.length === 2 && source.rows === 1;
         const row = horizontal ? 1 : position;
         const col = args.length === 3 ? Math.trunc(number(get(2))) : horizontal ? position : 1;
-        if (
-          row < 1 ||
-          col < 1 ||
-          row > source.rows.length ||
-          col > (source.rows[row - 1]?.length ?? 0)
-        )
-          fail('#REF!');
-        return source.rows[row - 1][col - 1] ?? null;
+        if (row < 1 || col < 1 || row > source.rows || col > source.cols) fail('#REF!');
+        return source.at(row - 1, col - 1) ?? null;
       }
       case 'MATCH': {
         count(2, 3);
@@ -970,19 +1227,32 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
       case 'XLOOKUP': {
         count(3, 6);
         const lookup = scalar(get(0));
-        const lookupResult = get(1);
-        const returnResult = get(2);
-        const lookupValues = vector(lookupResult);
-        const returnValues = vector(returnResult);
-        if (!sameShape(lookupResult, returnResult)) fail('#VALUE!');
+        const lookupResult = grid(args[1]);
+        const returnResult = grid(args[2]);
+        const { rows: lookupRows, cols: lookupCols } = lookupResult;
+        if (lookupRows !== 1 && lookupCols !== 1) fail('#VALUE!');
+        const length = lookupRows * lookupCols;
+        const valueAt = (index: number) =>
+          lookupResult.at(lookupRows === 1 ? 0 : index, lookupRows === 1 ? index : 0);
+        if (lookupRows !== returnResult.rows || lookupCols !== returnResult.cols) fail('#VALUE!');
         const mode = args.length >= 5 ? number(get(4)) : 0;
         const searchMode = args.length >= 6 ? number(get(5)) : 1;
-        if (![0, -1, 1].includes(mode) || ![1, -1].includes(searchMode)) fail('#VALUE!');
+        if (![0, -1, 1, 2].includes(mode) || ![1, -1].includes(searchMode)) fail('#VALUE!');
+        const matches =
+          mode === 2 && typeof lookup === 'string' ? wildcardMatch(lookup) : undefined;
         let index = -1;
         let nearest = -1;
-        for (let step = 0; step < lookupValues.length; step++) {
-          const i = searchMode === 1 ? step : lookupValues.length - 1 - step;
-          const comparison = compare(lookupValues[i], lookup);
+        for (let step = 0; step < length; step++) {
+          const i = searchMode === 1 ? step : length - 1 - step;
+          const value = valueAt(i);
+          if (matches) {
+            if (matches(value)) {
+              index = i;
+              break;
+            }
+            continue;
+          }
+          const comparison = compare(value, lookup);
           if (comparison === 0) {
             index = i;
             break;
@@ -991,8 +1261,8 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
             if (
               nearest < 0 ||
               (mode === 1
-                ? compare(lookupValues[i], lookupValues[nearest]) < 0
-                : compare(lookupValues[i], lookupValues[nearest]) > 0)
+                ? compare(value, valueAt(nearest)) < 0
+                : compare(value, valueAt(nearest)) > 0)
             )
               nearest = i;
           }
@@ -1004,7 +1274,7 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
           ? args.length >= 4
             ? get(3)
             : fail('#N/A')
-          : (returnValues[index] ?? null);
+          : (returnResult.at(lookupRows === 1 ? 0 : index, lookupRows === 1 ? index : 0) ?? null);
       }
       case 'DATE': {
         count(3);
@@ -1058,13 +1328,23 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
         return fail('#NAME?');
     }
   };
+  const result = (sheet: Sheet, key: string): EvaluationResult => {
+    try {
+      return { kind: 'value', value: read(sheet, key) ?? '' };
+    } catch (error) {
+      return { kind: 'error', error: error instanceof FormulaError ? error.code : '#ERROR!' };
+    }
+  };
   const evaluator = ((sheet: Sheet, key: string) => {
+    // The hot Canvas/value path retains its scalar contract without allocating
+    // an outcome wrapper for every visible cell.
     try {
       return read(sheet, key) ?? '';
     } catch (error) {
       return error instanceof FormulaError ? error.code : '#ERROR!';
     }
   }) as Evaluator;
+  evaluator.result = result;
   evaluator.invalidate = (revision?: number) => {
     counters.invalidatedEntries += cache.size;
     cache.clear();

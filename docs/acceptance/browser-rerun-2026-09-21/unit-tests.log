@@ -1,0 +1,5 @@
+
+> lumina-sheets@0.29.0 test
+> vitest run --reporter=json --outputFile=artifacts/browser-rerun-2026-09-21/unit-tests.json
+
+JSON report written to /Users/huangwei/Desktop/spreadjs/artifacts/browser-rerun-2026-09-21/unit-tests.json

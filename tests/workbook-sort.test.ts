@@ -57,6 +57,58 @@ function apply(workbook: Workbook, plan: RowSortPlan) {
 }
 
 describe('workbook-wide atomic sort validation', () => {
+  it('keeps hidden destinations fixed and rejects related readonly or invalid edits before mutation', () => {
+    const workbook = book(),
+      sheet = workbook.sheets[0];
+    sheet.hiddenRows = [2];
+    sheet.cells.D1 = { value: 'hidden', hyperlink: { target: '#A3' } };
+    const other = createBlankWorkbook().sheets[0];
+    other.name = 'Links';
+    other.cells = { A1: { value: 'record', hyperlink: { target: '#Data!A2' } } };
+    workbook.sheets.push(other);
+    const plan = planWorkbookRowSort(workbook, sheet.id, ascending);
+    expect(plan.changes.some((c) => c.key === 'D1')).toBe(false);
+    expect(plan.relatedChanges![0].changes[0].cell!.hyperlink?.target).toBe('#Data!A4');
+    other.dataSource = { kind: 'paged' };
+    const before = structuredClone(workbook);
+    expect(() => planWorkbookRowSort(workbook, sheet.id, ascending)).toThrow('只读');
+    expect(workbook).toEqual(before);
+    delete other.dataSource;
+    other.dataValidations = [
+      { id: 'invalid', range: range(0, 0), kind: 'list', values: ['different'] },
+    ];
+    expect(() => planWorkbookRowSort(workbook, sheet.id, ascending)).toThrow(
+      WorkbookSortValidationError,
+    );
+  });
+  it('tracks local and cross-sheet link destinations using the final row permutation', () => {
+    const workbook = book(),
+      sheet = workbook.sheets[0];
+    sheet.cells.D1 = { value: 'outside', hyperlink: { target: '#$A$2' } };
+    sheet.cells.D2 = { value: 'moved', hyperlink: { target: '#Data!A4' } };
+    const other = createBlankWorkbook().sheets[0];
+    other.name = 'Other';
+    other.cells = {
+      A1: { value: 'qualified', hyperlink: { target: "#'data'!A2" } },
+      A2: { value: 'local', hyperlink: { target: '#A2' } },
+      A3: { value: 'external', hyperlink: { target: 'https://example.com/#A2' } },
+    };
+    workbook.sheets.push(other);
+    const before = structuredClone(workbook);
+    const plan = planWorkbookRowSort(workbook, sheet.id, ascending);
+    const sorted = apply(workbook, plan);
+    expect(sorted.sheets[0].cells.D1.hyperlink?.target).toBe('#$A$4');
+    expect(sorted.sheets[0].cells.D4.hyperlink?.target).toBe('#Data!A3');
+    expect(plan.relatedChanges).toEqual([
+      {
+        sheetId: other.id,
+        changes: [{ key: 'A1', cell: { value: 'qualified', hyperlink: { target: "#'data'!A4" } } }],
+      },
+    ]);
+    expect(workbook).toEqual(before);
+    plan.relatedChanges![0].changes[0].cell!.hyperlink!.target = 'changed';
+    expect(workbook).toEqual(before);
+  });
   it('plans complete formula/style rows with passing rules and leaves every input unchanged', () => {
     const workbook = book(),
       sheet = workbook.sheets[0];

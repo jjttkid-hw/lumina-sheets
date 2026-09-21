@@ -1,6 +1,9 @@
 node_modules/
 dist/
 artifacts/
+!docs/artifacts/
+docs/artifacts/*
+!docs/artifacts/validation-options-v016.json
 *.tsbuildinfo
 .DS_Store
 .env

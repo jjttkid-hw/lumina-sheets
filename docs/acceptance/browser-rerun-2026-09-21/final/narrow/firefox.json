@@ -1,0 +1,15 @@
+{
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-21T03:17:08.283Z",
+  "siteSha256": "b71d36ea270ccefcf2e858eee6f2213f65b9e46c8bd5863d1eceeae6f3ce14a8",
+  "artifactSha256": "3976d561c6153bb3f7df88f33cf1612ad3ce705149ed7672b670effcedce620f",
+  "scope": "Desktop engine at narrow viewport; not physical mobile or touch acceptance",
+  "status": "passed",
+  "sizes": {
+    "width": 390,
+    "scroll": 390,
+    "canvas": 364
+  },
+  "errors": []
+}

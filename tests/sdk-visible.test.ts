@@ -26,6 +26,21 @@ afterEach(() => {
 });
 
 describe('SDK visible clipboard view preference', () => {
+  it('publishes selection without invalidating the Canvas edit content revision', () => {
+    const instance = make();
+    const before = instance.surface().props;
+    const revision = instance.snapshot();
+    const listener = vi.fn();
+    instance.subscribe(listener);
+    instance.select({ row: 1, col: 1 });
+    const selected = instance.surface().props;
+    expect(selected.selection).toEqual({ row: 1, col: 1 });
+    expect(instance.snapshot()).toBeGreaterThan(revision);
+    expect(listener).toHaveBeenCalledOnce();
+    expect(selected.renderVersion).toBe(before.renderVersion);
+    instance.setCell('B2', 7);
+    expect(instance.surface().props.renderVersion).toBeGreaterThan(selected.renderVersion);
+  });
   it('defaults to visible and forwards explicit modes to the actual surface', () => {
     const automatic = make();
     expect(automatic.clipboardMode).toBe('visible');

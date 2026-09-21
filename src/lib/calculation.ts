@@ -1,5 +1,6 @@
-import type { CellValue, Sheet, Workbook } from './types';
+import type { CellValue, Workbook } from './types';
 import { createEvaluator } from './engine';
+import { CalculationTransferSender } from './calculation-transfer';
 
 export interface CalculationTarget {
   sheetId: string;
@@ -31,53 +32,103 @@ export type CalculationMessage = CalculationResponse | CalculationError;
 export interface CalculationRuntimeOptions {
   /** Workers are enabled by default in the browser; set false for SSR/tests. */
   useWorker?: boolean;
+  /** Latest mode holds at most one posted request and one unposted replacement.
+   * Queued inputs must remain immutable until the returned promise settles. */
+  queueMode?: 'all' | 'latest';
+  /** Maximum posted-request lifetime in ms; defaults to 30 seconds. Zero disables it. */
+  timeoutMs?: number;
+  /** Reuse unchanged sheet values in the Worker. Workbooks/cells must be immutable. */
+  reuseSheets?: boolean;
 }
 
-/**
- * Revision-aware calculation facade. A caller can issue several requests while
- * editing; stale responses are discarded before they reach the UI. The worker is
- * deliberately target based, so a viewport can request only visible formulas.
- */
+interface PendingCalculation {
+  request: CalculationRequest;
+  resolve: (result: CalculationResponse) => void;
+  reject: (error: Error) => void;
+  cleanup: () => void;
+}
+
+function cancelled(message = 'Calculation cancelled'): Error {
+  const error = new Error(message);
+  error.name = 'AbortError';
+  return error;
+}
+
+/** Request IDs route replies; revisions verify the value source. In latest mode,
+ * obsolete unposted work is replaced before cloning a workbook into the Worker. */
 export class CalculationRuntime {
   private worker?: Worker;
   private requestId = 0;
-  private pending = new Map<
-    number,
-    {
-      revision: number;
-      resolve: (result: CalculationResponse) => void;
-      reject: (error: Error) => void;
-    }
-  >();
+  private pending = new Map<number, PendingCalculation>();
+  private activeId?: number;
+  private queuedId?: number;
   private disposed = false;
+  private readonly latest: boolean;
+  private readonly timeoutMs: number;
+  private timers = new Map<number, ReturnType<typeof setTimeout>>();
+  private restartRequired = false;
+  private readonly transfer?: CalculationTransferSender;
 
   constructor(options: CalculationRuntimeOptions = {}) {
+    if (options.reuseSheets) this.transfer = new CalculationTransferSender();
+    this.latest = options.queueMode === 'latest';
+    this.timeoutMs = options.timeoutMs ?? 30_000;
+    if (!Number.isInteger(this.timeoutMs) || this.timeoutMs < 0 || this.timeoutMs > 2_147_483_647)
+      throw new RangeError('Calculation timeout must be an integer between 0 and 2147483647 ms');
     const canUseWorker =
       options.useWorker !== false && typeof Worker !== 'undefined' && typeof window !== 'undefined';
-    if (canUseWorker) {
-      try {
-        this.worker = new Worker(new URL('./calculation.worker.ts', import.meta.url), {
-          type: 'module',
-        });
-        this.worker.onmessage = (event: MessageEvent<CalculationMessage & { id?: number }>) => {
-          const id = event.data.id;
-          if (typeof id !== 'number') return;
-          const request = this.pending.get(id);
-          if (!request) return;
-          this.pending.delete(id);
-          if (event.data.type === 'error') request.reject(new Error(event.data.message));
-          else request.resolve(event.data);
-        };
-        this.worker.onerror = (event) => {
-          const error = new Error(event.message || 'Calculation worker failed');
-          for (const request of this.pending.values()) request.reject(error);
-          this.pending.clear();
-          this.worker?.terminate();
-          this.worker = undefined;
-        };
-      } catch {
-        this.worker = undefined;
-      }
+    if (canUseWorker) this.startWorker();
+  }
+
+  private startWorker(): boolean {
+    try {
+      const worker = new Worker(new URL('./calculation.worker.ts', import.meta.url), {
+        type: 'module',
+      });
+      this.worker = worker;
+      worker.onmessage = (event: MessageEvent<CalculationMessage & { id?: number }>) => {
+        if (this.worker !== worker) return;
+        const message = event.data;
+        const id = message?.id;
+        if (typeof id !== 'number') return;
+        const pending = this.pending.get(id);
+        // A cancelled running request still owns the Worker slot until its reply.
+        if (!pending && id !== this.activeId && !this.timers.has(id)) return;
+        if (this.latest && id !== this.activeId) return;
+        this.clearTimer(id);
+        this.pending.delete(id);
+        pending?.cleanup();
+        if (id === this.activeId) this.activeId = undefined;
+        // Aborted callers still need protocol failures to invalidate the base
+        // before dispatching their queued successor.
+        if (!pending && message.type !== 'calculated') this.transfer?.reset();
+        if (pending) {
+          if (message.revision !== pending.request.revision) {
+            this.transfer?.reset();
+            pending.reject(new Error('Calculation response revision mismatch'));
+          } else if (message.type === 'error') {
+            this.transfer?.reset();
+            pending.reject(new Error(message.message));
+          } else if (message.type === 'calculated') pending.resolve(message);
+          else {
+            this.transfer?.reset();
+            pending.reject(new Error('Invalid calculation response'));
+          }
+        }
+        this.drain();
+      };
+      worker.onerror = (event) => {
+        if (this.worker === worker)
+          this.workerFault(new Error(event.message || 'Calculation worker failed'));
+      };
+      worker.onmessageerror = () => {
+        if (this.worker === worker)
+          this.workerFault(new Error('Calculation worker response could not be read'));
+      };
+      return true;
+    } catch {
+      this.failWorker(new Error('Calculation worker could not start'));
+      return false;
     }
   }
 
@@ -85,15 +136,123 @@ export class CalculationRuntime {
     workbook: Workbook,
     targets: CalculationTarget[],
     revision: number,
+    signal?: AbortSignal,
   ): Promise<CalculationResponse> {
     if (this.disposed) return Promise.reject(new Error('CalculationRuntime is disposed'));
+    if (signal?.aborted) return Promise.reject(cancelled());
+    if (this.restartRequired) {
+      if (!this.startWorker())
+        return Promise.reject(new Error('Calculation worker could not restart'));
+      this.restartRequired = false;
+    }
     const request: CalculationRequest = { type: 'calculate', workbook, targets, revision };
-    if (!this.worker) return Promise.resolve(calculateSync(request));
+    if (!this.worker) {
+      try {
+        return Promise.resolve(calculateSync(request));
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    }
     const id = ++this.requestId;
     return new Promise<CalculationResponse>((resolve, reject) => {
-      this.pending.set(id, { revision, resolve, reject });
-      this.worker!.postMessage({ ...request, id });
+      const abort = () => this.rejectRequest(id, cancelled());
+      const cleanup = () => signal?.removeEventListener('abort', abort);
+      this.pending.set(id, { request, resolve, reject, cleanup });
+      signal?.addEventListener('abort', abort, { once: true });
+      if (this.latest && this.activeId !== undefined) {
+        if (this.queuedId !== undefined)
+          this.rejectRequest(this.queuedId, cancelled('Calculation superseded'));
+        this.queuedId = id;
+      } else this.post(id);
     });
+  }
+
+  private rejectRequest(id: number, error: Error) {
+    const pending = this.pending.get(id);
+    this.pending.delete(id);
+    if (id === this.queuedId) this.queuedId = undefined;
+    pending?.cleanup();
+    pending?.reject(error);
+  }
+
+  private post(id: number) {
+    const pending = this.pending.get(id);
+    if (!pending || !this.worker) return;
+    if (this.latest) this.activeId = id;
+    try {
+      const worker = this.worker;
+      if (this.timeoutMs > 0) {
+        this.timers.set(
+          id,
+          setTimeout(() => {
+            if (this.worker === worker && this.timers.has(id)) this.timeoutWorker();
+          }, this.timeoutMs),
+        );
+      }
+      worker.postMessage(this.transfer?.prepare(pending.request, id) ?? { ...pending.request, id });
+      this.transfer?.commit(pending.request, id);
+    } catch (error) {
+      this.transfer?.reset();
+      this.clearTimer(id);
+      this.rejectRequest(id, error instanceof Error ? error : new Error(String(error)));
+      if (id === this.activeId) this.activeId = undefined;
+      this.drain();
+    }
+  }
+
+  private drain() {
+    if (this.disposed || this.activeId !== undefined || this.queuedId === undefined) return;
+    const id = this.queuedId;
+    this.queuedId = undefined;
+    this.post(id);
+  }
+
+  private clearTimer(id: number) {
+    const timer = this.timers.get(id);
+    if (timer !== undefined) clearTimeout(timer);
+    this.timers.delete(id);
+  }
+
+  private timeoutWorker() {
+    const error = new Error(`Calculation exceeded ${this.timeoutMs} ms`);
+    error.name = 'TimeoutError';
+    // A queued candidate has never run; preserve only that candidate, never replay
+    // timed-out work. The old Worker must be terminated before a new one starts.
+    const queuedId = this.queuedId;
+    const queued = queuedId === undefined ? undefined : this.pending.get(queuedId);
+    if (queuedId !== undefined) this.pending.delete(queuedId);
+    this.failWorker(error);
+    this.restartRequired = true;
+    if (queued && queuedId !== undefined) {
+      this.pending.set(queuedId, queued);
+      if (this.startWorker()) {
+        this.restartRequired = false;
+        this.post(queuedId);
+      }
+    }
+  }
+
+  private workerFault(error: Error) {
+    this.failWorker(error);
+    // Only a new caller triggers recovery; never replay failed work or spin
+    // on a broken worker resource. Keep bulk evaluation off the UI thread.
+    this.restartRequired = true;
+  }
+
+  private failWorker(error: Error) {
+    this.transfer?.reset();
+    for (const id of this.timers.keys()) this.clearTimer(id);
+    const worker = this.worker;
+    this.worker = undefined;
+    if (worker) {
+      worker.onmessage = null;
+      worker.onerror = null;
+      worker.onmessageerror = null;
+      worker.terminate();
+    }
+    for (const id of this.pending.keys()) this.rejectRequest(id, error);
+    this.activeId = undefined;
+    this.queuedId = undefined;
   }
 
   /** Synchronous path for input latency and environments without Worker support. */
@@ -102,16 +261,13 @@ export class CalculationRuntime {
     targets: CalculationTarget[],
     revision: number,
   ): CalculationResponse {
+    if (this.disposed) throw new Error('CalculationRuntime is disposed');
     return calculateSync({ type: 'calculate', workbook, targets, revision });
   }
 
   dispose() {
     this.disposed = true;
-    this.worker?.terminate();
-    this.worker = undefined;
-    const error = new Error('CalculationRuntime is disposed');
-    for (const request of this.pending.values()) request.reject(error);
-    this.pending.clear();
+    this.failWorker(new Error('CalculationRuntime is disposed'));
   }
 }
 

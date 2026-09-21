@@ -1,6 +1,6 @@
 {
   "name": "lumina-sheets",
-  "version": "0.14.0",
+  "version": "0.29.0",
   "description": "Canvas-based JavaScript spreadsheet and reporting SDK",
   "license": "Apache-2.0",
   "repository": {
@@ -24,7 +24,12 @@
     "build:sdk": "vite build --config vite.sdk.config.ts && tsc -p tsconfig.sdk.json && node scripts/package-sdk.mjs",
     "build:all": "npm run build && npm run build:sdk",
     "build:site": "npm run build -- --base=/lumina-sheets/ && npm run build:sdk",
-    "check:sdk": "node scripts/check-sdk.mjs --pack-destination artifacts"
+    "check:sdk": "node scripts/check-sdk.mjs --pack-destination artifacts",
+    "check:api": "node scripts/check-api.mjs",
+    "check:site-runtime": "node scripts/check-site-runtime.mjs",
+    "check:licenses": "node scripts/package-notices.mjs --strict",
+    "check:stable": "node scripts/check-stable-release.mjs",
+    "check:reproducibility": "node scripts/check-reproducibility.mjs"
   },
   "dependencies": {
     "exceljs": "^4.4.0",

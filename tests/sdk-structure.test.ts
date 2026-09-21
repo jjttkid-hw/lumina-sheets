@@ -51,6 +51,23 @@ function workbook(): Workbook {
 const sheetsOnly = (instance: LuminaSpreadsheet) => instance.toJSON().sheets;
 
 describe('SDK structural editing', () => {
+  it('includes cross-sheet hyperlink changes in structural undo and redo', () => {
+    const book = workbook();
+    book.sheets[1].cells.C1 = {
+      value: 'source',
+      hyperlink: { target: "#'销售 明细'!$A$3", tooltip: '原始数据' },
+    };
+    const instance = make({ workbook: book });
+    instance.insertRows(1, 2);
+    expect(instance.toJSON().sheets[1].cells.C1.hyperlink?.target).toBe("#'销售 明细'!$A$5");
+    instance.undo();
+    expect(instance.toJSON().sheets[1].cells.C1.hyperlink?.target).toBe("#'销售 明细'!$A$3");
+    instance.redo();
+    instance.deleteRows(4);
+    expect(instance.toJSON().sheets[1].cells.C1.hyperlink?.target).toBe('#REF!');
+    instance.undo();
+    expect(instance.toJSON().sheets[1].cells.C1.hyperlink?.target).toBe("#'销售 明细'!$A$5");
+  });
   it('inserts rows atomically, shifts cells and rewrites local/cross-sheet references without changing strings', () => {
     const instance = make({ workbook: workbook() });
     instance.insertRows(1, 2);

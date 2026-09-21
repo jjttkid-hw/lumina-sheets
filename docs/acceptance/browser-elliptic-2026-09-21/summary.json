@@ -1,0 +1,113 @@
+{
+  "version": "0.29.0",
+  "siteSha256": "13f7abd24d863bc609dd1e89ed6c1c1bd13d007ec49d41ba465e94b4c0f1e944",
+  "artifactSha256": "b9b1cd84ea6a7719b20e1a0876b01ffa82e26531f146f1dad193b656095972ec",
+  "reports": [
+    {
+      "engine": "chromium",
+      "suite": "smoke",
+      "checks": 8,
+      "status": "passed",
+      "reportSha256": "d139519bc8996882a81718001777bec756aecce563a70e44b0cef27d1e7e7f0e"
+    },
+    {
+      "engine": "chromium",
+      "suite": "interactions",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "3a72c255332e525a453f0ee107b4a4117b25c3348f26661f1e9c740844f4b47c"
+    },
+    {
+      "engine": "chromium",
+      "suite": "focus",
+      "checks": 4,
+      "status": "passed",
+      "reportSha256": "5e01ee3644f02958df6fb85f50c0bec038490155eee06f3fd7c66da5793d0f7f"
+    },
+    {
+      "engine": "chromium",
+      "suite": "performance",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "172a31fed612c7f0f5543718873e43aef149438483df91dd26e3c784cb300b55"
+    },
+    {
+      "engine": "chromium",
+      "suite": "layout",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "e655025d96e7fee7ade75cc51c1ac4c816250695104dd55029e2fb35af4dc46c"
+    },
+    {
+      "engine": "firefox",
+      "suite": "smoke",
+      "checks": 8,
+      "status": "passed",
+      "reportSha256": "641cd29d062a3e918ea8f3ae9f1a30d5365c5754857f0cd6584f20a1bb999953"
+    },
+    {
+      "engine": "firefox",
+      "suite": "interactions",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "68f62b3a0f034b9c694a8bab7aca2c6676ff01c1066795f2d87404862976c37b"
+    },
+    {
+      "engine": "firefox",
+      "suite": "focus",
+      "checks": 4,
+      "status": "passed",
+      "reportSha256": "cfca48bd2d9a928a60df62aace4bdc0a8cad4241462d93d11dc9a670d8c6b738"
+    },
+    {
+      "engine": "firefox",
+      "suite": "performance",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "21733700861bf2da350bcae803ce6626f1b9a33ce32907b54e94cfa94482fac0"
+    },
+    {
+      "engine": "firefox",
+      "suite": "layout",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "2e01bd243d2f5368f6a4ec9a5c8e6b63fca10f980686be82bd9520edc4e9d582"
+    },
+    {
+      "engine": "webkit",
+      "suite": "smoke",
+      "checks": 8,
+      "status": "passed",
+      "reportSha256": "920ab5c24ae31c4d71604b5bd401d27366136597bf2ab1d9651431cee47526b8"
+    },
+    {
+      "engine": "webkit",
+      "suite": "interactions",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "3df37b1d086d34ab937653578268da758ed9e8e910e46d19a4cfb827bfbf20cb"
+    },
+    {
+      "engine": "webkit",
+      "suite": "focus",
+      "checks": 4,
+      "status": "passed",
+      "reportSha256": "28dad53f7cbcfbb087c92c2dae4be0f28e5d8b1ee74d5f745ca802b1a5c16e37"
+    },
+    {
+      "engine": "webkit",
+      "suite": "performance",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "cf1117f9cd135fd17e31428df9d2ee3e95d774b5d80690c93f244b92be604e21"
+    },
+    {
+      "engine": "webkit",
+      "suite": "layout",
+      "checks": 6,
+      "status": "passed",
+      "reportSha256": "3c22c198cd735e9259ae71b2a439693900460baf6a3e385a7d229cad60d5ecce"
+    }
+  ],
+  "touchChecks": 3
+}

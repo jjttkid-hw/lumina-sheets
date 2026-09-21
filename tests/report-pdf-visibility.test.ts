@@ -14,6 +14,8 @@ function stubCanvas() {
   const measureText = vi.fn((text: string) => ({ width: Array.from(text).length * 4 }));
   const context = {
     scale: vi.fn(),
+    save: vi.fn(),
+    restore: vi.fn(),
     fillRect: vi.fn(),
     strokeRect: vi.fn(),
     fillText,
@@ -44,6 +46,44 @@ function stubCanvas() {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('PDF hidden-axis page planning', () => {
+  it('renders rich run text through the actual PDF export path including line breaks', async () => {
+    const { workbook, sheet } = fixture();
+    sheet.cells = {
+      A1: {
+        value: '红字\n大字',
+        richText: [
+          { text: '红字\n', style: { color: '#ff0000', bold: true } },
+          { text: '大字', style: { fontSize: 24, underline: true, strike: true } },
+        ],
+      },
+    };
+    const { fillText, canvas } = stubCanvas();
+    const pdf = new TextDecoder().decode(await workbookToPdf(workbook));
+    expect(pdf).toContain('%PDF');
+    expect(canvas.toBlob).toHaveBeenCalled();
+    expect(fillText.mock.calls.some(([text]) => text === '红字')).toBe(true);
+    expect(fillText.mock.calls.some(([text]) => text === '大字')).toBe(true);
+    expect(fillText.mock.calls.some(([text]) => text === '红字\n大字')).toBe(false);
+  });
+  it('draws superscript and subscript at shifted coordinates through PDF export', async () => {
+    const { workbook, sheet } = fixture();
+    sheet.cells = {
+      A1: {
+        value: 'xyz',
+        style: { fontSize: 20 },
+        richText: [
+          { text: 'x' },
+          { text: 'y', style: { verticalAlign: 'superscript' } },
+          { text: 'z', style: { verticalAlign: 'subscript' } },
+        ],
+      },
+    };
+    const { fillText } = stubCanvas();
+    await workbookToPdf(workbook);
+    const y = (text: string) => fillText.mock.calls.find(([value]) => value === text)![2];
+    expect(y('y')).toBeCloseTo(y('x') - 4.5);
+    expect(y('z')).toBeCloseTo(y('x') + 4.5);
+  });
   it('keeps original visible coordinates and assigns zero size to hidden axes', () => {
     const { sheet } = fixture();
     sheet.cells = { A1: { value: '标题' }, E6: { value: '末尾' } };

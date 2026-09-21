@@ -1,3 +1,5 @@
+import { returnFocusNextFrame } from '../lib/focus-return';
+import { parseCellInput } from '../lib/cell-input';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useId } from 'react';
 import type { ClipboardEvent, KeyboardEvent, PointerEvent } from 'react';
 import type { Cell, CellValue, Selection, Sheet, Workbook } from '../lib/types';
@@ -9,6 +11,8 @@ import {
   parseCellKey,
   translateFormula,
 } from '../lib/engine';
+import { layoutRichText, drawRichTextLine } from '../lib/canvas/rich-text';
+import { replaceCellText } from '../lib/rich-text';
 import { IMPORT_LIMITS } from '../lib/io';
 import {
   ColumnMetrics,
@@ -41,6 +45,9 @@ import {
   visiblePasteTarget,
   visibleFillPlan,
 } from '../lib/canvas/selection-operations';
+import { getValidationOptions, isValidationOption } from '../lib/validation-options';
+import { validationOverlayLayout } from '../lib/canvas/validation-overlay';
+import ValidationPicker from './ValidationPicker';
 import '../styles/spreadsheet.css';
 
 export interface SpreadsheetProps {
@@ -68,15 +75,38 @@ export interface SpreadsheetProps {
   ) => void;
   onRenderMetrics?: (metrics: { drawMs: number; paintedCells: number; domNodes: number }) => void;
   onEditError?: (error: Error) => void;
+  onDraftStateChange?: (dirty: boolean) => void;
+  onUndo?: () => void;
+  onRedo?: () => void;
   search?: string;
   filter?: string;
   showGrid?: boolean;
   zoom?: number;
 }
 interface EditState {
+  session: number;
   row: number;
   col: number;
   text: string;
+}
+interface PickerSession {
+  workbook: Workbook;
+  sheet: Sheet;
+  cells: Sheet['cells'];
+  workbookId: string;
+  sheetId: string;
+  row: number;
+  col: number;
+  rules: Sheet['dataValidations'];
+  rows: RowMetrics;
+  columns: ColumnMetrics;
+  merges: MergeIndex;
+  scrollLeft: number;
+  scrollTop: number;
+  scale: number;
+  frozenRows: number;
+  calculationVersion: number;
+  renderVersion: number;
 }
 type Patch = { key: string; cell: Cell | null };
 const MAX_INTERACTION_CELLS = 100_000;
@@ -112,6 +142,7 @@ function clipboardDimensions(text: string, startRow: number, startCol: number) {
     cells = 0,
     length = 0,
     quoted = false,
+    afterQuote = false,
     endedRow = false;
   const field = () => {
     if (++cells > IMPORT_LIMITS.cells)
@@ -119,6 +150,7 @@ function clipboardDimensions(text: string, startRow: number, startCol: number) {
     if (startCol + ++columns > IMPORT_LIMITS.columns)
       throw new Error('粘贴后的工作表不能超过 256 列');
     length = 0;
+    afterQuote = false;
   };
   const row = () => {
     if (startRow + ++rows > IMPORT_LIMITS.rows)
@@ -129,11 +161,19 @@ function clipboardDimensions(text: string, startRow: number, startCol: number) {
   for (let index = 0; index < text.length; index++) {
     const char = text[index];
     endedRow = false;
-    if (char === '"' && (quoted || length === 0)) {
+    if (afterQuote) {
+      if (char === ' ') continue;
+      if (char !== '\t' && char !== '\n' && char !== '\r')
+        throw new Error('粘贴内容的闭合引号后只能包含空格或分隔符');
+    }
+    if (!afterQuote && char === '"' && (quoted || length === 0)) {
       if (quoted && text[index + 1] === '"') {
         length++;
         index++;
-      } else quoted = !quoted;
+      } else {
+        afterQuote = quoted;
+        quoted = !quoted;
+      }
     } else if (!quoted && char === '\t') field();
     else if (!quoted && (char === '\n' || char === '\r')) {
       field();
@@ -154,44 +194,41 @@ function clipboardDimensions(text: string, startRow: number, startCol: number) {
   return { rows, columns: width, cells };
 }
 
-function typedValue(value: string): CellValue {
-  if (value.startsWith("'")) return value.slice(1);
-  if (value === 'TRUE') return true;
-  if (value === 'FALSE') return false;
-  if (
-    /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:e[+-]?\d+)?$/i.test(value.trim()) &&
-    Number.isFinite(Number(value))
-  ) {
-    const numeric = Number(value);
-    if (!Number.isInteger(numeric) || Number.isSafeInteger(numeric)) return numeric;
-  }
-  return value;
-}
-
 /** Quoted TSV supports tabs and line breaks inside cells copied from Excel. */
 function parseClipboard(text: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
   let value = '';
   let quoted = false;
+  let afterQuote = false;
   const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   for (let i = 0; i < normalized.length; i++) {
     const ch = normalized[i];
-    if (ch === '"' && (quoted || value.length === 0)) {
+    if (afterQuote) {
+      if (ch === ' ') continue;
+      if (ch !== '\t' && ch !== '\n') throw new Error('粘贴内容的闭合引号后只能包含空格或分隔符');
+    }
+    if (!afterQuote && ch === '"' && (quoted || value.length === 0)) {
       if (quoted && normalized[i + 1] === '"') {
         value += '"';
         i++;
-      } else quoted = !quoted;
+      } else {
+        afterQuote = quoted;
+        quoted = !quoted;
+      }
     } else if (!quoted && ch === '\t') {
       row.push(value);
       value = '';
+      afterQuote = false;
     } else if (!quoted && ch === '\n') {
       row.push(value);
       rows.push(row);
       row = [];
       value = '';
+      afterQuote = false;
     } else value += ch;
   }
+  if (quoted) throw new Error('粘贴内容包含未闭合的引号');
   row.push(value);
   if (row.length > 1 || value !== '' || rows.length === 0 || !normalized.endsWith('\n'))
     rows.push(row);
@@ -199,7 +236,7 @@ function parseClipboard(text: string): string[][] {
 }
 
 function clipboardValue(value: string) {
-  return /[\t\n"]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+  return /[\t\r\n"]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
 }
 
 function selectionBounds(selection: Selection) {
@@ -234,6 +271,9 @@ export default function Spreadsheet({
   onPatch,
   onRenderMetrics,
   onEditError,
+  onDraftStateChange,
+  onUndo,
+  onRedo,
   search = '',
   filter = '',
   showGrid = true,
@@ -244,10 +284,12 @@ export default function Spreadsheet({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const editRef = useRef<HTMLInputElement>(null);
   const composingRef = useRef(false);
+  const compositionBlurRef = useRef(false);
   const editSessionRef = useRef(false);
   const drawRef = useRef<() => void>(() => {});
   const frameRef = useRef(0);
   const drawCount = useRef(0);
+  const capturedPointer = useRef<number | null>(null);
 
   const pointerRef = useRef<{
     kind: 'select' | 'fill';
@@ -267,6 +309,63 @@ export default function Spreadsheet({
     coordinates: Array<Array<{ row: number; col: number } | null>>;
   } | null>(null);
   const [editing, setEditing] = useState<EditState | null>(null);
+  const draftRef = useRef<EditState | null>(null);
+  const editEpoch = useRef(0);
+  const editOwner = useRef<{
+    workbookId: string;
+    sheetId: string;
+    cells: Sheet['cells'];
+    rows: number;
+    columns: number;
+    calculationVersion: number;
+    renderVersion: number;
+  } | null>(null);
+  const currentEditContext = useRef({
+    selection,
+    workbookId: workbook.id,
+    sheetId: sheet.id,
+    cells: sheet.cells,
+    rows: sheet.rowCount,
+    columns: sheet.colCount,
+    calculationVersion,
+    renderVersion,
+    readOnly,
+  });
+  currentEditContext.current = {
+    selection,
+    workbookId: workbook.id,
+    sheetId: sheet.id,
+    cells: sheet.cells,
+    rows: sheet.rowCount,
+    columns: sheet.colCount,
+    calculationVersion,
+    renderVersion,
+    readOnly,
+  };
+  const ownsDraft = () => {
+    const owner = editOwner.current,
+      current = currentEditContext.current;
+    return (
+      !!editing &&
+      draftRef.current?.session === editing.session &&
+      editSessionRef.current &&
+      !!owner &&
+      current.selection.row === draftRef.current.row &&
+      current.selection.col === draftRef.current.col &&
+      (current.selection.endRow ?? current.selection.row) === draftRef.current.row &&
+      (current.selection.endCol ?? current.selection.col) === draftRef.current.col &&
+      !current.readOnly &&
+      owner.workbookId === current.workbookId &&
+      owner.sheetId === current.sheetId &&
+      owner.cells === current.cells &&
+      owner.rows === current.rows &&
+      owner.columns === current.columns &&
+      owner.calculationVersion === current.calculationVersion &&
+      owner.renderVersion === current.renderVersion
+    );
+  };
+  const [picker, setPicker] = useState<PickerSession | null>(null);
+  const pickerSessionRef = useRef<PickerSession | null>(null);
   const [temporaryWidths, setTemporaryWidths] = useState<Record<number, number>>({});
   const [clipboardNotice, setClipboardNotice] = useState('');
   const [size, setSize] = useState({ width: 900, height: 600 });
@@ -317,6 +416,38 @@ export default function Spreadsheet({
     ],
   );
   const rowIndexes = currentFilteredRows(filterResult, filterSource);
+  // Selection and scrolling are part of a gesture. Data and layout changes
+  // are not: a drag started against them must never write into a replacement.
+  const pointerContext = [
+    workbook,
+    sheet,
+    sheet.cells,
+    workbook.id,
+    sheet.id,
+    rowCount,
+    colCount,
+    calculationVersion,
+    sheet.columnWidths,
+    sheet.rowHeights,
+    sheet.hiddenRows,
+    sheet.hiddenColumns,
+    sheet.merges,
+    sheet.frozenRows,
+    scale,
+    filterText,
+    rowIndexes,
+    readOnly,
+    clipboardMode,
+  ];
+  const currentPointerContext = useRef(pointerContext);
+  currentPointerContext.current = pointerContext;
+  const pointerOwner = useRef<unknown[] | null>(null);
+  const matchesPointerContext = (context: unknown[]) =>
+    context.every((value, index) => Object.is(value, currentPointerContext.current[index]));
+  const ownsPointer = () => !!pointerOwner.current && matchesPointerContext(pointerOwner.current);
+  useEffect(() => {
+    if (capturedPointer.current !== null && !ownsPointer()) resetPointer();
+  });
   const filterPending = !!filterText && rowIndexes === null;
   const displayCount = rowIndexes?.length ?? rowCount;
   const rowMetrics = useMemo(
@@ -341,6 +472,149 @@ export default function Spreadsheet({
       });
   }, []);
   const focusGrid = useCallback(() => viewportRef.current?.focus({ preventScroll: true }), []);
+  const selectedTarget = projectCell(rowMetrics, metrics, merges, selection.row, selection.col);
+  const singleSelection =
+    (selection.endRow === undefined || selection.endRow === selection.row) &&
+    (selection.endCol === undefined || selection.endCol === selection.col);
+  const hasListOptions = useMemo(
+    () =>
+      !!(
+        selectedTarget &&
+        singleSelection &&
+        !readOnly &&
+        sheet.dataSource?.kind !== 'paged' &&
+        sheet.dataValidations?.some(
+          (rule) =>
+            rule.kind === 'list' &&
+            (rule.sheetId === undefined || rule.sheetId === sheet.id) &&
+            selectedTarget.row >= rule.range.start.row &&
+            selectedTarget.row <= rule.range.end.row &&
+            selectedTarget.col >= rule.range.start.col &&
+            selectedTarget.col <= rule.range.end.col,
+        )
+      ),
+    [
+      sheet.id,
+      sheet.dataValidations,
+      sheet.dataSource?.kind,
+      selectedTarget?.row,
+      selectedTarget?.col,
+      singleSelection,
+      readOnly,
+    ],
+  );
+  const listLayout = (() => {
+    if (!hasListOptions || !selectedTarget || editing || filterPending) return null;
+    const projected = selectedTarget.projection;
+    const fragments = projectPaneFragments(
+      projected,
+      rowMetrics,
+      frozenRows,
+      logicalTop,
+      size.height / scale,
+    );
+    // A merge can straddle the frozen pane; a tiny first fragment may not fit a control.
+    for (const fragment of fragments) {
+      const layout = validationOverlayLayout(
+        {
+          left: xAt(projected.leftCol) * scale,
+          top: fragment.y * scale,
+          width: projected.width * scale,
+          height: fragment.height * scale,
+        },
+        size,
+        { left: ROW_LABEL_WIDTH * scale, top: HEADER_HEIGHT * scale },
+      );
+      if (layout) return layout;
+    }
+    return null;
+  })();
+  const pickerVisible = !!(
+    picker &&
+    listLayout &&
+    selectedTarget &&
+    picker.workbook === workbook &&
+    picker.sheet === sheet &&
+    picker.cells === sheet.cells &&
+    picker.workbookId === workbook.id &&
+    picker.sheetId === sheet.id &&
+    picker.row === selectedTarget.row &&
+    picker.col === selectedTarget.col &&
+    picker.rules === sheet.dataValidations &&
+    picker.rows === rowMetrics &&
+    picker.columns === metrics &&
+    picker.merges === merges &&
+    picker.scrollLeft === scroll.left &&
+    picker.scrollTop === scroll.top &&
+    picker.scale === scale &&
+    picker.frozenRows === frozenRows &&
+    picker.calculationVersion === calculationVersion &&
+    picker.renderVersion === renderVersion
+  );
+  // Derive the complete list only when opened, never during ordinary selection or scrolling.
+  const listOptions = useMemo(
+    () =>
+      pickerVisible && picker
+        ? getValidationOptions(
+            sheet.id,
+            cellKey(picker.row, picker.col),
+            sheet.dataValidations ?? [],
+          )
+        : null,
+    [pickerVisible, picker, sheet.id, sheet.dataValidations],
+  );
+  pickerSessionRef.current = pickerVisible ? picker : null;
+  useEffect(() => {
+    if (picker && !pickerVisible) setPicker(null);
+  }, [picker, pickerVisible]);
+  useEffect(
+    () => () => {
+      pickerSessionRef.current = null;
+    },
+    [],
+  );
+  function closePicker(restoreFocus: boolean) {
+    pickerSessionRef.current = null;
+    setPicker(null);
+    if (restoreFocus) returnFocusNextFrame(viewportRef.current, shellRef.current);
+  }
+  function openPicker() {
+    if (!listLayout || !selectedTarget || !singleSelection) return;
+    setPicker({
+      workbook,
+      sheet,
+      cells: sheet.cells,
+      workbookId: workbook.id,
+      sheetId: sheet.id,
+      row: selectedTarget.row,
+      col: selectedTarget.col,
+      rules: sheet.dataValidations,
+      rows: rowMetrics,
+      columns: metrics,
+      merges,
+      scrollLeft: scroll.left,
+      scrollTop: scroll.top,
+      scale,
+      frozenRows,
+      calculationVersion,
+      renderVersion,
+    });
+  }
+  function chooseValidationValue(value: CellValue) {
+    if (!picker || pickerSessionRef.current !== picker || !pickerVisible || readOnly) return false;
+    const key = cellKey(picker.row, picker.col);
+    // Recheck the current rules at commit time; the displayed menu is only a proposal.
+    if (!isValidationOption(sheet.id, key, value, sheet.dataValidations ?? [])) return false;
+    const cell = cellAt(key);
+    if (
+      cell?.value !== value &&
+      (cell || value !== '') &&
+      !applyPatch([{ key, cell: replaceCellText(cell, value) }])
+    )
+      return false;
+    closePicker(true);
+    return true;
+  }
 
   // Filtering is an explicit, debounced sparse scan, never part of scrolling or normal paints.
   useEffect(() => {
@@ -397,16 +671,53 @@ export default function Spreadsheet({
   }, []);
   useEffect(() => {
     setEditing(null);
+    onDraftStateChange?.(false);
     editSessionRef.current = false;
-    pointerRef.current = null;
-    resizeRef.current = null;
+    draftRef.current = null;
+    composingRef.current = false;
+    resetPointer();
     const viewport = viewportRef.current;
     if (viewport) {
       viewport.scrollTop = 0;
       viewport.scrollLeft = 0;
     }
     setScroll((previous) => stableScrollPosition(previous, 0, 0));
-  }, [sheet.id]);
+  }, [workbook.id, sheet.id]);
+  useEffect(
+    () => () => {
+      editSessionRef.current = false;
+      draftRef.current = null;
+      onDraftStateChange?.(false);
+      capturedPointer.current = null;
+      pointerOwner.current = null;
+      pointerRef.current = null;
+      resizeRef.current = null;
+    },
+    [],
+  );
+  useEffect(() => {
+    if (editing && !ownsDraft()) {
+      editSessionRef.current = false;
+      draftRef.current = null;
+      composingRef.current = false;
+      onDraftStateChange?.(false);
+      setEditing(null);
+    }
+  }, [
+    editing,
+    selection.row,
+    selection.col,
+    selection.endRow,
+    selection.endCol,
+    workbook.id,
+    sheet.id,
+    sheet.cells,
+    sheet.rowCount,
+    sheet.colCount,
+    readOnly,
+    calculationVersion,
+    renderVersion,
+  ]);
   useLayoutEffect(() => {
     if (editing) {
       editRef.current?.focus();
@@ -418,6 +729,7 @@ export default function Spreadsheet({
       // A filter or visibility change can remove the active editor's entire
       // projection. Cancel that draft instead of retaining an invisible input.
       editSessionRef.current = false;
+      onDraftStateChange?.(false);
       setEditing(null);
     }
   }, [editing, rowMetrics, metrics, merges]);
@@ -502,10 +814,22 @@ export default function Spreadsheet({
       setClipboardNotice('');
       return true;
     } catch (cause) {
-      const error = cause instanceof Error ? cause : new Error(String(cause));
-      setClipboardNotice(error.message);
-      onEditError?.(error);
+      reportEditError(cause);
       return false;
+    }
+  }
+  function reportEditError(cause: unknown) {
+    const error = cause instanceof Error ? cause : new Error(String(cause));
+    setClipboardNotice(error.message);
+    onEditError?.(error);
+  }
+  function setColumnWidth(col: number, width: number) {
+    if (readOnly) return;
+    try {
+      onChange({ ...sheet, columnWidths: { ...sheet.columnWidths, [col]: width } });
+      setClipboardNotice('');
+    } catch (cause) {
+      reportEditError(cause);
     }
   }
   function selectCell(row: number, col: number, extend = false) {
@@ -521,18 +845,33 @@ export default function Spreadsheet({
     if (!target) return;
     row = target.row;
     col = target.col;
+    closePicker(false);
     editSessionRef.current = true;
     onSelect({ row, col });
     ensureVisible(row, col);
-    setEditing({ row, col, text: initial ?? String(cellAt(cellKey(row, col))?.value ?? '') });
+    const draft = {
+      session: ++editEpoch.current,
+      row,
+      col,
+      text: initial ?? String(cellAt(cellKey(row, col))?.value ?? ''),
+    };
+    draftRef.current = draft;
+    editOwner.current = { ...currentEditContext.current };
+    composingRef.current = false;
+    compositionBlurRef.current = false;
+    setEditing(draft);
+    onDraftStateChange?.(
+      initial !== undefined && initial !== String(cellAt(cellKey(row, col))?.value ?? ''),
+    );
   }
   function commitEditing(rowDelta = 0, colDelta = 0, restoreFocus = true) {
-    if (!editing || !editSessionRef.current) return;
+    if (!ownsDraft() || !draftRef.current || composingRef.current) return false;
+    const draft = draftRef.current;
     editSessionRef.current = false;
-    const key = cellKey(editing.row, editing.col),
+    const key = cellKey(draft.row, draft.col),
       cell = cellAt(key),
-      value = typedValue(editing.text);
-    if (editing.text.length > 32767) {
+      value = parseCellInput(draft.text);
+    if (draft.text.length > 32767) {
       setClipboardNotice('单元格内容不能超过 32,767 个字符');
       editSessionRef.current = true;
       return false;
@@ -540,26 +879,27 @@ export default function Spreadsheet({
     if (
       cell?.value !== value &&
       (cell || value !== '') &&
-      !applyPatch([{ key, cell: { ...cell, value } }])
+      !applyPatch([{ key, cell: replaceCellText(cell, value) }])
     ) {
       editSessionRef.current = true;
-      if (restoreFocus) requestAnimationFrame(() => editRef.current?.focus());
+      if (restoreFocus) returnFocusNextFrame(editRef.current);
       return false;
     }
     setEditing(null);
+    onDraftStateChange?.(false);
     if (rowDelta || colDelta) {
       const next = moveVisibleCell(
         rowMetrics,
         metrics,
         merges,
-        editing.row,
-        editing.col,
+        draft.row,
+        draft.col,
         rowDelta,
         colDelta,
       );
       if (next) selectCell(next.row, next.col);
     }
-    if (restoreFocus) requestAnimationFrame(focusGrid);
+    if (restoreFocus) returnFocusNextFrame(viewportRef.current);
     return true;
   }
   function clearSelection() {
@@ -571,7 +911,7 @@ export default function Spreadsheet({
       if (cell) {
         if (changes.length >= MAX_INTERACTION_CELLS)
           throw new Error('单次清除最多支持 100,000 格，请缩小选区');
-        changes.push({ key, cell: cell.style ? { ...cell, value: '' } : null });
+        changes.push({ key, cell: cell.style ? { value: '', style: cell.style } : null });
       }
     };
     try {
@@ -611,7 +951,7 @@ export default function Spreadsheet({
     return true;
   }
   function handleCopy(event: ClipboardEvent<HTMLDivElement>) {
-    if (editing) return false;
+    if (event.defaultPrevented || editing) return false;
     event.preventDefault();
     if (!interactionReady()) return false;
     try {
@@ -675,7 +1015,7 @@ export default function Spreadsheet({
     }
   }
   function handlePaste(event: ClipboardEvent<HTMLDivElement>) {
-    if (editing || readOnly) return;
+    if (event.defaultPrevented || editing || readOnly) return;
     const text = event.clipboardData.getData('text/plain');
     if (!text && !event.clipboardData.types.includes('text/plain')) return;
     event.preventDefault();
@@ -735,14 +1075,14 @@ export default function Spreadsheet({
           const key = cellKey(point.row, point.col),
             source = internal?.cells[ri]?.[ci];
           const sourcePoint = internal?.coordinates[ri]?.[ci];
-          const original = internal ? (source?.value ?? '') : typedValue(text);
+          const original = internal ? (source?.value ?? '') : parseCellInput(text);
           const value =
             internal && sourcePoint && typeof original === 'string' && original.startsWith('=')
               ? translateFormula(original, point.row - sourcePoint.row, point.col - sourcePoint.col)
               : original;
           if (typeof value === 'string' && value.length > 32767)
             throw new Error('调整引用后的公式超过 32,767 个字符');
-          changes.push({ key, cell: { ...(internal ? source : cellAt(key)), value } });
+          changes.push({ key, cell: replaceCellText(internal ? source : cellAt(key), value) });
         }),
       );
       if (
@@ -759,12 +1099,35 @@ export default function Spreadsheet({
     }
   }
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.defaultPrevented) return;
     if (!editing && (event.key === 'Process' || event.nativeEvent.keyCode === 229)) {
       beginEditing(selection.row, selection.col, '');
       return;
     }
     if (editing || event.nativeEvent.isComposing || composingRef.current) return;
+    if (event.altKey && event.key === 'ArrowDown' && !event.ctrlKey && !event.metaKey) {
+      if (listLayout) {
+        event.preventDefault();
+        openPicker();
+      }
+      return;
+    }
     const ctrl = event.ctrlKey || event.metaKey;
+    if (ctrl && !event.altKey && !readOnly) {
+      const key = event.key.toLowerCase();
+      const action =
+        key === 'y' || (key === 'z' && event.shiftKey) ? onRedo : key === 'z' ? onUndo : undefined;
+      if (action) {
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+          action();
+        } catch (cause) {
+          reportEditError(cause);
+        }
+        return;
+      }
+    }
     if (ctrl && event.key.toLowerCase() === 'a') {
       event.preventDefault();
       onSelect({ row: 0, col: 0, endRow: rowCount - 1, endCol: colCount - 1 });
@@ -777,11 +1140,12 @@ export default function Spreadsheet({
       let targetRow = ctrl ? 0 : row,
         targetCol = event.key === 'Home' ? 0 : colCount - 1;
       if (ctrl && event.key === 'End') {
+        targetCol = 0;
         for (const key in sheet.cells) {
           const point = parseCellKey(key);
           if (point) {
             targetRow = Math.max(targetRow, point.row);
-            targetCol = Math.max(targetCol === colCount - 1 ? 0 : targetCol, point.col);
+            targetCol = Math.max(targetCol, point.col);
           }
         }
       }
@@ -900,7 +1264,14 @@ export default function Spreadsheet({
     };
   }
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
-    if (event.button !== 0) return;
+    if (editRef.current && event.target === editRef.current) return;
+    if (
+      event.button !== 0 ||
+      capturedPointer.current !== null ||
+      !matchesPointerContext(pointerContext)
+    )
+      return;
+    closePicker(false);
     const hit = hitTest(event.clientX, event.clientY);
     if (hit.row < 0 || hit.col < 0) return;
     if (hit.x * scale >= size.width || hit.y * scale >= size.height) return;
@@ -908,6 +1279,8 @@ export default function Spreadsheet({
     if (editing && commitEditing() === false) return;
     focusGrid();
     event.currentTarget.setPointerCapture(event.pointerId);
+    capturedPointer.current = event.pointerId;
+    pointerOwner.current = pointerContext;
     if (!readOnly && hit.header && hit.resizeCol >= 0 && !hit.corner) {
       resizeRef.current = {
         col: hit.resizeCol,
@@ -942,7 +1315,10 @@ export default function Spreadsheet({
     const rect = selectionRect();
     const fill =
       !readOnly && rect && Math.abs(hit.x - rect.right) <= 6 && Math.abs(hit.y - rect.bottom) <= 6;
-    if (fill && !interactionReady()) return;
+    if (fill && !interactionReady()) {
+      resetPointer();
+      return;
+    }
     pointerRef.current = {
       kind: fill ? 'fill' : 'select',
       row: event.shiftKey ? selection.row : hit.row,
@@ -954,6 +1330,12 @@ export default function Spreadsheet({
     if (!fill) selectCell(hit.row, hit.col, event.shiftKey);
   }
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (editRef.current && event.target === editRef.current) return;
+    if (capturedPointer.current !== null && capturedPointer.current !== event.pointerId) return;
+    if (capturedPointer.current !== null && !ownsPointer()) {
+      resetPointer();
+      return;
+    }
     const resize = resizeRef.current;
     if (resize) {
       resize.next = Math.max(48, Math.min(1000, resize.width + (event.clientX - resize.x) / scale));
@@ -994,14 +1376,22 @@ export default function Spreadsheet({
       viewport.scrollLeft = horizontal.toPhysical(horizontal.toLogical(viewport.scrollLeft) - 32);
   }
   function handlePointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (capturedPointer.current !== event.pointerId) return;
+    if (!ownsPointer()) {
+      resetPointer();
+      return;
+    }
+    // Clear ownership before release: lostpointercapture may be dispatched
+    // synchronously, and must not cancel this completed gesture.
+    capturedPointer.current = null;
+    pointerOwner.current = null;
     if (event.currentTarget.hasPointerCapture(event.pointerId))
       event.currentTarget.releasePointerCapture(event.pointerId);
     const resize = resizeRef.current;
     resizeRef.current = null;
     if (resize) {
       setTemporaryWidths({});
-      if (resize.width !== resize.next)
-        onChange({ ...sheet, columnWidths: { ...sheet.columnWidths, [resize.col]: resize.next } });
+      if (!readOnly && resize.width !== resize.next) setColumnWidth(resize.col, resize.next);
       return;
     }
     const drag = pointerRef.current;
@@ -1074,22 +1464,53 @@ export default function Spreadsheet({
       }
     applyPatch(changes);
   }
+  function cancelPointer(event: PointerEvent<HTMLDivElement>) {
+    if (capturedPointer.current !== event.pointerId) return;
+    resetPointer();
+  }
+  function resetPointer() {
+    const pointerId = capturedPointer.current;
+    capturedPointer.current = null;
+    pointerOwner.current = null;
+    pointerRef.current = null;
+    resizeRef.current = null;
+    setTemporaryWidths({});
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    viewport.style.cursor = '';
+    if (pointerId !== null && viewport.hasPointerCapture(pointerId))
+      viewport.releasePointerCapture(pointerId);
+  }
   function autoFitColumn(col: number) {
     if (readOnly) return;
     const ctx = canvasRef.current?.getContext('2d');
     if (!ctx) return;
-    ctx.save();
-    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     let width = 72;
-    // Auto-fit intentionally samples 1,000 rows so a million-row sheet stays interactive.
-    for (let row = 0; row < Math.min(rowCount, 1000); row++) {
-      const key = cellKey(row, col),
-        cell = cellAt(key);
-      if (cell)
-        width = Math.max(width, ctx.measureText(displayCell(cell, valueAt(key))).width + 32);
+    try {
+      ctx.save();
+      try {
+        // Auto-fit intentionally samples 1,000 rows so a million-row sheet stays interactive.
+        for (let row = 0; row < Math.min(rowCount, 1000); row++) {
+          const key = cellKey(row, col),
+            cell = cellAt(key);
+          if (cell) {
+            ctx.font = `${cell.style?.italic ? 'italic ' : ''}${cell.style?.bold ? '650 ' : ''}${cell.style?.fontSize ?? 12}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+            width = Math.max(
+              width,
+              (cell.richText
+                ? layoutRichText(ctx, cell)[0].width
+                : ctx.measureText(displayCell(cell, valueAt(key))).width) + 32,
+            );
+          }
+        }
+      } finally {
+        ctx.restore();
+      }
+    } catch (cause) {
+      reportEditError(cause);
+      return;
     }
-    ctx.restore();
-    onChange({ ...sheet, columnWidths: { ...sheet.columnWidths, [col]: Math.min(600, width) } });
+    setColumnWidth(col, Math.min(600, width));
   }
   // Canvas paint contains only the current viewport; a single offscreen input remains for IME and a11y.
   drawRef.current = () => {
@@ -1158,8 +1579,19 @@ export default function Spreadsheet({
       ctx.beginPath();
       ctx.rect(x + 1, y + 1, w - 2, h - 2);
       ctx.clip();
-      ctx.fillText(text, textX, y + h / 2);
-      if (cell?.style?.underline) {
+      if (cell?.richText)
+        drawRichTextLine(
+          ctx,
+          layoutRichText(ctx, cell)[0],
+          textX,
+          y + h / 2,
+          cell.style?.align ?? 'left',
+          1,
+          '#39443d',
+          1 / scale,
+        );
+      else ctx.fillText(text, textX, y + h / 2);
+      if (!cell?.richText && cell?.style?.underline) {
         const textWidth = ctx.measureText(text).width;
         const start =
           ctx.textAlign === 'right'
@@ -1410,19 +1842,29 @@ export default function Spreadsheet({
         ref={viewportRef}
         className="spreadsheet-viewport"
         tabIndex={0}
-        role="region"
-        aria-label={`${sheet.name}电子表格，使用方向键移动，输入内容或双击编辑`}
+        role="grid"
+        aria-label={`${sheet.name}电子表格，使用方向键移动，输入内容或双击编辑${listLayout ? '，Alt+向下键选择允许值' : ''}`}
+        aria-rowcount={rowCount}
+        aria-colcount={colCount}
+        aria-readonly={readOnly}
+        aria-multiselectable="true"
+        aria-activedescendant={activeId}
         onScroll={(event) => {
           const left = event.currentTarget.scrollLeft,
             top = event.currentTarget.scrollTop;
+          if (left !== scroll.left || top !== scroll.top) closePicker(false);
           setScroll((previous) => stableScrollPosition(previous, left, top));
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onPointerCancel={cancelPointer}
+        onLostPointerCapture={cancelPointer}
         onDoubleClick={(event) => {
+          if (editRef.current && event.target === editRef.current) return;
           const hit = hitTest(event.clientX, event.clientY);
           if (hit.row < 0 || hit.col < 0) return;
+          if (editing && commitEditing() === false) return;
           if (hit.header && hit.resizeCol >= 0) autoFitColumn(hit.resizeCol);
           else if (!hit.header && !hit.rowHeader && !hit.corner) beginEditing(hit.row, hit.col);
         }}
@@ -1445,11 +1887,21 @@ export default function Spreadsheet({
           />
           <div
             className="sheet-a11y-proxy"
-            role="gridcell"
+            role="row"
+            aria-rowindex={selection.row + 1}
             aria-live="polite"
-            aria-label={`${cellKey(selection.row, selection.col)} ${String(valueAt(cellKey(selection.row, selection.col)) ?? '')}`}
-            id={activeId}
-          />
+            aria-atomic="true"
+          >
+            <div
+              role="gridcell"
+              aria-rowindex={selection.row + 1}
+              aria-colindex={selection.col + 1}
+              aria-selected="true"
+              id={activeId}
+            >
+              {`${cellKey(selection.row, selection.col)} ${String(valueAt(cellKey(selection.row, selection.col)) ?? '')}${singleSelection ? '' : `，已选择 ${cellKey(bounds.top, bounds.left)}:${cellKey(bounds.bottom, bounds.right)}，${bounds.bottom - bounds.top + 1} 行 ${bounds.right - bounds.left + 1} 列`}`}
+            </div>
+          </div>
         </div>
         {editRect && editing && (
           <input
@@ -1463,18 +1915,50 @@ export default function Spreadsheet({
               height: editRect.height,
             }}
             value={editing.text}
-            onChange={(event) => setEditing({ ...editing, text: event.target.value })}
+            onChange={(event) => {
+              if (!ownsDraft()) return;
+              const next = { ...draftRef.current!, text: event.target.value };
+              draftRef.current = next;
+              setEditing(next);
+              onDraftStateChange?.(
+                next.text !== String(cellAt(cellKey(next.row, next.col))?.value ?? ''),
+              );
+            }}
             onBlur={() => {
-              if (!composingRef.current) commitEditing(0, 0, false);
+              if (!ownsDraft()) return;
+              if (composingRef.current) compositionBlurRef.current = true;
+              else commitEditing(0, 0, false);
+            }}
+            onFocus={() => {
+              if (ownsDraft()) compositionBlurRef.current = false;
             }}
             onCompositionStart={() => {
+              if (!ownsDraft()) return;
               composingRef.current = true;
+              compositionBlurRef.current = false;
             }}
-            onCompositionEnd={() => {
+            onCompositionEnd={(event) => {
+              if (!ownsDraft()) return;
               composingRef.current = false;
+              const next = { ...draftRef.current!, text: event.currentTarget.value };
+              draftRef.current = next;
+              setEditing(next);
+              onDraftStateChange?.(
+                next.text !== String(cellAt(cellKey(next.row, next.col))?.value ?? ''),
+              );
+              if (compositionBlurRef.current) {
+                compositionBlurRef.current = false;
+                commitEditing(0, 0, false);
+              }
             }}
             onKeyDown={(event) => {
-              if (event.nativeEvent.isComposing || composingRef.current) return;
+              if (
+                !ownsDraft() ||
+                event.nativeEvent.isComposing ||
+                event.nativeEvent.keyCode === 229 ||
+                composingRef.current
+              )
+                return;
               if (event.key === 'Enter') {
                 event.preventDefault();
                 event.stopPropagation();
@@ -1488,12 +1972,44 @@ export default function Spreadsheet({
                 event.stopPropagation();
                 editSessionRef.current = false;
                 setEditing(null);
-                requestAnimationFrame(focusGrid);
+                onDraftStateChange?.(false);
+                returnFocusNextFrame(viewportRef.current);
               }
             }}
           />
         )}
       </div>
+      {listLayout && (
+        <button
+          type="button"
+          className="sheet-validation-trigger"
+          aria-label={`选择 ${cellKey(selectedTarget!.row, selectedTarget!.col)} 的允许值`}
+          aria-haspopup="listbox"
+          aria-expanded={pickerVisible}
+          aria-keyshortcuts="Alt+ArrowDown"
+          title="选择允许值（Alt+↓）"
+          style={listLayout.trigger}
+          onPointerDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
+          onClick={() => (pickerVisible ? closePicker(true) : openPicker())}
+        >
+          <span aria-hidden="true">▾</span>
+        </button>
+      )}
+      {pickerVisible && picker && listLayout && listOptions && (
+        <ValidationPicker
+          key={`${picker.workbookId}:${picker.sheetId}:${picker.row}:${picker.col}`}
+          address={cellKey(picker.row, picker.col)}
+          values={listOptions.values}
+          unsupportedFormulaCount={listOptions.unsupportedFormulaCount}
+          currentValue={valueAt(cellKey(picker.row, picker.col))}
+          {...listLayout.picker}
+          onChoose={chooseValidationValue}
+          onClose={closePicker}
+        />
+      )}
       {filterPending && (
         <div className="sheet-filter-status" role="status">
           正在筛选…

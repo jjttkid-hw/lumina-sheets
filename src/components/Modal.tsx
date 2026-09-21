@@ -15,6 +15,7 @@ export default function Modal({
   wide?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const composing = useRef(false);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
   useEffect(() => {
@@ -23,17 +24,40 @@ export default function Modal({
     const nodes = () =>
       Array.from(
         element?.querySelectorAll<HTMLElement>(
-          'button,input,select,textarea,a[href],[tabindex="0"]',
+          'button,input,select,textarea,a[href],[tabindex],[contenteditable="true"]',
         ) || [],
-      ).filter((n) => !n.hasAttribute('disabled'));
-    nodes()[0]?.focus();
+      )
+        .filter((node) => {
+          if (
+            node.tabIndex < 0 ||
+            node.matches(':disabled') ||
+            node.closest('[hidden],[inert],[aria-hidden="true"]') ||
+            !node.getClientRects().length
+          )
+            return false;
+          const visibility = getComputedStyle(node).visibility;
+          return visibility !== 'hidden' && visibility !== 'collapse';
+        })
+        // Match native sequential focus order: positive tabindex first, then 0.
+        .sort((a, b) => (a.tabIndex || Infinity) - (b.tabIndex || Infinity));
+    (nodes()[0] ?? element)?.focus();
     const key = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || composing.current || e.isComposing || e.keyCode === 229) return;
       if (e.key === 'Escape') onCloseRef.current();
       if (e.key === 'Tab') {
         const list = nodes(),
           first = list[0],
           last = list.at(-1);
-        if (e.shiftKey && document.activeElement === first) {
+        if (!first) {
+          e.preventDefault();
+          element?.focus();
+        } else if (
+          !element?.contains(document.activeElement) ||
+          document.activeElement === element
+        ) {
+          e.preventDefault();
+          (e.shiftKey ? last : first)?.focus();
+        } else if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
           last?.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -60,7 +84,29 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
+        tabIndex={-1}
         ref={ref}
+        onCompositionStartCapture={() => {
+          composing.current = true;
+        }}
+        onCompositionEndCapture={() => {
+          composing.current = false;
+        }}
+        onKeyDownCapture={(event) => {
+          if (
+            event.key === 'Enter' &&
+            (composing.current ||
+              event.nativeEvent.isComposing ||
+              event.nativeEvent.keyCode === 229)
+          )
+            event.preventDefault();
+        }}
+        onSubmitCapture={(event) => {
+          if (composing.current) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }}
       >
         <div className="modal-heading">
           <div>

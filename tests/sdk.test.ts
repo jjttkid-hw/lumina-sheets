@@ -124,6 +124,22 @@ describe('embeddable SDK edit controller', () => {
     expect(instance.getValue('A1')).toBe(2);
   });
 
+  it('preserves hyperlink metadata across SDK edits and undo without sharing caller objects', () => {
+    const { instance } = make();
+    const hyperlink = { target: 'https://example.com', tooltip: 'source' };
+    instance.setCells([{ key: 'A1', cell: { value: 'link', hyperlink } }]);
+    hyperlink.target = 'changed';
+    expect(instance.activeSheet.cells.A1.hyperlink?.target).toBe('https://example.com');
+    instance.setCell('A1', 'new label');
+    expect(instance.activeSheet.cells.A1.hyperlink?.tooltip).toBe('source');
+    instance.undo();
+    expect(instance.getValue('A1')).toBe('link');
+    expect(instance.activeSheet.cells.A1.hyperlink?.target).toBe('https://example.com');
+    expect(() => instance.setCell('A1', 42)).toThrow('普通文本');
+    instance.setCells([{ key: 'A1', cell: { value: 42 } }]);
+    expect(instance.activeSheet.cells.A1.hyperlink).toBeUndefined();
+  });
+
   it('isolates and tracks row heights and hidden axes through metadata undo', () => {
     const { instance } = make();
     const next = {
@@ -419,3 +435,265 @@ describe('SDK paged source lifecycle', () => {
     expect(mounting.unmount).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('SDK synchronous data subscriber reentry', () => {
+  it.each(['load', 'destroy', 'rebind'] as const)(
+    'cancels the original initial request when a subscriber performs %s',
+    async (action) => {
+      const { instance } = make();
+      const oldFetch = vi.fn(async () => ({ rows: [[1]], totalRows: 1 }));
+      const nextFetch = vi.fn(async () => ({ rows: [[9]], totalRows: 1 }));
+      let reacted = false;
+      let replacement: Promise<void> | undefined;
+      instance.subscribe(() => {
+        if (reacted) return;
+        reacted = true;
+        if (action === 'destroy') instance.destroy();
+        else if (action === 'load') {
+          const next = createBlankWorkbook();
+          next.sheets[0].cells.A1 = { value: 'replacement' };
+          instance.load(next);
+        } else
+          replacement = instance.bindData({ columnCount: 1, rowCount: 1, fetchPage: nextFetch });
+      });
+      let binding!: Promise<void>;
+      expect(() => {
+        binding = instance.bindData({ columnCount: 1, rowCount: 1, fetchPage: oldFetch });
+      }).not.toThrow();
+      await expect(binding).rejects.toHaveProperty('name', 'AbortError');
+      expect(oldFetch).not.toHaveBeenCalled();
+      if (replacement) await replacement;
+      if (action === 'load') {
+        expect(instance.getValue('A1')).toBe('replacement');
+        expect(instance.dataSourceState.status).toBe('idle');
+      } else if (action === 'rebind') {
+        expect(instance.getValue('A1')).toBe(9);
+        expect(instance.dataSourceState.status).toBe('ready');
+      }
+    },
+  );
+  it('does not overwrite replacement state when an empty source is replaced synchronously', async () => {
+    const { instance } = make();
+    const page = deferred<ReportPage>();
+    let replacement: Promise<void> | undefined;
+    let once = false;
+    instance.subscribe(() => {
+      if (once) return;
+      once = true;
+      replacement = instance.bindData({
+        columnCount: 1,
+        rowCount: 1,
+        fetchPage: () => page.promise,
+      });
+    });
+    await expect(
+      instance.bindData({ columnCount: 1, rowCount: 0, fetchPage: vi.fn() }),
+    ).rejects.toHaveProperty('name', 'AbortError');
+    expect(instance.dataSourceState.status).toBe('loading');
+    expect(instance.dataSourceState.rowCount).toBe(1);
+    page.resolve({ rows: [[7]], totalRows: 1 });
+    await replacement;
+    expect(instance.getValue('A1')).toBe(7);
+  });
+  it.each(['destroy', 'rebind'] as const)(
+    'cache clearing stops after subscriber %s',
+    async (action) => {
+      const { instance } = make();
+      await instance.bindData({
+        columnCount: 1,
+        rowCount: 1,
+        fetchPage: async () => ({ rows: [[1]], totalRows: 1 }),
+      });
+      const nextFetch = vi.fn(async () => ({ rows: [[2]], totalRows: 1 }));
+      let once = false,
+        replacement: Promise<void> | undefined;
+      instance.subscribe(() => {
+        if (once) return;
+        once = true;
+        if (action === 'destroy') instance.destroy();
+        else replacement = instance.bindData({ columnCount: 1, rowCount: 1, fetchPage: nextFetch });
+      });
+      expect(() => instance.clearDataCache()).not.toThrow();
+      if (replacement) {
+        await replacement;
+        expect(instance.getValue('A1')).toBe(2);
+        expect(nextFetch).toHaveBeenCalledTimes(1);
+      }
+    },
+  );
+});
+
+it('does not abort a replacement initial request when cancelling the old viewport notifies a subscriber', async () => {
+  const { instance } = make();
+  const oldFetch = vi.fn(async (offset: number): Promise<ReportPage> => {
+    if (offset === 0) return { rows: [[1]], totalRows: 100 };
+    return new Promise(() => {});
+  });
+  await instance.bindData(
+    { columnCount: 1, rowCount: 100, fetchPage: oldFetch },
+    { pageSize: 1, maxPages: 1 },
+  );
+  instance.viewport({ firstRow: 40, lastRow: 40 });
+  await Promise.resolve();
+  let replacement: Promise<void> | undefined;
+  let once = false;
+  instance.subscribe(() => {
+    if (once) return;
+    once = true;
+    replacement = instance.bindData({
+      columnCount: 1,
+      rowCount: 1,
+      fetchPage: async () => ({ rows: [[8]], totalRows: 1 }),
+    });
+  });
+  instance.clearDataCache();
+  expect(replacement).toBeDefined();
+  await replacement;
+  expect(instance.getValue('A1')).toBe(8);
+});
+
+it('exports frozen paged formula text literally, with CSV escaping and consistent dependent results', async () => {
+  const book = createBlankWorkbook('paged CSV');
+  book.sheets[0].name = 'Data';
+  book.sheets.push({
+    id: 'summary',
+    name: 'Summary',
+    rowCount: 300,
+    colCount: 3,
+    cells: {
+      A1: { value: '=Data!A1' },
+      B1: { value: '=A1&"!"' },
+      C1: { value: '=Data!A2' },
+      A2: { value: '=Data!A3' },
+      B2: { value: '=IFERROR(Data!A99,"unavailable")' },
+      A300: { value: '=Data!A1' },
+    },
+  });
+  const { instance } = make({ workbook: book });
+  await instance.bindData(
+    {
+      columnCount: 1,
+      rowCount: 100,
+      fetchPage: async (offset, limit) =>
+        offset === 0
+          ? { rows: [['=1+1'], [false], [0]], totalRows: 100 }
+          : { rows: Array.from({ length: limit }, () => ['replacement']), totalRows: 100 },
+    },
+    { pageSize: 3, maxPages: 1 },
+  );
+  instance.setActiveSheet('summary');
+  const link = { href: '', download: '', click: vi.fn(), remove: vi.fn() };
+  vi.stubGlobal('document', { createElement: () => link, body: { append() {} } });
+  const createUrl = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:test');
+  try {
+    let once = false;
+    await instance.export('csv', {
+      onProgress() {
+        if (once) return;
+        once = true;
+        instance.setActiveSheet(book.sheets[0].id);
+        instance.viewport({ firstRow: 60, lastRow: 62 });
+      },
+    });
+    const csv = await (createUrl.mock.calls[0][0] as Blob).text();
+    expect(csv.startsWith("'=1+1,'=1+1!,FALSE\r\n0,unavailable,\r\n")).toBe(true);
+    expect(csv.endsWith("'=1+1,,\r\n")).toBe(true);
+    expect(link.click).toHaveBeenCalledOnce();
+    instance.setActiveSheet('summary');
+    expect(instance.getCell('A1')?.value).toBe('=Data!A1');
+    expect(instance.getValue('A1')).toBe('#N/A');
+  } finally {
+    createUrl.mockRestore();
+  }
+});
+
+it.each(['load', 'bind'] as const)(
+  'preserves replacement ownership when %s cancels a source that rebinds',
+  async (action) => {
+    const { instance } = make();
+    let replacement: Promise<void> | undefined;
+    let sourceStarted!: () => void;
+    const started = new Promise<void>((resolve) => {
+      sourceStarted = resolve;
+    });
+    const freshFetch = vi.fn(async () => ({ rows: [[99]], totalRows: 1 }));
+    const old = instance
+      .bindData({
+        columnCount: 1,
+        rowCount: 1,
+        fetchPage: async (_offset, _limit, signal) => {
+          signal?.addEventListener(
+            'abort',
+            () => {
+              replacement = instance.bindData({
+                columnCount: 1,
+                rowCount: 1,
+                fetchPage: freshFetch,
+              });
+            },
+            { once: true },
+          );
+          sourceStarted();
+          return new Promise(() => {});
+        },
+      })
+      .catch((error) => error);
+    await started;
+    const supersededFetch = vi.fn(async () => ({ rows: [[2]], totalRows: 1 }));
+    let superseded: Promise<void> | undefined;
+    if (action === 'load') instance.load(createBlankWorkbook('superseded'));
+    else
+      superseded = instance.bindData({ columnCount: 1, rowCount: 1, fetchPage: supersededFetch });
+    const settled = superseded?.catch((error) => error);
+    await replacement;
+    expect(await old).toMatchObject({ name: 'AbortError' });
+    if (settled) expect(await settled).toMatchObject({ name: 'AbortError' });
+    expect(instance.getValue('A1')).toBe(99);
+    expect(instance.dataSourceState.status).toBe('ready');
+    expect(freshFetch).toHaveBeenCalledOnce();
+    expect(supersededFetch).not.toHaveBeenCalled();
+  },
+);
+
+it.each(['load', 'destroy'] as const)(
+  'stops pending binding cleanup when a source abort callback performs %s',
+  async (action) => {
+    const { instance } = make();
+    const replacement = createBlankWorkbook('from cancellation');
+    replacement.sheets[0].cells.A1 = { value: 88 };
+    let started!: () => void;
+    const ready = new Promise<void>((resolve) => {
+      started = resolve;
+    });
+    const old = instance
+      .bindData({
+        columnCount: 1,
+        rowCount: 1,
+        fetchPage: async (_offset, _limit, signal) => {
+          signal?.addEventListener(
+            'abort',
+            () => {
+              if (action === 'load') instance.load(replacement);
+              else instance.destroy();
+            },
+            { once: true },
+          );
+          started();
+          return new Promise(() => {});
+        },
+      })
+      .catch((error) => error);
+    await ready;
+    const fetchPage = vi.fn(async () => ({ rows: [[2]] }));
+    await expect(
+      instance.bindData({ columnCount: 1, rowCount: 1, fetchPage }),
+    ).rejects.toMatchObject({ name: 'AbortError' });
+    expect(await old).toMatchObject({ name: 'AbortError' });
+    expect(fetchPage).not.toHaveBeenCalled();
+    if (action === 'load') {
+      expect(instance.toJSON()).toEqual(replacement);
+      expect(instance.dataSourceState.status).toBe('idle');
+    } else
+      expect(() => instance.toJSON()).toThrowError(expect.objectContaining({ code: 'DESTROYED' }));
+  },
+);

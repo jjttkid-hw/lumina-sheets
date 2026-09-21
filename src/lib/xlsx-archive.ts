@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { SaxesParser } from 'saxes';
+import { awaitFileOperation } from './file-operation';
 
 export interface XmlElement {
   name: string;
@@ -55,7 +56,7 @@ export function xmlElement(
 ): XmlElement {
   return { name, qualifiedName: name, uri: MAIN, attributes, children };
 }
-export function parseXlsxXml(source: string): XmlElement {
+function xlsxXmlParser() {
   const parser = new SaxesParser({ xmlns: true });
   let root: XmlElement | undefined;
   const stack: XmlElement[] = [];
@@ -97,9 +98,35 @@ export function parseXlsxXml(source: string): XmlElement {
   parser.on('closetag', () => {
     stack.pop();
   });
-  parser.write(source).close();
-  if (!root) fail('XML 缺少根元素。');
-  return root;
+  return {
+    parser,
+    finish() {
+      parser.close();
+      if (!root) return fail('XML 缺少根元素。');
+      return root;
+    },
+  };
+}
+export function parseXlsxXml(source: string): XmlElement {
+  const task = xlsxXmlParser();
+  task.parser.write(source);
+  return task.finish();
+}
+/** Feed the same strict parser incrementally, allowing browser tasks to cancel large parts. */
+export async function parseXlsxXmlAsync(source: string, signal?: AbortSignal): Promise<XmlElement> {
+  signal?.throwIfAborted();
+  const task = xlsxXmlParser();
+  const chunkSize = 128 * 1024;
+  for (let offset = 0; offset < source.length; offset += chunkSize) {
+    signal?.throwIfAborted();
+    task.parser.write(source.slice(offset, offset + chunkSize));
+    if (offset + chunkSize < source.length) {
+      const turn = new Promise<void>((resolve) => setTimeout(resolve, 0));
+      await (signal ? awaitFileOperation(turn, signal) : turn);
+    }
+  }
+  signal?.throwIfAborted();
+  return task.finish();
 }
 function escape(value: string, attribute = false): string {
   const escaped = value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
@@ -109,7 +136,8 @@ function escape(value: string, attribute = false): string {
         .replaceAll('\r', '&#13;')
         .replaceAll('\n', '&#10;')
         .replaceAll('\t', '&#9;')
-    : escaped;
+    : // XML normalizes literal CR and CRLF; a character reference preserves CR.
+      escaped.replaceAll('\r', '&#13;');
 }
 export function serializeXml(element: XmlElement): string {
   const attrs = Object.entries(element.attributes)
@@ -162,11 +190,16 @@ function relationshipPath(path: string): string {
   const file = pieces.pop()!;
   return [...pieces, '_rels', `${file}.rels`].join('/');
 }
-async function boundedBytes(file: JSZip.JSZipObject, limit: number): Promise<Uint8Array> {
+async function boundedBytes(
+  file: JSZip.JSZipObject,
+  limit: number,
+  signal?: AbortSignal,
+): Promise<Uint8Array> {
+  signal?.throwIfAborted();
   return new Promise<Uint8Array>((resolve, reject) => {
     const chunks: Uint8Array[] = [];
     let length = 0,
-      failed = false;
+      settled = false;
     const stream = (
       file as unknown as {
         internalStream(type: string): {
@@ -176,40 +209,66 @@ async function boundedBytes(file: JSZip.JSZipObject, limit: number): Promise<Uin
         };
       }
     ).internalStream('uint8array');
+    const cleanup = () => signal?.removeEventListener('abort', abort);
+    const stop = (error: unknown) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      chunks.length = 0;
+      try {
+        stream.pause();
+      } catch {
+        /* Preserve the initiating failure. */
+      }
+      reject(error);
+    };
+    const abort = () => stop(new DOMException('文件操作已取消。', 'AbortError'));
     stream.on('data', (chunk: Uint8Array) => {
-      if (failed) return;
+      if (settled) return;
       length += chunk.length;
       if (length > limit) {
-        failed = true;
-        stream.pause();
-        chunks.length = 0;
-        reject(new Error('XLSX：实际解压体积超过安全限制。'));
+        stop(new Error('XLSX：实际解压体积超过安全限制。'));
         return;
       }
       chunks.push(chunk);
     });
-    stream.on('error', reject);
+    stream.on('error', stop);
     stream.on('end', () => {
-      if (failed) return;
-      const result = new Uint8Array(length);
-      let offset = 0;
-      for (const chunk of chunks) {
-        result.set(chunk, offset);
-        offset += chunk.length;
+      if (settled) return;
+      try {
+        const result = new Uint8Array(length);
+        let offset = 0;
+        for (const chunk of chunks) {
+          result.set(chunk, offset);
+          offset += chunk.length;
+        }
+        settled = true;
+        cleanup();
+        chunks.length = 0;
+        resolve(result);
+      } catch (error) {
+        stop(error);
       }
-      resolve(result);
     });
-    stream.resume();
+    signal?.addEventListener('abort', abort, { once: true });
+    if (signal?.aborted) abort();
+    else {
+      try {
+        stream.resume();
+      } catch (error) {
+        stop(error);
+      }
+    }
   });
 }
-function decodeXml(bytes: Uint8Array): XmlElement {
+async function decodeXml(bytes: Uint8Array, signal?: AbortSignal): Promise<XmlElement> {
   let text: string;
   try {
     text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
   } catch {
     return fail('XML 必须为 UTF-8。');
   }
-  return parseXlsxXml(text);
+  return parseXlsxXmlAsync(text, signal);
 }
 function relations(xml: XmlElement) {
   if (xml.name !== 'Relationships' || xml.uri !== REL) fail('关系 XML 命名空间无效。');
@@ -235,13 +294,20 @@ function internalTarget(item: XmlElement, source: string, expected: string): str
   return resolveTarget(source, item.attributes.Target);
 }
 /** Bounded ZIP/XML preflight, before ExcelJS can expand worksheet features. */
-export async function readXlsxArchive(buffer: ArrayBuffer | Uint8Array): Promise<XlsxArchive> {
+export async function readXlsxArchive(
+  buffer: ArrayBuffer | Uint8Array,
+  signal?: AbortSignal,
+): Promise<XlsxArchive> {
+  signal?.throwIfAborted();
   if (buffer.byteLength > XLSX_ARCHIVE_LIMITS.compressedBytes) fail('压缩文件超过 20 MB。');
-  const incoming = await JSZip.loadAsync(buffer);
+  const work = JSZip.loadAsync(buffer);
+  const incoming = await (signal ? awaitFileOperation(work, signal) : work);
+  signal?.throwIfAborted();
   const files = Object.values(incoming.files);
   if (files.length > XLSX_ARCHIVE_LIMITS.entries) fail('ZIP 部件数量超过限制。');
   let total = 0;
   for (const file of files) {
+    signal?.throwIfAborted();
     safeZipPath(file.name);
     const original = (file as unknown as { unsafeOriginalName?: string }).unsafeOriginalName;
     if (original) safeZipPath(original);
@@ -262,16 +328,19 @@ export async function readXlsxArchive(buffer: ArrayBuffer | Uint8Array): Promise
   const xmlParts = new Map<string, XmlElement>();
   let actualTotal = 0;
   for (const file of files) {
+    signal?.throwIfAborted();
     if (file.dir) continue;
     const isXml = /\.(?:xml|rels)$/i.test(file.name);
     const remaining = XLSX_ARCHIVE_LIMITS.uncompressedBytes - actualTotal;
     const bytes = await boundedBytes(
       file,
       Math.min(remaining, isXml ? XLSX_ARCHIVE_LIMITS.xmlBytes : remaining),
+      signal,
     );
+    signal?.throwIfAborted();
     actualTotal += bytes.length;
     zip.file(file.name, bytes);
-    if (isXml) xmlParts.set(file.name, decodeXml(bytes));
+    if (isXml) xmlParts.set(file.name, await decodeXml(bytes, signal));
   }
   const readXml = (path: string): XmlElement =>
     xmlParts.get(path) ?? fail(`缺少 XML 部件 ${path}。`);

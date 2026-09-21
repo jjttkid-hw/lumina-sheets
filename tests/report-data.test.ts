@@ -191,6 +191,63 @@ describe('paged report data binding', () => {
     expect(cache.errorAt(0)).toBeInstanceOf(Error);
   });
 
+  it.each(['source', 'response', 'cached'])(
+    'rejects short interior pages with a total from %s and permits retry',
+    async (kind) => {
+      let incomplete = true;
+      const fetchPage = vi.fn(async (offset: number, limit: number) => ({
+        rows: Array.from({ length: incomplete && offset === 4 ? 1 : limit }, (_, i) => [
+          offset + i,
+        ]),
+        ...(kind !== 'source' && offset === 0 ? { totalRows: 10 } : {}),
+        ...(kind === 'response' && offset === 4 ? { totalRows: 10 } : {}),
+      }));
+      const cache = new ReportChunkCache(
+        { columnCount: 1, fetchPage, ...(kind === 'source' ? { rowCount: 10 } : {}) },
+        { pageSize: 4 },
+      );
+      if (kind === 'cached') await cache.getPage(0);
+      const size = cache.size;
+      await expect(cache.getPage(1)).rejects.toThrow('缺行');
+      expect(cache.size).toBe(size);
+      expect(cache.peekRow(4)).toBeUndefined();
+      expect(cache.loading).toBe(0);
+      expect(cache.errorAt(4)?.message).toContain('缺行');
+      incomplete = false;
+      expect((await cache.getPage(1)).rows).toEqual([[4], [5], [6], [7]]);
+      expect(cache.errorAt(4)).toBeUndefined();
+      cache.dispose();
+    },
+  );
+
+  it('does not commit a new total when its response has missing rows', async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({ rows: [[1]], totalRows: 10 })
+      .mockResolvedValueOnce({ rows: [[1], [2]], totalRows: 2 });
+    const cache = new ReportChunkCache({ columnCount: 1, fetchPage }, { pageSize: 4 });
+    await expect(cache.getPage(0)).rejects.toThrow('缺行');
+    expect(cache.rowCount).toBeUndefined();
+    expect(cache.size).toBe(0);
+    await cache.getPage(0);
+    expect(cache.rowCount).toBe(2);
+    expect(cache.read(1, 0)).toBe(2);
+    cache.dispose();
+  });
+
+  it('keeps unknown-total short pages and explicit shrink beyond the requested offset valid', async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({ rows: [[1]] })
+      .mockResolvedValueOnce({ rows: [], totalRows: 2 });
+    const cache = new ReportChunkCache({ columnCount: 1, fetchPage }, { pageSize: 4 });
+    await cache.getPage(0);
+    expect(cache.rowCount).toBeUndefined();
+    await cache.getPage(2);
+    expect(cache.rowCount).toBe(2);
+    cache.dispose();
+  });
+
   it('handles a partial final page and never fetches beyond the known end', async () => {
     const fetchPage = vi.fn(async (_offset: number, limit: number) => ({
       rows: [[5]].slice(0, limit),

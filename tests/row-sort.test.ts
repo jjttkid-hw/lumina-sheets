@@ -27,6 +27,28 @@ const applied = (source: Sheet, plan: ReturnType<typeof planRowSort>) => {
 };
 
 describe('atomic sparse row sorting', () => {
+  it.each(['target', 'tooltip', 'absent'] as const)(
+    'moves identical labels with different link %s metadata',
+    (difference) => {
+      const first = { target: 'https://example.com/first', tooltip: 'first' };
+      const second = difference === 'absent' ? undefined : { ...first, [difference]: 'second' };
+      const source = sheet({
+        A1: { value: 2 },
+        A2: { value: 1 },
+        B1: { value: 'details', hyperlink: first },
+        B2: { value: 'details', ...(second ? { hyperlink: second } : {}) },
+      });
+      const before = structuredClone(source);
+      const plan = planRowSort(source, request(2), values(source));
+      const result = applied(source, plan);
+      expect(result.B1.hyperlink).toEqual(second);
+      expect(result.B2.hyperlink).toEqual(first);
+      expect(plan.changes.map((change) => change.key)).toContain('B1');
+      expect(plan.changes.map((change) => change.key)).toContain('B2');
+      result.B2.hyperlink!.target = 'mutated candidate';
+      expect(source).toEqual(before);
+    },
+  );
   it('stably orders multiple keys and reads each row/key at most once', () => {
     const source = sheet({
       A1: { value: '组2' },

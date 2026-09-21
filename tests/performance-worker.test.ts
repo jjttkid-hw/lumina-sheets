@@ -42,6 +42,14 @@ describe('performance laboratory worker', () => {
       firstValue: 5,
       lastValue: 50_000,
     });
+    send({
+      type: 'calculate',
+      id: 99,
+      get targetCount(): number {
+        throw Error('calculation failed');
+      },
+    });
+    expect(messages.at(-1)).toEqual({ type: 'error', id: 99, message: 'calculation failed' });
     send({ type: 'patch', changes: [{ key: 'A1', cell: { value: 10 } }] });
     send({ type: 'calculate', id: 2, targetCount: 1 });
     expect(messages.at(-1)).toMatchObject({

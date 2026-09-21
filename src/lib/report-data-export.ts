@@ -5,6 +5,8 @@ import type { ReportDataSource, ReportPage, ReportRow } from './report-data';
 export interface ReportDataCsvOptions {
   /** Maximum requested rows per page (default 256). */
   pageSize?: number;
+  /** UTF-16 text units per page; default 8,000,000, maximum 32,000,000. */
+  maxPageTextUnits?: number;
   /** A scan ceiling, never a truncation limit (default spreadsheet MAX_ROWS). */
   maxRows?: number;
   delimiter?: string;
@@ -58,7 +60,13 @@ async function yieldTask(signal?: AbortSignal): Promise<void> {
   await abortable(new Promise<void>((resolve) => setTimeout(resolve, 0)), signal);
   checkAbort(signal);
 }
-function validatePage(raw: unknown, offset: number, limit: number, columns: number): ReportPage {
+function validatePage(
+  raw: unknown,
+  offset: number,
+  limit: number,
+  columns: number,
+  maxTextUnits: number,
+): ReportPage {
   if (!raw || typeof raw !== 'object' || !('rows' in raw) || !Array.isArray(raw.rows))
     throw new TypeError('CSV 分页响应必须包含 rows 数组。');
   if (raw.rows.length > limit) throw new RangeError('CSV 分页响应行数超过请求数量。');
@@ -68,18 +76,33 @@ function validatePage(raw: unknown, offset: number, limit: number, columns: numb
     integer(totalRows, 0, MAX_ROWS, 'CSV 数据源总行数');
     if (offset + raw.rows.length > totalRows) throw new RangeError('CSV 分页内容超过声明总行数。');
   }
+  const rows: ReportRow[] = [];
+  let textUnits = 0;
   for (const row of raw.rows) {
     if (!Array.isArray(row) || row.length > columns)
       throw new TypeError('CSV 数据行必须为数组，且不得超过数据源列数。');
-    for (const value of row)
+    const values: ReportRow = [];
+    for (const value of row) {
       if (
         !['string', 'number', 'boolean'].includes(typeof value) ||
         (typeof value === 'number' && !Number.isFinite(value)) ||
         (typeof value === 'string' && value.length > 32767)
       )
         throw new TypeError('CSV 单元格必须是有限数字、布尔值或不超过 32,767 字符的文本。');
+      if (typeof value === 'string') {
+        textUnits += value.length;
+        if (textUnits > maxTextUnits)
+          throw new RangeError(
+            'CSV 分页文本超过 maxPageTextUnits 容量，请减小 pageSize 或调整文本上限。',
+          );
+      }
+      values.push(value);
+    }
+    rows.push(values);
   }
-  return { rows: raw.rows as ReportRow[], ...(totalRows !== undefined ? { totalRows } : {}) };
+  // Serialization yields to the host. Retain the values validated here, not
+  // producer-owned arrays that may be reused or mutated between chunks.
+  return { rows, ...(totalRows !== undefined ? { totalRows } : {}) };
 }
 
 /**
@@ -96,6 +119,12 @@ export async function* iterateReportCsvChunks(
   const columns = integer(source.columnCount, 1, MAX_COLUMNS, 'CSV 数据源列数');
   if (typeof source.fetchPage !== 'function') throw new TypeError('CSV 数据源必须提供 fetchPage。');
   const pageSize = integer(options.pageSize ?? 256, 1, MAX_ROWS, 'CSV 分页大小');
+  const maxPageTextUnits = integer(
+    options.maxPageTextUnits ?? 8_000_000,
+    1,
+    32_000_000,
+    'CSV 单页文本上限',
+  );
   const maxRows = integer(options.maxRows ?? MAX_ROWS, 1, MAX_ROWS, 'CSV 最大扫描行数');
   // Bound source page allocation by cell count even for very wide tables.
   const effectivePageSize = Math.min(pageSize, Math.max(1, Math.floor(100_000 / columns)));
@@ -112,7 +141,9 @@ export async function* iterateReportCsvChunks(
   let prefix = options.includeBom === false ? '' : '\uFEFF';
   if (totalRows === 0) {
     options.onProgress?.(0, 0);
+    checkAbort(options.signal);
     if (prefix) yield prefix;
+    checkAbort(options.signal);
     return { rows: 0, columns };
   }
   while (totalRows === undefined || offset < totalRows) {
@@ -126,7 +157,13 @@ export async function* iterateReportCsvChunks(
       checkAbort(options.signal);
       return source.fetchPage(offset, limit, options.signal);
     });
-    const page = validatePage(await abortable(request, options.signal), offset, limit, columns);
+    const page = validatePage(
+      await abortable(request, options.signal),
+      offset,
+      limit,
+      columns,
+      maxPageTextUnits,
+    );
     checkAbort(options.signal);
     if (page.totalRows !== undefined) {
       if (totalRows !== undefined && totalRows !== page.totalRows)
@@ -142,14 +179,17 @@ export async function* iterateReportCsvChunks(
     for (let rowIndex = 0; rowIndex < page.rows.length; rowIndex++) {
       checkAbort(options.signal);
       const row = page.rows[rowIndex];
-      const fields: string[] = [];
-      for (let col = 0; col < columns; col++) fields.push(csvField(row[col] ?? '', delimiter));
-      chunk += fields.join(delimiter) + lineEnding;
-      if (chunk.length >= 256 * 1024) {
-        yield chunk;
-        chunk = '';
-        await yieldTask(options.signal);
+      for (let col = 0; col < columns; col++) {
+        chunk += (col ? delimiter : '') + csvField(row[col] ?? '', delimiter);
+        // Flush only between fields, preserving surrogate pairs within strings.
+        // A wide row must not become one unbounded intermediate string/array.
+        if (chunk.length >= 256 * 1024) {
+          yield chunk;
+          chunk = '';
+          await yieldTask(options.signal);
+        } else if (col % 256 === 255) await yieldTask(options.signal);
       }
+      chunk += lineEnding;
       // Real task yielding allows AbortSignal events and UI input to run during serialization.
       if (rowIndex % 32 === 31) await yieldTask(options.signal);
     }
@@ -158,6 +198,7 @@ export async function* iterateReportCsvChunks(
     options.onProgress?.(offset, totalRows ?? (reachedEnd ? offset : undefined));
     checkAbort(options.signal);
     if (chunk) yield chunk;
+    checkAbort(options.signal);
     if (reachedEnd) return { rows: offset, columns };
     await yieldTask(options.signal);
   }
@@ -169,31 +210,57 @@ export function reportDataCsvReadableStream(
   source: ReportDataSource,
   options: ReportDataCsvOptions = {},
 ): ReadableStream<Uint8Array> {
-  const controller = new AbortController();
-  const externalAbort = () => controller.abort();
-  options.signal?.addEventListener('abort', externalAbort, { once: true });
-  if (options.signal?.aborted) controller.abort();
-  const cleanup = () => options.signal?.removeEventListener('abort', externalAbort);
-  const iterator = iterateReportCsvChunks(source, { ...options, signal: controller.signal });
+  const cancellation = new AbortController();
   const encoder = new TextEncoder();
+  const iterator = iterateReportCsvChunks(source, { ...options, signal: cancellation.signal });
+  let finished = false;
+  let cleaned = false;
+  let streamController: ReadableStreamDefaultController<Uint8Array>;
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
+    options.signal?.removeEventListener('abort', externalAbort);
+  };
+  const finishIterator = () => iterator.return({ rows: 0, columns: 0 });
+  const externalAbort = () => {
+    if (finished) return;
+    finished = true;
+    cleanup();
+    cancellation.abort();
+    // Error the stream even while no pull is pending. Otherwise reader.closed
+    // never settles and a suspended generator retains its current page/chunk.
+    streamController.error(abortError());
+    void finishIterator().catch(() => {});
+  };
   return new ReadableStream<Uint8Array>(
     {
-      async pull(streamController) {
+      start(controller) {
+        streamController = controller;
+        options.signal?.addEventListener('abort', externalAbort, { once: true });
+        if (options.signal?.aborted) externalAbort();
+      },
+      async pull(controller) {
         try {
           const next = await iterator.next();
+          if (finished) return;
           if (next.done) {
+            finished = true;
             cleanup();
-            streamController.close();
-          } else streamController.enqueue(encoder.encode(next.value));
+            controller.close();
+          } else controller.enqueue(encoder.encode(next.value));
         } catch (error) {
+          if (finished) return;
+          finished = true;
           cleanup();
-          streamController.error(error);
+          controller.error(error);
         }
       },
       async cancel() {
-        controller.abort();
+        if (finished) return;
+        finished = true;
         cleanup();
-        await iterator.return({ rows: 0, columns: source.columnCount });
+        cancellation.abort();
+        await finishIterator();
       },
     },
     { highWaterMark: 0 },

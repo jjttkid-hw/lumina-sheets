@@ -6,6 +6,20 @@ import { createBlankWorkbook } from '../src/lib/seed';
 afterEach(() => vi.unstubAllGlobals());
 
 describe('workspace routes on static hosts', () => {
+  it('rejects damaged UTF-8 snapshot bytes instead of replacing workbook text', () => {
+    const book = createBlankWorkbook('BYTE_MARKER');
+    const [prefix, suffix] = JSON.stringify(book).split('BYTE_MARKER');
+    const bytes = new Uint8Array([
+      ...new TextEncoder().encode(prefix),
+      0xff,
+      ...new TextEncoder().encode(suffix),
+    ]);
+    vi.stubGlobal('location', {
+      hash: `#snapshot=${encodeURIComponent(btoa(String.fromCharCode(...bytes)))}`,
+    });
+    expect(readSnapshot()).toBeNull();
+  });
+
   it.each(['/', '/lumina-sheets/'])('keeps every navigation inside deployment base %s', (base) => {
     const routes = workspaceRoutes(base);
     const origin = 'https://example.github.io';

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-21T03:50:19.389Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "13f7abd24d863bc609dd1e89ed6c1c1bd13d007ec49d41ba465e94b4c0f1e944",
+  "artifactSha256": "b9b1cd84ea6a7719b20e1a0876b01ffa82e26531f146f1dad193b656095972ec",
+  "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
+  "checks": [
+    {
+      "name": "host-focus-enter",
+      "status": "passed",
+      "elapsedMs": 113
+    },
+    {
+      "name": "host-focus-escape",
+      "status": "passed",
+      "elapsedMs": 43
+    },
+    {
+      "name": "ordinary-focus-return",
+      "status": "passed",
+      "elapsedMs": 16
+    },
+    {
+      "name": "synchronous-host-focus",
+      "status": "passed",
+      "elapsedMs": 73
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "status": "passed"
+}

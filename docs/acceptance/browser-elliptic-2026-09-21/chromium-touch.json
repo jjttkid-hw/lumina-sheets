@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.50",
+  "executedAt": "2026-09-21T03:48:28.858Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true,
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "isMobile": true,
+    "hasTouch": true
+  },
+  "siteSha256": "13f7abd24d863bc609dd1e89ed6c1c1bd13d007ec49d41ba465e94b4c0f1e944",
+  "artifactSha256": "b9b1cd84ea6a7719b20e1a0876b01ffa82e26531f146f1dad193b656095972ec",
+  "scope": "Chromium browser-level CDP touch packets, native pan and explicitly host-disabled pan for resize. Not physical-device, mobile keyboard or cross-engine certification.",
+  "checks": [
+    {
+      "name": "touch-tap-selection",
+      "status": "passed",
+      "elapsedMs": 125,
+      "details": {
+        "pointerType": "touch",
+        "selected": {
+          "row": 1,
+          "col": 0
+        }
+      }
+    },
+    {
+      "name": "touch-native-scroll",
+      "status": "passed",
+      "elapsedMs": 155,
+      "details": {
+        "scrollTop": 672,
+        "touchAction": "auto"
+      }
+    },
+    {
+      "name": "touch-resize-cancel-retry",
+      "status": "passed",
+      "elapsedMs": 227,
+      "details": {
+        "cancelledWidth": "default 96",
+        "retryWidth": 156,
+        "hostTouchAction": "none"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "status": "passed"
+}

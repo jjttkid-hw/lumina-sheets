@@ -36,7 +36,11 @@ export function readSnapshot(): Workbook | null {
     const raw = new URLSearchParams(location.hash.slice(1)).get('snapshot');
     if (!raw || raw.length > 100000) return null;
     const binary = atob(raw);
-    return JSON.parse(new TextDecoder().decode(Uint8Array.from(binary, (c) => c.charCodeAt(0))));
+    return JSON.parse(
+      new TextDecoder('utf-8', { fatal: true }).decode(
+        Uint8Array.from(binary, (c) => c.charCodeAt(0)),
+      ),
+    );
   } catch {
     return null;
   }

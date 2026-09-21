@@ -22,6 +22,9 @@ export interface RenderFrameSample {
 
 export interface RenderMetricsSummary {
   frames: number;
+  observedFrames: number;
+  droppedFrames: number;
+  sampleLimit: number;
   averageMs: number;
   p50Ms: number;
   p95Ms: number;
@@ -41,15 +44,35 @@ function percentile(values: number[], rank: number): number {
 /** Collects real canvas frame timings without depending on React or the DOM. */
 export class RenderMetricsCollector {
   private samples: RenderFrameSample[] = [];
+  private observed = 0;
+  private cursor = 0;
+
+  constructor(private readonly sampleLimit = 10_000) {
+    if (!Number.isSafeInteger(sampleLimit) || sampleLimit < 1 || sampleLimit > 100_000)
+      throw new RangeError('绘制样本上限必须为 1–100,000 的整数。');
+  }
 
   record(sample: RenderFrameSample): void {
-    if (!Number.isFinite(sample.durationMs) || sample.durationMs < 0) return;
-    this.samples.push({
+    if (
+      [sample.durationMs, sample.paintedCells, sample.domNodes].some(
+        (value) => !Number.isFinite(value) || value < 0,
+      ) ||
+      (sample.timestamp !== undefined &&
+        (!Number.isFinite(sample.timestamp) || sample.timestamp < 0))
+    )
+      return;
+    const copy = {
       durationMs: sample.durationMs,
       paintedCells: Math.max(0, Math.floor(sample.paintedCells)),
       domNodes: Math.max(0, Math.floor(sample.domNodes)),
       timestamp: sample.timestamp,
-    });
+    };
+    this.observed++;
+    if (this.samples.length < this.sampleLimit) this.samples.push(copy);
+    else {
+      this.samples[this.cursor] = copy;
+      this.cursor = (this.cursor + 1) % this.sampleLimit;
+    }
   }
 
   get size(): number {
@@ -57,11 +80,15 @@ export class RenderMetricsCollector {
   }
 
   values(): RenderFrameSample[] {
-    return this.samples.slice();
+    return [...this.samples.slice(this.cursor), ...this.samples.slice(0, this.cursor)].map(
+      (sample) => ({ ...sample }),
+    );
   }
 
   reset(): void {
     this.samples = [];
+    this.observed = 0;
+    this.cursor = 0;
   }
 
   summary(): RenderMetricsSummary {
@@ -71,11 +98,14 @@ export class RenderMetricsCollector {
     const averageMs = average(durations);
     return {
       frames: this.samples.length,
+      observedFrames: this.observed,
+      droppedFrames: this.observed - this.samples.length,
+      sampleLimit: this.sampleLimit,
       averageMs,
       p50Ms: percentile(durations, 0.5),
       p95Ms: percentile(durations, 0.95),
       p99Ms: percentile(durations, 0.99),
-      maxMs: durations.length ? Math.max(...durations) : 0,
+      maxMs: durations.reduce((maximum, value) => Math.max(maximum, value), 0),
       averagePaintedCells: average(this.samples.map((sample) => sample.paintedCells)),
       averageDomNodes: average(this.samples.map((sample) => sample.domNodes)),
     };
@@ -404,6 +434,15 @@ export interface PerformanceBenchmarkReport {
 export function runPerformanceBenchmark(
   options: PerformanceBenchmarkOptions = {},
 ): PerformanceBenchmarkReport {
+  const budget = options.budget === undefined ? {} : options.budget;
+  if (!budget || typeof budget !== 'object' || Array.isArray(budget))
+    throw new TypeError('性能预算必须是对象。');
+  for (const [key, value] of Object.entries(budget)) {
+    if (!['viewportP95Ms', 'calculationMs', 'patchP95Ms'].includes(key))
+      throw new TypeError(`未知性能预算：${key}`);
+    if (value !== undefined && (typeof value !== 'number' || !Number.isFinite(value) || value < 0))
+      throw new RangeError(`性能预算 ${key} 必须是有限非负数。`);
+  }
   const startedAt = new Date().toISOString();
   const workbook = options.workbook ?? createBenchmarkWorkbook(options.workbookOptions);
   const before = sampleMemory();
@@ -412,7 +451,6 @@ export function runPerformanceBenchmark(
   const edit = benchmarkEditLatency(workbook, options.edit);
   const patches = benchmarkPatches(workbook, options.patches);
   const after = sampleMemory();
-  const budget = options.budget ?? {};
   const failures: string[] = [];
   if (budget.viewportP95Ms !== undefined && (viewport.p95Ms ?? 0) > budget.viewportP95Ms)
     failures.push(`viewport p95 ${viewport.p95Ms?.toFixed(2)}ms > ${budget.viewportP95Ms}ms`);

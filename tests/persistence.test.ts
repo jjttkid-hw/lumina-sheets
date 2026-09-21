@@ -5,8 +5,10 @@ import {
   LuminaPersistence,
   PatchHistory,
   applyWorkbookPatch,
+  type SheetMetaPatch,
   type StorageLike,
 } from '../src/lib/persistence';
+import type { DataValidationRule } from '../src/lib/data-validation';
 import type { Workbook } from '../src/lib/types';
 
 function storage(
@@ -120,6 +122,113 @@ describe('LuminaPersistence', () => {
       cell: null,
     });
     expect(deleted.sheets[0].cells.A1).toBeUndefined();
+    expect(withMeta.sheets[0].cells).toBe(withCell.sheets[0].cells);
+    expect(deleted.sheets[0].cells).not.toBe(withMeta.sheets[0].cells);
+    expect(withMeta.sheets[0].cells.A1.value).toBe('ok');
+  });
+
+  it('applies rule metadata without reading or enumerating stored cells', () => {
+    const book = createBlankWorkbook();
+    const sheet = book.sheets[0];
+    const cells = new Proxy(sheet.cells, {
+      get() {
+        throw new Error('Read cell store');
+      },
+      ownKeys() {
+        throw new Error('Enumerated cell store');
+      },
+    });
+    sheet.cells = cells;
+    const other = { ...sheet, id: 'other' };
+    book.sheets.push(other);
+    const rules: DataValidationRule[] = [
+      {
+        id: 'required',
+        kind: 'list',
+        values: ['yes', false, 1],
+        allowBlank: false,
+        range: { start: { row: 0, col: 0 }, end: { row: 1_048_575, col: 16_383 } },
+      },
+    ];
+    const edited = applyWorkbookPatch(book, {
+      kind: 'sheet-meta',
+      sheetId: sheet.id,
+      changes: { dataValidations: rules },
+    });
+    expect(edited.sheets[0].cells).toBe(cells);
+    expect(edited.sheets[1]).toBe(other);
+    expect(edited.sheets[0].columnWidths).toBe(sheet.columnWidths);
+    expect(sheet.dataValidations).toBeUndefined();
+    expect(edited.sheets[0].dataValidations).toEqual(rules);
+    expect(edited.sheets[0].dataValidations).not.toBe(rules);
+    rules[0].range.end.row = 10;
+    if (rules[0].kind === 'list') rules[0].values[0] = 'changed';
+    expect(edited.sheets[0].dataValidations![0].range.end.row).toBe(1_048_575);
+    expect(edited.sheets[0].dataValidations![0]).toMatchObject({ values: ['yes', false, 1] });
+  });
+
+  it('persists isolated rule patches through flush, load and compaction without changing values or layout', async () => {
+    const book = createBlankWorkbook();
+    const sheet = book.sheets[0];
+    sheet.cells = { A1: { value: -5 }, B1: { value: '=A1*2' } };
+    sheet.rowHeights = { 0: 40 };
+    sheet.hiddenRows = [2];
+    sheet.hiddenColumns = [3];
+    sheet.merges = [{ start: { row: 4, col: 0 }, end: { row: 4, col: 1 } }];
+    sheet.printSettings = { paperSize: 'A4', repeatRows: 1 };
+    const before = structuredClone(book);
+    const rules: DataValidationRule[] = [
+      {
+        id: 'choice',
+        sheetId: sheet.id,
+        kind: 'list',
+        values: [1, '1', true],
+        allowBlank: false,
+        range: { start: { row: 0, col: 0 }, end: { row: 1_048_575, col: 0 } },
+      },
+    ];
+    const expectedRules = structuredClone(rules);
+    const patch: SheetMetaPatch = {
+      kind: 'sheet-meta',
+      sheetId: sheet.id,
+      changes: { dataValidations: rules },
+    };
+    const persistence = new LuminaPersistence({ forceMemory: true, flushDelayMs: 60_000 });
+    await persistence.putWorkbook(book);
+    persistence.queuePatch(book.id, patch);
+    rules[0].range.end.row = 4;
+    if (rules[0].kind === 'list') rules[0].values[0] = 'changed';
+    patch.changes.dataValidations = [];
+    const pending = await persistence.loadWorkbook(book.id);
+    expect(pending!.sheets[0].dataValidations).toEqual(expectedRules);
+    await persistence.flush();
+    expect(persistence.stats.pendingPatches).toBe(0);
+    const loaded = (await persistence.loadWorkbooks())[0];
+    expect(loaded).toEqual({
+      ...before,
+      sheets: [{ ...before.sheets[0], dataValidations: expectedRules }],
+    });
+    expect(book).toEqual(before);
+    loaded.sheets[0].dataValidations![0].range.start.row = 3;
+    const restored = (await persistence.loadWorkbook(book.id))!;
+    expect(restored.sheets[0].dataValidations).toEqual(expectedRules);
+    await persistence.compact(restored);
+    const compacted = (await persistence.loadWorkbook(book.id))!;
+    expect(compacted).toEqual(restored);
+    expect(compacted.sheets[0].cells).toEqual(before.sheets[0].cells);
+    expect(compacted.sheets[0].dataValidations).not.toBe(restored.sheets[0].dataValidations);
+    persistence.queuePatch(book.id, {
+      kind: 'sheet-meta',
+      sheetId: sheet.id,
+      changes: { dataValidations: [] },
+    });
+    await persistence.flush();
+    const cleared = (await persistence.loadWorkbook(book.id))!;
+    expect(cleared.sheets[0]).toEqual({ ...before.sheets[0], dataValidations: [] });
+    await persistence.compact(cleared);
+    expect((await persistence.loadWorkbook(book.id))!.sheets[0]).toEqual(cleared.sheets[0]);
+    expect(persistence.stats.persistedPatches).toBe(2);
+    await persistence.close();
   });
 
   it('migrates the legacy localStorage workbooks once', async () => {
@@ -131,6 +240,110 @@ describe('LuminaPersistence', () => {
     expect(books[0].name).toBe('legacy');
     expect((await persistence.loadWorkbook(book.id))?.name).toBe('legacy');
   });
+  it('keeps the first legacy same-ID snapshot in memory and retains all raw versions', async () => {
+    const first = createBlankWorkbook('first version');
+    const second = { ...structuredClone(first), name: 'second version' };
+    const raw = JSON.stringify([first, second]);
+    const source = storage({ 'lumina.v1.workbooks': raw });
+    const p = new LuminaPersistence({ forceMemory: true, storage: source });
+    expect(await p.loadWorkbooks()).toEqual([first]);
+    expect(source.values['lumina.v1.workbooks']).toBe(raw);
+    await p.close();
+  });
+  it('preserves existing memory snapshots and auxiliary records during legacy migration', async () => {
+    const old = createBlankWorkbook('旧副本');
+    const added = createBlankWorkbook('仅旧版存在');
+    const current = { ...old, name: '最新正文' };
+    const source = storage({
+      'lumina.v1.workbooks': JSON.stringify([old, added]),
+      [`lumina.v1.history.${old.id}`]: '[{"id":"old-history"}]',
+      [`lumina.v1.comments.${old.id}`]: '[{"id":"old-comment"}]',
+    });
+    const before = { ...source.values };
+    const p = new LuminaPersistence({ forceMemory: true, storage: source });
+    const memory = (p as any).memory;
+    memory.workbooks.set(old.id, current);
+    memory.revisions.set(old.id, []);
+    memory.comments.set(old.id, []);
+    expect(await p.loadWorkbooks()).toEqual([current, added]);
+    expect(await p.loadRevisions(old.id)).toEqual([]);
+    expect(await p.loadComments(old.id)).toEqual([]);
+    expect(source.values).toEqual(before);
+    await p.close();
+  });
+  it('checks each target key inside the migration write transaction before importing legacy data', async () => {
+    const old = createBlankWorkbook('旧正文');
+    const added = createBlankWorkbook('新迁入');
+    const duplicate = { ...structuredClone(added), name: '同 ID 的另一版本' };
+    const source = storage({
+      'lumina.v1.workbooks': JSON.stringify([old, added, duplicate]),
+      [`lumina.v1.history.${old.id}`]: '[{"id":"old-history"}]',
+      [`lumina.v1.comments.${old.id}`]: '[{"id":"old-comment"}]',
+      [`lumina.v1.comments.${added.id}`]: '[]',
+    });
+    const p = new LuminaPersistence({ forceMemory: true, storage: source });
+    const adapter = p as any;
+    adapter.memory = null;
+    vi.spyOn(adapter, 'openDb').mockResolvedValue({
+      transaction: () => ({ objectStore: () => ({ get() {} }) }),
+    });
+    vi.spyOn(adapter, 'request').mockResolvedValue(undefined);
+    const writes: Array<{ store: string; value: any }> = [];
+    const checked: string[] = [];
+    vi.spyOn(adapter, 'transaction').mockImplementation(async (_db, stores, mode, setup: any) => {
+      expect(stores).toEqual(['workbooks', 'revisions', 'comments', 'meta']);
+      expect(mode).toBe('readwrite');
+      const callbacks: (() => void)[] = [];
+      setup({
+        objectStore: (store: string) => ({
+          get: () => {
+            const request: any = { result: undefined };
+            callbacks.push(() => request.onsuccess());
+            return request;
+          },
+          getKey: (key: string) => {
+            checked.push(`${store}:${key}`);
+            const request: any = { result: key === old.id ? key : undefined };
+            callbacks.push(() => request.onsuccess());
+            return request;
+          },
+          put: (value: any) => writes.push({ store, value }),
+        }),
+      });
+      expect(writes).toEqual([]);
+      while (callbacks.length) callbacks.shift()!();
+    });
+    vi.spyOn(adapter, 'idbGetAllWorkbooks').mockResolvedValue([]);
+    vi.spyOn(adapter, 'idbGetAllPatches').mockResolvedValue([]);
+    await p.loadWorkbooks();
+    expect(checked).toEqual(
+      expect.arrayContaining([`workbooks:${old.id}`, `comments:${old.id}`, `revisions:${old.id}`]),
+    );
+    expect(writes.filter((w) => w.store !== 'meta')).toEqual([
+      { store: 'workbooks', value: { id: added.id, workbook: added } },
+      { store: 'comments', value: { key: added.id, workbookId: added.id, comments: [] } },
+    ]);
+    expect(source.values['lumina.v1.workbooks']).toBe(JSON.stringify([old, added, duplicate]));
+    await p.close();
+  });
+  it.each(['{}', '"damaged"', '42', 'true'])(
+    'preserves workbooks and raw backups when legacy auxiliary data is not a list: %s',
+    async (raw) => {
+      const book = createBlankWorkbook('legacy');
+      const source = storage({
+        'lumina.v1.workbooks': JSON.stringify([book]),
+        [`lumina.v1.history.${book.id}`]: raw,
+        [`lumina.v1.comments.${book.id}`]: raw,
+      });
+      const before = { ...source.values };
+      const p = new LuminaPersistence({ forceMemory: true, storage: source });
+      expect(await p.loadWorkbooks()).toEqual([book]);
+      expect(await p.loadRevisions(book.id)).toEqual([]);
+      expect(await p.loadComments(book.id)).toEqual([]);
+      expect(source.values).toEqual(before);
+      await p.close();
+    },
+  );
 
   it('retries a failed legacy migration and caches the successful retry', async () => {
     const book = createBlankWorkbook('legacy');
@@ -171,6 +384,81 @@ describe('LuminaPersistence', () => {
     expect(await persistence.loadWorkbooks()).toEqual([book]);
     expect(markerRead).toHaveBeenCalledTimes(2);
     expect(migrationWrite).toHaveBeenCalledTimes(1);
+  });
+  it('skips migration when another page completes it before the write transaction starts', async () => {
+    const book = createBlankWorkbook('deleted after other-page migration');
+    const raw = JSON.stringify([book]);
+    const source = storage({ 'lumina.v1.workbooks': raw });
+    const p = new LuminaPersistence({ forceMemory: true, storage: source });
+    const adapter = p as any;
+    adapter.memory = null;
+    vi.spyOn(adapter, 'openDb').mockResolvedValue({
+      transaction: () => ({ objectStore: () => ({ get() {} }) }),
+    });
+    // Optimistic read precedes the other page's migration/deletion.
+    vi.spyOn(adapter, 'request').mockResolvedValue(undefined);
+    const put = vi.fn();
+    const getKey = vi.fn();
+    const abort = vi.fn();
+    vi.spyOn(adapter, 'transaction').mockImplementation(async (_db, _stores, _mode, setup: any) => {
+      let marker: any;
+      setup({
+        abort,
+        objectStore: () => ({
+          get: () => (marker = { result: { key: 'legacy-v1-migrated', value: true } }),
+          getKey,
+          put,
+        }),
+      });
+      marker?.onsuccess();
+    });
+    vi.spyOn(adapter, 'idbGetAllWorkbooks').mockResolvedValue([]);
+    vi.spyOn(adapter, 'idbGetAllPatches').mockResolvedValue([]);
+    expect(await p.loadWorkbooks()).toEqual([]);
+    expect(put).not.toHaveBeenCalled();
+    expect(getKey).not.toHaveBeenCalled();
+    expect(abort).not.toHaveBeenCalled();
+    expect(source.values['lumina.v1.workbooks']).toBe(raw);
+    await p.close();
+  });
+  it('skips invalid auxiliary containers in the IndexedDB migration transaction', async () => {
+    const book = createBlankWorkbook('legacy');
+    const source = storage({
+      'lumina.v1.workbooks': JSON.stringify([book]),
+      [`lumina.v1.history.${book.id}`]: '{}',
+      [`lumina.v1.comments.${book.id}`]: '"broken"',
+    });
+    const p = new LuminaPersistence({ forceMemory: true, storage: source });
+    const adapter = p as any;
+    adapter.memory = null;
+    vi.spyOn(adapter, 'openDb').mockResolvedValue({
+      transaction: () => ({ objectStore: () => ({ get() {} }) }),
+    });
+    vi.spyOn(adapter, 'request').mockResolvedValue(undefined);
+    const writes: Array<{ store: string; value: unknown }> = [];
+    vi.spyOn(adapter, 'transaction').mockImplementation(async (_db, _stores, _mode, setup: any) => {
+      setup({
+        objectStore: (store: string) => ({
+          get: () => {
+            const request: any = { result: undefined };
+            queueMicrotask(() => request.onsuccess());
+            return request;
+          },
+          getKey: () => {
+            const request: any = { result: undefined };
+            queueMicrotask(() => request.onsuccess());
+            return request;
+          },
+          put: (value: unknown) => writes.push({ store, value }),
+        }),
+      });
+    });
+    vi.spyOn(adapter, 'idbGetAllWorkbooks').mockResolvedValue([book]);
+    vi.spyOn(adapter, 'idbGetAllPatches').mockResolvedValue([]);
+    expect(await p.loadWorkbooks()).toEqual([book]);
+    expect(writes.map((item) => item.store).sort()).toEqual(['meta', 'workbooks']);
+    expect(source.values[`lumina.v1.history.${book.id}`]).toBe('{}');
+    await p.close();
   });
 
   it('persists revisions and comments through the same async adapter', async () => {

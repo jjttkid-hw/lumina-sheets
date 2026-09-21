@@ -1,4 +1,6 @@
 import { cellKey, parseCellKey } from './engine';
+import { copyRichText } from './rich-text';
+import { copyHyperlink } from './cell-hyperlink';
 import { IMPORT_LIMITS } from './io';
 import { validateWorkbookCellChanges } from './workbook-validation';
 import type { DataValidationFailure } from './data-validation';
@@ -68,6 +70,12 @@ export function planWorkspaceCellChanges(
         return fail('单元格值必须是文本、有限数字或布尔值');
       if (typeof cell.value === 'string' && cell.value.length > 32_767)
         return fail('单元格内容不能超过 32,767 个字符');
+      try {
+        copyHyperlink(cell.hyperlink, cell.value);
+        copyRichText(cell.richText, cell.value);
+      } catch (cause) {
+        return fail(cause instanceof Error ? cause.message : '无效超链接');
+      }
     }
     normalized.set(cellKey(point.row, point.col), change.cell && structuredClone(change.cell));
   }

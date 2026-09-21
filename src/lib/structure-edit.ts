@@ -1,4 +1,5 @@
 import { cellKey, MAX_COLUMNS, MAX_ROWS, parseCellKey } from './engine';
+import { rewriteHyperlinkTarget } from './hyperlink-structure';
 import { rewriteFormulaReferences, type StructureEdit } from './formula-structure';
 import { copyPrintSettings } from './print-settings';
 import type { Cell, CellRange, PrintSettings, Sheet, Workbook } from './types';
@@ -229,8 +230,23 @@ export function planStructureEdit(
               edit,
             })
           : cell.value;
-      if (value !== cell.value) changed = true;
-      cells[nextKey] = value === cell.value ? cell : { ...cell, value };
+      const linkTarget = cell.hyperlink
+        ? rewriteHyperlinkTarget(cell.hyperlink.target, {
+            formulaSheetName: source.name,
+            targetSheetName: target.name,
+            edit,
+          })
+        : undefined;
+      const linkChanged = linkTarget !== cell.hyperlink?.target;
+      if (value !== cell.value || linkChanged) changed = true;
+      cells[nextKey] =
+        value === cell.value && !linkChanged
+          ? cell
+          : {
+              ...cell,
+              value,
+              ...(linkChanged ? { hyperlink: { ...cell.hyperlink!, target: linkTarget! } } : {}),
+            };
     }
     const next: Sheet = { ...source, cells };
     if (isTarget) {

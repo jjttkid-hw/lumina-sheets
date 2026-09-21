@@ -1,6 +1,8 @@
 import { createRoot, type Root } from 'react-dom/client';
 import { useSyncExternalStore } from 'react';
 import Spreadsheet from '../components/Spreadsheet';
+import { copyRichText, replaceCellText } from '../lib/rich-text';
+import { copyHyperlink } from '../lib/cell-hyperlink';
 import type {
   Cell,
   CellStyle,
@@ -14,6 +16,7 @@ import { copyPrintSettings } from '../lib/print-settings';
 import { planStructureEdit, transformPosition, transformRange } from '../lib/structure-edit';
 import type { RowSortRequest } from '../lib/row-sort';
 import { planWorkbookRowSort, WorkbookSortValidationError } from '../lib/workbook-sort';
+import { planSheetRename } from '../lib/sheet-rename';
 import { validateWorkbookCellChanges } from '../lib/workbook-validation';
 import type { StructureEdit } from '../lib/formula-structure';
 import {
@@ -24,8 +27,12 @@ import {
 } from '../lib/data-validation';
 import { cellKey, createEvaluator, MAX_COLUMNS, MAX_ROWS, parseCellKey } from '../lib/engine';
 import { createBlankWorkbook } from '../lib/seed';
-import { ReportChunkCache, type ReportDataSource } from '../lib/report-data';
-import { reportDataCsvBlob } from '../lib/report-data-export';
+import {
+  ReportChunkCache,
+  type ChunkCacheOptions,
+  type ReportDataSource,
+} from '../lib/report-data';
+import { reportDataCsvBlob, type ReportDataCsvOptions } from '../lib/report-data-export';
 import {
   conditionalStyle,
   generateReport,
@@ -38,6 +45,7 @@ import '../styles/spreadsheet.css';
 import './sdk.css';
 
 export * from '../lib/types';
+export { parseCellInput } from '../lib/cell-input';
 export * from '../lib/report-data';
 export * from '../lib/report-data-export';
 export * from '../lib/report';
@@ -47,6 +55,7 @@ export { workbookCsvBlob, workbookCsvReadableStream, iterateCsvChunks } from '..
 export { workbookToPdf, workbookPdfBlob } from '../lib/report-pdf';
 export { workbookToXlsx, workbookFromXlsx, validateWorkbook } from '../lib/io';
 export { createEvaluator, cellKey, parseCellKey, translateFormula } from '../lib/engine';
+export type { EvaluationResult } from '../lib/engine';
 export type { StructureEdit } from '../lib/formula-structure';
 export type { RowSortKey, RowSortRequest } from '../lib/row-sort';
 
@@ -61,6 +70,19 @@ export interface StructureChangeEvent extends StructureEdit {
   phase: 'apply' | 'undo' | 'redo';
 }
 
+export interface SheetRenameEvent {
+  sheetId: string;
+  previousName: string;
+  name: string;
+  affectedSheetIds: string[];
+  phase: 'apply' | 'undo' | 'redo';
+}
+
+export interface ActiveSheetChangeEvent {
+  previousSheetId: string;
+  sheetId: string;
+}
+
 /** Visible coordinates by default; `all` retains the original rectangular selection. */
 export type ClipboardMode = 'visible' | 'all';
 
@@ -73,6 +95,9 @@ export interface SpreadsheetOptions {
   onChange?: (event: { sheetId: string; changes: CellChange[] }) => void;
   /** One atomic structural edit; does not emit a large synthetic cell-change list. */
   onStructureChange?: (event: StructureChangeEvent) => void;
+  /** One atomic rename, including rewritten formulas and internal links. */
+  onSheetRename?: (event: SheetRenameEvent) => void;
+  onActiveSheetChange?: (event: ActiveSheetChangeEvent) => void;
   onSelectionChange?: (selection: Selection) => void;
   onError?: (error: Error) => void;
   onRender?: (metrics: { drawMs: number; paintedCells: number; domNodes: number }) => void;
@@ -87,6 +112,7 @@ export type LuminaErrorCode =
   | 'DESTROYED'
   | 'DATA_SOURCE'
   | 'EXPORT_CANCELLED'
+  | 'IMPORT_CANCELLED'
   | 'VALIDATION_FAILED';
 
 export class LuminaError extends Error {
@@ -118,8 +144,15 @@ export interface DataSourceState {
   error?: Error;
 }
 
+export interface ImportOptions {
+  /** Cancels waiting/commit; an already running file parser may finish in the background. */
+  signal?: AbortSignal;
+}
+
 export interface ExportOptions {
-  /** CSV/PDF stop between chunks/pages; XLSX/JSON cancel before downloading. */
+  /** Applies only to CSV exported from a bound paged source; independent of viewport cache. */
+  pagedCsv?: Pick<ReportDataCsvOptions, 'pageSize' | 'maxPageTextUnits' | 'maxRows'>;
+  /** XLSX cancels serialization waiting; CSV/PDF stop cooperatively; JSON checks before download. */
   signal?: AbortSignal;
   /** CSV reports rows, PDF pages; XLSX/JSON report 1/1 after serialization. */
   onProgress?: (completed: number, total: number | undefined) => void;
@@ -230,7 +263,19 @@ interface StructureTransaction {
   beforeSelection: Selection;
   afterSelection: Selection;
 }
-type HistoryTransaction = Transaction | StructureTransaction;
+interface SortTransaction {
+  type: 'sort';
+  groups: Array<{ sheetId: string; changes: CellChange[]; inverse: CellChange[] }>;
+}
+interface RenameTransaction {
+  type: 'rename';
+  sheetId: string;
+  previousName: string;
+  name: string;
+  beforeSheets: Sheet[];
+  afterSheets: Sheet[];
+}
+type HistoryTransaction = Transaction | StructureTransaction | SortTransaction | RenameTransaction;
 const validInteger = (value: unknown, min: number, max: number): value is number =>
   typeof value === 'number' && Number.isSafeInteger(value) && value >= min && value <= max;
 const record = (value: unknown): value is Record<string, unknown> =>
@@ -298,6 +343,18 @@ function copyCell(value: unknown): Cell {
   )
     throw new LuminaError('INVALID_ARGUMENT', '无效单元格值');
   const cell: Cell = { value: value.value as CellValue };
+  if (value.richText !== undefined)
+    cell.richText = asArgument(() => copyRichText(value.richText, cell.value));
+  if (value.hyperlink !== undefined) {
+    try {
+      cell.hyperlink = copyHyperlink(value.hyperlink, value.value);
+    } catch (cause) {
+      throw new LuminaError(
+        'INVALID_ARGUMENT',
+        cause instanceof Error ? cause.message : '无效超链接',
+      );
+    }
+  }
   if (value.style !== undefined) {
     if (!record(value.style)) throw new LuminaError('INVALID_ARGUMENT', '无效单元格样式');
     const style: CellStyle = {};
@@ -341,6 +398,16 @@ function copyCell(value: unknown): Cell {
   return cell;
 }
 function validateSheetMetadata(sheet: Sheet) {
+  if (sheet.dataSource !== undefined) {
+    const source = sheet.dataSource;
+    if (
+      !record(source) ||
+      (source.kind !== 'static' && source.kind !== 'paged') ||
+      (source.totalRows !== undefined && !validInteger(source.totalRows, 0, MAX_ROWS)) ||
+      (source.pageSize !== undefined && !validInteger(source.pageSize, 1, MAX_ROWS))
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '无效数据源元数据');
+  }
   asArgument(() => copyPrintSettings(sheet.printSettings, sheet));
   if (sheet.dataValidations !== undefined)
     asArgument(() => copyDataValidationRules(sheet.dataValidations));
@@ -444,6 +511,8 @@ function copyWorkbook(input: Workbook): Workbook {
   return { ...structuredClone({ ...input, sheets: [] }), sheets };
 }
 
+const mountedHosts = new WeakSet<HTMLElement>();
+
 /** Embeddable browser JavaScript API. No server, account, React host, or plugin required. */
 export class LuminaSpreadsheet {
   private root: Root;
@@ -451,6 +520,9 @@ export class LuminaSpreadsheet {
   private selection: Selection = { row: 0, col: 0 };
   private filter = '';
   private revision = 0;
+  private renderRevision = 0;
+  private sheetViewEpoch = 0;
+  private sourceEpoch = 0;
   // View notifications also cover selection and layout. Filtering should only
   // discard computed row matches when its value source actually changes.
   private calculationVersion = 0;
@@ -463,7 +535,9 @@ export class LuminaSpreadsheet {
   private boundSheetId?: string;
   private unsubscribeCache?: () => void;
   private viewportRequest?: AbortController;
+  private viewportError?: Error;
   private initialRequest?: AbortController;
+  private pendingImport?: { cancel: (reason?: unknown) => void };
   private exportRequests = new Set<AbortController>();
   private lastViewport = '';
   private destroyed = false;
@@ -479,6 +553,8 @@ export class LuminaSpreadsheet {
   ) {
     if (typeof HTMLElement === 'undefined' || !(host instanceof HTMLElement))
       throw new LuminaError('INVALID_ARGUMENT', '需要可挂载的 HTML 元素');
+    if (mountedHosts.has(host))
+      throw new LuminaError('INVALID_ARGUMENT', '此容器已挂载表格，请先销毁原实例');
     if (
       !options ||
       typeof options !== 'object' ||
@@ -492,6 +568,8 @@ export class LuminaSpreadsheet {
     for (const name of [
       'onChange',
       'onStructureChange',
+      'onSheetRename',
+      'onActiveSheetChange',
       'onSelectionChange',
       'onError',
       'onRender',
@@ -502,11 +580,24 @@ export class LuminaSpreadsheet {
     this.workbook = asArgument(() => copyWorkbook(options.workbook ?? createBlankWorkbook()));
     this.options = { ...options };
     this.rules = asArgument(() => copyRules(options.conditionalRules ?? []));
-    this.evaluator = createEvaluator(this.workbook, { managedMutations: true });
+    this.evaluator = this.createWorkbookEvaluator();
     this.previousClass = host.className;
-    host.classList.add('lumina-sdk');
-    this.root = createRoot(host);
-    this.root.render(<Surface controller={this} />);
+    mountedHosts.add(host);
+    let root: Root | undefined;
+    try {
+      host.classList.add('lumina-sdk');
+      this.root = root = createRoot(host);
+      root.render(<Surface controller={this} />);
+    } catch (error) {
+      try {
+        root?.unmount();
+      } catch {
+        /* Preserve the original mounting failure. */
+      }
+      mountedHosts.delete(host);
+      host.className = this.previousClass;
+      throw error;
+    }
   }
   subscribe = (listener: () => void) => {
     this.assertLive();
@@ -531,8 +622,9 @@ export class LuminaSpreadsheet {
       this.reportError(error);
     }
   }
-  private changed() {
+  private changed(contentChanged = true) {
     this.revision++;
+    if (contentChanged) this.renderRevision++;
     for (const listener of this.listeners) this.callback(listener);
   }
   private assertLive() {
@@ -540,8 +632,25 @@ export class LuminaSpreadsheet {
   }
   private assertWritable() {
     this.assertLive();
-    if (this.cache || this.options.readOnly)
+    if (this.cache || this.options.readOnly || this.currentSheet.dataSource?.kind === 'paged')
       throw new LuminaError('READ_ONLY', '当前表格为只读模式');
+  }
+  private createWorkbookEvaluator() {
+    return createEvaluator(this.workbook, {
+      managedMutations: true,
+      readPagedCell: (sheet, key) => {
+        if (!this.cache || sheet.id !== this.boundSheetId) return undefined;
+        const point = parseCellKey(key);
+        if (!point) return undefined;
+        if (
+          point.col >= this.cache.columnCount ||
+          (this.cache.rowCount !== undefined && point.row >= this.cache.rowCount)
+        )
+          return null;
+        const row = this.cache.peekRow(point.row);
+        return row === undefined ? undefined : (row[point.col] ?? null);
+      },
+    });
   }
   private get currentSheet() {
     return this.workbook.sheets.find((sheet) => sheet.id === this.workbook.activeSheetId)!;
@@ -561,12 +670,57 @@ export class LuminaSpreadsheet {
       rowCount: sheet.rowCount,
       colCount: sheet.colCount,
       frozenRows: sheet.frozenRows ?? 0,
-      readOnly: !!this.cache || !!this.options.readOnly,
+      readOnly: !!this.cache || !!this.options.readOnly || sheet.dataSource?.kind === 'paged',
     };
   }
   get selectedRange() {
     this.assertLive();
     return { ...this.selection };
+  }
+  /** Sheet directory without cloning or enumerating stored cell data. */
+  get sheetInfos() {
+    this.assertLive();
+    return this.workbook.sheets.map((sheet) => ({
+      id: sheet.id,
+      name: sheet.name,
+      rowCount: sheet.rowCount,
+      colCount: sheet.colCount,
+      readOnly: !!this.cache || !!this.options.readOnly || sheet.dataSource?.kind === 'paged',
+    }));
+  }
+  /** View-only switch: preserves history and pending imports; resets selection/filter. */
+  setActiveSheet(sheetId: string): void {
+    this.assertLive();
+    if (typeof sheetId !== 'string' || !this.workbook.sheets.some((sheet) => sheet.id === sheetId))
+      throw new LuminaError('INVALID_ARGUMENT', '找不到工作表');
+    const previousSheetId = this.workbook.activeSheetId;
+    if (sheetId === previousSheetId) return;
+    const epoch = ++this.sheetViewEpoch;
+    const workbook = this.workbook;
+    const cache = this.cache;
+    const previousRequest = this.viewportRequest;
+    this.viewportRequest = undefined;
+    this.viewportError = undefined;
+    this.lastViewport = '';
+    previousRequest?.abort();
+    if (
+      this.destroyed ||
+      this.workbook !== workbook ||
+      this.cache !== cache ||
+      this.sheetViewEpoch !== epoch ||
+      this.viewportRequest !== undefined
+    )
+      return;
+    this.workbook.activeSheetId = sheetId;
+    this.selection = { row: 0, col: 0 };
+    this.filter = '';
+    if (cache) this.refreshDataState(cache);
+    const revision = this.revision + 1;
+    this.changed();
+    if (this.destroyed || this.revision !== revision) return;
+    this.callback(() => this.options.onActiveSheetChange?.({ previousSheetId, sheetId }));
+    if (!this.destroyed && this.revision === revision)
+      this.callback(() => this.options.onSelectionChange?.({ row: 0, col: 0 }));
   }
   /** View preference; allowed for readonly/paged instances and excluded from edit history. */
   get clipboardMode(): ClipboardMode {
@@ -589,7 +743,7 @@ export class LuminaSpreadsheet {
     this.assertLive();
     if (typeof text !== 'string') throw new LuminaError('INVALID_ARGUMENT', '筛选内容必须为文本');
     const next = text.trim();
-    if (next && (this.cache || this.currentSheet.dataSource?.kind === 'paged'))
+    if (next && this.currentSheet.dataSource?.kind === 'paged')
       throw new LuminaError(
         'INVALID_ARGUMENT',
         '分页数据源不能使用本地筛选；请在数据源端筛选后重新绑定',
@@ -622,29 +776,97 @@ export class LuminaSpreadsheet {
   load(workbook: Workbook) {
     this.assertLive();
     const next = asArgument(() => copyWorkbook(workbook));
-    this.clearSource();
+    this.cancelImport('工作簿已替换');
+    const epoch = this.clearSource();
+    if (this.destroyed || epoch !== this.sourceEpoch) return;
+    this.commitLoadedWorkbook(next);
+  }
+  private commitLoadedWorkbook(next: Workbook) {
     this.workbook = next;
     this.calculationVersion++;
-    this.evaluator = createEvaluator(this.workbook, { managedMutations: true });
+    this.evaluator = this.createWorkbookEvaluator();
     this.history = [];
     this.future = [];
     this.selection = { row: 0, col: 0 };
     this.filter = '';
     this.changed();
   }
-  async import(file: File) {
+  private cancelImport(reason: unknown) {
+    this.pendingImport?.cancel(reason);
+  }
+  async import(file: File, options: ImportOptions = {}) {
     this.assertLive();
-    let workbook: Workbook;
-    try {
-      workbook = await importFile(file);
-    } catch (error) {
+    if (
+      !options ||
+      typeof options !== 'object' ||
+      Array.isArray(options) ||
+      (options.signal !== undefined && !(options.signal instanceof AbortSignal))
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '无效导入选项');
+    if (options.signal?.aborted)
       throw new LuminaError(
-        'INVALID_ARGUMENT',
-        error instanceof Error ? error.message : String(error),
-        error,
+        'IMPORT_CANCELLED',
+        '导入已取消，当前工作簿未被替换。',
+        options.signal.reason,
       );
-    }
-    this.load(workbook);
+    this.cancelImport('新的导入已开始');
+    return new Promise<void>((resolve, reject) => {
+      let settled = false;
+      let cancelled = false;
+      const reading = new AbortController();
+      const finish = () => {
+        settled = true;
+        options.signal?.removeEventListener('abort', abort);
+        if (this.pendingImport === operation) this.pendingImport = undefined;
+      };
+      const operation = {
+        cancel: (reason?: unknown) => {
+          if (settled) return;
+          cancelled = true;
+          finish();
+          reading.abort();
+          reject(new LuminaError('IMPORT_CANCELLED', '导入已取消，当前工作簿未被替换。', reason));
+        },
+      };
+      const abort = () => operation.cancel(options.signal?.reason);
+      this.pendingImport = operation;
+      options.signal?.addEventListener('abort', abort, { once: true });
+      void (async () => {
+        try {
+          const workbook = await importFile(file, reading.signal);
+          if (settled) return;
+          const next = asArgument(() => copyWorkbook(workbook));
+          if (settled) return;
+          // Source cancellation can synchronously trigger a newer import/load,
+          // destroy the instance, or abort this import. Keep ownership until the
+          // candidate actually commits, rather than treating parsing as success.
+          const epoch = this.clearSource();
+          if (settled) return;
+          if (this.destroyed || epoch !== this.sourceEpoch) {
+            operation.cancel('工作簿提交已被替换');
+            return;
+          }
+          // Once committed, render callbacks may perform further operations;
+          // those do not retroactively turn this successful import into a failure.
+          finish();
+          this.commitLoadedWorkbook(next);
+          resolve();
+        } catch (error) {
+          // File parsing can outlive cancellation; consume late failures quietly.
+          if (cancelled) return;
+          if (!settled) finish();
+          reject(
+            error instanceof LuminaError
+              ? error
+              : new LuminaError(
+                  'INVALID_ARGUMENT',
+                  error instanceof Error ? error.message : String(error),
+                  error,
+                ),
+          );
+        }
+      })();
+    });
   }
   async export(format: 'xlsx' | 'csv' | 'pdf' | 'json', options: ExportOptions = {}) {
     this.assertLive();
@@ -660,8 +882,12 @@ export class LuminaSpreadsheet {
       throw new LuminaError('INVALID_ARGUMENT', '无效导出格式');
     if (options.signal?.aborted)
       throw new LuminaError('EXPORT_CANCELLED', '导出已取消。', options.signal.reason);
-    const source = this.source;
-    if (source && format !== 'csv')
+    const source = this.workbook.activeSheetId === this.boundSheetId ? this.source : undefined;
+    if (
+      (format !== 'csv' &&
+        this.workbook.sheets.some((sheet) => sheet.dataSource?.kind === 'paged')) ||
+      (format === 'csv' && this.currentSheet.dataSource?.kind === 'paged' && !source)
+    )
       throw new LuminaError(
         'INVALID_ARGUMENT',
         '分页数据支持完整 CSV 导出；其他格式请先生成有界报表后导出',
@@ -678,6 +904,9 @@ export class LuminaSpreadsheet {
       if (source) {
         const name = this.workbook.name;
         const blob = await reportDataCsvBlob(source, {
+          pageSize: options.pagedCsv?.pageSize,
+          maxPageTextUnits: options.pagedCsv?.maxPageTextUnits,
+          maxRows: options.pagedCsv?.maxRows,
           signal: controller.signal,
           onProgress: options.onProgress,
         });
@@ -699,6 +928,16 @@ export class LuminaSpreadsheet {
       // An export is an explicit snapshot operation. Async chunk/page yields must
       // not observe edits made after export started, even without format rules.
       const workbook = this.toJSON();
+      let frozenCsvValues: Map<string, CellValue> | undefined;
+      if (format === 'csv' && workbook.sheets.some((sheet) => sheet.dataSource?.kind === 'paged')) {
+        // Freeze displayed formula values while the bounded source cache still belongs
+        // to this export. A later page eviction must not change an in-flight CSV.
+        const snapshot = workbook.sheets.find((sheet) => sheet.id === workbook.activeSheetId)!;
+        frozenCsvValues = new Map();
+        for (const [key, cell] of Object.entries(snapshot.cells))
+          if (typeof cell.value === 'string' && cell.value.startsWith('='))
+            frozenCsvValues.set(key, this.value(this.currentSheet, key));
+      }
       if (format !== 'csv' && this.rules.length) {
         // Conditional rules export as static styles, not Excel dynamic rules.
         const evaluate = createEvaluator(workbook);
@@ -718,6 +957,7 @@ export class LuminaSpreadsheet {
           }
       }
       await exportWorkbook(workbook, format, {
+        ...(frozenCsvValues ? { frozenCsvValues } : {}),
         signal: controller.signal,
         onProgress: options.onProgress,
       });
@@ -738,8 +978,16 @@ export class LuminaSpreadsheet {
     if (!point) throw new LuminaError('INVALID_ARGUMENT', `无效地址：${address}`);
     const key = cellKey(point.row, point.col);
     const currentStyle = style ?? this.currentSheet.cells[key]?.style;
+    const hyperlink = this.currentSheet.cells[key]?.hyperlink;
     this.apply(this.currentSheet.id, [
-      { key, cell: { value, ...(currentStyle ? { style: currentStyle } : {}) } },
+      {
+        key,
+        cell: {
+          ...replaceCellText(this.currentSheet.cells[key], value),
+          ...(currentStyle ? { style: currentStyle } : {}),
+          ...(hyperlink ? { hyperlink } : {}),
+        },
+      },
     ]);
   }
   setCells(changes: CellChange[]) {
@@ -759,11 +1007,65 @@ export class LuminaSpreadsheet {
         throw error;
       }
     });
-    if (!planned.changes.length) return { movedRows: 0, changedCells: 0 };
+    if (!planned.changes.length && !planned.relatedChanges?.length)
+      return { movedRows: 0, changedCells: 0 };
     // The shared planner validates moved records with an isolated evaluator;
     // apply retains the ordinary patch validation and history contract.
-    this.apply(sheet.id, planned.changes, true, undefined, undefined, true);
-    return { movedRows: planned.movedRows, changedCells: planned.changes.length };
+    if (planned.relatedChanges?.length) {
+      const groups = [{ sheetId: sheet.id, changes: planned.changes }, ...planned.relatedChanges];
+      const transaction: SortTransaction = {
+        type: 'sort',
+        groups: groups.map((group) => {
+          const source = this.workbook.sheets.find((s) => s.id === group.sheetId)!;
+          return {
+            sheetId: group.sheetId,
+            changes: group.changes.map((c) => ({ key: c.key, cell: c.cell && copyCell(c.cell) })),
+            inverse: group.changes.map((c) => ({
+              key: c.key,
+              cell: source.cells[c.key] ? structuredClone(source.cells[c.key]) : null,
+            })),
+          };
+        }),
+      };
+      this.history.push(transaction);
+      this.trimHistory();
+      this.future = [];
+      this.restoreSort(transaction, false);
+    } else this.apply(sheet.id, planned.changes, true, undefined, undefined, true);
+    return {
+      movedRows: planned.movedRows,
+      changedCells:
+        planned.changes.length +
+        (planned.relatedChanges ?? []).reduce((n, group) => n + group.changes.length, 0),
+    };
+  }
+  private restoreSort(transaction: SortTransaction, undo: boolean) {
+    const groups = transaction.groups.map((group) => ({
+      sheetId: group.sheetId,
+      changes: structuredClone(undo ? group.inverse : group.changes),
+    }));
+    this.cancelImport('工作簿已排序');
+    for (const group of groups) {
+      const sheet = this.workbook.sheets.find((s) => s.id === group.sheetId)!;
+      for (const change of group.changes) {
+        if (change.cell) sheet.cells[change.key] = change.cell;
+        else delete sheet.cells[change.key];
+      }
+    }
+    this.workbook.updatedAt = new Date().toISOString();
+    this.calculationVersion++;
+    this.evaluator = this.createWorkbookEvaluator();
+    const revision = this.revision + 1;
+    this.changed();
+    for (const group of groups) {
+      if (this.destroyed || this.revision !== revision) break;
+      this.callback(() =>
+        this.options.onChange?.({
+          sheetId: group.sheetId,
+          changes: structuredClone(group.changes),
+        }),
+      );
+    }
   }
   getValue(address: string): CellValue {
     this.assertLive();
@@ -776,7 +1078,7 @@ export class LuminaSpreadsheet {
     this.assertLive();
     const point = parseCellKey(address);
     if (!point) throw new LuminaError('INVALID_ARGUMENT', `无效地址：${address}`);
-    if (this.cache) {
+    if (this.cache && this.currentSheet.id === this.boundSheetId) {
       if (point.col >= this.cache.columnCount) return undefined;
       const value = this.cache.read(point.row, point.col);
       return value === undefined ? undefined : { value };
@@ -796,11 +1098,13 @@ export class LuminaSpreadsheet {
         throw new LuminaError('INVALID_ARGUMENT', '选区超出工作表');
     this.selection = { ...range };
     this.callback(() => this.options.onSelectionChange?.({ ...range }));
-    this.changed();
+    this.changed(false);
   }
   setConditionalRules(rules: ConditionalRule[]) {
     this.assertLive();
-    this.rules = asArgument(() => copyRules(rules));
+    const next = asArgument(() => copyRules(rules));
+    this.cancelImport('条件格式已修改');
+    this.rules = next;
     this.changed();
   }
   getConditionalRules(): ConditionalRule[] {
@@ -823,10 +1127,58 @@ export class LuminaSpreadsheet {
     if (this.history.length > 100) this.history.splice(0, this.history.length - 100);
     // Dropping an old structural state also drops the preceding history prefix.
     // Keeping earlier edits would make their coordinates refer to the wrong sheet.
-    while (this.history.filter((item) => item.type === 'structure').length > 10) {
-      const oldest = this.history.findIndex((item) => item.type === 'structure');
+    while (
+      this.history.filter((item) => item.type === 'structure' || item.type === 'rename').length > 10
+    ) {
+      const oldest = this.history.findIndex(
+        (item) => item.type === 'structure' || item.type === 'rename',
+      );
       this.history.splice(0, oldest + 1);
     }
+  }
+  /** Rename a static worksheet and its explicit references as one undoable edit. */
+  renameSheet(name: string, sheetId?: string): void {
+    this.assertWritable();
+    const sheet = this.sheetForMetadata(sheetId);
+    const planned = asArgument(() => planSheetRename(this.workbook, sheet.id, name));
+    if (planned === this.workbook) return;
+    const affected = new Set(
+      planned.sheets.filter((next, index) => next !== this.workbook.sheets[index]).map((s) => s.id),
+    );
+    const validated = asArgument(() => copyWorkbook(planned));
+    const transaction: RenameTransaction = {
+      type: 'rename',
+      sheetId: sheet.id,
+      previousName: sheet.name,
+      name,
+      beforeSheets: structuredClone(this.workbook.sheets.filter((s) => affected.has(s.id))),
+      afterSheets: validated.sheets.filter((s) => affected.has(s.id)),
+    };
+    this.history.push(transaction);
+    this.trimHistory();
+    this.future = [];
+    this.restoreRename(transaction, 'apply');
+  }
+  private restoreRename(transaction: RenameTransaction, phase: SheetRenameEvent['phase']) {
+    const undo = phase === 'undo';
+    const sheets = structuredClone(undo ? transaction.beforeSheets : transaction.afterSheets);
+    const replacement = new Map(sheets.map((sheet) => [sheet.id, sheet]));
+    this.cancelImport('工作表名称已修改');
+    this.workbook.sheets = this.workbook.sheets.map((sheet) => replacement.get(sheet.id) ?? sheet);
+    this.workbook.updatedAt = new Date().toISOString();
+    this.calculationVersion++;
+    this.evaluator = this.createWorkbookEvaluator();
+    const event: SheetRenameEvent = {
+      sheetId: transaction.sheetId,
+      previousName: undo ? transaction.name : transaction.previousName,
+      name: undo ? transaction.previousName : transaction.name,
+      affectedSheetIds: sheets.map((sheet) => sheet.id),
+      phase,
+    };
+    const revision = this.revision + 1;
+    this.changed();
+    if (!this.destroyed && this.revision === revision)
+      this.callback(() => this.options.onSheetRename?.(event));
   }
   private editStructure(edit: StructureEdit) {
     this.assertWritable();
@@ -877,15 +1229,18 @@ export class LuminaSpreadsheet {
     transaction: StructureTransaction,
     phase: StructureChangeEvent['phase'],
   ) {
+    this.cancelImport('工作表结构已修改');
     const undo = phase === 'undo';
     const sheets = structuredClone(undo ? transaction.beforeSheets : transaction.afterSheets);
     const replacement = new Map(sheets.map((sheet) => [sheet.id, sheet]));
     this.workbook.sheets = this.workbook.sheets.map((sheet) => replacement.get(sheet.id) ?? sheet);
     this.rules = structuredClone(undo ? transaction.beforeRules : transaction.afterRules);
-    this.selection = { ...(undo ? transaction.beforeSelection : transaction.afterSelection) };
+    const activeTarget = this.workbook.activeSheetId === transaction.sheetId;
+    if (activeTarget)
+      this.selection = { ...(undo ? transaction.beforeSelection : transaction.afterSelection) };
     this.workbook.updatedAt = new Date().toISOString();
     this.calculationVersion++;
-    this.evaluator = createEvaluator(this.workbook, { managedMutations: true });
+    this.evaluator = this.createWorkbookEvaluator();
     // All state/history is committed before any host callback can reenter.
     const event: StructureChangeEvent = {
       ...transaction.edit,
@@ -898,7 +1253,7 @@ export class LuminaSpreadsheet {
     this.changed();
     if (this.destroyed || this.revision !== expectedRevision) return;
     this.callback(() => this.options.onStructureChange?.(event));
-    if (!this.destroyed && this.revision === expectedRevision)
+    if (activeTarget && !this.destroyed && this.revision === expectedRevision)
       this.callback(() => this.options.onSelectionChange?.(selection));
   }
   getPrintSettings(): PrintSettings | undefined {
@@ -1038,6 +1393,7 @@ export class LuminaSpreadsheet {
     this.assertWritable();
     const sheet = this.workbook.sheets.find((item) => item.id === sheetId);
     if (!sheet) throw new LuminaError('INVALID_ARGUMENT', '找不到工作表');
+    if (sheet.dataSource?.kind === 'paged') throw new LuminaError('READ_ONLY', '分页数据源为只读');
     if (!Array.isArray(changes) || changes.length > 100_000)
       throw new LuminaError('INVALID_ARGUMENT', '单次最多编辑 100,000 格');
     const normalized = new Map<string, Cell | null>();
@@ -1086,6 +1442,7 @@ export class LuminaSpreadsheet {
       inverse.push({ key, cell: sheet.cells[key] ? structuredClone(sheet.cells[key]) : null });
       forward.push({ key, cell });
     }
+    this.cancelImport('工作簿已编辑');
     for (const { key, cell } of forward) {
       if (cell) sheet.cells[key] = cell;
       else delete sheet.cells[key];
@@ -1112,6 +1469,7 @@ export class LuminaSpreadsheet {
     this.evaluator.invalidateCells(sheet.id, [...normalized.keys()], this.calculationVersion);
     if (
       !preserveSelection &&
+      sheetId === this.workbook.activeSheetId &&
       (normalized.size || before.rowCount !== after.rowCount || before.colCount !== after.colCount)
     )
       this.selection = {
@@ -1129,6 +1487,14 @@ export class LuminaSpreadsheet {
     try {
       if (transaction.type === 'structure') {
         this.restoreStructure(transaction, 'undo');
+        return;
+      }
+      if (transaction.type === 'sort') {
+        this.restoreSort(transaction, true);
+        return;
+      }
+      if (transaction.type === 'rename') {
+        this.restoreRename(transaction, 'undo');
         return;
       }
       this.apply(
@@ -1155,6 +1521,14 @@ export class LuminaSpreadsheet {
         this.restoreStructure(transaction, 'redo');
         return;
       }
+      if (transaction.type === 'sort') {
+        this.restoreSort(transaction, false);
+        return;
+      }
+      if (transaction.type === 'rename') {
+        this.restoreRename(transaction, 'redo');
+        return;
+      }
       this.apply(
         transaction.sheetId,
         transaction.changes,
@@ -1169,10 +1543,22 @@ export class LuminaSpreadsheet {
       throw error;
     }
   }
-  bindData(source: ReportDataSource, options: { pageSize?: number; maxPages?: number } = {}) {
+  bindData(source: ReportDataSource, options: ChunkCacheOptions = {}) {
     this.assertLive();
     const cache = asArgument(() => new ReportChunkCache(source, options));
-    this.clearSource();
+    const workbook = this.workbook;
+    const sheet = this.currentSheet;
+    this.cancelImport('数据源已替换');
+    const epoch = this.clearSource();
+    if (
+      this.destroyed ||
+      epoch !== this.sourceEpoch ||
+      this.workbook !== workbook ||
+      this.currentSheet !== sheet
+    ) {
+      cache.dispose();
+      return Promise.reject(new DOMException('数据绑定已取消。', 'AbortError'));
+    }
     this.filter = '';
     this.cache = cache;
     this.source = source;
@@ -1183,7 +1569,6 @@ export class LuminaSpreadsheet {
       rowCount: cache.rowCount,
       pageSize: cache.pageSize,
     });
-    const sheet = this.currentSheet;
     this.boundSheetId = sheet.id;
     sheet.rowCount = Math.max(1, source.rowCount ?? MAX_ROWS);
     sheet.colCount = source.columnCount;
@@ -1207,27 +1592,25 @@ export class LuminaSpreadsheet {
       if (cache.rowCount !== undefined) {
         sheet.rowCount = Math.max(1, cache.rowCount);
         sheet.dataSource!.totalRows = cache.rowCount;
-        if (this.selection.row >= sheet.rowCount)
+        if (this.workbook.activeSheetId === sheet.id && this.selection.row >= sheet.rowCount)
           this.selection = { row: sheet.rowCount - 1, col: this.selection.col };
       }
-      const error = cache.error ? asDataError(cache.error) : undefined;
-      this.setDataState({
-        status: error ? 'error' : cache.loading ? 'loading' : 'ready',
-        cachedPages: cache.size,
-        loading: cache.loading,
-        rowCount: cache.rowCount,
-        pageSize: cache.pageSize,
-        ...(error ? { error } : {}),
-      });
+      this.refreshDataState(cache);
       // Cached pages are external to sheet.cells. A cache notification can add,
       // evict or clear values, so consumers must refresh their value source.
       this.calculationVersion++;
+      this.evaluator.invalidate(this.calculationVersion);
       this.changed();
     });
-    this.initialRequest = new AbortController();
+    const initialRequest = new AbortController();
+    this.initialRequest = initialRequest;
     const last = Math.min(30, sheet.rowCount - 1, cache.pageSize * cache.maxPages - 1);
     this.lastViewport = `0:${last}`;
     this.changed();
+    // Synchronous subscribers can replace or destroy the binding during changed().
+    // Retain this operation's controller, never borrow a replacement's request.
+    if (this.destroyed || this.cache !== cache || initialRequest.signal.aborted)
+      return Promise.reject(new DOMException('数据绑定已取消。', 'AbortError'));
     if (cache.rowCount === 0) {
       this.setDataState({
         status: 'ready',
@@ -1238,26 +1621,46 @@ export class LuminaSpreadsheet {
       });
       return Promise.resolve();
     }
-    return cache.ensureRange(0, last, this.initialRequest.signal).catch((error) => {
+    return cache.ensureRange(0, last, initialRequest.signal).catch((error) => {
       throw asDataError(error);
     });
   }
   private clearSource() {
-    for (const request of this.exportRequests) request.abort();
+    const epoch = ++this.sourceEpoch;
+    const exports = [...this.exportRequests];
+    const viewport = this.viewportRequest;
+    const initial = this.initialRequest;
+    const cache = this.cache;
+    // Detach every old owner before abort listeners can synchronously rebind.
+    // Cleanup must never borrow controllers or subscriptions from that new binding.
     this.exportRequests.clear();
     this.unsubscribeCache?.();
     this.unsubscribeCache = undefined;
-    this.viewportRequest?.abort();
     this.viewportRequest = undefined;
-    this.initialRequest?.abort();
+    this.viewportError = undefined;
     this.initialRequest = undefined;
-    const cache = this.cache;
     this.cache = undefined;
     this.source = undefined;
     this.boundSheetId = undefined;
     this.lastViewport = '';
-    cache?.dispose();
     this.setDataState({ status: 'idle', cachedPages: 0, loading: 0 });
+    for (const request of exports) request.abort();
+    viewport?.abort();
+    initial?.abort();
+    cache?.dispose();
+    return epoch;
+  }
+  private refreshDataState(cache: ReportChunkCache) {
+    if (this.destroyed || this.cache !== cache) return;
+    const error = this.viewportError ?? (cache.error ? asDataError(cache.error) : undefined);
+    this.setDataState({
+      status: error ? 'error' : cache.loading ? 'loading' : 'ready',
+      cachedPages: cache.size,
+      loading: cache.loading,
+      rowCount: cache.rowCount,
+      pageSize: cache.pageSize,
+      ...(error ? { error } : {}),
+    });
   }
   private setDataState(state: DataSourceState) {
     if (this.destroyed) return;
@@ -1306,7 +1709,7 @@ export class LuminaSpreadsheet {
     };
   };
   viewport = (range: { firstRow: number; lastRow: number }) => {
-    if (!this.cache || this.destroyed) return;
+    if (!this.cache || this.destroyed || this.workbook.activeSheetId !== this.boundSheetId) return;
     const first = Math.max(0, Math.min(this.currentSheet.rowCount - 1, Math.floor(range.firstRow)));
     const last = Math.max(
       first,
@@ -1315,12 +1718,34 @@ export class LuminaSpreadsheet {
     const signature = `${first}:${last}`;
     if (signature === this.lastViewport) return;
     this.lastViewport = signature;
-    this.viewportRequest?.abort();
-    this.viewportRequest = new AbortController();
     const cache = this.cache;
-    void cache.ensureRange(first, last, this.viewportRequest.signal).catch((error) => {
-      if (this.cache === cache && error?.name !== 'AbortError')
-        this.reportError(asDataError(error));
+    const previousRequest = this.viewportRequest;
+    const request = new AbortController();
+    this.viewportRequest = request;
+    previousRequest?.abort();
+    // Cancellation can synchronously notify a host which loads, switches, rebinds
+    // or requests a newer viewport. Only the still-current request may proceed.
+    if (
+      this.destroyed ||
+      this.cache !== cache ||
+      this.viewportRequest !== request ||
+      request.signal.aborted ||
+      this.workbook.activeSheetId !== this.boundSheetId
+    )
+      return;
+    this.viewportError = undefined;
+    this.refreshDataState(cache);
+    void cache.ensureRange(first, last, request.signal).catch((error) => {
+      if (
+        this.cache === cache &&
+        this.viewportRequest === request &&
+        error?.name !== 'AbortError'
+      ) {
+        const failure = asDataError(error);
+        this.viewportError = failure;
+        this.refreshDataState(cache);
+        this.reportError(failure);
+      }
     });
   };
   /** Explicit retry; repaint alone never loops on a failing endpoint. */
@@ -1336,10 +1761,14 @@ export class LuminaSpreadsheet {
   /** Drops retained pages and reloads the last viewport; does not detach the source. */
   clearDataCache() {
     this.assertLive();
-    if (!this.cache) return;
+    const cache = this.cache;
+    if (!cache) return;
     this.viewportRequest?.abort();
+    if (this.destroyed || this.cache !== cache) return;
     this.initialRequest?.abort();
-    this.cache.clear();
+    if (this.destroyed || this.cache !== cache) return;
+    cache.clear();
+    if (this.destroyed || this.cache !== cache) return;
     this.retryData();
   }
   private replaceSheetMetadata(next: Sheet) {
@@ -1368,32 +1797,59 @@ export class LuminaSpreadsheet {
   surface() {
     this.assertLive();
     const renderedRevision = this.revision;
+    const renderedBook = this.workbook,
+      renderedSheet = this.currentSheet.id,
+      epoch = this.sheetViewEpoch;
+    const currentView = () =>
+      !this.destroyed &&
+      this.workbook === renderedBook &&
+      this.currentSheet.id === renderedSheet &&
+      this.sheetViewEpoch === epoch;
+    const assertCurrentView = () => {
+      this.assertLive();
+      if (!currentView()) throw new LuminaError('INVALID_ARGUMENT', '工作表已切换，旧编辑已取消');
+    };
     return (
       <Spreadsheet
         workbook={this.workbook}
         sheet={this.currentSheet}
         selection={this.selection}
-        onSelect={(range) => this.select(range)}
-        onPatch={(id, changes, nextDimensions) =>
+        onSelect={(range) => {
+          if (currentView()) this.select(range);
+        }}
+        onPatch={(id, changes, nextDimensions) => {
+          assertCurrentView();
+          if (id !== renderedSheet) throw new LuminaError('INVALID_ARGUMENT', '工作表不匹配');
           this.apply(
             id,
             changes,
             true,
             nextDimensions ? { ...dimensions(this.currentSheet), ...nextDimensions } : undefined,
-          )
-        }
-        onChange={(sheet) => this.replaceSheetMetadata(sheet)}
+          );
+        }}
+        onChange={(sheet) => {
+          assertCurrentView();
+          this.replaceSheetMetadata(sheet);
+        }}
         getCell={this.cell}
         getValue={this.value}
         calculationVersion={this.calculationVersion}
-        renderVersion={this.revision}
-        readOnly={this.options.readOnly || !!this.cache}
-        onViewportChange={this.viewport}
+        renderVersion={this.renderRevision}
+        readOnly={this.activeSheetInfo.readOnly}
+        onViewportChange={(range) => {
+          if (currentView()) this.viewport(range);
+        }}
         onRenderMetrics={(metrics) => {
           if (!this.destroyed && this.revision === renderedRevision)
             this.callback(() => this.options.onRender?.({ ...metrics }));
         }}
         onEditError={(error) => this.reportError(error)}
+        onUndo={() => {
+          if (currentView()) this.undo();
+        }}
+        onRedo={() => {
+          if (currentView()) this.redo();
+        }}
         zoom={this.options.zoom ?? 100}
         filter={this.filter}
         clipboardMode={this.clipboardMode}
@@ -1403,10 +1859,18 @@ export class LuminaSpreadsheet {
   destroy() {
     if (this.destroyed) return;
     this.destroyed = true;
-    this.clearSource();
-    this.root.unmount();
-    this.listeners.clear();
-    this.host.className = this.previousClass;
+    try {
+      this.cancelImport('表格已销毁');
+      this.clearSource();
+    } finally {
+      try {
+        this.root.unmount();
+      } finally {
+        this.listeners.clear();
+        this.host.className = this.previousClass;
+        mountedHosts.delete(this.host);
+      }
+    }
   }
 }
 function Surface({ controller }: { controller: LuminaSpreadsheet }) {

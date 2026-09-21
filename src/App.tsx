@@ -1,3 +1,7 @@
+import { parseCellInput } from './lib/cell-input';
+import { downloadRecoveryBackup } from './lib/recovery-download';
+import { readCurrentTrash, assertTrashSource, withTrashLock } from './lib/trash-storage';
+import { assertCommentRecords, assertRevisionRecords } from './lib/auxiliary-records';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowDownToLine,
@@ -96,16 +100,40 @@ import {
   MAX_ROWS,
 } from './lib/engine';
 import { createDemoWorkbook, createBlankWorkbook, createTemplateWorkbook } from './lib/seed';
-import { exportWorkbook, importFile, validateWorkbook } from './lib/io';
+import { exportWorkbook, importFile, validateWorkbook, IMPORT_LIMITS } from './lib/io';
+import { awaitFileOperation } from './lib/file-operation';
+import { readUtf8File } from './lib/file-text';
+import { independentWorkbookCopy as independentCopy, workbookCopyName } from './lib/workbook-copy';
+import {
+  readRecoveryImport,
+  restoreRecoveryWorkbook,
+  type RecoveryImport,
+} from './lib/recovery-import';
+import RecoveryDialog from './components/RecoveryDialog';
 import { loadWorkbooks, readStored, writeStored, snapshotLink, readSnapshot } from './lib/storage';
 import { getPersistence, type WorkbookPatch } from './lib/persistence';
 import { WorkspaceSaveQueue } from './lib/workspace-save';
+import { WorkspaceHistory } from './lib/workspace-history';
+import { WorkspaceCalculationInputs, workspaceFormulaTargets } from './lib/workspace-calculation';
+import { readSelectionStats, readSheetPopulation } from './lib/workspace-stats';
 import { createCalculationRuntime } from './lib/calculation';
 import { planWorkbookRowSort } from './lib/workbook-sort';
 import type { RowSortRequest } from './lib/row-sort';
 import SortDialog from './components/SortDialog';
+import ValidationDialog from './components/ValidationDialog';
+import StructureDialog from './components/StructureDialog';
+import { planStructureEdit } from './lib/structure-edit';
+import type { StructureEdit } from './lib/formula-structure';
 import FormulaBar from './components/FormulaBar';
+import HyperlinkDialog from './components/HyperlinkDialog';
+import RichTextDialog from './components/RichTextDialog';
+import SheetRenameDialog from './components/SheetRenameDialog';
+import { planSheetRename } from './lib/sheet-rename';
+import { replaceCellText } from './lib/rich-text';
+import { resolveInternalHyperlink } from './lib/hyperlink-navigation';
 import { planWorkspaceCellChanges } from './lib/workspace-edit';
+import { planWorkspaceValidationRules } from './lib/workspace-validation';
+import type { DataValidationRule } from './lib/data-validation';
 import { workspaceRoutes } from './lib/workspace-routes';
 import Spreadsheet from './components/Spreadsheet';
 import Analytics, { readWorkbookAnalytics } from './components/Analytics';
@@ -123,7 +151,13 @@ type ModalName =
   | 'search'
   | 'plans'
   | 'rename'
+  | 'rename-sheet'
   | 'sort'
+  | 'validation'
+  | 'structure'
+  | 'recovery'
+  | 'hyperlink'
+  | 'rich-text'
   | null;
 const money = (n: number) => new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0 }).format(n);
 const dateTime = (s: string) =>
@@ -168,15 +202,7 @@ const templates = [
   },
 ];
 
-function independentCopy(source: Workbook): Workbook {
-  const copy = structuredClone(source),
-    ids = new Map(copy.sheets.map((sheet) => [sheet.id, crypto.randomUUID()]));
-  copy.id = crypto.randomUUID();
-  copy.sheets = copy.sheets.map((sheet) => ({ ...sheet, id: ids.get(sheet.id)! }));
-  copy.activeSheetId = ids.get(copy.activeSheetId) || copy.sheets[0].id;
-  return copy;
-}
-function initialBooks(): Workbook[] {
+function initialWorkspace(): { books: Workbook[]; shared: boolean; invalidSnapshot: boolean } {
   const stored: unknown = loadWorkbooks();
   const existing: Workbook[] = [];
   const seen = new Set<string>();
@@ -195,23 +221,30 @@ function initialBooks(): Workbook[] {
     const snap = readSnapshot();
     if (snap) {
       const copy = independentCopy(validateWorkbook(snap));
-      copy.name += ' · 共享副本';
-      return [copy, ...existing];
+      copy.name = workbookCopyName(copy.name, ' · 共享副本');
+      return { books: [copy, ...existing], shared: true, invalidSnapshot: false };
     }
   } catch {
     /* Invalid external snapshots do not replace local documents. */
   }
-  return existing.length ? existing : [createDemoWorkbook()];
+  return {
+    books: existing.length ? existing : [createDemoWorkbook()],
+    shared: false,
+    invalidSnapshot: new URLSearchParams(location.hash.slice(1)).has('snapshot'),
+  };
 }
 export default function App() {
-  const [books, setBooks] = useState<Workbook[]>(initialBooks);
+  const [documents, setDocuments] = useState(initialWorkspace);
+  const { books } = documents;
+  const setBooks = useCallback((next: Workbook[] | ((previous: Workbook[]) => Workbook[])) => {
+    setDocuments((previous) => ({
+      ...previous,
+      books: typeof next === 'function' ? next(previous.books) : next,
+    }));
+  }, []);
   const [activeId, setActiveId] = useState(() => {
     const saved = readStored<string>('activeWorkbook', '');
-    return location.hash.includes('snapshot=')
-      ? books[0].id
-      : books.some((b) => b.id === saved)
-        ? saved
-        : books[0].id;
+    return documents.shared ? books[0].id : books.some((b) => b.id === saved) ? saved : books[0].id;
   });
   const book = books.find((b) => b.id === activeId) || books[0];
   const sheet = book.sheets.find((s) => s.id === book.activeSheetId) || book.sheets[0];
@@ -224,12 +257,21 @@ export default function App() {
   const [insights, setInsights] = useState(() => window.innerWidth > 900);
   const [sidebar, setSidebar] = useState(() => window.innerWidth > 740);
   const [modal, setModal] = useState<ModalName>(null);
+  const [recoveryImport, setRecoveryImport] = useState<RecoveryImport | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const sortButton = useRef<HTMLButtonElement>(null);
   const sortDialogOpen = useRef(false);
+  const validationButton = useRef<HTMLButtonElement>(null);
+  const validationDialogOpen = useRef(false);
+  const structureButton = useRef<HTMLButtonElement>(null);
+  const structureDialogOpen = useRef(false);
   useEffect(() => {
     if (sortDialogOpen.current && modal !== 'sort') sortButton.current?.focus();
     sortDialogOpen.current = modal === 'sort';
+    if (validationDialogOpen.current && modal !== 'validation') validationButton.current?.focus();
+    validationDialogOpen.current = modal === 'validation';
+    if (structureDialogOpen.current && modal !== 'structure') structureButton.current?.focus();
+    structureDialogOpen.current = modal === 'structure';
   }, [modal]);
   const [templateFilter, setTemplateFilter] = useState('精选模板');
   const [menu, setMenu] = useState<string | null>(null);
@@ -239,57 +281,152 @@ export default function App() {
   const [showFilter, setShowFilter] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
   const [zoom, setZoom] = useState(100);
-  const [toast, setToast] = useState('');
+  const [toast, setToast] = useState(
+    documents.invalidSnapshot ? '分享链接无效或已损坏，已打开本地工作空间。' : '',
+  );
   const [saveState, setSaveState] = useState<'saving' | 'saved' | 'session' | 'error'>('saving');
   const [workspaceReady, setWorkspaceReady] = useState(false);
   const [workspaceLoadFailed, setWorkspaceLoadFailed] = useState(false);
+  const [workspaceLoadError, setWorkspaceLoadError] = useState('');
+  const [workspaceLoadWarning, setWorkspaceLoadWarning] = useState('');
+  const [startupBackupBusy, setStartupBackupBusy] = useState(false);
+  const [startupBackupMessage, setStartupBackupMessage] = useState('');
+  const startupBackupPending = useRef(false);
+  const workspaceReadyRef = useRef(workspaceReady);
+  workspaceReadyRef.current = workspaceReady;
   const [workspaceLoadAttempt, setWorkspaceLoadAttempt] = useState(0);
-  const [address, setAddress] = useState('D2');
+  const addressOwner = `${book.id}:${sheet.id}:${selection.row}:${selection.col}`;
+  const selectedAddress = cellKey(selection.row, selection.col);
+  const [addressDraft, setAddressDraft] = useState(() => ({
+    owner: addressOwner,
+    value: selectedAddress,
+  }));
+  // Reset with the selection render. A passive effect can run after the user
+  // has already typed an address and overwrite it before Enter is handled.
+  const address = addressDraft.owner === addressOwner ? addressDraft.value : selectedAddress;
+  if (addressDraft.owner !== addressOwner)
+    setAddressDraft({ owner: addressOwner, value: selectedAddress });
+  const setAddress = (value: string) => setAddressDraft({ owner: addressOwner, value });
   const [nameInput, setNameInput] = useState('');
   const [revisions, setRevisions] = useState<Revision[]>([]);
+  const [revisionStatus, setRevisionStatus] = useState<'loading' | 'ready' | 'saving' | 'error'>(
+    'loading',
+  );
+  const [revisionError, setRevisionError] = useState('');
+  const revisionOwner = useRef({
+    bookId: book.id,
+    ready: false,
+    saving: false,
+    items: [] as Revision[],
+  });
+  const revisionWrites = useRef(new Map<string, Promise<void>>());
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentInput, setCommentInput] = useState('');
+  const [commentStatus, setCommentStatus] = useState<'loading' | 'ready' | 'saving' | 'error'>(
+    'loading',
+  );
+  const [commentError, setCommentError] = useState('');
+  const commentOwner = useRef({
+    bookId: book.id,
+    ready: false,
+    saving: false,
+    items: [] as Comment[],
+  });
+  const commentWrites = useRef(new Map<string, Promise<void>>());
   const auxiliaryBook = useRef(book.id);
   auxiliaryBook.current = book.id;
   const historyRequest = useRef(0);
+  const revisionEditorVersion = historyRequest.current;
   const commentsRequest = useRef(0);
+  const commentEditorVersion = commentsRequest.current;
   const [sharedUrl, setSharedUrl] = useState('');
-  const [trash, setTrash] = useState<Workbook[]>(() => readStored('trash', []));
-  const undoStack = useRef<Workbook[]>([]),
-    redoStack = useRef<Workbook[]>([]);
+  const [trash, setTrash] = useState<Workbook[]>([]);
+  const [restoringTrash, setRestoringTrash] = useState(false);
+  const trashRestorePending = useRef(false);
+  const editHistory = useRef(new WorkspaceHistory(60));
   const [, refreshHistory] = useState(0);
   const fileInput = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
+  const [fileOperations, setFileOperations] = useState(0);
+  const busy = fileOperations > 0;
+  const fileOperationOwner = useRef({ mounted: true, importId: 0 });
+  const fileRequests = useRef(new Set<AbortController>());
+  const importRequest = useRef<AbortController | null>(null);
+  const latestBooks = useRef(books);
+  latestBooks.current = books;
+  useEffect(() => {
+    fileOperationOwner.current.mounted = true;
+    return () => {
+      fileOperationOwner.current.mounted = false;
+      fileOperationOwner.current.importId++;
+      const pending = [...fileRequests.current];
+      fileRequests.current.clear();
+      for (const request of pending) request.abort();
+    };
+  }, []);
   const persistence = useRef(getPersistence());
   const saveQueue = useRef<WorkspaceSaveQueue | null>(null);
   if (!saveQueue.current) saveQueue.current = new WorkspaceSaveQueue(persistence.current);
   const saveRevision = useRef(0);
+  const saveRisk = useRef(false);
+  const canvasDraftRisk = useRef(false);
+  const formulaDraftRisk = useRef(false);
+  const setCanvasDraftRisk = useCallback((dirty: boolean) => {
+    canvasDraftRisk.current = dirty;
+  }, []);
+  const setFormulaDraftRisk = useCallback((dirty: boolean) => {
+    formulaDraftRisk.current = dirty;
+  }, []);
   const recordSave = useCallback((pending: Promise<void>) => {
     const revision = ++saveRevision.current;
+    saveRisk.current = true;
     setSaveState('saving');
     void pending
       .then(() => {
-        if (revision === saveRevision.current)
-          setSaveState(persistence.current.stats.backend === 'memory' ? 'session' : 'saved');
+        if (revision === saveRevision.current) {
+          saveRisk.current = persistence.current.stats.backend === 'memory';
+          if (fileOperationOwner.current.mounted)
+            setSaveState(saveRisk.current ? 'session' : 'saved');
+        }
       })
       .catch(() => {
-        if (revision === saveRevision.current) setSaveState('error');
+        if (revision === saveRevision.current && fileOperationOwner.current.mounted)
+          setSaveState('error');
       });
   }, []);
+  useEffect(() => {
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      if (
+        !saveRisk.current &&
+        !canvasDraftRisk.current &&
+        !formulaDraftRisk.current &&
+        !commentWrites.current.size &&
+        !revisionWrites.current.size
+      )
+        return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => window.removeEventListener('beforeunload', beforeUnload);
+  }, []);
   const calculation = useRef<ReturnType<typeof createCalculationRuntime> | null>(null);
-  const [calculationVersion, setCalculationVersion] = useState(0);
-  const [calculatedValues, setCalculatedValues] = useState<Record<string, CellValue>>({});
-  const calculatedRevision = useRef(-1);
+  const calculationInputs = useRef(new WorkspaceCalculationInputs());
+  const calculationInput = calculationInputs.current.get(book);
+  const calculationVersion = calculationInput.revision;
+  const [calculated, setCalculated] = useState<{
+    revision: number;
+    values: Record<string, CellValue>;
+  }>({ revision: -1, values: {} });
   const renderEvaluator = useMemo(
-    () => createEvaluator(book, { revision: calculationVersion }),
-    [book, calculationVersion],
+    () => createEvaluator(calculationInput.workbook, { revision: calculationVersion }),
+    [calculationInput],
   );
   const renderValue = useCallback(
     (targetSheet: Sheet, key: string): CellValue =>
-      (calculatedRevision.current === calculationVersion
-        ? calculatedValues[`${targetSheet.id}:${key}`]
+      (calculated.revision === calculationVersion
+        ? calculated.values[`${targetSheet.id}:${key}`]
         : undefined) ?? renderEvaluator(targetSheet, key),
-    [calculatedValues, calculationVersion, renderEvaluator],
+    [calculated, calculationVersion, renderEvaluator],
   );
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const notify = useCallback((message: string) => {
@@ -299,24 +436,66 @@ export default function App() {
   }, []);
   const closeModal = useCallback(() => setModal(null), []);
   const selectedCell = sheet.cells[cellKey(selection.row, selection.col)];
-  const openedSnapshot = useRef(new URLSearchParams(location.hash.slice(1)).has('snapshot'));
+  const hyperlinkOwner = useRef({
+    book,
+    sheet,
+    selectedCell,
+    key: cellKey(selection.row, selection.col),
+    modal,
+  });
+  hyperlinkOwner.current = {
+    book,
+    sheet,
+    selectedCell,
+    key: cellKey(selection.row, selection.col),
+    modal,
+  };
+  const currentHyperlinkOwner = hyperlinkOwner.current;
+  const openedSnapshot = useRef(documents.shared);
   const requestedActiveId = useRef(readStored<string>('activeWorkbook', ''));
   useEffect(() => {
     let cancelled = false;
     setWorkspaceLoadFailed(false);
+    setWorkspaceLoadError('');
+    setWorkspaceLoadWarning('');
     void (async () => {
       try {
         const loaded = await persistence.current.loadWorkbooks();
         if (cancelled) return;
-        const archived = new Set(readStored<Workbook[]>('trash', []).map((item) => item.id));
+        if (!Array.isArray(loaded)) {
+          setWorkspaceLoadError('工作簿目录损坏，请下载恢复备份并保留浏览器数据，修复后重试。');
+          throw new Error('工作簿目录损坏');
+        }
+        let currentTrash: Workbook[];
+        try {
+          currentTrash = readCurrentTrash();
+        } catch {
+          setWorkspaceLoadError('回收站读取失败或目录损坏，请保留浏览器数据，修复后重试。');
+          throw new Error('回收站读取失败');
+        }
+        setTrash(currentTrash);
+        const archived = new Set(currentTrash.map((item) => item.id));
+        let damagedCount = 0;
         const valid = loaded.flatMap((raw) => {
           try {
             const candidate = validateWorkbook(raw);
             return archived.has(candidate.id) ? [] : [candidate];
           } catch {
+            damagedCount++;
             return [];
           }
         });
+        if (damagedCount && !valid.length) {
+          setWorkspaceLoadError(
+            '工作簿内容损坏，无法安全打开。请下载恢复备份并保留浏览器数据，修复后重试。',
+          );
+          throw new Error('工作簿内容损坏');
+        }
+        if (damagedCount) {
+          setWorkspaceLoadWarning(
+            `${damagedCount} 本工作簿未能打开，原存储保持不变。请保留浏览器数据并下载恢复备份。`,
+          );
+        }
         const restored = valid.length ? valid : books.filter((item) => !archived.has(item.id));
         const readyBooks = openedSnapshot.current
           ? [books[0], ...restored.filter((item) => item.id !== books[0].id)]
@@ -337,8 +516,15 @@ export default function App() {
           for (const initial of newBooks) recordSave(saveQueue.current!.snapshot(initial));
         } else recordSave(saveQueue.current!.flush());
         setWorkspaceReady(true);
-      } catch {
+      } catch (cause) {
         if (!cancelled) {
+          setWorkspaceLoadError(
+            (current) =>
+              current ||
+              (cause instanceof Error
+                ? cause.message
+                : '无法读取本地存储，请保留浏览器数据后重试。'),
+          );
           setSaveState('error');
           setWorkspaceLoadFailed(true);
         }
@@ -349,7 +535,11 @@ export default function App() {
     };
   }, [workspaceLoadAttempt]);
   useEffect(() => {
-    const runtime = createCalculationRuntime();
+    const runtime = createCalculationRuntime({
+      queueMode: 'latest',
+      timeoutMs: 30_000,
+      reuseSheets: true,
+    });
     calculation.current = runtime;
     return () => {
       runtime.dispose();
@@ -357,22 +547,21 @@ export default function App() {
     };
   }, []);
   useEffect(() => {
-    setCalculatedValues({});
-    calculatedRevision.current = -1;
-    const targets = book.sheets.flatMap((currentSheet) =>
-      Object.entries(currentSheet.cells)
-        .filter(([, cell]) => typeof cell.value === 'string' && cell.value.startsWith('='))
-        .slice(0, 25_000)
-        .map(([key]) => ({ sheetId: currentSheet.id, key })),
-    );
+    const source = calculationInput.workbook;
+    const targets = workspaceFormulaTargets(source);
     const revision = calculationVersion;
     let cancelled = false;
+    // No formulas means no worker message or full workbook structured clone.
+    if (!targets.length) {
+      setCalculated({ revision, values: {} });
+      return;
+    }
+    const controller = new AbortController();
     void calculation
-      .current!.calculate(book, targets, revision)
+      .current!.calculate(source, targets, revision, controller.signal)
       .then((result) => {
         if (!cancelled && result.revision === calculationVersion) {
-          calculatedRevision.current = result.revision;
-          setCalculatedValues(result.values);
+          setCalculated({ revision: result.revision, values: result.values });
         }
       })
       .catch(() => {
@@ -380,11 +569,9 @@ export default function App() {
       });
     return () => {
       cancelled = true;
+      controller.abort();
     };
-  }, [book, calculationVersion]);
-  useEffect(() => {
-    setAddress(cellKey(selection.row, selection.col));
-  }, [selection, sheet.id, selectedCell?.value]);
+  }, [calculationInput]);
   useEffect(() => {
     if (workspaceReady) writeStored('activeWorkbook', activeId);
   }, [activeId, workspaceReady]);
@@ -394,45 +581,19 @@ export default function App() {
   }, []);
   useEffect(() => {
     if (!workspaceReady) return;
-    let cancelled = false;
-    const historyVersion = ++historyRequest.current;
-    const commentsVersion = ++commentsRequest.current;
     setRevisions([]);
     setComments([]);
-    void persistence.current
-      .loadRevisions(book.id)
-      .then((items) => {
-        if (
-          !cancelled &&
-          auxiliaryBook.current === book.id &&
-          historyRequest.current === historyVersion
-        )
-          setRevisions(items);
-      })
-      .catch(() => {
-        if (!cancelled) notify('版本历史读取失败，请重新打开历史');
-      });
-    void persistence.current
-      .loadComments(book.id)
-      .then((items) => {
-        if (
-          !cancelled &&
-          auxiliaryBook.current === book.id &&
-          commentsRequest.current === commentsVersion
-        )
-          setComments(items);
-      })
-      .catch(() => {
-        if (!cancelled) notify('批注读取失败，请重新打开工作簿');
-      });
-    undoStack.current = [];
-    redoStack.current = [];
+    setCommentInput('');
+    loadCommentsForBook();
+    loadVersionsForBook();
+    editHistory.current.clear();
     setSelection({
       row: window.innerWidth <= 740 ? 0 : Math.min(1, sheet.rowCount - 1),
       col: window.innerWidth <= 740 ? 0 : Math.min(3, sheet.colCount - 1),
     });
     return () => {
-      cancelled = true;
+      historyRequest.current++;
+      commentsRequest.current++;
     };
   }, [book.id, workspaceReady]);
   useEffect(() => {
@@ -448,16 +609,16 @@ export default function App() {
     }));
   }, [sheet.id, sheet.rowCount, sheet.colCount]);
   const updateBook = useCallback(
-    (next: Workbook, track = true, persistedByPatch = false) => {
-      if (track) {
-        undoStack.current.push(structuredClone(book));
-        undoStack.current = undoStack.current.slice(-60);
-        redoStack.current = [];
-      }
+    (next: Workbook, track = true, patches?: WorkbookPatch[]) => {
+      if (track) editHistory.current.record(book, patches);
       const committed = { ...next, updatedAt: new Date().toISOString() };
-      if (!persistedByPatch) recordSave(saveQueue.current!.snapshot(committed));
+      calculationInputs.current.register(book, committed, patches);
+      recordSave(
+        patches
+          ? saveQueue.current!.patches(book.id, patches)
+          : saveQueue.current!.snapshot(committed),
+      );
       setBooks((prev) => prev.map((b) => (b.id === book.id ? committed : b)));
-      setCalculationVersion((version) => version + 1);
       refreshHistory((n) => n + 1);
     },
     [book],
@@ -489,14 +650,23 @@ export default function App() {
         sheetId: next.id,
         ...change,
       }));
-      if (metadataChanged)
-        patches.push({ kind: 'sheet-meta', sheetId: next.id, changes: afterMeta });
-      recordSave(saveQueue.current!.patches(book.id, patches));
+      if (metadataChanged) {
+        const changes = Object.fromEntries(
+          [...new Set([...Object.keys(beforeMeta), ...Object.keys(afterMeta)])]
+            .filter(
+              (key) =>
+                JSON.stringify(beforeMeta[key as keyof typeof beforeMeta]) !==
+                JSON.stringify(afterMeta[key as keyof typeof afterMeta]),
+            )
+            .map((key) => [key, afterMeta[key as keyof typeof afterMeta]]),
+        );
+        patches.push({ kind: 'sheet-meta', sheetId: next.id, changes });
+      }
       const result = { ...next, cells: planned?.sheet.cells ?? previous.cells };
       updateBook(
         { ...book, sheets: book.sheets.map((s) => (s.id === next.id ? result : s)) },
         true,
-        true,
+        patches,
       );
       return true;
     } catch (error) {
@@ -519,34 +689,58 @@ export default function App() {
       }));
       if (planned.dimensions)
         patches.push({ kind: 'sheet-meta', sheetId, changes: planned.dimensions });
-      recordSave(saveQueue.current!.patches(book.id, patches));
       updateBook(
         {
           ...book,
           sheets: book.sheets.map((item) => (item.id === sheetId ? planned.sheet : item)),
         },
         true,
-        true,
+        patches,
       );
     },
     [book, updateBook],
   );
+  function saveValidationRules(rules: DataValidationRule[]) {
+    const next = planWorkspaceValidationRules(book, sheet.id, rules);
+    if (next) {
+      const patches: WorkbookPatch[] = [
+        {
+          kind: 'sheet-meta',
+          sheetId: sheet.id,
+          changes: { dataValidations: next.dataValidations },
+        },
+      ];
+      updateBook(
+        { ...book, sheets: book.sheets.map((item) => (item.id === sheet.id ? next : item)) },
+        true,
+        patches,
+      );
+    }
+    closeModal();
+    notify(next ? '数据验证规则已应用，可撤销；已有内容保持不变' : '规则没有变化');
+  }
   function undo() {
-    const previous = undoStack.current.pop();
+    const previous = editHistory.current.undo(book);
     if (!previous) return;
-    redoStack.current.push(structuredClone(book));
-    setBooks((prev) => prev.map((b) => (b.id === book.id ? previous : b)));
-    setCalculationVersion((version) => version + 1);
-    recordSave(saveQueue.current!.snapshot(previous));
+    calculationInputs.current.register(book, previous.workbook, previous.patches);
+    setBooks((prev) => prev.map((b) => (b.id === book.id ? previous.workbook : b)));
+    recordSave(
+      previous.patches
+        ? saveQueue.current!.patches(book.id, previous.patches)
+        : saveQueue.current!.snapshot(previous.workbook),
+    );
     refreshHistory((n) => n + 1);
   }
   function redo() {
-    const next = redoStack.current.pop();
+    const next = editHistory.current.redo(book);
     if (!next) return;
-    undoStack.current.push(structuredClone(book));
-    setBooks((prev) => prev.map((b) => (b.id === book.id ? next : b)));
-    setCalculationVersion((version) => version + 1);
-    recordSave(saveQueue.current!.snapshot(next));
+    calculationInputs.current.register(book, next.workbook, next.patches);
+    setBooks((prev) => prev.map((b) => (b.id === book.id ? next.workbook : b)));
+    recordSave(
+      next.patches
+        ? saveQueue.current!.patches(book.id, next.patches)
+        : saveQueue.current!.snapshot(next.workbook),
+    );
     refreshHistory((n) => n + 1);
   }
   function saveNow() {
@@ -566,11 +760,12 @@ export default function App() {
   }
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.isComposing || e.keyCode === 229) return;
       const command = e.metaKey || e.ctrlKey,
         key = e.key.toLowerCase();
       if (command && key === 'k') {
         e.preventDefault();
-        setModal('search');
+        if (!modal) setModal('search');
       }
       if (command && key === 's') {
         e.preventDefault();
@@ -588,9 +783,12 @@ export default function App() {
     window.addEventListener('keydown', listener);
     return () => window.removeEventListener('keydown', listener);
   }, [books, book, notify, modal, workspaceReady]);
-  function addBook(next: Workbook) {
-    const unique = books.some((existing) => existing.id === next.id) ? independentCopy(next) : next;
-    recordSave(saveQueue.current!.snapshot(unique));
+  function addBook(next: Workbook, persist = true) {
+    const unique = latestBooks.current.some((existing) => existing.id === next.id)
+      ? independentCopy(next)
+      : next;
+    latestBooks.current = [unique, ...latestBooks.current];
+    if (persist) recordSave(saveQueue.current!.snapshot(unique));
     setBooks((prev) => [unique, ...prev]);
     setActiveId(unique.id);
     setWorkspace('workspace');
@@ -602,15 +800,9 @@ export default function App() {
   }
   function setCellValue(value: string) {
     const key = cellKey(selection.row, selection.col);
-    let parsed: string | number | boolean = value;
-    if (value.startsWith("'")) parsed = value.slice(1);
-    else if (value === 'TRUE' || value === 'FALSE') parsed = value === 'TRUE';
-    else if (/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:e[+-]?\d+)?$/i.test(value.trim())) {
-      const n = Number(value);
-      if (Number.isFinite(n) && (!Number.isInteger(n) || Number.isSafeInteger(n))) parsed = n;
-    }
+    const parsed = parseCellInput(value);
     if (sheet.cells[key]?.value === parsed) return;
-    applySheetPatches(sheet.id, [{ key, cell: { ...sheet.cells[key], value: parsed } }]);
+    applySheetPatches(sheet.id, [{ key, cell: replaceCellText(sheet.cells[key], parsed) }]);
   }
   function insertInsightFormula(value: string) {
     const occupied = Object.entries(sheet.cells)
@@ -709,75 +901,325 @@ export default function App() {
   }
   async function handleExport(format: 'xlsx' | 'csv' | 'json' | 'pdf') {
     setMenu(null);
-    setBusy(true);
+    const request = new AbortController();
+    fileRequests.current.add(request);
+    setFileOperations((count) => count + 1);
     try {
-      await exportWorkbook(book, format);
-      notify(`${format.toUpperCase()} 文件已导出`);
+      await awaitFileOperation(
+        exportWorkbook(structuredClone(book), format, { signal: request.signal }),
+        request.signal,
+      );
+      if (fileOperationOwner.current.mounted && !request.signal.aborted)
+        notify(`${format.toUpperCase()} 文件已导出`);
     } catch (error) {
-      notify(error instanceof Error ? error.message : '文件导出失败，请重试');
+      if (fileOperationOwner.current.mounted && !request.signal.aborted)
+        notify(error instanceof Error ? error.message : '文件导出失败，请重试');
     } finally {
-      setBusy(false);
+      finishFileOperation(request);
     }
+  }
+  function finishFileOperation(request: AbortController) {
+    if (fileRequests.current.delete(request) && fileOperationOwner.current.mounted)
+      setFileOperations((count) => count - 1);
+    if (importRequest.current === request) importRequest.current = null;
+  }
+  function cancelFileOperations() {
+    fileOperationOwner.current.importId++;
+    const pending = [...fileRequests.current];
+    fileRequests.current.clear();
+    importRequest.current = null;
+    setFileOperations(0);
+    for (const request of pending) request.abort();
+    if (fileInput.current) fileInput.current.value = '';
+    notify('文件操作已取消，当前工作簿已保留');
   }
   async function handleImport(file?: File) {
     if (!file) return;
-    setBusy(true);
+    setRecoveryImport(null);
+    if (modal === 'recovery') closeModal();
+    const importId = ++fileOperationOwner.current.importId;
+    importRequest.current?.abort();
+    const request = new AbortController();
+    importRequest.current = request;
+    fileRequests.current.add(request);
+    const isCurrent = () =>
+      fileOperationOwner.current.mounted &&
+      fileOperationOwner.current.importId === importId &&
+      !request.signal.aborted;
+    setFileOperations((count) => count + 1);
     try {
-      const result = await importFile(file);
+      if (file.size > IMPORT_LIMITS.bytes) throw new Error('文件超过 20 MB 限制。');
+      if (file.name.toLowerCase().endsWith('.json')) {
+        const backup = readRecoveryImport(
+          JSON.parse(await awaitFileOperation(readUtf8File(file, request.signal), request.signal)),
+        );
+        if (!isCurrent()) return;
+        if (backup) {
+          setRecoveryImport(backup);
+          setModal('recovery');
+          return;
+        }
+      }
+      const result = await awaitFileOperation(importFile(file, request.signal), request.signal);
+      if (!isCurrent()) return;
       addBook(result);
       notify(`已导入 ${result.name}`);
     } catch (error) {
-      notify(error instanceof Error ? error.message : '无法读取此文件');
+      if (isCurrent()) notify(error instanceof Error ? error.message : '无法读取此文件');
     } finally {
-      setBusy(false);
-      if (fileInput.current) fileInput.current.value = '';
+      finishFileOperation(request);
+      if (isCurrent() && fileInput.current) fileInput.current.value = '';
     }
   }
+  function loadVersionsForBook() {
+    const version = ++historyRequest.current;
+    revisionOwner.current = { bookId: book.id, ready: false, saving: false, items: [] };
+    setRevisionStatus('loading');
+    setRevisionError('');
+    const owns = () =>
+      fileOperationOwner.current.mounted &&
+      auxiliaryBook.current === book.id &&
+      historyRequest.current === version;
+    void (async () => {
+      await revisionWrites.current.get(book.id)?.catch(() => {});
+      if (!owns()) return;
+      const items = await persistence.current.loadRevisions(book.id);
+      if (!owns()) return;
+      assertRevisionRecords(items);
+      revisionOwner.current = { bookId: book.id, ready: true, saving: false, items };
+      setRevisions(items);
+      setRevisionStatus('ready');
+    })().catch(() => {
+      if (!owns()) return;
+      setRevisionStatus('error');
+      setRevisionError('版本历史读取失败，请重试读取后再保存。');
+    });
+  }
+  function ownsVersionEditor() {
+    const owner = revisionOwner.current;
+    return (
+      historyRequest.current === revisionEditorVersion &&
+      auxiliaryBook.current === book.id &&
+      owner.bookId === book.id &&
+      owner.ready &&
+      !owner.saving
+    );
+  }
   function saveVersion() {
+    if (!ownsVersionEditor()) {
+      if (auxiliaryBook.current === book.id) notify('版本历史尚未就绪，请打开版本历史查看状态。');
+      return;
+    }
+    const owner = revisionOwner.current;
     const next = {
       id: crypto.randomUUID(),
       name: `手动保存 · ${dateTime(new Date().toISOString())}`,
       createdAt: new Date().toISOString(),
       workbook: structuredClone(book),
     };
-    const list = [next, ...revisions].slice(0, 20);
-    historyRequest.current++;
-    setRevisions(list);
-    void persistence.current
-      .saveRevisions(book.id, list)
-      .then(() => notify('已保存当前版本'))
-      .catch(() => notify('本地存储空间不足，请导出备份'));
+    const list = [next, ...owner.items].slice(0, 20);
+    owner.saving = true;
+    const version = ++historyRequest.current;
+    setRevisionStatus('saving');
+    setRevisionError('');
+    const owns = () =>
+      fileOperationOwner.current.mounted &&
+      auxiliaryBook.current === book.id &&
+      historyRequest.current === version;
+    const pending = Promise.resolve().then(() => persistence.current.saveRevisions(book.id, list));
+    revisionWrites.current.set(book.id, pending);
+    void pending
+      .then(
+        () => {
+          if (!owns()) return;
+          revisionOwner.current = { bookId: book.id, ready: true, saving: false, items: list };
+          setRevisions(list);
+          setRevisionStatus('ready');
+          notify('已保存当前版本');
+        },
+        () => {
+          if (!owns()) return;
+          owner.saving = false;
+          setRevisionStatus('ready');
+          setRevisionError('版本保存失败，已有恢复点未更改；请重新保存或导出备份。');
+          notify('版本保存失败，请打开版本历史重试或导出备份');
+        },
+      )
+      .finally(() => {
+        if (revisionWrites.current.get(book.id) === pending) revisionWrites.current.delete(book.id);
+      });
+  }
+  function restoreVersion(revision: Revision) {
+    if (!ownsVersionEditor()) return;
+    try {
+      if (revision.workbook.id !== book.id) throw new Error('恢复点不属于当前工作簿。');
+      const candidate = validateWorkbook(revision.workbook);
+      updateBook(candidate);
+      notify('已恢复版本，可通过撤销回到之前的内容');
+      closeModal();
+    } catch (error) {
+      setRevisionError(error instanceof Error ? error.message : '恢复点无效，未更改当前工作簿。');
+    }
   }
   function openHistory() {
-    const version = ++historyRequest.current;
-    void persistence.current
-      .loadRevisions(book.id)
-      .then((items) => {
-        if (auxiliaryBook.current === book.id && version === historyRequest.current)
-          setRevisions(items);
-      })
-      .catch(() => notify('版本历史读取失败，请重试'));
+    if (!(revisionOwner.current.bookId === book.id && revisionOwner.current.saving))
+      loadVersionsForBook();
     setModal('history');
   }
-  function archiveBook() {
-    const next = [book, ...trash];
-    if (!writeStored('trash', next)) {
-      notify('回收站保存失败，工作簿仍保留在工作空间');
-      return;
+  async function archiveBook() {
+    try {
+      await withTrashLock(() => {
+        if (!fileOperationOwner.current.mounted) return;
+        const source = latestBooks.current.find((item) => item.id === book.id);
+        if (!source) return;
+        const current = readCurrentTrash();
+        if (current.some((item) => item.id === source.id)) throw new Error('原件已归档');
+        const next = [source, ...current];
+        if (!writeStored('trash', next)) throw new Error('回收站写入失败');
+        setTrash(next);
+        const remaining = latestBooks.current.filter((item) => item.id !== source.id);
+        const result = remaining.length ? remaining : [createBlankWorkbook()];
+        if (!remaining.length) recordSave(saveQueue.current!.snapshot(result[0]));
+        latestBooks.current = result;
+        setBooks(result);
+        setActiveId(result[0].id);
+        setMenu(null);
+        notify('已移到回收站，可随时恢复');
+      });
+    } catch {
+      if (fileOperationOwner.current.mounted)
+        notify('回收站读写失败或目录已变化，工作簿仍保留，请刷新后重试');
     }
-    setTrash(next);
-    const remaining = books.filter((b) => b.id !== book.id);
-    const result = remaining.length ? remaining : [createBlankWorkbook()];
-    if (!remaining.length) recordSave(saveQueue.current!.snapshot(result[0]));
-    setBooks(result);
-    setActiveId(result[0].id);
-    setMenu(null);
-    notify('已移到回收站，可随时恢复');
+  }
+  async function backupFailedStartup() {
+    if (startupBackupPending.current) return;
+    startupBackupPending.current = true;
+    setStartupBackupBusy(true);
+    setStartupBackupMessage('');
+    const readyAtStart = workspaceReadyRef.current;
+    const current = () =>
+      fileOperationOwner.current.mounted && workspaceReadyRef.current === readyAtStart;
+    try {
+      const message = await downloadRecoveryBackup(persistence.current, current);
+      if (current() && message) setStartupBackupMessage(message);
+    } catch {
+      if (current()) setStartupBackupMessage('备份生成失败，请保留浏览器数据后重试。');
+    } finally {
+      startupBackupPending.current = false;
+      if (fileOperationOwner.current.mounted) setStartupBackupBusy(false);
+    }
+  }
+  async function restoreTrashBook(source: Workbook) {
+    if (trashRestorePending.current) return;
+    trashRestorePending.current = true;
+    setRestoringTrash(true);
+    try {
+      assertTrashSource(readCurrentTrash(), source);
+      const candidate = validateWorkbook(source);
+      const restored = latestBooks.current.some((item) => item.id === candidate.id)
+        ? independentCopy(candidate)
+        : candidate;
+      await saveQueue.current!.flush();
+      const saving = saveQueue.current!.snapshot(restored);
+      recordSave(saving);
+      await saving;
+      if (!fileOperationOwner.current.mounted) return;
+      if (persistence.current.stats.backend === 'memory') {
+        notify('当前仅内存会话，恢复内容未持久保存；回收站原件仍保留');
+        return;
+      }
+      await withTrashLock(() => {
+        if (!fileOperationOwner.current.mounted) return;
+        if (latestBooks.current.some((item) => item.id === restored.id))
+          throw new Error('恢复期间工作簿目录已变化，请重试');
+        const current = readCurrentTrash();
+        assertTrashSource(current, source);
+        const remaining = current.filter((item) => item.id !== source.id);
+        if (!writeStored('trash', remaining)) {
+          notify('工作簿已保存，但回收站更新失败；原件仍保留，请重试恢复');
+          return;
+        }
+        setTrash(remaining);
+        addBook(restored, false);
+        notify('工作簿已恢复');
+      });
+    } catch {
+      if (fileOperationOwner.current.mounted) notify('恢复失败，回收站原件仍保留，请重试');
+    } finally {
+      trashRestorePending.current = false;
+      if (fileOperationOwner.current.mounted) setRestoringTrash(false);
+    }
+  }
+  function loadCommentsForBook() {
+    const version = ++commentsRequest.current;
+    commentOwner.current = { bookId: book.id, ready: false, saving: false, items: [] };
+    setCommentStatus('loading');
+    setCommentError('');
+    const owns = () =>
+      fileOperationOwner.current.mounted &&
+      auxiliaryBook.current === book.id &&
+      commentsRequest.current === version;
+    void (async () => {
+      // Returning to a workbook must not read the snapshot preceding its pending write.
+      await commentWrites.current.get(book.id)?.catch(() => {});
+      if (!owns()) return;
+      const items = await persistence.current.loadComments(book.id);
+      if (!owns()) return;
+      assertCommentRecords(items);
+      commentOwner.current = { bookId: book.id, ready: true, saving: false, items };
+      setComments(items);
+      setCommentStatus('ready');
+    })().catch(() => {
+      if (!owns()) return;
+      setCommentStatus('error');
+      setCommentError('批注读取失败，请重试读取后再编辑。');
+    });
+  }
+  function saveCommentList(next: Comment[], added = false) {
+    const owner = commentOwner.current;
+    if (
+      commentsRequest.current !== commentEditorVersion ||
+      auxiliaryBook.current !== book.id ||
+      owner.bookId !== book.id ||
+      !owner.ready ||
+      owner.saving
+    )
+      return;
+    owner.saving = true;
+    const version = ++commentsRequest.current;
+    setCommentStatus('saving');
+    setCommentError('');
+    const owns = () =>
+      fileOperationOwner.current.mounted &&
+      auxiliaryBook.current === book.id &&
+      commentsRequest.current === version;
+    const pending = Promise.resolve().then(() => persistence.current.saveComments(book.id, next));
+    commentWrites.current.set(book.id, pending);
+    void pending
+      .then(
+        () => {
+          if (!owns()) return;
+          commentOwner.current = { bookId: book.id, ready: true, saving: false, items: next };
+          setComments(next);
+          setCommentStatus('ready');
+          if (added) setCommentInput('');
+          notify(added ? '批注已保存' : '批注已标记解决');
+        },
+        () => {
+          if (!owns()) return;
+          owner.saving = false;
+          setCommentStatus('ready');
+          setCommentError('批注保存失败，原批注未更改；请再次提交重试。');
+        },
+      )
+      .finally(() => {
+        if (commentWrites.current.get(book.id) === pending) commentWrites.current.delete(book.id);
+      });
   }
   function addComment() {
     if (!commentInput.trim()) return;
     const next = [
-      ...comments,
+      ...commentOwner.current.items,
       {
         id: crypto.randomUUID(),
         sheetId: sheet.id,
@@ -787,11 +1229,7 @@ export default function App() {
         resolved: false,
       },
     ];
-    commentsRequest.current++;
-    setComments(next);
-    void persistence.current.saveComments(book.id, next);
-    setCommentInput('');
-    notify('批注已添加');
+    saveCommentList(next, true);
   }
   function openSort(direction: 'asc' | 'desc') {
     setSortDirection(direction);
@@ -802,12 +1240,47 @@ export default function App() {
     // Resolve and validate the whole candidate before queuing persistence or
     // creating a history entry. Rejections leave the dialog and workbook intact.
     const planned = planWorkbookRowSort(book, sheet.id, request);
-    if (planned.changes.length) applySheetPatches(sheet.id, planned.changes);
+    if (planned.relatedChanges?.length) {
+      const groups = [{ sheetId: sheet.id, changes: planned.changes }, ...planned.relatedChanges];
+      let candidate = book;
+      const patches: WorkbookPatch[] = [];
+      for (const group of groups) {
+        const result = planWorkspaceCellChanges(candidate, group.sheetId, group.changes);
+        if (!result) continue;
+        candidate = {
+          ...candidate,
+          sheets: candidate.sheets.map((s) => (s.id === group.sheetId ? result.sheet : s)),
+        };
+        patches.push(
+          ...result.changes.map((change): WorkbookPatch => ({
+            kind: 'cell',
+            sheetId: group.sheetId,
+            ...change,
+          })),
+        );
+      }
+      if (patches.length) updateBook(candidate, true, patches);
+    } else if (planned.changes.length) applySheetPatches(sheet.id, planned.changes);
     setModal(null);
     notify(
       planned.changes.length
         ? `已移动 ${planned.movedRows} 行，公式已保留 · 可一次撤销`
         : '当前顺序已符合条件，没有新增撤销记录',
+    );
+  }
+  function editStructure(edit: StructureEdit) {
+    const planned = planStructureEdit(book, sheet.id, edit);
+    // The workspace has tighter persistence/import limits than the standalone SDK.
+    const candidate = validateWorkbook({ ...book, sheets: planned.sheets });
+    updateBook(candidate);
+    const next = candidate.sheets.find((item) => item.id === sheet.id)!;
+    setSelection({
+      row: Math.min(edit.axis === 'row' ? edit.index : selection.row, next.rowCount - 1),
+      col: Math.min(edit.axis === 'column' ? edit.index : selection.col, next.colCount - 1),
+    });
+    closeModal();
+    notify(
+      `已${edit.kind === 'insert' ? '插入' : '删除'} ${edit.count} ${edit.axis === 'row' ? '行' : '列'}，可一次撤销`,
     );
   }
   function mergeCells() {
@@ -852,10 +1325,17 @@ export default function App() {
     }
     const occupied = Object.entries(sheet.cells).filter(([key, cell]) => {
       const p = parseCellKey(key);
-      return p && p.row >= r1 && p.row <= r2 && p.col >= c1 && p.col <= c2 && cell.value !== '';
+      return (
+        p &&
+        p.row >= r1 &&
+        p.row <= r2 &&
+        p.col >= c1 &&
+        p.col <= c2 &&
+        (cell.value !== '' || cell.hyperlink !== undefined || cell.richText !== undefined)
+      );
     });
     if (occupied.length > 1) {
-      notify('为保留数据，请只合并最多包含一个非空单元格的区域');
+      notify('为保留数据，请只合并最多包含一个有内容或链接的单元格的区域');
       return;
     }
     const cells = { ...sheet.cells },
@@ -863,7 +1343,9 @@ export default function App() {
     if (occupied.length === 1 && occupied[0][0] !== targetKey) {
       const [sourceKey, source] = occupied[0];
       cells[targetKey] = { ...cells[targetKey], ...source };
-      cells[sourceKey] = { ...source, value: '' };
+      // Move the link with its label; leaving it on the follower creates hidden
+      // content that cannot be safely exported as an XLSX merged cell.
+      cells[sourceKey] = { value: '', ...(source.style ? { style: source.style } : {}) };
     }
     const applied = changeSheet({
       ...sheet,
@@ -872,50 +1354,33 @@ export default function App() {
     });
     if (applied) setSelection({ row: r1, col: c1 });
   }
+  // The value source survives presentation-only edits. Active-sheet identity is
+  // separate because generic analytics follow the selected sheet.
+  const statsSheet = calculationInput.workbook.sheets.find((item) => item.id === sheet.id)!;
+  const population = useMemo(() => readSheetPopulation(statsSheet), [statsSheet]);
   const stats = useMemo(() => {
-    const analysis = readWorkbookAnalytics(book),
+    const analysis = readWorkbookAnalytics({
+        ...calculationInput.workbook,
+        activeSheetId: sheet.id,
+      }),
       revenue = analysis.rows.reduce((sum, row) => sum + row.revenue, 0),
       profit = analysis.hasProfit
         ? analysis.rows.reduce((sum, row) => sum + (row.profit ?? 0), 0)
         : null;
-    const currentRows = new Set(
-      Object.entries(sheet.cells).flatMap(([key, cell]) => {
-        const point = parseCellKey(key);
-        return point && point.row > 0 && cell.value !== '' ? [point.row] : [];
-      }),
-    );
     return {
       revenue,
       profit,
       margin: profit !== null && revenue !== 0 ? profit / revenue : null,
-      count: analysis.financial ? analysis.rows.length : currentRows.size,
+      count: analysis.financial ? analysis.rows.length : population.rows,
       financial: analysis.financial,
       source: analysis.sheet?.name,
       hasCost: analysis.hasCost,
     };
-  }, [book, sheet]);
-  const selectedStats = useMemo(() => {
-    const evaluate = createEvaluator(book);
-    let count = 0,
-      sum = 0,
-      numbers = 0;
-    const top = Math.min(selection.row, selection.endRow ?? selection.row),
-      bottom = Math.max(selection.row, selection.endRow ?? selection.row),
-      left = Math.min(selection.col, selection.endCol ?? selection.col),
-      right = Math.max(selection.col, selection.endCol ?? selection.col);
-    for (const key of Object.keys(sheet.cells)) {
-      const point = parseCellKey(key);
-      if (!point || point.row < top || point.row > bottom || point.col < left || point.col > right)
-        continue;
-      const value = evaluate(sheet, key);
-      if (value !== '') count++;
-      if (typeof value === 'number') {
-        sum += value;
-        numbers++;
-      }
-    }
-    return { count, sum, avg: numbers ? sum / numbers : 0 };
-  }, [selection, sheet, book]);
+  }, [calculationInput, sheet.id, population]);
+  const selectedStats = useMemo(
+    () => readSelectionStats(statsSheet, selection, renderEvaluator),
+    [statsSheet, selection.row, selection.col, selection.endRow, selection.endCol, renderEvaluator],
+  );
   const listedBooks =
     workspace === 'starred'
       ? books.filter((b) => b.starred)
@@ -951,12 +1416,22 @@ export default function App() {
         {workspaceLoadFailed ? (
           <>
             本地工作空间读取失败，尚未改动保存的数据。
+            <p>请先下载恢复备份，保留当前可读取的数据。</p>
+            {workspaceLoadError && <p role="alert">{workspaceLoadError}</p>}
             <button
               className="button"
               onClick={() => setWorkspaceLoadAttempt((value) => value + 1)}
             >
               重试读取
             </button>
+            <button
+              className="button"
+              disabled={startupBackupBusy}
+              onClick={() => void backupFailedStartup()}
+            >
+              {startupBackupBusy ? '正在准备恢复备份…' : '下载恢复备份'}
+            </button>
+            {startupBackupMessage && <p role="status">{startupBackupMessage}</p>}
           </>
         ) : (
           <>
@@ -1136,6 +1611,19 @@ export default function App() {
         </div>
       </aside>
       <main className="main-content">
+        {workspaceLoadWarning && (
+          <div className="workspace-recovery-warning" role="status">
+            <p>{workspaceLoadWarning}</p>
+            <button
+              className="button"
+              disabled={startupBackupBusy}
+              onClick={() => void backupFailedStartup()}
+            >
+              {startupBackupBusy ? '正在准备恢复备份…' : '下载恢复备份'}
+            </button>
+            {startupBackupMessage && <p>{startupBackupMessage}</p>}
+          </div>
+        )}
         <header className="topbar">
           <div className="breadcrumbs">
             <IconBtn label={sidebar ? '收起侧栏' : '展开侧栏'} onClick={() => setSidebar(!sidebar)}>
@@ -1204,17 +1692,10 @@ export default function App() {
                   </div>
                   <button
                     className="button secondary"
-                    onClick={() => {
-                      const remaining = trash.filter((x) => x.id !== b.id);
-                      if (!writeStored('trash', remaining)) {
-                        notify('回收站更新失败，请重试');
-                        return;
-                      }
-                      setTrash(remaining);
-                      addBook(b);
-                    }}
+                    disabled={restoringTrash}
+                    onClick={() => void restoreTrashBook(b)}
                   >
-                    恢复工作簿
+                    {restoringTrash ? '正在恢复…' : '恢复工作簿'}
                   </button>
                 </div>
               ))
@@ -1335,7 +1816,7 @@ export default function App() {
                       <button
                         onClick={() => {
                           const copy = independentCopy(book);
-                          copy.name += ' · 副本';
+                          copy.name = workbookCopyName(copy.name, ' · 副本');
                           addBook(copy);
                           setMenu(null);
                         }}
@@ -1450,7 +1931,7 @@ export default function App() {
                         '—'
                       )
                     ) : (
-                      Object.values(sheet.cells).filter((c) => c.value !== '').length
+                      population.cells
                     )}
                   </div>
                   <p>
@@ -1514,23 +1995,8 @@ export default function App() {
                   <button
                     aria-label="批注"
                     onClick={() => {
-                      const version = ++commentsRequest.current;
-                      void persistence.current
-                        .loadComments(book.id)
-                        .then((items) => {
-                          if (
-                            auxiliaryBook.current === book.id &&
-                            version === commentsRequest.current
-                          )
-                            setComments(items);
-                        })
-                        .catch(() => {
-                          if (
-                            auxiliaryBook.current === book.id &&
-                            version === commentsRequest.current
-                          )
-                            notify('批注读取失败，请重试');
-                        });
+                      if (!(commentOwner.current.bookId === book.id && commentOwner.current.saving))
+                        loadCommentsForBook();
                       setModal('comments');
                     }}
                   >
@@ -1565,10 +2031,18 @@ export default function App() {
                   <div className="editor-main">
                     <div className="format-toolbar">
                       <div className="toolbar-group">
-                        <IconBtn label="撤销" onClick={undo} disabled={!undoStack.current.length}>
+                        <IconBtn
+                          label="撤销"
+                          onClick={undo}
+                          disabled={!editHistory.current.canUndo}
+                        >
                           <Undo2 size={16} />
                         </IconBtn>
-                        <IconBtn label="重做" onClick={redo} disabled={!redoStack.current.length}>
+                        <IconBtn
+                          label="重做"
+                          onClick={redo}
+                          disabled={!editHistory.current.canRedo}
+                        >
                           <Redo2 size={16} />
                         </IconBtn>
                       </div>
@@ -1658,6 +2132,63 @@ export default function App() {
                         </IconBtn>
                       </div>
                       <div className="toolbar-group toolbar-data">
+                        <button
+                          ref={structureButton}
+                          type="button"
+                          aria-label="插入或删除行列"
+                          className="toolbar-text-button"
+                          onClick={() => {
+                            setMenu(null);
+                            setModal('structure');
+                          }}
+                        >
+                          <Table2 size={16} />
+                          <span>行列</span>
+                        </button>
+                        <button
+                          ref={validationButton}
+                          type="button"
+                          aria-label="数据验证"
+                          title="数据验证：设置允许输入的内容"
+                          className={`toolbar-text-button ${sheet.dataValidations?.length ? 'active' : ''}`}
+                          onClick={() => {
+                            setMenu(null);
+                            setModal('validation');
+                          }}
+                        >
+                          <ShieldCheck size={16} />
+                          <span>数据验证</span>
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="单元格链接"
+                          className={`toolbar-text-button ${selectedCell?.hyperlink ? 'active' : ''}`}
+                          disabled={sheet.dataSource?.kind === 'paged'}
+                          onClick={() => {
+                            setMenu(null);
+                            setModal('hyperlink');
+                          }}
+                        >
+                          链接
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="局部文字格式"
+                          title="选中文字设置局部字体和颜色"
+                          className={`toolbar-text-button ${selectedCell?.richText ? 'active' : ''}`}
+                          disabled={
+                            sheet.dataSource?.kind === 'paged' ||
+                            typeof selectedCell?.value !== 'string' ||
+                            selectedCell.value.startsWith('=') ||
+                            !selectedCell.value
+                          }
+                          onClick={() => {
+                            setMenu(null);
+                            setModal('rich-text');
+                          }}
+                        >
+                          局部格式
+                        </button>
                         <div className="menu-anchor">
                           <button
                             aria-label="排序"
@@ -1746,6 +2277,7 @@ export default function App() {
                       </div>
                     )}
                     <FormulaBar
+                      readOnly={sheet.dataSource?.kind === 'paged'}
                       address={address}
                       onAddressChange={setAddress}
                       onAddressSubmit={() => {
@@ -1757,15 +2289,23 @@ export default function App() {
                       cellId={`${book.id}:${sheet.id}:${cellKey(selection.row, selection.col)}`}
                       value={String(selectedCell?.value ?? '')}
                       onCommit={setCellValue}
+                      onDraftStateChange={setFormulaDraftRisk}
                     />
+                    {sheet.dataSource?.kind === 'paged' && (
+                      <div role="status" className="paged-snapshot-notice">
+                        此表为分页数据快照，内容可能未完整加载。当前只读；请在原数据源导出完整文件。
+                      </div>
+                    )}
                     <div className="grid-container">
                       <Spreadsheet
                         workbook={book}
                         sheet={sheet}
+                        readOnly={sheet.dataSource?.kind === 'paged'}
                         selection={selection}
                         onSelect={setSelection}
                         onChange={changeSheet}
                         onPatch={applySheetPatches}
+                        onDraftStateChange={setCanvasDraftRisk}
                         getValue={renderValue}
                         calculationVersion={calculationVersion}
                         search={search}
@@ -1817,6 +2357,13 @@ export default function App() {
                       </div>
                       <IconBtn label="新增工作表" onClick={addSheet}>
                         <Plus size={17} />
+                      </IconBtn>
+                      <IconBtn
+                        label="重命名当前工作表"
+                        disabled={sheet.dataSource?.kind === 'paged'}
+                        onClick={() => setModal('rename-sheet')}
+                      >
+                        <Type size={16} />
                       </IconBtn>
                     </div>
                   </div>
@@ -1899,6 +2446,9 @@ export default function App() {
         <div className="busy-indicator" role="status">
           <span />
           正在处理文件…
+          <button type="button" onClick={cancelFileOperations}>
+            取消文件操作
+          </button>
         </div>
       )}
       {modal === 'sort' && (
@@ -1909,6 +2459,98 @@ export default function App() {
           direction={sortDirection}
           onClose={closeModal}
           onSort={sortSheet}
+        />
+      )}
+      {modal === 'rich-text' && selectedCell && (
+        <RichTextDialog
+          key={`${book.id}:${sheet.id}:${cellKey(selection.row, selection.col)}:${JSON.stringify(selectedCell)}`}
+          address={cellKey(selection.row, selection.col)}
+          cell={selectedCell}
+          onClose={() => {
+            hyperlinkOwner.current = { ...hyperlinkOwner.current, modal: null };
+            closeModal();
+          }}
+          onApply={(cell) => {
+            if (
+              hyperlinkOwner.current !== currentHyperlinkOwner ||
+              hyperlinkOwner.current.modal !== 'rich-text'
+            )
+              throw new Error('当前单元格已变化，请重新打开局部格式编辑器。');
+            if (cell.value !== selectedCell.value)
+              throw new Error('局部格式不能修改文字，请返回表格编辑。');
+            const candidate = { ...selectedCell };
+            if (cell.richText === undefined) delete candidate.richText;
+            else candidate.richText = cell.richText;
+            applySheetPatches(sheet.id, [{ key: currentHyperlinkOwner.key, cell: candidate }]);
+            hyperlinkOwner.current = { ...currentHyperlinkOwner, modal: null };
+            closeModal();
+          }}
+        />
+      )}
+      {modal === 'hyperlink' && (
+        <HyperlinkDialog
+          key={`${book.id}:${sheet.id}:${cellKey(selection.row, selection.col)}:${JSON.stringify(selectedCell)}`}
+          address={cellKey(selection.row, selection.col)}
+          cell={selectedCell}
+          onNavigate={() => {
+            if (hyperlinkOwner.current !== currentHyperlinkOwner || !selectedCell?.hyperlink)
+              throw new Error('当前单元格已变化，请重新打开链接编辑器。');
+            const target = resolveInternalHyperlink(book, sheet.id, selectedCell.hyperlink.target);
+            selectSheet(target.sheetId);
+            setSelection({ row: target.row, col: target.col });
+            setSearch('');
+            setFilter('');
+            setTab('sheet');
+            hyperlinkOwner.current = { ...currentHyperlinkOwner, modal: null };
+            closeModal();
+          }}
+          onClose={() => {
+            hyperlinkOwner.current = { ...hyperlinkOwner.current, modal: null };
+            closeModal();
+          }}
+          onApply={(cell) => {
+            if (
+              hyperlinkOwner.current !== currentHyperlinkOwner ||
+              hyperlinkOwner.current.modal !== 'hyperlink'
+            )
+              throw new Error('当前单元格已变化，请重新打开链接编辑器。');
+            applySheetPatches(sheet.id, [{ key: currentHyperlinkOwner.key, cell }]);
+            hyperlinkOwner.current = { ...currentHyperlinkOwner, modal: null };
+            closeModal();
+          }}
+        />
+      )}
+      {modal === 'structure' && (
+        <StructureDialog
+          key={`${book.id}:${sheet.id}`}
+          sheet={sheet}
+          selection={selection}
+          onApply={editStructure}
+          onClose={closeModal}
+        />
+      )}
+      {modal === 'recovery' && recoveryImport && (
+        <RecoveryDialog
+          backup={recoveryImport}
+          onClose={() => {
+            closeModal();
+            setRecoveryImport(null);
+          }}
+          onRestore={(index) => {
+            const recovered = restoreRecoveryWorkbook(recoveryImport, index);
+            addBook(recovered);
+            setRecoveryImport(null);
+            notify(`已恢复 ${recovered.name} 为独立副本，请确认保存状态`);
+          }}
+        />
+      )}
+      {modal === 'validation' && (
+        <ValidationDialog
+          key={`${book.id}:${sheet.id}`}
+          sheet={sheet}
+          selection={selection}
+          onClose={closeModal}
+          onSave={saveValidationRules}
         />
       )}
       {modal === 'new' && (
@@ -1968,6 +2610,27 @@ export default function App() {
             </div>
           </form>
         </Modal>
+      )}
+      {modal === 'rename-sheet' && (
+        <SheetRenameDialog
+          key={`${book.id}:${sheet.id}:${sheet.name}`}
+          name={sheet.name}
+          onClose={() => {
+            hyperlinkOwner.current = { ...hyperlinkOwner.current, modal: null };
+            closeModal();
+          }}
+          onApply={(name) => {
+            if (
+              hyperlinkOwner.current !== currentHyperlinkOwner ||
+              hyperlinkOwner.current.modal !== 'rename-sheet'
+            )
+              throw new Error('当前工作表已变化，请重新打开重命名窗口。');
+            const candidate = planSheetRename(book, sheet.id, name);
+            if (candidate !== book) updateBook(validateWorkbook(candidate));
+            hyperlinkOwner.current = { ...currentHyperlinkOwner, modal: null };
+            closeModal();
+          }}
+        />
       )}
       {modal === 'rename' && (
         <Modal title="重命名工作簿" onClose={closeModal}>
@@ -2135,13 +2798,25 @@ export default function App() {
           subtitle="保存重要节点，随时恢复到熟悉的版本。最多保留 20 个本地版本。"
           onClose={closeModal}
         >
+          {revisionStatus === 'loading' && <p role="status">正在读取版本历史…</p>}
+          {revisionStatus === 'saving' && <p role="status">正在保存版本…</p>}
+          {revisionError && <p role="alert">{revisionError}</p>}
+          {revisionStatus === 'error' && (
+            <button className="button" onClick={loadVersionsForBook}>
+              重试读取版本历史
+            </button>
+          )}
           <div className="history-current">
             <span className="history-dot" />
             <div>
               <strong>当前版本</strong>
               <p>最后编辑于 {dateTime(book.updatedAt)}</p>
             </div>
-            <button className="button primary" onClick={saveVersion}>
+            <button
+              className="button primary"
+              disabled={revisionStatus !== 'ready'}
+              onClick={saveVersion}
+            >
               <Plus size={15} />
               保存版本
             </button>
@@ -2159,11 +2834,8 @@ export default function App() {
                   </div>
                   <button
                     className="button secondary compact"
-                    onClick={() => {
-                      updateBook(structuredClone(r.workbook));
-                      notify('已恢复版本，可通过撤销回到之前的内容');
-                      closeModal();
-                    }}
+                    disabled={revisionStatus !== 'ready'}
+                    onClick={() => restoreVersion(r)}
                   >
                     恢复
                   </button>
@@ -2185,6 +2857,14 @@ export default function App() {
           subtitle={`当前单元格：${sheet.name} · ${cellKey(selection.row, selection.col)}`}
           onClose={closeModal}
         >
+          {commentStatus === 'loading' && <p role="status">正在读取批注…</p>}
+          {commentStatus === 'saving' && <p role="status">正在保存批注…</p>}
+          {commentError && <p role="alert">{commentError}</p>}
+          {commentStatus === 'error' && (
+            <button className="button" onClick={loadCommentsForBook}>
+              重试读取批注
+            </button>
+          )}
           <div className="comments-list">
             {comments.filter((c) => !c.resolved).length ? (
               comments
@@ -2200,10 +2880,24 @@ export default function App() {
                       <button
                         className="comment-cell"
                         onClick={() => {
-                          selectSheet(c.sheetId);
-                          const p = parseCellKey(c.cell);
-                          if (p) setSelection(p);
-                          closeModal();
+                          try {
+                            const point = parseCellKey(c.cell);
+                            if (!point) throw new Error('批注目标单元格不存在。');
+                            const target = resolveInternalHyperlink(
+                              book,
+                              c.sheetId,
+                              `#${cellKey(point.row, point.col)}`,
+                            );
+                            selectSheet(target.sheetId);
+                            setSelection({ row: target.row, col: target.col });
+                            setSearch('');
+                            setCommentError('');
+                            closeModal();
+                          } catch (error) {
+                            setCommentError(
+                              error instanceof Error ? error.message : '无法定位批注。',
+                            );
+                          }
                         }}
                       >
                         {book.sheets.find((s) => s.id === c.sheetId)?.name} · {c.cell}
@@ -2211,13 +2905,13 @@ export default function App() {
                       <p>{c.text}</p>
                       <button
                         className="resolve-comment"
+                        disabled={commentStatus !== 'ready'}
                         onClick={() => {
-                          const next = comments.map((item) =>
-                            item.id === c.id ? { ...item, resolved: true } : item,
+                          saveCommentList(
+                            commentOwner.current.items.map((item) =>
+                              item.id === c.id ? { ...item, resolved: true } : item,
+                            ),
                           );
-                          commentsRequest.current++;
-                          setComments(next);
-                          void persistence.current.saveComments(book.id, next);
                         }}
                       >
                         <Check size={13} />
@@ -2236,6 +2930,7 @@ export default function App() {
           </div>
           <textarea
             className="comment-input"
+            disabled={commentStatus !== 'ready'}
             placeholder="记录想法、补充说明…"
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
@@ -2243,7 +2938,11 @@ export default function App() {
           />
           <div className="modal-footer">
             <span className="muted">批注保存在此浏览器</span>
-            <button className="button primary" disabled={!commentInput.trim()} onClick={addComment}>
+            <button
+              className="button primary"
+              disabled={commentStatus !== 'ready' || !commentInput.trim()}
+              onClick={addComment}
+            >
               添加批注
               <ArrowUpRight size={15} />
             </button>

@@ -17,6 +17,7 @@ import type { MemorySample, RenderMetricsSummary } from '../lib/performance/harn
 import type { LabRequest, LabResponse } from '../lib/performance/lab.worker';
 import type { Cell, Selection, Sheet, Workbook } from '../lib/types';
 import '../styles/performance-lab.css';
+import { productBuildIdentity } from '../lib/product-build';
 
 interface WorkerMeasurement {
   targets: number;
@@ -81,7 +82,23 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
     (sheet: Sheet, key: string) => evaluator?.(sheet, key) ?? '',
     [evaluator],
   );
-  const send = (request: LabRequest) => workerRef.current?.postMessage(request);
+  function failWorker(message: string) {
+    workerRef.current?.terminate();
+    workerRef.current = null;
+    pendingCalculation.current = null;
+    setCalculating(false);
+    setLoading(false);
+    setWorkerResult(null);
+    setStatus(`后台任务失败：${message}；请重新加载数据`);
+  }
+  const send = (request: LabRequest) => {
+    try {
+      if (!workerRef.current) throw new Error('后台任务不可用');
+      workerRef.current.postMessage(request);
+    } catch (error) {
+      failWorker(error instanceof Error ? error.message : String(error));
+    }
+  };
 
   useEffect(() => {
     mounted.current = true;
@@ -188,6 +205,10 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
 
   function resetMeasurements() {
     stopRun();
+    scrollProgress.current = { completed: 0, planned: 40, status: 'not-started' };
+    pendingCalculation.current = null;
+    setCalculating(false);
+    setStatus('样本已清空，可重新测量');
     collector.current.reset();
     editCollector.current.reset();
     pendingEdit.current = null;
@@ -206,6 +227,7 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
   function loadFixture() {
     stopRun();
     workerRef.current?.terminate();
+    workerRef.current = null;
     resetMeasurements();
     setWorkbook(null);
     workbookRef.current = null;
@@ -263,23 +285,25 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
           pendingCalculation.current = null;
           setStatus(`后台计算完成，返回 ${num(message.targets)} 个公式的汇总校验结果`);
         } else if (message.type === 'error') {
+          if (message.id === undefined) {
+            failWorker(message.message);
+            return;
+          }
+          if (pendingCalculation.current?.id !== message.id) return;
+          pendingCalculation.current = null;
+          setWorkerResult(null);
           setLoading(false);
           setCalculating(false);
           setStatus(`运行失败：${message.message}`);
         }
       };
       worker.onerror = (event) => {
-        if (workerRef.current !== worker) return;
-        setLoading(false);
-        setCalculating(false);
-        setStatus(`后台任务失败：${event.message || '请重新加载数据'}`);
+        if (!mounted.current || workerRef.current !== worker) return;
+        failWorker(event.message || '通信失败');
       };
       worker.postMessage({ type: 'load', storedCells } satisfies LabRequest);
     } catch (error) {
-      setLoading(false);
-      setStatus(
-        `当前环境无法创建后台任务：${error instanceof Error ? error.message : String(error)}`,
-      );
+      failWorker(error instanceof Error ? error.message : String(error));
     }
   }
   function patchCells(sheetId: string, changes: Array<{ key: string; cell: Cell | null }>) {
@@ -341,9 +365,10 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
     next();
   }
   function runCalculation() {
-    if (!workbook || calculating) return;
+    if (!workbook || calculating || !workerRef.current) return;
     const id = ++calculationId.current;
     pendingCalculation.current = { id, started: performance.now() };
+    setWorkerResult(null);
     setCalculating(true);
     setStatus('后台公式计算中，表格仍可滚动和编辑');
     send({
@@ -354,6 +379,8 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
   }
   function exportReport() {
     const report = {
+      schema: 1,
+      build: productBuildIdentity(),
       product: 'Lumina JavaScript performance laboratory',
       measuredAt: new Date().toISOString(),
       qualification: '本机实测；未配置性能通过预算；不表示第三方性能或商业认证',
@@ -375,7 +402,7 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
       scrollSampling: {
         ...scrollProgress.current,
         scope:
-          '24 populated-area targets and 16 whole-sheet targets including empty rows; summary contains all actual draws since reset',
+          '24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts',
       },
       notes: [
         '数据在专用Worker中生成，按5000个单元格分批进入主线程。',
@@ -385,6 +412,7 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
         '跨视区样本包含填充区与空白百万行边界，且包含滚动过程中实际发生的中间绘制；不能当作全表密集数据性能。',
         '后台页面会中止自动采样；每个目标等待实际视区绘制，最后一个目标绘制后才完成。',
         'Worker内部计算与往返仅单次样本；不报告P95。',
+        '绘制和编辑各保留最近10000条有效样本；超出部分计入droppedFrames，分位数仅针对保留样本。',
         '内存只采集浏览器公开的计数器，通常不包含Worker堆。',
       ],
     };
@@ -443,7 +471,10 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
           <Play size={15} />
           {loading ? `加载 ${Math.round(progress * 100)}%` : '加载数据'}
         </button>
-        <button onClick={runCalculation} disabled={!fixture || calculating || loading}>
+        <button
+          onClick={runCalculation}
+          disabled={!fixture || calculating || loading || !workerRef.current}
+        >
           <Zap size={15} />
           {calculating ? '计算中…' : '测量后台公式'}
         </button>
@@ -469,14 +500,19 @@ export default function PerformanceLab({ onClose }: PerformanceLabProps) {
           <span>Canvas 绘制 P95</span>
           <strong>{summary?.frames ? ms(summary.p95Ms) : '—'}</strong>
           <p>
-            {num(summary?.frames ?? 0)} 次真实绘制 · 每次约{' '}
+            {num(summary?.frames ?? 0)} 次保留绘制 · 每次约{' '}
             {Math.round(summary?.averagePaintedCells ?? 0)} 格
+            {!!summary?.droppedFrames && ` · 已移除 ${num(summary.droppedFrames)} 条较早样本`}
           </p>
         </article>
         <article>
           <span>编辑到 Canvas P95</span>
           <strong>{editSummary?.frames ? ms(editSummary.p95Ms) : '—'}</strong>
-          <p>{num(editSummary?.frames ?? 0)} 次可见编辑样本 · 双击单元格编辑</p>
+          <p>
+            {num(editSummary?.frames ?? 0)} 次保留编辑样本 · 双击单元格编辑
+            {!!editSummary?.droppedFrames &&
+              ` · 已移除 ${num(editSummary.droppedFrames)} 条较早样本`}
+          </p>
         </article>
         <article>
           <span>后台计算往返 / 计算</span>

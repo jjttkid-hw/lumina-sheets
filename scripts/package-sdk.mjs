@@ -5,6 +5,7 @@ import './package-notices.mjs';
 const project = JSON.parse(await readFile('package.json', 'utf8'));
 await copyFile('LICENSE', 'dist/sdk/LICENSE');
 await copyFile('NOTICE', 'dist/sdk/NOTICE');
+await copyFile('public/favicon.svg', 'dist/sdk/favicon.svg');
 await copyFile('docs/NPM-README.md', 'dist/sdk/README.md');
 
 // Keep the published declaration graph self-contained. Implementation-only
@@ -75,6 +76,7 @@ for (const relative of await readdir(typesRoot, { recursive: true })) {
 // Resolves the documented CSS subpath even with noUncheckedSideEffectImports.
 await writeFile(path.join(typesRoot, 'style.d.ts'), 'export {};\n');
 const example = (await readFile('examples/report.html', 'utf8'))
+  .replace('href="../favicon.svg"', 'href="./favicon.svg"')
   .replace("'../src/sdk/index.tsx'", "'./lumina.js'")
   .replaceAll('%BASE_URL%', 'https://jjttkid-hw.github.io/lumina-sheets/')
   .replace('</head>', '<link rel="stylesheet" href="./lumina.css"></head>');
@@ -112,7 +114,9 @@ await writeFile(
         'NOTICE',
         'THIRD_PARTY_NOTICES.txt',
         'dependency-inventory.json',
+        'bundle-inputs.json',
         'example.html',
+        'favicon.svg',
       ],
       sideEffects: ['*.css'],
       publishConfig: { access: 'public', registry: 'https://registry.npmjs.org/' },

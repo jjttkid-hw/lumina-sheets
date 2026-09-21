@@ -1,0 +1,12 @@
+{
+  "executedAt": "2026-09-21T03:53:23.628Z",
+  "registry": "https://registry.npmjs.org/elliptic/6.5.4",
+  "tarball": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz",
+  "bytes": 41526,
+  "integrity": "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==",
+  "shasum": "da37cebd31e79a1367e941b592ed1fbebd58abbb",
+  "sha256": "2435ce5afcb6881ec0a7d5b31b0820d30664bd529a54439928da60c02e45c5be",
+  "integrityMatches": true,
+  "shasumMatches": true,
+  "scope": "Downloaded official npm tarball hashes verified. Registry signatures not cryptographically verified; no vulnerability or legal signoff."
+}

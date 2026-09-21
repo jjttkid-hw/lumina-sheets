@@ -1,0 +1,218 @@
+.modal:has(> .validation-dialog) {
+  --validation-inset: 24px;
+  width: min(840px, 100%);
+  padding: 22px var(--validation-inset) 0;
+  scroll-padding-block: 20px 100px;
+}
+.validation-dialog {
+  min-width: 0;
+}
+.validation-dialog-info,
+.validation-dialog-readonly,
+.validation-dialog-error,
+.validation-dialog-notice {
+  margin: 0 0 14px;
+  padding: 11px 13px;
+  border-radius: 8px;
+  background: #f3f7f1;
+  color: #546c51;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.validation-dialog-layout {
+  display: grid;
+  grid-template-columns: minmax(175px, 0.7fr) minmax(0, 1.5fr);
+  gap: 22px;
+}
+.validation-dialog-list {
+  min-width: 0;
+  padding-right: 18px;
+  border-right: 1px solid #e7ece3;
+}
+.validation-dialog-list-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.validation-dialog-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  max-height: 390px;
+  overflow: auto;
+}
+.validation-dialog-rule {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #4d6251;
+  overflow-wrap: anywhere;
+}
+.validation-dialog-rule strong {
+  font-size: 13px;
+}
+.validation-dialog-rule span {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.validation-dialog-rule.selected {
+  background: #eff6e9;
+  border-color: #c8dcbc;
+  color: #2c5932;
+}
+.validation-dialog-rule:hover {
+  background: #f2f6ee;
+}
+.validation-dialog-editor {
+  min-width: 0;
+}
+.validation-dialog-editor h3 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: 14px;
+}
+.validation-dialog-fields {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.validation-dialog-field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 11px;
+  min-width: 0;
+  color: #536b59;
+  font-size: 12px;
+}
+.validation-dialog-field input,
+.validation-dialog-field select,
+.validation-dialog-field textarea {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid #d8e2d4;
+  border-radius: 6px;
+  padding: 9px 10px;
+  background: #fff;
+  font: inherit;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.validation-dialog-field textarea {
+  resize: vertical;
+}
+.validation-dialog-fields:disabled input,
+.validation-dialog-fields:disabled select,
+.validation-dialog-fields:disabled textarea {
+  color: #788475;
+  background: #f6f7f4;
+}
+.validation-dialog-hint {
+  margin: -4px 0 12px;
+  color: #73816f;
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.validation-dialog-list > .validation-dialog-hint {
+  margin-top: 12px;
+}
+.validation-dialog-bounds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.validation-dialog-checkbox {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  margin: 14px 0;
+  font-size: 12px;
+  color: #45604c;
+}
+.validation-dialog-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+.validation-dialog-draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.validation-dialog-delete {
+  color: #924f40;
+}
+.validation-dialog-readonly {
+  background: #f5f4ef;
+  color: #7d6f52;
+}
+.validation-dialog-error {
+  margin-top: 15px;
+  background: #fff3ee;
+  border: 1px solid #efcfc5;
+  color: #8c3c2f;
+}
+.validation-dialog-notice {
+  margin-top: 15px;
+}
+.modal-footer.validation-dialog-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 16px calc(-1 * var(--validation-inset)) 0;
+  padding: 15px var(--validation-inset) 20px;
+  background: #fff;
+  box-shadow: 0 -6px 14px #fffffff0;
+}
+.validation-dialog-footer > span {
+  flex: 1;
+  min-width: 160px;
+  color: #73816f;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.validation-dialog button:focus-visible,
+.validation-dialog input:focus-visible,
+.validation-dialog select:focus-visible,
+.validation-dialog textarea:focus-visible,
+.validation-dialog-error:focus {
+  outline: 2px solid #4c7d36;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .modal:has(> .validation-dialog) {
+    --validation-inset: 18px;
+  }
+  .validation-dialog-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .validation-dialog-list {
+    border-right: 0;
+    border-bottom: 1px solid #e7ece3;
+    padding: 0 0 14px;
+  }
+  .validation-dialog-list ul {
+    max-height: 155px;
+  }
+  .validation-dialog-footer > span {
+    flex-basis: 100%;
+  }
+  .validation-dialog-footer .button {
+    flex: 1;
+    justify-content: center;
+  }
+}

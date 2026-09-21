@@ -55,6 +55,72 @@ afterEach(() => {
 });
 
 describe('SDK atomic row sorting', () => {
+  it('commits cross-sheet link targets before callbacks and undoes all sheets together', () => {
+    const book = workbook(),
+      other = createBlankWorkbook().sheets[0];
+    other.name = 'Links';
+    other.cells = { A1: { value: 'record', hyperlink: { target: '#Data!$A$2' } } };
+    book.sheets.push(other);
+    const observed: string[] = [];
+    let instance: LuminaSpreadsheet;
+    const onChange = vi.fn(() =>
+      observed.push(instance.toJSON().sheets[1].cells.A1.hyperlink!.target),
+    );
+    instance = make({ workbook: book, onChange });
+    instance.select({ row: 1, col: 0, endRow: 3, endCol: 2 });
+    const selection = instance.selectedRange;
+    const result = instance.sortRows(ascending);
+    expect(result.changedCells).toBeGreaterThan(1);
+    expect(observed).toEqual(['#Data!$A$4', '#Data!$A$4']);
+    expect(instance.getValue('A2')).toBe(10);
+    instance.undo();
+    expect(instance.getValue('A2')).toBe(30);
+    expect(instance.toJSON().sheets[1].cells.A1.hyperlink?.target).toBe('#Data!$A$2');
+    instance.redo();
+    expect(instance.getValue('A2')).toBe(10);
+    expect(instance.toJSON().sheets[1].cells.A1.hyperlink?.target).toBe('#Data!$A$4');
+    expect(instance.selectedRange).toEqual(selection);
+    expect(onChange).toHaveBeenCalledTimes(6);
+  });
+  it('stops old multi-sheet notifications when a callback undoes the committed sort', () => {
+    const book = workbook(),
+      other = createBlankWorkbook().sheets[0];
+    other.name = 'Links';
+    other.cells = { A1: { value: 'record', hyperlink: { target: '#Data!A2' } } };
+    book.sheets.push(other);
+    let first = true,
+      instance: LuminaSpreadsheet;
+    const onChange = vi.fn(() => {
+      if (first) {
+        first = false;
+        instance.undo();
+      }
+    });
+    instance = make({ workbook: book, onChange });
+    instance.sortRows(ascending);
+    expect(instance.getValue('A2')).toBe(30);
+    expect(instance.toJSON().sheets[1].cells.A1.hyperlink?.target).toBe('#Data!A2');
+    expect(onChange).toHaveBeenCalledTimes(3);
+  });
+  it('restores links with identical labels through sort undo and redo', () => {
+    const book = workbook();
+    for (const row of [2, 3, 4])
+      book.sheets[0].cells[`B${row}`] = {
+        value: 'details',
+        hyperlink: { target: `https://example.com/${row}`, tooltip: `row ${row}` },
+      };
+    const instance = make({ workbook: book });
+    const result = instance.sortRows(ascending);
+    expect(result.movedRows).toBe(3);
+    expect(instance.getCell('B2')?.hyperlink).toEqual({
+      target: 'https://example.com/3',
+      tooltip: 'row 3',
+    });
+    instance.undo();
+    expect(instance.getCell('B2')?.hyperlink?.target).toBe('https://example.com/2');
+    instance.redo();
+    expect(instance.getCell('B2')?.hyperlink?.target).toBe('https://example.com/3');
+  });
   it('moves complete sparse rows and styles as one edit while preserving layout and selected range', () => {
     const book = workbook();
     book.sheets[0].rowHeights = { 1: 61 };

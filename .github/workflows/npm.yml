@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing release tag, matching package.json (for example v0.14.0)
+        description: Existing release tag, matching package.json (for example v1.0.0-rc.1)
         required: true
         type: string
 
@@ -39,18 +39,41 @@ jobs:
           package-manager-cache: false
           registry-url: https://registry.npmjs.org
       - name: Match release tag to package version
+        id: release
         run: node scripts/check-release.mjs
       - run: npm ci
       - run: npm test
       - run: npm run format:check
-      - run: npm run build:all
+      - name: Use the accepted candidate source time when configured
+        env:
+          CANDIDATE_SOURCE_EPOCH: ${{ vars.RELEASE_SOURCE_DATE_EPOCH }}
+        run: |
+          if [ -n "$CANDIDATE_SOURCE_EPOCH" ]; then
+            node --input-type=module -e 'import { sourceTimestamp } from "./scripts/build-time.mjs"; sourceTimestamp(process.env.CANDIDATE_SOURCE_EPOCH);'
+            echo "SOURCE_DATE_EPOCH=$CANDIDATE_SOURCE_EPOCH" >> "$GITHUB_ENV"
+          fi
+      # The release site is the Pages artifact and must use the same
+      # /lumina-sheets/ base path that the HTTP smoke check verifies.
+      - run: npm run build:site
+      - run: npm run check:api
       - run: npm run check:sdk
+      - name: Require complete dependency-license evidence
+        run: npm run check:licenses
+      - name: Verify reproducible release candidate
+        run: npm run check:reproducibility
+      - name: Smoke-test the final Pages build over HTTP
+        run: npm run check:site-runtime
+      - name: Require artifact-bound acceptance for stable 1.x and later
+        run: npm run check:stable
       - name: Attach the verified install package to the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$RELEASE_TAG" artifacts/*.tgz artifacts/*.sha256 --clobber
+          SDK_ARTIFACT: ${{ steps.release.outputs.artifact }}
+        run: gh release upload "$RELEASE_TAG" "$SDK_ARTIFACT" "$SDK_ARTIFACT.sha256" --clobber
       - name: Publish to npm with provenance
         env:
           # Prefer npm Trusted Publishing (OIDC). A granular token is optional.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish ./artifacts/*.tgz --access public --provenance
+          SDK_ARTIFACT: ${{ steps.release.outputs.artifact }}
+          NPM_DIST_TAG: ${{ steps.release.outputs.dist-tag }}
+        run: npm publish "./$SDK_ARTIFACT" --tag "$NPM_DIST_TAG" --access public --provenance

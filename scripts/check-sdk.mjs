@@ -6,6 +6,9 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
+import { hasLicenseText, declaredLicenseCoverage } from './license-evidence.mjs';
+import { supplementalNotices } from './supplemental-notices.mjs';
+import { validateVendorEvidence, reviewedEmbeddedComponent } from './vendor-evidence.mjs';
 
 // Run after build:sdk: node scripts/check-sdk.mjs. Nothing is published and all
 // installs happen outside the repository; no host React or ambient types leak in.
@@ -21,8 +24,15 @@ assert(
 );
 const packDestination = args.length ? path.resolve(args[1]) : undefined;
 const temporary = await mkdtemp(path.join(os.tmpdir(), 'lumina-sdk-check-'));
+// Keep package verification independent from a user's global npm cache. In
+// particular, caches created by an earlier sudo npm invocation may contain
+// root-owned entries and make `npm pack` fail with EPERM. A per-run cache is
+// also what CI needs for isolated, repeatable checks.
+const npmCache = path.join(temporary, 'npm-cache');
+await mkdir(npmCache, { recursive: true });
 const environment = {
   ...process.env,
+  npm_config_cache: npmCache,
   npm_config_ignore_scripts: 'true',
   npm_config_offline: 'true',
   npm_config_audit: 'false',
@@ -62,8 +72,15 @@ import {
   workbookFromXlsx,
   workbookCsvReadableStream,
   reportDataCsvReadableStream,
+  workbookFromReportData,
+  parseCellInput,
+  type ReportSnapshotOptions,
+  type ImportOptions,
   type CellChange,
   type CellValue,
+  type EvaluationResult,
+  type RichTextRun,
+  type RichTextStyle,
   type Workbook,
   type SheetLayout,
   type SpreadsheetOptions,
@@ -74,6 +91,8 @@ import {
   type PrintSettings,
   type RowSortRequest,
   type StructureChangeEvent,
+  type SheetRenameEvent,
+  type ActiveSheetChangeEvent,
 } from 'lumina-report-sdk';
 import 'lumina-report-sdk/style.css';
 
@@ -82,14 +101,21 @@ export function mount(host: HTMLElement, workbook: Workbook): LuminaSpreadsheet 
     workbook,
     onChange(event) { const changes: CellChange[] = event.changes; void changes; },
     onStructureChange(event) { const change: StructureChangeEvent = event; void change; },
+    onSheetRename(event) { const change: SheetRenameEvent = event; void change; },
+    onActiveSheetChange(event) { const change: ActiveSheetChangeEvent = event; void change; },
     onSelectionChange(selection) { console.log(selection.row); },
     onRender(metrics) { console.log(metrics.drawMs); },
     onDataStateChange(state) { console.log(state.status); },
     onError(error) { if (error instanceof LuminaError) console.log(error.code); },
   };
   const grid = createSpreadsheet(host, options);
+  const importOptions: ImportOptions = { signal: new AbortController().signal };
+  void grid.import(new File(['{}'], 'book.json'), importOptions);
   const changes: CellChange[] = [{ key: 'A1', cell: { value: 10 } }];
   grid.setCells(changes);
+  const inlineStyle: RichTextStyle = { bold: true, fontFamily: 'Arial', strike: false, verticalAlign: 'superscript', fontFamilyClass: 2, charset: 134 };
+  const richText: RichTextRun[] = [{ text: 'Rich', style: inlineStyle }];
+  grid.setCells([{ key: 'C1', cell: { value: 'Rich', richText } }]);
   const value: CellValue = grid.getValue('A1');
   const layout: SheetLayout = grid.getSheetLayout();
   grid.setSheetLayout(layout);
@@ -103,13 +129,23 @@ export function mount(host: HTMLElement, workbook: Workbook): LuminaSpreadsheet 
     startRow: 1, rowCount: 2, keys: [{ column: 0, direction: 'asc' }],
   };
   grid.sortRows(sort);
+  for (const sheet of grid.sheetInfos) {
+    const readOnly: boolean = sheet.readOnly;
+    void readOnly;
+    grid.setActiveSheet(sheet.id);
+  }
+  grid.setActiveSheet(workbook.activeSheetId);
+  grid.renameSheet("Renamed");
+  grid.renameSheet("Renamed again", workbook.activeSheetId);
   grid.setCell('B1', '=A1*2');
   grid.getCell('B1');
   grid.undo();
   grid.redo();
   grid.select({ row: 0, col: 0 });
   grid.load(grid.toJSON());
-  createEvaluator(workbook);
+  const outcome: EvaluationResult = createEvaluator(workbook).result(workbook.sheets[0], "A1");
+  void outcome;
+  createEvaluator(workbook, { readPagedCell: (sheet, key) => key === "A1" ? sheet.rowCount : undefined });
   void value;
   return grid;
 }
@@ -123,8 +159,13 @@ export async function files(workbook: Workbook, data: ArrayBuffer) {
 
 export function report(definition: ReportDefinition, source: ReportDataSource) {
   const workbook: Workbook = generateReport(definition, [{ amount: 10 }]);
-  reportDataCsvReadableStream(source);
-  const remote: ReportDataSource = restDataSource('/data', { columnCount: 3 });
+  reportDataCsvReadableStream(source, { maxPageTextUnits: 1000 });
+  const snapshotOptions: ReportSnapshotOptions = { maxRows: 1000, maxCells: 10000 };
+  const snapshot: Promise<Workbook> = workbookFromReportData(source, snapshotOptions);
+  const input: CellValue = parseCellInput("1e-999");
+  void input;
+  void snapshot;
+  const remote: ReportDataSource = restDataSource('/data', { columnCount: 3, maxResponseBytes: 1024 });
   return { workbook, remote };
 }
 `;
@@ -158,7 +199,7 @@ try {
   const packedPaths = new Set(packed.files.map((file) => file.path));
   assert.equal(packedPaths.size, packed.files.length, 'Archive contains duplicate paths');
   const allowedFile =
-    /^(?:[^/]+\.(?:js|css)|types\/(?:[\w-]+\/)*[\w.-]+\.d\.ts|package\.json|README\.md|LICENSE|NOTICE|THIRD_PARTY_NOTICES\.txt|dependency-inventory\.json|example\.html)$/;
+    /^(?:[^/]+\.(?:js|css)|types\/(?:[\w-]+\/)*[\w.-]+\.d\.ts|package\.json|README\.md|LICENSE|NOTICE|THIRD_PARTY_NOTICES\.txt|dependency-inventory\.json|bundle-inputs\.json|example\.html|favicon\.svg)$/;
   for (const filename of packedPaths) {
     assert(
       !path.posix.isAbsolute(filename) && !filename.split('/').includes('..'),
@@ -186,6 +227,7 @@ try {
     'NOTICE',
     'THIRD_PARTY_NOTICES.txt',
     'dependency-inventory.json',
+    'bundle-inputs.json',
   ])
     assert(packedPaths.has(required), `Package is missing ${required}`);
 
@@ -215,10 +257,141 @@ try {
     'Consumer unexpectedly installed runtime dependencies or React types',
   );
   const installed = path.join(consumer, 'node_modules', packageName);
+  const evidence = JSON.parse(await readFile(path.join(installed, 'bundle-inputs.json'), 'utf8'));
+  assert(
+    evidence.schema === 1 && evidence.sources.length > 0 && evidence.chunks.length > 0,
+    'Missing actual bundle input evidence',
+  );
+  const javascript = [...packedPaths].filter((filename) => filename.endsWith('.js'));
+  assert.deepEqual(
+    evidence.chunks.map((chunk) => chunk.file).sort(),
+    javascript.sort(),
+    'Bundle evidence must cover every JS chunk',
+  );
+  for (const chunk of evidence.chunks) {
+    const bytes = await readFile(path.join(installed, chunk.file));
+    assert.equal(
+      createHash('sha256').update(bytes).digest('hex'),
+      chunk.sha256,
+      'Packed chunk differs from build evidence',
+    );
+    assert.equal(bytes.length, chunk.bytes);
+  }
+  const inventory = JSON.parse(
+    await readFile(path.join(installed, 'dependency-inventory.json'), 'utf8'),
+  );
+  const notices = await readFile(path.join(installed, 'THIRD_PARTY_NOTICES.txt'), 'utf8');
+  for (const dependency of inventory.packages) {
+    const licenseTexts = [];
+    const supplements = await supplementalNotices(root, dependency);
+    assert.deepEqual(
+      dependency.licenseFiles.filter((notice) => notice.kind === 'upstream-license-text'),
+      supplements.map((item) => item.notice),
+      'Supplemental upstream evidence missing or changed',
+    );
+    for (const notice of dependency.licenseFiles) {
+      const supplemental = supplements.find((item) => item.notice.path === notice.path);
+      let text;
+      if (supplemental) text = supplemental.text;
+      else {
+        const filename = path.resolve(root, dependency.location, notice.path);
+        assert(
+          filename.startsWith(path.join(root, 'node_modules') + path.sep),
+          'Notice source escapes dependencies',
+        );
+        text = await readFile(filename, 'utf8');
+        if (notice.excerptStartLine !== undefined) {
+          assert(
+            Number.isSafeInteger(notice.excerptStartLine) && notice.excerptStartLine > 0,
+            'Invalid notice excerpt',
+          );
+          text = text
+            .split('\n')
+            .slice(notice.excerptStartLine - 1)
+            .join('\n');
+        }
+      }
+      licenseTexts.push(text);
+      assert.equal(
+        createHash('sha256').update(text).digest('hex'),
+        notice.sha256,
+        'Installed dependency notice hash mismatch',
+      );
+      assert.equal(
+        Buffer.byteLength(text),
+        notice.bytes,
+        'Installed dependency notice length mismatch',
+      );
+      assert.equal(
+        hasLicenseText(text),
+        notice.hasLicenseText,
+        'Incorrect license text evidence flag',
+      );
+      assert(
+        notices.includes(`--- ${dependency.location}/${notice.path} ---\n${text}`),
+        'Packed third-party notices omit installed dependency text',
+      );
+    }
+    assert.deepEqual(
+      dependency.licenseCoverage,
+      declaredLicenseCoverage(dependency.license, licenseTexts),
+      'Declared license coverage does not match shipped source notices',
+    );
+  }
+  for (const bundle of inventory.vendorBundles ?? []) {
+    for (const relative of [bundle.browserEntry, bundle.sourceMapPath]) {
+      assert(
+        typeof relative === 'string' &&
+          relative.startsWith('node_modules/') &&
+          !relative.split('/').includes('..'),
+        'Vendor source escapes dependencies',
+      );
+    }
+    validateVendorEvidence(
+      bundle,
+      evidence,
+      await readFile(path.join(root, bundle.browserEntry)),
+      await readFile(path.join(root, bundle.sourceMapPath)),
+    );
+    const sourceMap = JSON.parse(await readFile(path.join(root, bundle.sourceMapPath), 'utf8'));
+    for (const component of bundle.components) {
+      const reviewed = await reviewedEmbeddedComponent(root, bundle, component, sourceMap);
+      assert.deepEqual(component.review ?? null, reviewed, 'Reviewed embedded evidence changed');
+      if (reviewed?.licenseEvidence)
+        assert(
+          notices.includes(reviewed.licenseEvidence.text),
+          'Packed third-party notices omit reviewed embedded license text',
+        );
+      for (const notice of [
+        ...(component.noticeEvidence ?? []),
+        ...(component.attributionEvidence ?? []),
+      ]) {
+        assert.equal(
+          createHash('sha256').update(notice.text).digest('hex'),
+          notice.noticeSha256,
+          'Embedded notice hash mismatch',
+        );
+        assert(
+          component.sourcePaths.includes(notice.sourcePath),
+          'Embedded notice lacks a recorded source path',
+        );
+        assert(
+          notices.includes(notice.text),
+          'Packed third-party notices omit recorded upstream attribution',
+        );
+      }
+    }
+  }
   const manifest = JSON.parse(await readFile(path.join(installed, 'package.json'), 'utf8'));
   assert.deepEqual(manifest, sourceManifest, 'Installed package metadata differs from the build');
 
   const example = await readFile(path.join(installed, 'example.html'), 'utf8');
+  assert(example.includes('href="./favicon.svg"'), 'Packaged example must use its local favicon');
+  assert.deepEqual(
+    await readFile(path.join(installed, 'favicon.svg')),
+    await readFile(path.join(root, 'public/favicon.svg')),
+    'Packaged favicon differs from source',
+  );
   assert(!example.includes('src/sdk'), 'Packaged example still imports source code');
   assert(
     !example.includes('%BASE_URL%'),
@@ -339,9 +512,12 @@ try {
 import assert from 'node:assert/strict';
 assert.equal(typeof document, 'undefined');
 const sdk = await import('lumina-report-sdk');
-for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream']) {
+for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream', 'workbookFromReportData']) {
   assert.equal(typeof sdk[name], 'function', 'Missing runtime API: ' + name);
 }
+assert.equal(sdk.parseCellInput('1e-999'), '1e-999');
+assert.equal(sdk.parseCellInput('0.1234567890123456789'), '0.1234567890123456789');
+assert.equal(sdk.parseCellInput('12.5'), 12.5);
 assert.equal(sdk.cellKey(1, 2), 'C2');
 assert.deepEqual(sdk.parseCellKey('C2'), { row: 1, col: 2 });
 const workbook = {
@@ -353,8 +529,49 @@ const workbook = {
 };
 const evaluate = sdk.createEvaluator(workbook);
 assert.equal(evaluate(workbook.sheets[0], 'B1'), 20);
+workbook.sheets[0].cells.A2 = { value: '=IFERROR(1e999,42)' };
+assert.equal(evaluate(workbook.sheets[0], 'A2'), 42);
+assert.deepEqual(evaluate.result(workbook.sheets[0], 'A2'), { kind: 'value', value: 42 });
 const source = sdk.arrayDataSource([[10, 20], [30, 40]], { columnCount: 2 });
 assert.deepEqual((await source.fetchPage(1, 1)).rows, [[30, 40]]);
+const cache = new sdk.ReportChunkCache(source, { pageSize: 1 });
+const unsubscribe = cache.subscribe(() => {
+  if (cache.size && !cache.loading) cache.clear();
+});
+await assert.rejects(cache.getRow(0), { name: 'AbortError' });
+assert.equal(cache.size, 0);
+unsubscribe();
+assert.deepEqual(await cache.getRow(0), [10, 20]);
+cache.dispose();
+const budgetCache = new sdk.ReportChunkCache(source, { pageSize: 100, maxPageCells: 2, maxPageTextUnits: 4 });
+assert.equal(budgetCache.pageSize, 1);
+assert.deepEqual(await budgetCache.getRow(1), [30, 40]);
+budgetCache.dispose();
+const textCache = new sdk.ReportChunkCache(sdk.arrayDataSource([['12345']]), { maxPageTextUnits: 4 });
+await assert.rejects(textCache.getPage(0), /maxPageTextUnits/);
+assert.equal(textCache.size, 0);
+textCache.dispose();
+const snapshot = await sdk.workbookFromReportData(source, { pageSize: 1 });
+assert.deepEqual(snapshot.sheets[0].dataSource, { kind: 'static', totalRows: 2 });
+assert.equal(snapshot.sheets[0].cells.B2.value, 40);
+const blankTail = await sdk.workbookFromReportData(sdk.arrayDataSource([[7], [], []], { columnCount: 3 }));
+assert.equal(Object.keys(blankTail.sheets[0].cells).length, 2);
+assert.equal(blankTail.sheets[0].cells.C3.value, '');
+assert.equal(await (await sdk.workbookCsvBlob(blankTail)).text(), '7,,\\r\\n,,\\r\\n,,\\r\\n');
+
+assert((await new Response(sdk.workbookCsvReadableStream(snapshot)).text()).includes('30,40'));
+const partial = structuredClone(workbook);
+partial.sheets[0].dataSource = { kind: 'paged', totalRows: 1000 };
+assert.deepEqual(sdk.validateWorkbook(partial).sheets[0].dataSource, partial.sheets[0].dataSource);
+await assert.rejects(sdk.workbookToXlsx(partial), /分页/);
+await assert.rejects(sdk.workbookCsvBlob(partial), /分页/);
+assert((await new Response(sdk.reportDataCsvReadableStream(source)).text()).includes('30,40'));
+await assert.rejects(sdk.reportDataCsvBlob(sdk.arrayDataSource([['long']]), { maxPageTextUnits: 3 }), /maxPageTextUnits/);
+const boundedRest = sdk.restDataSource('https://example.test/data', { columnCount: 1, maxResponseBytes: 8, fetcher: async () => new Response('{"rows":[[1]]}') });
+await assert.rejects(boundedRest.fetchPage(0, 1), /maxResponseBytes/);
+const invalidUtf8 = new Uint8Array([...new TextEncoder().encode('{"rows":[["'), 255, ...new TextEncoder().encode('"]]}')]);
+const encodedRest = sdk.restDataSource('https://example.test/data', { columnCount: 1, fetcher: async () => new Response(invalidUtf8) });
+await assert.rejects(encodedRest.fetchPage(0, 1), /UTF-8/);
 assert.equal(new sdk.LuminaError('INVALID_ARGUMENT', 'check').code, 'INVALID_ARGUMENT');
 console.log('SDK consumer: ESM import and non-DOM public API checks passed');
 `,

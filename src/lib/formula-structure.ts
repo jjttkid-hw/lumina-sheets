@@ -100,6 +100,30 @@ function scan(formula: string): Token[] {
 const sheetName = (token: Token): string =>
   token.kind === 'quoted' ? token.value.slice(1, -1).replaceAll("''", "'") : token.value;
 const equalName = (a: string, b: string) => a.toLocaleLowerCase() === b.toLocaleLowerCase();
+
+/** Rename only explicit worksheet qualifiers; string literals remain opaque. */
+export function renameFormulaSheet(
+  formula: string,
+  ownerName: string,
+  previousName: string,
+  nextName: string,
+): string {
+  if (!formula.startsWith('=')) return formula;
+  validateFormulaReferences(formula, ownerName);
+  const tokens = scan(formula);
+  const replacements = tokens.filter(
+    (token, index) =>
+      (token.kind === 'word' || token.kind === 'quoted') &&
+      tokens[index + 1]?.kind === 'symbol' &&
+      tokens[index + 1]?.value === '!' &&
+      equalName(sheetName(token), previousName),
+  );
+  let result = formula;
+  const quoted = `'${nextName.replaceAll("'", "''")}'`;
+  for (const token of replacements.reverse())
+    result = result.slice(0, token.start) + quoted + result.slice(token.end);
+  return result;
+}
 function readReference(tokens: Token[], index: number): Reference | null {
   const first = tokens[index];
   if (!first || !['word', 'quoted'].includes(first.kind)) return null;

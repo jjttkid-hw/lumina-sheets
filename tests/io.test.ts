@@ -50,6 +50,54 @@ describe('CSV interoperability and safety', () => {
 });
 
 describe('workbook validation', () => {
+  it.each(['a1', '$A1', 'A$1', '$A$1'])(
+    'rejects conflicting aliases %s rather than silently replacing A1',
+    (alias) => {
+      const book = createBlankWorkbook();
+      book.sheets[0].cells = { A1: { value: 'original' }, [alias]: { value: 'other' } };
+      const before = structuredClone(book);
+      expect(() => validateWorkbook(book)).toThrow('单元格地址重复');
+      expect(book).toEqual(before);
+      book.sheets[0].cells[alias].value = 'original';
+      expect(() => validateWorkbook(book)).toThrow('单元格地址重复');
+    },
+  );
+  it('normalizes unambiguous address aliases and preserves formula evaluation', () => {
+    const book = createBlankWorkbook();
+    book.sheets[0].cells = { $a$1: { value: 3 }, b1: { value: '=A1*2' } };
+    const result = validateWorkbook(book);
+    expect(result.sheets[0].cells).toEqual({ A1: { value: 3 }, B1: { value: '=A1*2' } });
+    expect(evaluateCell(result.sheets[0], 'B1', result)).toBe(6);
+    expect(book.sheets[0].cells.A1).toBeUndefined();
+  });
+  it('rejects duplicate sheet identities without detaching rules or guessing the active sheet', () => {
+    const book = createBlankWorkbook();
+    const sheet = book.sheets[0];
+    sheet.dataValidations = [
+      {
+        id: 'required',
+        sheetId: sheet.id,
+        kind: 'list',
+        values: ['yes'],
+        range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+      },
+    ];
+    book.sheets.push({ ...structuredClone(sheet), name: 'Second' });
+    const before = structuredClone(book);
+    expect(() => validateWorkbook(book)).toThrow('工作表 ID 不能重复');
+    expect(book).toEqual(before);
+  });
+  it('generates missing sheet IDs while preserving supplied identities and active sheet', () => {
+    const book = createBlankWorkbook();
+    const sheet = book.sheets[0];
+    book.sheets.unshift({ ...structuredClone(sheet), id: '', name: 'Missing' });
+    const result = validateWorkbook(book);
+    expect(result.sheets[0].id).toBeTruthy();
+    expect(result.sheets[0].id).not.toBe(sheet.id);
+    expect(result.sheets[1].id).toBe(sheet.id);
+    expect(result.activeSheetId).toBe(sheet.id);
+    expect(book.sheets[0].id).toBe('');
+  });
   it('isolates sparse row and column visibility and rejects invalid metadata', () => {
     const book = createBlankWorkbook();
     const sheet = book.sheets[0];

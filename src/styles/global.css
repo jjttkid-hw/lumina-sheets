@@ -1095,6 +1095,14 @@ select {
   overflow: hidden;
   position: relative;
 }
+.paged-snapshot-notice {
+  padding: 10px 16px;
+  color: #72521c;
+  background: #fff8e6;
+  border-bottom: 1px solid #eadcbb;
+  font-size: 13px;
+  line-height: 1.6;
+}
 .sheet-tabs-bar {
   height: 38px;
   min-height: 38px;
@@ -1361,6 +1369,19 @@ select {
   height: 15px;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+.busy-indicator > button {
+  border: 1px solid #dce7d4;
+  border-radius: 5px;
+  padding: 5px 9px;
+  background: #f5f8f1;
+  color: #35542d;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.busy-indicator > button:focus-visible {
+  outline: 2px solid #527744;
+  outline-offset: 2px;
 }
 @keyframes spin {
   to {
@@ -3129,4 +3150,16 @@ select {
 }
 .error-page .button {
   min-width: 220px;
+}
+
+.workspace-recovery-warning {
+  padding: 12px 24px;
+  border-bottom: 1px solid #e7c782;
+  background: #fff8e8;
+  color: #694b16;
+  font-size: 13px;
+}
+.workspace-recovery-warning p {
+  margin: 0 0 8px;
+  overflow-wrap: anywhere;
 }

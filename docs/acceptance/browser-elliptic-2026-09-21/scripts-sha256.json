@@ -1,0 +1,8 @@
+{
+  "scripts/browser-smoke.mjs": "ead8f06d80b06259bb3f70b67227741beda0f6d975b17e7b741a0569caeb0868",
+  "scripts/browser-interactions.mjs": "38cbabef254520dc49880abf475930491e239d6c9a224bead7ee5af8102e442a",
+  "scripts/browser-focus.mjs": "ff6dfe4f25d3aec8c4002c8d0efb1fc7c80907109f8b96f69878db9e20617d78",
+  "scripts/browser-performance.mjs": "f32fe9e7409c97c6c05e31835a8b2a77b6eb107c954b4ed6886fe70f2082ff63",
+  "scripts/browser-layout.mjs": "c5bb9bb0dce3d00ef0b685c48bd973d3fbaee90809e31d68aef9109a2fa7d461",
+  "scripts/browser-touch.mjs": "d37d7db10a2379d4f0a435f3d638af418467ce8624fd2e28de0e947aff8ec358"
+}

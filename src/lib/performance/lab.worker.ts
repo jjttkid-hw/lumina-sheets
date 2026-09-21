@@ -20,7 +20,7 @@ export type LabResponse =
       firstValue: unknown;
       lastValue: unknown;
     }
-  | { type: 'error'; message: string };
+  | { type: 'error'; id?: number; message: string };
 
 let workbook: Workbook | null = null;
 let storedCount = 0;
@@ -92,6 +92,10 @@ self.onmessage = (event: MessageEvent<LabRequest>) => {
       });
     }
   } catch (error) {
-    post({ type: 'error', message: error instanceof Error ? error.message : String(error) });
+    post({
+      type: 'error',
+      ...(request.type === 'calculate' ? { id: request.id } : {}),
+      message: error instanceof Error ? error.message : String(error),
+    });
   }
 };

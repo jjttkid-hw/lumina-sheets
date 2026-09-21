@@ -1,0 +1,86 @@
+[
+  {
+    "engine": "chromium",
+    "suite": "smoke",
+    "started": "2026-09-21T03:12:49.237Z",
+    "finished": "2026-09-21T03:13:02.730Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "chromium",
+    "suite": "interactions",
+    "started": "2026-09-21T03:13:02.731Z",
+    "finished": "2026-09-21T03:13:05.084Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "chromium",
+    "suite": "focus",
+    "started": "2026-09-21T03:13:05.085Z",
+    "finished": "2026-09-21T03:13:06.459Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "chromium",
+    "suite": "performance",
+    "started": "2026-09-21T03:13:06.459Z",
+    "finished": "2026-09-21T03:13:53.015Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "firefox",
+    "suite": "smoke",
+    "started": "2026-09-21T03:13:53.016Z",
+    "finished": "2026-09-21T03:14:08.206Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "firefox",
+    "suite": "interactions",
+    "started": "2026-09-21T03:14:08.207Z",
+    "finished": "2026-09-21T03:14:14.169Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "firefox",
+    "suite": "focus",
+    "started": "2026-09-21T03:14:14.170Z",
+    "finished": "2026-09-21T03:14:17.403Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "firefox",
+    "suite": "performance",
+    "started": "2026-09-21T03:14:17.403Z",
+    "finished": "2026-09-21T03:14:57.636Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "webkit",
+    "suite": "smoke",
+    "started": "2026-09-21T03:14:57.637Z",
+    "finished": "2026-09-21T03:15:11.761Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "webkit",
+    "suite": "interactions",
+    "started": "2026-09-21T03:15:11.761Z",
+    "finished": "2026-09-21T03:15:14.951Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "webkit",
+    "suite": "focus",
+    "started": "2026-09-21T03:15:14.952Z",
+    "finished": "2026-09-21T03:15:16.191Z",
+    "exitCode": 0
+  },
+  {
+    "engine": "webkit",
+    "suite": "performance",
+    "started": "2026-09-21T03:15:16.192Z",
+    "finished": "2026-09-21T03:15:41.180Z",
+    "exitCode": 0
+  }
+]

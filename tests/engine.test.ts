@@ -20,6 +20,48 @@ function evaluate(formula: string, values: Record<string, CellValue> = {}) {
 }
 
 describe('spreadsheet references', () => {
+  it.each(["='A1'", "='TRUE'", "='FALSE'"])(
+    'rejects a quoted identifier without a sheet qualifier: %s',
+    (formula) => expect(evaluate(formula, { A1: 42 })).toBe('#ERROR!'),
+  );
+  it.each([
+    '=Data!"A1"',
+    "=Data!'A1'",
+    '=SUM(A1:"A2")',
+    "=SUM(A1:'A2')",
+    '=SUM(Data!A1:"Data"!A2)',
+    '=SUM(Data!A1:Data!"A2")',
+    "=SUM(Data!A1:Data!'A2')",
+    '=SUM(Data!A1:)',
+    '=Data!',
+  ])('rejects non-reference tokens inside reference syntax: %s', (formula) => {
+    const book = createBlankWorkbook(),
+      sheet = book.sheets[0];
+    sheet.name = 'Data';
+    sheet.cells = { A1: { value: 7 }, A2: { value: 8 }, B1: { value: formula } };
+    expect(evaluateCell(sheet, 'B1', book)).toBe('#REF!');
+  });
+  it('resolves quoted sheet names and case-insensitive qualified range endpoints', () => {
+    const book = createBlankWorkbook(),
+      sheet = book.sheets[0];
+    sheet.name = "O'Brien 数据";
+    sheet.cells = {
+      A1: { value: 7 },
+      A2: { value: 8 },
+      B1: { value: "=SUM('O''Brien 数据'!$A$1:'o''brien 数据'!$A$2)" },
+    };
+    const evaluator = createEvaluator(book, { managedMutations: true });
+    expect(evaluator(sheet, 'B1')).toBe(15);
+    sheet.cells.A2.value = 13;
+    evaluator.invalidateCells(sheet.id, ['A2']);
+    expect(evaluator(sheet, 'B1')).toBe(20);
+    for (const name of ['TRUE', 'A1', '+', '(', '!']) {
+      sheet.name = name;
+      sheet.cells.B1.value = `='${name}'!A1`;
+      evaluator.invalidate();
+      expect(evaluator(sheet, 'B1')).toBe(7);
+    }
+  });
   it('round trips column labels at boundaries', () => {
     expect(columnLabel(0)).toBe('A');
     expect(columnLabel(25)).toBe('Z');

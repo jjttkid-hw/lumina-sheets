@@ -10,6 +10,13 @@ const hooks = vi.hoisted(() => ({
   refs: [] as Array<{ current: unknown }>,
   refCursor: 0,
   needsRender: false,
+  effects: [] as Array<{
+    deps?: unknown[];
+    pending?: () => void | (() => void);
+    cleanup?: () => void;
+  }>,
+  effectCursor: 0,
+  rendering: false,
 }));
 vi.mock('react', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react')>();
@@ -30,6 +37,12 @@ vi.mock('react', async (importOriginal) => {
     },
     useRef: (initial: unknown) => (hooks.refs[hooks.refCursor++] ??= { current: initial }),
     useId: () => 'formula-bar-test',
+    useLayoutEffect: (effect: () => void | (() => void), deps?: unknown[]) => {
+      const index = hooks.effectCursor++;
+      const previous = hooks.effects[index];
+      if (!previous || !deps || !previous.deps || deps.some((v, i) => v !== previous.deps![i]))
+        hooks.effects[index] = { deps, pending: effect, cleanup: previous?.cleanup };
+    },
   };
 });
 import FormulaBar from '../src/components/FormulaBar';
@@ -63,10 +76,19 @@ function make(options: Partial<FormulaBarProps> = {}) {
     do {
       hooks.cursor = 0;
       hooks.refCursor = 0;
+      hooks.effectCursor = 0;
       hooks.needsRender = false;
+      hooks.rendering = true;
       result = FormulaBar(props);
+      hooks.rendering = false;
       if (++count > 5) throw new Error('FormulaBar did not settle');
     } while (hooks.needsRender);
+    for (const slot of hooks.effects) {
+      if (!slot.pending) continue;
+      slot.cleanup?.();
+      slot.cleanup = slot.pending() || undefined;
+      slot.pending = undefined;
+    }
     return result;
   };
   const input = (label = '公式编辑栏') =>
@@ -101,6 +123,7 @@ function make(options: Partial<FormulaBarProps> = {}) {
     onCommit,
     onAddressChange,
     onAddressSubmit,
+    unmount: () => hooks.effects.forEach((slot) => slot.cleanup?.()),
   };
 }
 
@@ -110,9 +133,201 @@ beforeEach(() => {
   hooks.refs = [];
   hooks.refCursor = 0;
   hooks.needsRender = false;
+  hooks.effects = [];
+  hooks.effectCursor = 0;
+  hooks.rendering = false;
 });
 
 describe('FormulaBar handlers', () => {
+  it('commits a return to the original value before the parent echoes a prior accepted edit', () => {
+    const dirty = vi.fn();
+    const bar = make({ onDraftStateChange: dirty });
+    bar.change('accepted');
+    bar.press('Enter');
+    bar.input().props.onFocus();
+    bar.change('saved');
+    expect(dirty).toHaveBeenLastCalledWith(true);
+    bar.press('Enter');
+    expect(bar.onCommit.mock.calls).toEqual([['accepted'], ['saved']]);
+    expect(dirty).toHaveBeenLastCalledWith(false);
+  });
+  it.each(['cancel', 'rejected blur'])(
+    'restores the latest accepted value on %s before the parent echoes it',
+    (reason) => {
+      const dirty = vi.fn();
+      const bar = make({ onDraftStateChange: dirty });
+      bar.change('accepted');
+      bar.press('Enter');
+      bar.input().props.onFocus();
+      bar.change('new draft');
+      if (reason === 'cancel') bar.press('Escape');
+      else {
+        bar.onCommit.mockImplementationOnce(() => {
+          throw new Error('invalid');
+        });
+        bar.blur();
+      }
+      expect(bar.input().props.value).toBe('accepted');
+      expect(dirty).toHaveBeenLastCalledWith(false);
+      const calls = bar.onCommit.mock.calls.length;
+      bar.blur();
+      expect(bar.onCommit).toHaveBeenCalledTimes(calls);
+    },
+  );
+  it('publishes draft resets only after render commits and transfers risk to a new observer', () => {
+    const first = vi.fn(() => expect(hooks.rendering).toBe(false));
+    const second = vi.fn(() => expect(hooks.rendering).toBe(false));
+    const bar = make({ onDraftStateChange: first });
+    bar.change('pending');
+    bar.rerender({ onDraftStateChange: second });
+    expect(first).toHaveBeenLastCalledWith(false);
+    expect(second).toHaveBeenLastCalledWith(true);
+    bar.rerender({ cellId: 'book/sheet/B1' });
+    expect(second).toHaveBeenLastCalledWith(false);
+  });
+  it('clears risk on unmount and ignores retained input and address callbacks', () => {
+    const dirty = vi.fn();
+    const bar = make({ onDraftStateChange: dirty });
+    bar.change('pending');
+    const input = bar.input();
+    const address = bar.input('单元格地址');
+    bar.unmount();
+    expect(dirty).toHaveBeenLastCalledWith(false);
+    dirty.mockClear();
+    input.props.onChange({ target: { value: 'late' } });
+    input.props.onCompositionEnd({ currentTarget: { value: '迟到' } });
+    input.props.onBlur();
+    input.props.onKeyDown(bar.keyboard('Enter'));
+    address.props.onChange({ target: { value: 'B2' } });
+    address.props.onKeyDown(bar.keyboard('Enter'));
+    expect(dirty).not.toHaveBeenCalled();
+    expect(bar.onCommit).not.toHaveBeenCalled();
+    expect(bar.onAddressChange).not.toHaveBeenCalled();
+    expect(bar.onAddressSubmit).not.toHaveBeenCalled();
+  });
+  it('keeps risk for a rejected Enter draft but clears it when blur restores the stored value', () => {
+    const dirty = vi.fn();
+    const bar = make({ onDraftStateChange: dirty });
+    bar.onCommit.mockImplementation(() => {
+      throw new Error('invalid');
+    });
+    bar.change('pending');
+    bar.press('Enter');
+    expect(dirty).toHaveBeenLastCalledWith(true);
+    bar.blur();
+    expect(bar.input().props.value).toBe('saved');
+    expect(dirty).toHaveBeenLastCalledWith(false);
+  });
+  it('does not reinstate risk on a trailing change after deferred IME commit', () => {
+    const dirty = vi.fn();
+    const bar = make({ onDraftStateChange: dirty });
+    const input = bar.input();
+    input.props.onCompositionStart();
+    input.props.onBlur();
+    input.props.onCompositionEnd({ currentTarget: { value: '中文' } });
+    input.props.onChange({ target: { value: '中文' } });
+    expect(bar.onCommit).toHaveBeenCalledExactlyOnceWith('中文');
+    expect(dirty).toHaveBeenLastCalledWith(false);
+    input.props.onChange({ target: { value: '更新' } });
+    expect(dirty).toHaveBeenLastCalledWith(true);
+  });
+  it('reports formula drafts as dirty and clears the state after commit or cell reset', () => {
+    const onDraftStateChange = vi.fn();
+    const view = make({ onDraftStateChange });
+    view.change('pending');
+    expect(onDraftStateChange).toHaveBeenLastCalledWith(true);
+    view.press('Enter');
+    expect(onDraftStateChange).toHaveBeenLastCalledWith(false);
+    view.change('second');
+    view.rerender({ cellId: 'book/sheet/B1', value: 'saved-b' });
+    expect(onDraftStateChange).toHaveBeenLastCalledWith(false);
+  });
+  it('keeps readonly values copyable and discards an editable draft when made readonly', () => {
+    const view = make();
+    view.change('pending');
+    const stale = view.input();
+    view.rerender({ readOnly: true });
+    expect(view.input().props.readOnly).toBe(true);
+    expect(view.input().props.value).toBe('saved');
+    stale.props.onBlur();
+    view.change('attempt');
+    view.press('Enter');
+    view.blur();
+    expect(view.input().props.value).toBe('saved');
+    expect(view.onCommit).not.toHaveBeenCalled();
+    view.rerender({ readOnly: false });
+    view.change('allowed');
+    view.press('Enter');
+    expect(view.onCommit).toHaveBeenCalledWith('allowed');
+  });
+  it('shows accessible syntax while focused without committing the draft', () => {
+    const view = make({ value: '=NPER(0,-100,1200)' });
+    expect(view.input().props['aria-describedby']).toBeUndefined();
+    view.input().props.onFocus();
+    expect(view.input().props['aria-describedby']).toBe('formula-bar-test-formula-help');
+    const help = elements(view.render()).find(
+      (element) => element.props.id === 'formula-bar-test-formula-help',
+    );
+    expect(help).toBeDefined();
+    expect(elements(help).find((element) => element.type === 'code')?.props.children).toBe(
+      'NPER(rate, pmt, pv, [fv], [type])',
+    );
+    view.change('=MID(A1,1,2)');
+    expect(view.onCommit).not.toHaveBeenCalled();
+    view.press('Escape');
+    expect(view.input().props['aria-describedby']).toBeUndefined();
+    expect(view.onCommit).not.toHaveBeenCalled();
+  });
+
+  it('defers composition blur until final DOM text arrives and does not submit twice', () => {
+    const bar = make();
+    const input = bar.input();
+    input.props.onCompositionStart();
+    input.props.onChange({ target: { value: 'zhong' } });
+    input.props.onBlur();
+    expect(bar.onCommit).not.toHaveBeenCalled();
+    input.props.onCompositionEnd({ currentTarget: { value: '中文' } });
+    input.props.onChange({ target: { value: '中文' } });
+    input.props.onBlur();
+    expect(bar.onCommit).toHaveBeenCalledExactlyOnceWith('中文');
+  });
+  it('marks a composition-only final DOM value dirty before a later change event', () => {
+    const onDraftStateChange = vi.fn();
+    const bar = make({ onDraftStateChange });
+    const input = bar.input();
+    input.props.onCompositionStart();
+    input.props.onCompositionEnd({ currentTarget: { value: '中文' } });
+    expect(onDraftStateChange).toHaveBeenLastCalledWith(true);
+    expect(bar.onCommit).not.toHaveBeenCalled();
+  });
+  it('ignores old composition callbacks after visiting another cell and returning to the same value', () => {
+    const bar = make();
+    const old = bar.input();
+    old.props.onCompositionStart();
+    old.props.onChange({ target: { value: 'old' } });
+    old.props.onBlur();
+    bar.rerender({ cellId: 'book/sheet/B1' });
+    bar.rerender({ cellId: 'book/sheet/A1' });
+    old.props.onCompositionEnd({ currentTarget: { value: '迟到' } });
+    old.props.onChange({ target: { value: '迟到' } });
+    old.props.onBlur();
+    expect(bar.onCommit).not.toHaveBeenCalled();
+    expect(bar.input().props.value).toBe('saved');
+  });
+  it('reports rejection of final composed text without persisting its partial draft', () => {
+    const bar = make();
+    bar.onCommit.mockImplementation(() => {
+      throw new Error('仅允许数字');
+    });
+    const input = bar.input();
+    input.props.onCompositionStart();
+    input.props.onChange({ target: { value: 'zhong' } });
+    input.props.onBlur();
+    input.props.onCompositionEnd({ currentTarget: { value: '中文' } });
+    expect(bar.onCommit).toHaveBeenCalledExactlyOnceWith('中文');
+    expect(bar.alert()?.props.children).toBe('仅允许数字');
+    expect(bar.input().props.value).toBe('saved');
+  });
   it('keeps edits local until Enter and commits once across its synchronous blur', () => {
     const bar = make({ value: '=SUM(A2:A4)' });
     expect(bar.input().props.value).toBe('=SUM(A2:A4)');

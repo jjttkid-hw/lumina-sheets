@@ -56,6 +56,7 @@ function make(sheetValues: Partial<Sheet> = {}, options: Partial<SpreadsheetProp
   const onPatch = vi.fn();
   const onSelect = vi.fn();
   const onEditError = vi.fn();
+  const onChange = vi.fn();
   const viewport = {
     focus: vi.fn(),
     scrollTop: 0,
@@ -75,7 +76,7 @@ function make(sheetValues: Partial<Sheet> = {}, options: Partial<SpreadsheetProp
       onPatch,
       onSelect,
       onEditError,
-      onChange: vi.fn(),
+      onChange,
       ...options,
       ...extra,
     }) as ReactElement<Props>;
@@ -93,7 +94,7 @@ function make(sheetValues: Partial<Sheet> = {}, options: Partial<SpreadsheetProp
     preventDefault: vi.fn(),
     currentTarget: viewport,
   });
-  return { sheet, render, onPatch, onSelect, onEditError, pointer };
+  return { sheet, render, onPatch, onSelect, onEditError, onChange, pointer };
 }
 function applied(onPatch: ReturnType<typeof vi.fn>): Patch[] {
   return onPatch.mock.calls[0][1] as Patch[];
@@ -104,7 +105,211 @@ beforeEach(() => {
   hooks.cursor = 0;
 });
 
+describe('Canvas pointer cancellation', () => {
+  it('releases a rejected fill capture while filtering and accepts a subsequent pointer', () => {
+    const { render, onPatch, pointer } = make({ cells: { A1: { value: 7 } } });
+    const pending = render({ row: 0, col: 0 }, { filter: 'pending' });
+    const first = pointer(139, 69);
+    const target = first.currentTarget;
+    target.hasPointerCapture = () => true;
+    pending.onPointerDown(first);
+    expect(target.releasePointerCapture).toHaveBeenCalledWith(1);
+    expect(onPatch).not.toHaveBeenCalled();
+    const next = { ...pointer(200, 50), pointerId: 2 };
+    pending.onPointerDown(next);
+    expect(target.setPointerCapture).toHaveBeenCalledTimes(2);
+    pending.onPointerCancel(next);
+  });
+  it.each(['fill', 'resize'])(
+    'invalidates %s when data or layout changes before release',
+    (kind) => {
+      for (const change of [
+        'cells',
+        'widths',
+        'hidden',
+        'sheet',
+        'book',
+        'zoom',
+        'calculation',
+        'readonly',
+        'filter',
+      ]) {
+        hooks.refs = [];
+        const { sheet, render, onPatch, onChange, pointer } = make({ cells: { A1: { value: 7 } } });
+        const view = render({ row: 0, col: 0 });
+        const y = kind === 'fill' ? 69 : 10;
+        view.onPointerDown(pointer(139, y));
+        view.onPointerMove(pointer(kind === 'fill' ? 100 : 200, kind === 'fill' ? 110 : 10));
+        const extra: Partial<SpreadsheetProps> = {};
+        if (change === 'cells') sheet.cells = { A1: { value: 99 } };
+        if (change === 'widths') sheet.columnWidths = { 0: 150 };
+        if (change === 'hidden') sheet.hiddenRows = [1];
+        if (change === 'sheet') extra.sheet = { ...sheet, id: 'replacement' };
+        if (change === 'book') extra.workbook = createBlankWorkbook();
+        if (change === 'zoom') extra.zoom = 150;
+        if (change === 'calculation') extra.calculationVersion = 1;
+        if (change === 'readonly') extra.readOnly = true;
+        if (change === 'filter') extra.filter = 'changed';
+        const updated = render({ row: 0, col: 0 }, extra);
+        // A retained old callback must consult the latest render's context too.
+        view.onPointerUp(pointer(200, 110));
+        updated.onPointerUp(pointer(200, 110));
+        expect(onPatch, change).not.toHaveBeenCalled();
+        expect(onChange, change).not.toHaveBeenCalled();
+      }
+    },
+  );
+
+  it('keeps a normal fill active across selection-only SDK revisions', () => {
+    const { render, onPatch, pointer } = make({ cells: { A1: { value: 7 } } });
+    const initial = render({ row: 0, col: 0 });
+    initial.onPointerDown(pointer(139, 69));
+    initial.onPointerMove(pointer(100, 110));
+    render({ row: 0, col: 0, endRow: 2, endCol: 0 }, { renderVersion: 1 }).onPointerUp(
+      pointer(100, 110),
+    );
+    expect(onPatch).toHaveBeenCalledOnce();
+  });
+
+  it.each(['onPointerCancel', 'onLostPointerCapture'])(
+    'discards fill on %s and allows a new drag',
+    (cancel) => {
+      const { render, onPatch, pointer } = make({ cells: { A1: { value: 7 } } });
+      const view = render({ row: 0, col: 0 });
+      view.onPointerDown(pointer(139, 69));
+      view.onPointerMove(pointer(100, 110));
+      view[cancel](pointer(100, 110));
+      view.onPointerUp(pointer(100, 110));
+      expect(onPatch).not.toHaveBeenCalled();
+      view.onPointerDown(pointer(139, 69));
+      view.onPointerMove(pointer(100, 110));
+      view.onPointerUp(pointer(100, 110));
+      expect(onPatch).toHaveBeenCalledOnce();
+    },
+  );
+
+  it.each(['onPointerCancel', 'onLostPointerCapture'])('discards column resize on %s', (cancel) => {
+    const { render, onChange, pointer } = make();
+    const view = render({ row: 0, col: 0 });
+    view.onPointerDown(pointer(139, 10));
+    view.onPointerMove(pointer(200, 10));
+    view[cancel](pointer(200, 10));
+    view.onPointerUp(pointer(200, 10));
+    expect(onChange).not.toHaveBeenCalled();
+    view.onPointerDown(pointer(139, 10));
+    view.onPointerMove(pointer(200, 10));
+    view.onPointerUp(pointer(200, 10));
+    expect(onChange).toHaveBeenCalledOnce();
+  });
+
+  it('ignores a second pointer while resizing and refuses commit after becoming read-only', () => {
+    const { render, onChange, pointer } = make();
+    const view = render({ row: 0, col: 0 });
+    view.onPointerDown(pointer(139, 10));
+    const other = { ...pointer(300, 10), pointerId: 2 };
+    view.onPointerDown(other);
+    view.onPointerMove(other);
+    view.onPointerCancel(other);
+    view.onLostPointerCapture(other);
+    view.onPointerUp(other);
+    expect(onChange).not.toHaveBeenCalled();
+    view.onPointerMove(pointer(200, 10));
+    render({ row: 0, col: 0 }, { readOnly: true }).onPointerUp(pointer(200, 10));
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
 describe('Canvas visible clipboard handlers', () => {
+  it.each(['onCopy', 'onCut', 'onPaste'])(
+    'leaves a clipboard event already handled by the host untouched (%s)',
+    (handler) => {
+      const { render, onPatch, onSelect, sheet } = make({ cells: { A1: { value: 'keep' } } });
+      const event = { ...clipboard('host content'), defaultPrevented: true };
+      render({ row: 0, col: 0 })[handler](event);
+      expect(event.clipboardData.getData).not.toHaveBeenCalled();
+      expect(event.clipboardData.setData).not.toHaveBeenCalled();
+      expect(event.preventDefault).not.toHaveBeenCalled();
+      expect(onPatch).not.toHaveBeenCalled();
+      expect(onSelect).not.toHaveBeenCalled();
+      expect(sheet.cells.A1.value).toBe('keep');
+    },
+  );
+  it('retains cut data if clipboard writing fails, then permits a fresh cut', () => {
+    const { render, onPatch, sheet } = make({ cells: { A1: { value: 'keep' } } });
+    const handlers = render({ row: 0, col: 0 });
+    const failed = clipboard();
+    failed.clipboardData.setData.mockImplementationOnce(() => {
+      throw new Error('Clipboard unavailable');
+    });
+    expect(() => handlers.onCut(failed)).not.toThrow();
+    expect(onPatch).not.toHaveBeenCalled();
+    expect(sheet.cells.A1.value).toBe('keep');
+    const retry = clipboard();
+    handlers.onCut(retry);
+    expect(retry.clipboardData.getData('text/plain')).toBe('keep');
+    expect(applied(onPatch)).toEqual([{ key: 'A1', cell: null }]);
+    expect(onPatch).toHaveBeenCalledOnce();
+  });
+  it.each(['"a"oops', '"""oops', 'valid\t12\n"bad"suffix', '"" "other"'])(
+    'rejects malformed quoted clipboard text without applying any cells (%#)',
+    (text) => {
+      const { render, onPatch, onSelect } = make({ cells: { A1: { value: 'original' } } });
+      render({ row: 0, col: 0 }).onPaste(clipboard(text));
+      expect(onPatch).not.toHaveBeenCalled();
+      expect(onSelect).not.toHaveBeenCalled();
+    },
+  );
+  it('accepts padding after a closing quote without adding it to the cell value', () => {
+    const { render, onPatch } = make();
+    render({ row: 0, col: 0 }).onPaste(clipboard('""  \t"a"  \r\n"b" \tplain"quote'));
+    expect(applied(onPatch)).toEqual([
+      { key: 'A1', cell: { value: '' } },
+      { key: 'B1', cell: { value: 'a' } },
+      { key: 'A2', cell: { value: 'b' } },
+      { key: 'B2', cell: { value: 'plain"quote' } },
+    ]);
+  });
+  it.each(['first\n""', 'first\r\n""  ', 'first\r""  \r\n'])(
+    'preserves a final quoted empty record and matching selection dimensions (%#)',
+    (text) => {
+      const { render, onPatch, onSelect } = make({ hiddenRows: [1] });
+      render({ row: 0, col: 0 }).onPaste(clipboard(text));
+      expect(applied(onPatch)).toEqual([
+        { key: 'A1', cell: { value: 'first' } },
+        { key: 'A3', cell: { value: '' } },
+      ]);
+      expect(onSelect).toHaveBeenCalledWith({ row: 0, col: 0, endRow: 2, endCol: 0 });
+    },
+  );
+  it('counts escaped quotes by decoded length and rejects overflow before applying a batch', () => {
+    const { render, onPatch, onSelect } = make();
+    const value = 'a'.repeat(32766) + '"';
+    render({ row: 0, col: 0 }).onPaste(clipboard('"' + value.replaceAll('"', '""') + '"  '));
+    expect(applied(onPatch)).toEqual([{ key: 'A1', cell: { value } }]);
+    onPatch.mockClear();
+    onSelect.mockClear();
+    render({ row: 0, col: 0 }).onPaste(clipboard('valid\n"' + value.replaceAll('"', '""') + 'x"'));
+    expect(onPatch).not.toHaveBeenCalled();
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+  it.each(['left\rright', 'left\r\nright', 'left\rright\t"quoted"'])(
+    'quotes carriage returns so external clipboard round trips stay in one cell (%#)',
+    (value) => {
+      const { render, onPatch } = make({ cells: { A1: { value } } });
+      const copied = clipboard();
+      render({ row: 0, col: 0 }).onCopy(copied);
+      const text = copied.clipboardData.getData('text/plain');
+      expect(text).toBe('"' + value.replaceAll('"', '""') + '"');
+      render({ row: 4, col: 2 }).onPaste(clipboard(text));
+      expect(onPatch).toHaveBeenCalledOnce();
+      expect(applied(onPatch)).toEqual([
+        { key: 'C5', cell: { value: value.replace(/\r\n?/g, '\n') } },
+      ]);
+      onPatch.mockClear();
+      render({ row: 4, col: 2 }).onPaste(copied);
+      expect(applied(onPatch)).toEqual([{ key: 'C5', cell: { value } }]);
+    },
+  );
   it('uses the bounded internal shape for a wide visible copy beyond external TSV column limits', () => {
     const { render, onPatch } = make({ colCount: 300, cells: { A1: { value: 'wide' } } });
     const event = clipboard();
@@ -322,3 +527,64 @@ describe('Canvas visible clipboard handlers', () => {
     expect(onPatch).toHaveBeenCalledTimes(1);
   });
 });
+
+it('exposes the canvas selection through a keyboard grid accessibility contract', () => {
+  const { render } = make({ rowCount: 20, colCount: 8 });
+  const props = render({ row: 4, col: 6, endRow: 5, endCol: 7 });
+  expect(props.role).toBe('grid');
+  expect(props.tabIndex).toBe(0);
+  expect(props['aria-rowcount']).toBe(20);
+  expect(props['aria-colcount']).toBe(8);
+  expect(props['aria-activedescendant']).toBe('test-active-cell');
+  expect(props['aria-multiselectable']).toBe('true');
+  const stage = (props.children as ReactElement<Props>[]).find(
+    (child) => child?.props?.className === 'spreadsheet-canvas-stage',
+  ) as ReactElement<Props>;
+  const row = (stage.props.children as ReactElement<Props>[]).find(
+    (child) => child?.props?.role === 'row',
+  ) as ReactElement<Props>;
+  expect(row.props['aria-rowindex']).toBe(5);
+  expect(row.props['aria-live']).toBe('polite');
+  expect(row.props['aria-atomic']).toBe('true');
+  const proxy = row.props.children as ReactElement<Props>;
+  expect(proxy.props.id).toBe(props['aria-activedescendant']);
+  expect(proxy.props.role).toBe('gridcell');
+  expect(proxy.props['aria-rowindex']).toBe(5);
+  expect(proxy.props['aria-colindex']).toBe(7);
+  expect(proxy.props['aria-selected']).toBe('true');
+  expect(proxy.props.children).toBe('G5 ，已选择 G5:H6，2 行 2 列');
+  expect(props['aria-readonly']).toBe(false);
+});
+
+it('updates accessible values, reverse selections and read-only state without extra tab stops', () => {
+  const { render } = make({ cells: { B2: { value: '中文' } } });
+  const readProxy = (props: Props) => {
+    const stage = props.children.find(
+      (child: ReactElement<Props>) => child?.props?.className === 'spreadsheet-canvas-stage',
+    );
+    return stage.props.children.find((child: ReactElement<Props>) => child?.props?.role === 'row')
+      .props.children.props;
+  };
+  const first = render({ row: 1, col: 1 }, { readOnly: true });
+  expect(first['aria-readonly']).toBe(true);
+  expect(readProxy(first).children).toBe('B2 中文');
+  expect(readProxy(first).tabIndex).toBeUndefined();
+  const next = render(
+    { row: 1, col: 1, endRow: 0, endCol: 0 },
+    {
+      getValue: () => 42,
+      readOnly: false,
+    },
+  );
+  expect(next['aria-readonly']).toBe(false);
+  expect(readProxy(next).children).toBe('B2 42，已选择 A1:B2，2 行 2 列');
+});
+
+it.each(['1e-999', '3e-324', '-0.00', '0.1234567890123456789'])(
+  'preserves precision-sensitive pasted text %s',
+  (text) => {
+    const { render, onPatch } = make();
+    render({ row: 0, col: 0 }).onPaste(clipboard(text));
+    expect(applied(onPatch)[0].cell?.value).toBe(text);
+  },
+);

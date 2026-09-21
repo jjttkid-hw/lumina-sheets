@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.50",
+  "executedAt": "2026-09-21T03:23:34.375Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "b71d36ea270ccefcf2e858eee6f2213f65b9e46c8bd5863d1eceeae6f3ce14a8",
+  "artifactSha256": "3976d561c6153bb3f7df88f33cf1612ad3ce705149ed7672b670effcedce620f",
+  "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
+  "checks": [
+    {
+      "name": "hidden-axis-keyboard",
+      "status": "passed",
+      "elapsedMs": 149
+    },
+    {
+      "name": "merge-hit-edit-navigation",
+      "status": "passed",
+      "elapsedMs": 257
+    },
+    {
+      "name": "frozen-row-scroll-hit",
+      "status": "passed",
+      "elapsedMs": 207,
+      "details": {
+        "scrollTop": 200
+      }
+    },
+    {
+      "name": "sparse-million-row-locate-edit",
+      "status": "passed",
+      "elapsedMs": 167,
+      "details": {
+        "selection": {
+          "row": 999999,
+          "col": 2
+        },
+        "value": "last row",
+        "draw": {
+          "drawMs": 0.3999999761581421,
+          "paintedCells": 84,
+          "domNodes": 4
+        },
+        "domCells": 1
+      }
+    },
+    {
+      "name": "row-height-column-width-hit-undo",
+      "status": "passed",
+      "elapsedMs": 284,
+      "details": {
+        "columnWidths": {
+          "0": 200
+        },
+        "rowHeights": {
+          "0": 70
+        }
+      }
+    },
+    {
+      "name": "filtered-navigation-visible-clipboard",
+      "status": "passed",
+      "elapsedMs": 586
+    }
+  ],
+  "pageErrors": [
+    "Cannot set properties of null (setting 'textContent')",
+    "Cannot set properties of null (setting 'textContent')",
+    "Cannot set properties of null (setting 'textContent')",
+    "Cannot set properties of null (setting 'textContent')"
+  ],
+  "consoleErrors": [],
+  "status": "failed"
+}
