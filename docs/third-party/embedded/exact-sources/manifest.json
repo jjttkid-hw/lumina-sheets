@@ -1,0 +1,466 @@
+{
+  "schemaVersion": 1,
+  "mapSha256": "b65fb09908a8e2a3aaa6c751465c1662fc11fdfd59ae970b8b2d544fc18f6ac7",
+  "interpretation": "Exact source coverage against integrity-verified official npm archives. Matching source bytes do not uniquely identify the historical build version; notice text is preserved only when present in the archive.",
+  "records": [
+    {
+      "name": "base64-js",
+      "version": "1.5.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/base64-js/1.5.1",
+      "tarball": "https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz",
+      "integrity": "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==",
+      "archive": "base64-js-1.5.1.tgz",
+      "archiveSha256": "b1b7a945b52685269083425216d6597e33d97bf21699d656e92fdb3eb5210a85",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/base64-js/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "829eadd8a1a441d25be0cb93b00e16a0d0c20fd294db95d8f2ed87e6954b7182"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "5b37224c080cdcc97c871ada971c224e9926370fe74f11b539aa1cf9f3b1aca1",
+          "text": "The MIT License (MIT)\n\nCopyright (c) 2014 Jameson Little\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "core-util-is",
+      "version": "1.0.3",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/core-util-is/1.0.3",
+      "tarball": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.3.tgz",
+      "integrity": "sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==",
+      "archive": "core-util-is-1.0.3.tgz",
+      "archiveSha256": "4430fdc71f2cf3b5e297113b9a692da2d6cff96cf84da00f0ecef5e5a6e74d0c",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/core-util-is/lib/util.js",
+          "archivePath": "package/lib/util.js",
+          "sha256": "7427f16d9bd9185e409baff3e4b1ed6e3d8dfca84d367f4b8b351eb921618652"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "33b734d60042d0fe0c92dd1fc1e874193a1c899ec3e276a2eb935d2d0bf5b710",
+          "text": "Copyright Node.js contributors. All rights reserved.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "ieee754",
+      "version": "1.2.1",
+      "declaredLicense": "BSD-3-Clause",
+      "registry": "https://registry.npmjs.org/ieee754/1.2.1",
+      "tarball": "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz",
+      "integrity": "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==",
+      "archive": "ieee754-1.2.1.tgz",
+      "archiveSha256": "8ef14b9b397e339db89db97881fb714f49319d8f0eb1275901f45567b28f9dac",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/ieee754/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "fe3e2b20c1ebb57c3b390c8f685ad1e04e6f493517fa7e432f4351bb77a1a4d0"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "18d45466ba3253deae04667e267a91ea8de8548f18c1125264d1c9db28194cc1",
+          "text": "Copyright 2008 Fair Oaks Labs, Inc.\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n\n2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n\n3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
+        }
+      ]
+    },
+    {
+      "name": "isarray",
+      "version": "1.0.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/isarray/1.0.0",
+      "tarball": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz",
+      "integrity": "sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==",
+      "archive": "isarray-1.0.0.tgz",
+      "archiveSha256": "e23c76f14f5222e07e39d89858b61e8e33f96956de9e0df3659cbdf8db950c87",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/isarray/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "9b8c691372802da788c9c5f4e1ca2f1ed0b88ab8722176c2aea15e38ec86d249"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/README.md",
+          "sha256": "ff138e683771b187f3629c383db72ee7d632009010a36d08e18e8d2a34222ec7",
+          "text": "\n# isarray\n\n`Array#isArray` for older browsers.\n\n[![build status](https://secure.travis-ci.org/juliangruber/isarray.svg)](http://travis-ci.org/juliangruber/isarray)\n[![downloads](https://img.shields.io/npm/dm/isarray.svg)](https://www.npmjs.org/package/isarray)\n\n[![browser support](https://ci.testling.com/juliangruber/isarray.png)\n](https://ci.testling.com/juliangruber/isarray)\n\n## Usage\n\n```js\nvar isArray = require('isarray');\n\nconsole.log(isArray([])); // => true\nconsole.log(isArray({})); // => false\n```\n\n## Installation\n\nWith [npm](http://npmjs.org) do\n\n```bash\n$ npm install isarray\n```\n\nThen bundle for the browser with\n[browserify](https://github.com/substack/browserify).\n\nWith [component](http://component.io) do\n\n```bash\n$ component install juliangruber/isarray\n```\n\n## License\n\n(MIT)\n\nCopyright (c) 2013 Julian Gruber &lt;julian@juliangruber.com&gt;\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\nof the Software, and to permit persons to whom the Software is furnished to do\nso, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.escaperegexp",
+      "version": "4.1.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.escaperegexp/4.1.2",
+      "tarball": "https://registry.npmjs.org/lodash.escaperegexp/-/lodash.escaperegexp-4.1.2.tgz",
+      "integrity": "sha512-TM9YBvyC84ZxE3rgfefxUWiQKLilstD6k7PTGt6wfbtXF8ixIJLOL3VYyV/z+ZiPLsVxAsKAFVwWlWeb2Y8Yyw==",
+      "archive": "lodash.escaperegexp-4.1.2.tgz",
+      "archiveSha256": "17e49a4288031a39d917abaecd2ad41919240806799dbea7f26b72748a8c483a",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.escaperegexp/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "584de6ec78e35344eaef8291338a671f223ec225c4df4220b6f91d8f0c004d8d"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "ffd8b33b354585f4ce119f19c53728281e48a97b074491eb6bf6d5c5ff305272",
+          "text": "Copyright jQuery Foundation and other contributors <https://jquery.org/>\n\nBased on Underscore.js, copyright Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nThis software consists of voluntary contributions made by many\nindividuals. For exact contribution history, see the revision history\navailable at https://github.com/lodash/lodash\n\nThe following license applies to all parts of this software except as\ndocumented below:\n\n====\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n====\n\nCopyright and related rights for sample code are waived via CC0. Sample\ncode is defined as all source code displayed within the prose of the\ndocumentation.\n\nCC0: http://creativecommons.org/publicdomain/zero/1.0/\n\n====\n\nFiles located in the node_modules and vendor directories are externally\nmaintained libraries used by this software which have their own\nlicenses; we recommend you read them, as their terms may differ from the\nterms above.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.groupby",
+      "version": "4.6.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.groupby/4.6.0",
+      "tarball": "https://registry.npmjs.org/lodash.groupby/-/lodash.groupby-4.6.0.tgz",
+      "integrity": "sha512-5dcWxm23+VAoz+awKmBaiBvzox8+RqMgFhi7UvX9DHZr2HdxHXM/Wrf8cfKpsW37RNrvtPn6hSwNqurSILbmJw==",
+      "archive": "lodash.groupby-4.6.0.tgz",
+      "archiveSha256": "fe77c6d19478e8291aa771730b6a04c0d7eb43ff3925e5bda812f74ffb2924fd",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.groupby/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "6282d4a70f55d0de7b0f859f4473f731d77db36948ae47814cb160736db17a3f"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "ffd8b33b354585f4ce119f19c53728281e48a97b074491eb6bf6d5c5ff305272",
+          "text": "Copyright jQuery Foundation and other contributors <https://jquery.org/>\n\nBased on Underscore.js, copyright Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nThis software consists of voluntary contributions made by many\nindividuals. For exact contribution history, see the revision history\navailable at https://github.com/lodash/lodash\n\nThe following license applies to all parts of this software except as\ndocumented below:\n\n====\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n====\n\nCopyright and related rights for sample code are waived via CC0. Sample\ncode is defined as all source code displayed within the prose of the\ndocumentation.\n\nCC0: http://creativecommons.org/publicdomain/zero/1.0/\n\n====\n\nFiles located in the node_modules and vendor directories are externally\nmaintained libraries used by this software which have their own\nlicenses; we recommend you read them, as their terms may differ from the\nterms above.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.isboolean",
+      "version": "3.0.3",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.isboolean/3.0.3",
+      "tarball": "https://registry.npmjs.org/lodash.isboolean/-/lodash.isboolean-3.0.3.tgz",
+      "integrity": "sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg==",
+      "archive": "lodash.isboolean-3.0.3.tgz",
+      "archiveSha256": "11a52014f5d33bdc0b58a79fd10355b8209aeb1b2c57f2c13b7395ca57dcee9d",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.isboolean/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "8fee48fd5bafd252cf16ceccc6fe0d3de14f91bdb99ea17287c5fd2af886b0d1"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "25a399d4a42f419445101092a1fc3f9b4bfe06d614f84128222d79e3a2105fe7",
+          "text": "Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>\nBased on Underscore.js, copyright 2009-2016 Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.isequal",
+      "version": "4.5.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.isequal/4.5.0",
+      "tarball": "https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-4.5.0.tgz",
+      "integrity": "sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==",
+      "archive": "lodash.isequal-4.5.0.tgz",
+      "archiveSha256": "a3b534a55485caad0c28ce56779eb4faea13d3c23a55691eaedca6a0b9834278",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.isequal/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "e552928a511748303101cfd03826a777cfa359eade6a4a60f92c923edbf9184c"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "e159c6d48c989185448658f276375bfb2300362ec6d4ae5525a2d49c4bcb947d",
+          "text": "Copyright JS Foundation and other contributors <https://js.foundation/>\n\nBased on Underscore.js, copyright Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nThis software consists of voluntary contributions made by many\nindividuals. For exact contribution history, see the revision history\navailable at https://github.com/lodash/lodash\n\nThe following license applies to all parts of this software except as\ndocumented below:\n\n====\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n====\n\nCopyright and related rights for sample code are waived via CC0. Sample\ncode is defined as all source code displayed within the prose of the\ndocumentation.\n\nCC0: http://creativecommons.org/publicdomain/zero/1.0/\n\n====\n\nFiles located in the node_modules and vendor directories are externally\nmaintained libraries used by this software which have their own\nlicenses; we recommend you read them, as their terms may differ from the\nterms above.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.isfunction",
+      "version": "3.0.9",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.isfunction/3.0.9",
+      "tarball": "https://registry.npmjs.org/lodash.isfunction/-/lodash.isfunction-3.0.9.tgz",
+      "integrity": "sha512-AirXNj15uRIMMPihnkInB4i3NHeb4iBtNg9WRWuK2o31S+ePwwNmDPaTL3o7dTJ+VXNZim7rFs4rxN4YU1oUJw==",
+      "archive": "lodash.isfunction-3.0.9.tgz",
+      "archiveSha256": "43ec0510160e0a0b80c54386978274dd6c015c72e1fa98588e8011c6cc255ed0",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.isfunction/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "724cca6be93fe4d189313ba359b3f2c8b0891256ff7ada53ec27933bc787bb18"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "e159c6d48c989185448658f276375bfb2300362ec6d4ae5525a2d49c4bcb947d",
+          "text": "Copyright JS Foundation and other contributors <https://js.foundation/>\n\nBased on Underscore.js, copyright Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nThis software consists of voluntary contributions made by many\nindividuals. For exact contribution history, see the revision history\navailable at https://github.com/lodash/lodash\n\nThe following license applies to all parts of this software except as\ndocumented below:\n\n====\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n====\n\nCopyright and related rights for sample code are waived via CC0. Sample\ncode is defined as all source code displayed within the prose of the\ndocumentation.\n\nCC0: http://creativecommons.org/publicdomain/zero/1.0/\n\n====\n\nFiles located in the node_modules and vendor directories are externally\nmaintained libraries used by this software which have their own\nlicenses; we recommend you read them, as their terms may differ from the\nterms above.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.isnil",
+      "version": "4.0.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.isnil/4.0.0",
+      "tarball": "https://registry.npmjs.org/lodash.isnil/-/lodash.isnil-4.0.0.tgz",
+      "integrity": "sha512-up2Mzq3545mwVnMhTDMdfoG1OurpA/s5t88JmQX809eH3C8491iu2sfKhTfhQtKY78oPNhiaHJUpT/dUDAAtng==",
+      "archive": "lodash.isnil-4.0.0.tgz",
+      "archiveSha256": "9882899cd4235fffe6a009a10298ada217da98ec04a809f816f6aca63e11ccbe",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.isnil/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "73d9ff36f75adbd98ffbd5b45a22c04249f5717eead34245c2afbc8908edf221"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "25a399d4a42f419445101092a1fc3f9b4bfe06d614f84128222d79e3a2105fe7",
+          "text": "Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>\nBased on Underscore.js, copyright 2009-2016 Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.isundefined",
+      "version": "3.0.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.isundefined/3.0.1",
+      "tarball": "https://registry.npmjs.org/lodash.isundefined/-/lodash.isundefined-3.0.1.tgz",
+      "integrity": "sha512-MXB1is3s899/cD8jheYYE2V9qTHwKvt+npCwpD+1Sxm3Q3cECXCiYHjeHWXNwr6Q0SOBPrYUDxendrO6goVTEA==",
+      "archive": "lodash.isundefined-3.0.1.tgz",
+      "archiveSha256": "33cefcd13bb635a61349c85b2d6bcf61a0581b30518c6f28577a56a8306017b5",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.isundefined/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "405eeb8ebf957d324687d627063ae5232057b7dab59d701d37706862c7f98721"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE.txt",
+          "sha256": "90df9e2220f682e1f77e24b1c0f72d2de18b818096c957a65698e74c41a4826f",
+          "text": "Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>\nBased on Underscore.js, copyright 2009-2015 Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "lodash.uniq",
+      "version": "4.5.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/lodash.uniq/4.5.0",
+      "tarball": "https://registry.npmjs.org/lodash.uniq/-/lodash.uniq-4.5.0.tgz",
+      "integrity": "sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==",
+      "archive": "lodash.uniq-4.5.0.tgz",
+      "archiveSha256": "0e6cbc31894f7a826c7a3ccd0d119ce24656a244f7c446104c6fcaaab072bf46",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/lodash.uniq/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "30caabc4945cc4eaebaefd56c493c5e8fc885bb2cb0c08104c389006c7121b3b"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "ffd8b33b354585f4ce119f19c53728281e48a97b074491eb6bf6d5c5ff305272",
+          "text": "Copyright jQuery Foundation and other contributors <https://jquery.org/>\n\nBased on Underscore.js, copyright Jeremy Ashkenas,\nDocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>\n\nThis software consists of voluntary contributions made by many\nindividuals. For exact contribution history, see the revision history\navailable at https://github.com/lodash/lodash\n\nThe following license applies to all parts of this software except as\ndocumented below:\n\n====\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n====\n\nCopyright and related rights for sample code are waived via CC0. Sample\ncode is defined as all source code displayed within the prose of the\ndocumentation.\n\nCC0: http://creativecommons.org/publicdomain/zero/1.0/\n\n====\n\nFiles located in the node_modules and vendor directories are externally\nmaintained libraries used by this software which have their own\nlicenses; we recommend you read them, as their terms may differ from the\nterms above.\n"
+        }
+      ]
+    },
+    {
+      "name": "process-nextick-args",
+      "version": "2.0.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/process-nextick-args/2.0.1",
+      "tarball": "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz",
+      "integrity": "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==",
+      "archive": "process-nextick-args-2.0.1.tgz",
+      "archiveSha256": "425bf8c725d23bc5ac76bcedd10d9cdbbd6354c7273dd7def44417cfbca8889b",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/process-nextick-args/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "90ba524851f721e8aced79870d6d6a733cd3939b293a83e2d04417812a8ba330"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/license.md",
+          "sha256": "ecdccbcf39024f624ded480c01c0b25458e1eca8f26ecf040933865ce56d9a4f",
+          "text": "# Copyright (c) 2015 Calvin Metcalf\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\n**THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.**\n"
+        }
+      ]
+    },
+    {
+      "name": "string_decoder",
+      "version": "1.3.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/string_decoder/1.3.0",
+      "tarball": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.3.0.tgz",
+      "integrity": "sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==",
+      "archive": "string_decoder-1.3.0.tgz",
+      "archiveSha256": "7d036900940345e423538371ae45b23bfaf4b454bc398c6ba604063b0597b3ad",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browserify/node_modules/string_decoder/lib/string_decoder.js",
+          "archivePath": "package/lib/string_decoder.js",
+          "sha256": "f1d36d47b2c579063392c1a68963467f2d4f51a069af09eb068d974c63ee3b37"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "11f2aafb37d06b3ee5bdaf06e9811141d0da05263c316f3d627f45c20d43261b",
+          "text": "Node.js is licensed for use as follows:\n\n\"\"\"\nCopyright Node.js contributors. All rights reserved.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE.\n\"\"\"\n\nThis license applies to parts of Node.js originating from the\nhttps://github.com/joyent/node repository:\n\n\"\"\"\nCopyright Joyent, Inc. and other Node contributors. All rights reserved.\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE.\n\"\"\"\n\n"
+        }
+      ]
+    },
+    {
+      "name": "util-deprecate",
+      "version": "1.0.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/util-deprecate/1.0.2",
+      "tarball": "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz",
+      "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==",
+      "archive": "util-deprecate-1.0.2.tgz",
+      "archiveSha256": "79a1de983c1b393180c47456d6b73caab278a00ea6e37d5c6675f2dcdec2a3e5",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/util-deprecate/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "abaef53ebcdc98f3655331f834986a2d11b6a824f58d670369669246d1b7b69b"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/README.md",
+          "sha256": "d30a5eca847bc6edc7b9723884def8942a66f89d12a5735dc22d1ee1216ff2ea",
+          "text": "util-deprecate\n==============\n### The Node.js `util.deprecate()` function with browser support\n\nIn Node.js, this module simply re-exports the `util.deprecate()` function.\n\nIn the web browser (i.e. via browserify), a browser-specific implementation\nof the `util.deprecate()` function is used.\n\n\n## API\n\nA `deprecate()` function is the only thing exposed by this module.\n\n``` javascript\n// setup:\nexports.foo = deprecate(foo, 'foo() is deprecated, use bar() instead');\n\n\n// users see:\nfoo();\n// foo() is deprecated, use bar() instead\nfoo();\nfoo();\n```\n\n\n## License\n\n(The MIT License)\n\nCopyright (c) 2014 Nathan Rajlich <nathan@tootallnate.net>\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.\n"
+        },
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "0154425673db15cdfa80ecba2c9b1f1a867f7197a006764712849bfc3a93cbb7",
+          "text": "(The MIT License)\n\nCopyright (c) 2014 Nathan Rajlich <nathan@tootallnate.net>\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "uuid",
+      "version": "8.3.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/uuid/8.3.2",
+      "tarball": "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz",
+      "integrity": "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==",
+      "archive": "uuid-8.3.2.tgz",
+      "archiveSha256": "f630703647a5821c735a542edcf8d26c989724efe9d9912ab6f6836a1e79924a",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/uuid/dist/index.js",
+          "archivePath": "package/dist/index.js",
+          "sha256": "069a2230d395723583c8e45a7c0fee2622af2fbd08dc35f81e4d57836122e59f"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/md5-browser.js",
+          "archivePath": "package/dist/md5-browser.js",
+          "sha256": "21a4e167b7ae498e8f3778bac8d7330929099006afca6adfe76b626e0e41d795"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/nil.js",
+          "archivePath": "package/dist/nil.js",
+          "sha256": "7395bd919bd1309bcbced245a59dfc6b077f97992a482af2537343e558795b1f"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/parse.js",
+          "archivePath": "package/dist/parse.js",
+          "sha256": "1a87ed6a6bb0a3edbe266ca55aaf1c5af8e963ee9486f74b59cfd615280b21b4"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/regex.js",
+          "archivePath": "package/dist/regex.js",
+          "sha256": "acc4c54d987f100093097f4f156ff245394c39d1332eb2114d7e40db00bd6ddd"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/rng-browser.js",
+          "archivePath": "package/dist/rng-browser.js",
+          "sha256": "4c88edf4fd7fae3bf84bad34750a55f706c8e522a924af6c6ad22839e3718dd6"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/sha1-browser.js",
+          "archivePath": "package/dist/sha1-browser.js",
+          "sha256": "32982388b377b06298f59db97c98077f06e6b4f29fe284d427195a358a72f19e"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/stringify.js",
+          "archivePath": "package/dist/stringify.js",
+          "sha256": "85a70b8982f37ddb434816dcda7628b0319e5a90d46ac6bc9b08d4d15d6a7650"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/v1.js",
+          "archivePath": "package/dist/v1.js",
+          "sha256": "6dad9c2e6565ad6b478fba7b2ace95350df56a15a72920e72ac64c3a2691d665"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/v3.js",
+          "archivePath": "package/dist/v3.js",
+          "sha256": "95e0c6fa204355c6ef7dbac5720a3ef5239454ed6820674dfcc143a55ea6c459"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/v35.js",
+          "archivePath": "package/dist/v35.js",
+          "sha256": "ababd96e6f8b1fca9bb58f43220473f7bd59fbc81b3acb212df924813544283f"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/v4.js",
+          "archivePath": "package/dist/v4.js",
+          "sha256": "a9e30e8692dde9dec39a3ef716ef8e650e321813fa9d137f16d27666b9ad96ef"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/v5.js",
+          "archivePath": "package/dist/v5.js",
+          "sha256": "d15c31975f31b9abf6a195e70a3dca0843a9257cb51b49214cf7a9f4ed30fc5a"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/validate.js",
+          "archivePath": "package/dist/validate.js",
+          "sha256": "5497d9adffd73474cf379d3e1b76b28698e408124a0726d54e88282500378502"
+        },
+        {
+          "sourcePath": "node_modules/uuid/dist/version.js",
+          "archivePath": "package/dist/version.js",
+          "sha256": "cad5f0ecd518983e310856cafd54d4d0de0b9db3c8e3bd97ec8e773ef63de6e8"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE.md",
+          "sha256": "beaa6b04fb82e41dd2ad679e19e27953afb5999b1abbb455b6564e78ebfeb332",
+          "text": "The MIT License (MIT)\n\nCopyright (c) 2010-2020 Robert Kieffer and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,10 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { readFile, realpath } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
+
+const root = path.resolve(new URL('..', import.meta.url).pathname);
 
 /** Recover the full component/path directory from source-map paths. */
 export function embeddedComponentPaths(sourceMap) {
@@ -193,11 +196,107 @@ const reviewedEmbedded = {
   },
 };
 
+// A second, larger evidence set covers components whose browser source-map
+// bytes match an integrity-verified official npm archive exactly.  These
+// entries intentionally remain separate from the stronger elliptic record:
+// source equality plus an archived notice proves what was inspected, but does
+// not claim that the historical bundler recorded a package.json declaration.
+const exactSourceManifestPath = path.join(
+  root,
+  'docs/third-party/embedded/exact-sources/manifest.json',
+);
+let exactSourceManifest;
+async function loadExactSourceManifest() {
+  if (exactSourceManifest !== undefined) return exactSourceManifest;
+  try {
+    exactSourceManifest = JSON.parse(await readFile(exactSourceManifestPath, 'utf8'));
+  } catch {
+    exactSourceManifest = null;
+  }
+  return exactSourceManifest;
+}
+
+function archiveEntry(archive, entry) {
+  return execFileSync('tar', ['-xOf', archive, entry], { maxBuffer: 16 * 1024 * 1024 });
+}
+
 /** Validate exact source-map/upstream evidence for one embedded component. */
 export async function reviewedEmbeddedComponent(root, bundle, component, sourceMap) {
   const key = `${component.name}@${component.bundledVersion ?? ''}`;
   const record = reviewedEmbedded[key];
-  if (!record) return null;
+  if (!record) {
+    const manifest = await loadExactSourceManifest();
+    const candidates =
+      (manifest?.mapSha256 === bundle.sourceMapSha256
+        ? manifest.records?.filter((item) => item.name === component.name)
+        : []) ?? [];
+    const sourcePaths =
+      embeddedComponentPaths(sourceMap).find((item) => item.name === component.name)?.sourcePaths ??
+      [];
+    const exact = candidates.find(
+      (item) =>
+        item.comparisons
+          ?.map((entry) => entry.sourcePath)
+          .sort()
+          .join('\n') ===
+        sourcePaths
+          .filter((entry) => !entry.endsWith('/package.json'))
+          .sort()
+          .join('\n'),
+    );
+    if (!exact) return null;
+    const project = await realpath(root);
+    const archive = await realpath(
+      path.join(project, 'docs/third-party/embedded/exact-sources', exact.archive),
+    );
+    assert(archive.startsWith(project + path.sep), 'Exact vendor archive escapes repository');
+    const archiveBytes = await readFile(archive);
+    assert.equal(
+      createHash('sha256').update(archiveBytes).digest('hex'),
+      exact.archiveSha256,
+      'Exact vendor archive changed',
+    );
+    for (const comparison of exact.comparisons) {
+      const index = sourceMap.sources.indexOf(comparison.sourcePath);
+      assert(index >= 0, `Exact source missing from map: ${comparison.sourcePath}`);
+      const source = Buffer.from(sourceMap.sourcesContent[index] ?? '');
+      const upstream = archiveEntry(archive, comparison.archivePath);
+      assert.equal(
+        createHash('sha256').update(source).digest('hex'),
+        comparison.sha256,
+        'Exact embedded source hash changed',
+      );
+      assert.deepEqual(source, upstream, `Exact embedded source differs: ${comparison.sourcePath}`);
+    }
+    assert(exact.notices?.length > 0, `Exact vendor archive has no complete notice: ${exact.name}`);
+    const notice = exact.notices[0];
+    const noticeText = archiveEntry(archive, notice.archivePath).toString('utf8');
+    assert.equal(
+      createHash('sha256').update(noticeText).digest('hex'),
+      notice.sha256,
+      'Exact notice changed',
+    );
+    return {
+      status: 'upstream-source-and-license-reviewed',
+      licenseEvidence: {
+        path: `docs/third-party/embedded/exact-sources/${exact.archive}#${notice.archivePath}`,
+        sha256: notice.sha256,
+        bytes: Buffer.byteLength(noticeText),
+        text: noticeText,
+        source: exact.registry,
+      },
+      provenance: {
+        package: exact.name,
+        version: exact.version,
+        source: exact.registry,
+        tarball: exact.tarball,
+        integrity: exact.integrity,
+        archiveSha256: exact.archiveSha256,
+        mapSha256: manifest.mapSha256,
+        comparisons: exact.comparisons,
+      },
+    };
+  }
   assert.equal(bundle.sourceMapSha256, record.mapSha256, 'Reviewed vendor map digest mismatch');
   const project = await realpath(root);
   async function readEvidence(name, digest) {

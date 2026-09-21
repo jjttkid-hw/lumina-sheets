@@ -1,6 +1,6 @@
 # 第三方依赖许可清单
 
-2026-09-21 最新：saxes 5.0.1 官方固定提交的 LICENSE 已接入清单与安装包。当前实际检查为 **138 份材料、0 个错误、4 项待审、68 个未解决预打包组件**，严格门禁仍失败。下文五项待审为此前历史状态。原文和来源记录见 [third-party/saxes-5.0.1](third-party/saxes-5.0.1/provenance.json)，官方 npm 包完整性与锁文件一致，源码 package.json 确认版本和 ISC 声明。
+2026-09-21 最新：saxes 5.0.1 官方固定提交的 LICENSE 已接入清单与安装包。当前实际检查为 **138 份材料、0 个错误、4 项待审、51 个未解决预打包组件**，严格门禁仍失败。原文和来源记录见 [third-party/saxes-5.0.1](third-party/saxes-5.0.1/provenance.json)，官方 npm 包完整性与锁文件一致，源码 package.json 确认版本和 ISC 声明。ExcelJS 浏览器 source map 中另有 17 个组件已绑定完整性校验通过的官方 npm 归档和许可正文；具体清单见 `third-party/embedded/exact-sources/manifest.json`。
 
 补充材料不伪装成 node_modules 自带文件：清单使用 kind=upstream-license-text、逻辑路径 @upstream/LICENSE，附完整 provenance；正文逐字收入 THIRD_PARTY_NOTICES.txt。构建和真实包安装检查固定核对名称、版本、包 integrity、来源 commit/URL、许可证 SHA-256 和字节数，缺失或篡改直接失败；更新依赖版本不会自动沿用旧版文本。材料来自官方版本但 tag 未签名，未证明源码到 npm 包的可重复构建，也不代表法律授权审查全部完成。该项仅关闭 saxes 缺失许可正文；binary、buffers、chainsaw 和 ExcelJS 内嵌组件继续待核实。
 
@@ -25,13 +25,13 @@
 
 SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际分包的本地输入路径、文件 SHA-256、锁定包版本/完整性，以及每个输出 JS 的 SHA-256。虚拟 CommonJS 包装器不冒充本地源文件；路径不含开发机绝对目录。安装包检查逐个验证所有 JS 分包与该清单一致。
 
-这项证据补充保守依赖闭包，不能替代它：`renderedLength` 是压缩前模块输出长度，不是每项依赖在最终包中的精确占比；预打包内部组件仍不从外层包版本推断身份。0.29 加入此材料后，原有五项许可待审状态保持不变。
+这项证据补充保守依赖闭包，不能替代它：`renderedLength` 是压缩前模块输出长度，不是每项依赖在最终包中的精确占比；预打包内部组件仍不从外层包版本推断身份。exact-source 记录只接受 source map 与官方归档逐字相同且归档含完整许可正文的组件；其余组件继续保持 unresolved。
 
 当前安装的 ExcelJS 4.4.0 的 browser 入口是 `dist/exceljs.min.js`。其 `dist/LICENSE` 仅包含 Guyon Roche 的 MIT 文本，并不是所有预打包组件的逐项许可清单。
 
-脚本读取随包安装的 `dist/exceljs.min.js.map`，按 source paths 提取内嵌组件名称，记录证据文件及其哈希。当前发现 **68 个组件名称**，包括 core-js、regenerator-runtime、crypto-browserify 等。许可审查状态仍为 `unresolved-vendor-bundle-review`；不会把本机同名包的当前锁定版本误写成 ExcelJS 历史打包版本。source map 的名称也不单独证明该组件在最终发布包中实际保留的代码数量。
+脚本读取随包安装的 `dist/exceljs.min.js.map`，按 source paths 提取内嵌组件名称，记录证据文件及其哈希。当前发现 **68 个组件名称**，包括 core-js、regenerator-runtime、crypto-browserify 等；其中 17 个有独立 exact-source 记录，其余 51 个许可审查状态仍为 `unresolved-vendor-bundle-review`；不会把本机同名包的当前锁定版本误写成 ExcelJS 历史打包版本。source map 的名称也不单独证明该组件在最终发布包中实际保留的代码数量。
 
-源码映射确实内嵌 package.json 时，现在只解析 JSON 或字面 `module.exports =` 包装后的 JSON，绝不执行其中的 JavaScript。记录源路径、原文 SHA-256、声明版本与许可；名称不匹配、版本非法或非 JSON 内容不采信，多份声明冲突保留证据且不选定值。当前能从原始嵌入声明确认 elliptic 6.5.4 / MIT；其他组件未补写未知版本。该声明不是完整许可文本，也不是安全漏洞审查结果，68 项仍全部待完成许可核验，严格门禁不因此放行。
+源码映射确实内嵌 package.json 时，现在只解析 JSON 或字面 `module.exports =` 包装后的 JSON，绝不执行其中的 JavaScript。记录源路径、原文 SHA-256、声明版本与许可；名称不匹配、版本非法或非 JSON 内容不采信，多份声明冲突保留证据且不选定值。当前能从原始嵌入声明确认 elliptic 6.5.4 / MIT；exact-source 归档则同时绑定文件内容、npm integrity 和许可正文。该声明不是完整许可文本，也不是安全漏洞审查结果，仍有 51 项待完成许可核验，严格门禁不因此放行。
 
 商业再分发前，需要确认这些预打包源的实际版本、对应完整许可和通知义务，或改用可准确追踪的构建输入后重新生成。当前清单如实记录缺口，**商业授权审计尚未通过**。
 
@@ -51,7 +51,7 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 - `binary`：声明 MIT，README 仅声明名称，缺少完整许可文本。
 - `buffers`：未找到许可元数据或许可文本。
 - `chainsaw`：声明 MIT/X11，但安装包未找到完整许可文本。
-- ExcelJS 预打包组件：68 个名称的具体打包版本和对应许可仍待核实。
+- ExcelJS 预打包组件：51 个名称的具体打包版本和对应许可仍待核实；17 个 exact-source 组件已有可复验技术证据。
 
 依赖更新后应重新生成并以 JSON 实际输出为准。此文件记录技术证据和核验边界，不替代权利人的授权或法律审核。
 
@@ -60,7 +60,7 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 
 2026-09-20 部分署名补充：除已有 15 份含授权/免责的文件头，现另收入 11 个组件的 13 份简短源文件署名（buffer、8 个 lodash 子包、regenerator-runtime、sha.js）。保留逐源文件与逐注释哈希，并标为 attributionEvidence；这些原文可能仅指向外部 LICENSE，不能证明完整授权或包版本，也不会关闭待审项。安装包消费校验确认所有 noticeEvidence/attributionEvidence 的文本哈希、源路径和通知文件收录一致。
 
-本轮再次读取 saxes v5.0.1 官方 LICENSE：受限网络 DNS 失败，联网审批在执行前返回 503，请求编号 `202609201437472365196208268d9d6OkhlCDJG`。未获取上游文件；5 项待审、68 项未解决预打包组件保持原状。
+本轮再次读取 saxes v5.0.1 官方 LICENSE：受限网络 DNS 失败，联网审批在执行前返回 503，请求编号 `202609201437472365196208268d9d6OkhlCDJG`。未获取上游文件；该历史记录不覆盖当前已绑定的 saxes 证据，现有 4 项待审与 51 项未解决预打包组件以 `check:licenses` 输出为准。
 
 
 2026-09-21 许可文本识别加固：不再仅因文件名为 LICENSE/NOTICE 就当作授权正文。每项证据新增 hasLicenseText，根据授权、保留声明及免责条款的保守文字特征判断；仅名称、链接、署名、截断授予文字仍要求复核。识别器只覆盖当前常见许可形态，不解析完整 SPDX 表达式，也不能证明 AND 组合的每项义务均已履行或代替法律审核；无法识别的其他合法文本仍需人工核验。
@@ -79,3 +79,5 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 
 
 2026-09-21 elliptic 增量：ExcelJS 内嵌 elliptic 6.5.4 的 15 个 JS 源文件逐字匹配官方 npm tarball，MIT 正文在 README 中完整取得并纳入包。来源、摘要和验证见 [证据](third-party/embedded/elliptic-6.5.4/README.md)。未审内嵌组件计数从 68 降到 67；reviewItems 仍为 4（binary、buffers、chainsaw 及 ExcelJS 整体内嵌依赖）。check:licenses 严格检查和正式版门禁仍拒绝发布。新包 640474 字节，SHA-256 b9b1cd84ea6a7719b20e1a0876b01ffa82e26531f146f1dad193b656095972ec；此增量不是法律/安全审计签署。
+
+2026-09-21 exact-source 增量：又将 ExcelJS 浏览器 source map 中 16 个组件的源文件逐字绑定到完整性校验通过的官方 npm tarball，并保存包内 LICENSE/README 许可正文与 `manifest.json`。已审组件从 1 增至 17，未解决内嵌组件从 67 降至 51；reviewItems 仍包含 ExcelJS 预打包闭包及 binary、buffers、chainsaw。该证据只证明所列字节和正文来源，不推断缺失的组件版本，也不替代法律审查；严格发布门禁仍保持阻断。
