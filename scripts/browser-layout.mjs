@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { siteDigest } from './site-evidence.mjs';
 import { verifySiteHttp } from './site-runtime.mjs';
+import { finalizeBrowserReport } from './browser-report.mjs';
 
 // Real browser smoke coverage only. Native IME, Safari, assistive technology and
 // physical touch still require the separate acceptance matrix.
@@ -53,6 +54,7 @@ const report = {
   checks: [],
   pageErrors: [],
   consoleErrors: [],
+  runErrors: [],
 };
 page.on('pageerror', (error) => report.pageErrors.push(error.message));
 page.on('console', (message) => {
@@ -315,14 +317,22 @@ try {
     await page.screenshot({ path: path.join(output, 'filtered.png'), fullPage: true });
   });
   await page.evaluate(() => window.layoutTest?.destroy());
+} catch (error) {
+  report.runErrors.push({
+    name: error?.name ?? 'Error',
+    message: error?.message ?? String(error),
+    stack: error?.stack,
+  });
+  throw error;
 } finally {
-  report.status =
-    report.checks.length === 6 &&
-    report.checks.every((c) => c.status === 'passed') &&
-    !report.pageErrors.length &&
-    !report.consoleErrors.length
-      ? 'passed'
-      : 'failed';
+  finalizeBrowserReport(report, [
+    'hidden-axis-keyboard',
+    'merge-hit-edit-navigation',
+    'frozen-row-scroll-hit',
+    'sparse-million-row-locate-edit',
+    'row-height-column-width-hit-undo',
+    'filtered-navigation-visible-clipboard',
+  ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();
   if (report.status !== 'passed') process.exitCode = 1;

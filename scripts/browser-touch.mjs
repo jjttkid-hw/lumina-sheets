@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { siteDigest } from './site-evidence.mjs';
 import { verifySiteHttp } from './site-runtime.mjs';
+import { finalizeBrowserReport } from './browser-report.mjs';
 
 const driver = process.env.PLAYWRIGHT_MODULE;
 if (!driver) throw new Error('Set PLAYWRIGHT_MODULE to an installed Playwright index.mjs');
@@ -56,6 +57,7 @@ const report = {
   checks: [],
   pageErrors: [],
   consoleErrors: [],
+  runErrors: [],
 };
 page.on('pageerror', (error) => report.pageErrors.push(error.message));
 page.on('console', (message) => {
@@ -196,14 +198,19 @@ try {
     return { cancelledWidth: 'default 96', retryWidth: 156, hostTouchAction: 'none' };
   });
   await page.screenshot({ path: path.join(output, 'touch-final.png'), fullPage: true });
+} catch (error) {
+  report.runErrors.push({
+    name: error?.name ?? 'Error',
+    message: error?.message ?? String(error),
+    stack: error?.stack,
+  });
+  throw error;
 } finally {
-  report.status =
-    report.checks.length === 3 &&
-    report.checks.every((item) => item.status === 'passed') &&
-    !report.pageErrors.length &&
-    !report.consoleErrors.length
-      ? 'passed'
-      : 'failed';
+  finalizeBrowserReport(report, [
+    'touch-tap-selection',
+    'touch-native-scroll',
+    'touch-resize-cancel-retry',
+  ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();
   if (report.status !== 'passed') process.exitCode = 1;
