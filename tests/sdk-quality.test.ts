@@ -162,6 +162,26 @@ describe('commercial SDK boundaries', () => {
     expect(instance.getValue('A3')).toBe('R2');
   });
 
+  it('rejects malformed paged CSV budgets before touching the data source', async () => {
+    const instance = make();
+    const fetchPage = vi.fn(async () => ({ rows: [[1]], totalRows: 1 }));
+    await instance.bindData({ columnCount: 1, rowCount: 1, fetchPage });
+    const invalid = [
+      { pageSize: 0 },
+      { pageSize: 1.5 },
+      { maxRows: 0 },
+      { maxRows: Number.POSITIVE_INFINITY },
+      { maxPageTextUnits: 32_000_001 },
+      { maxPageTextUnits: 2, unknown: true },
+    ];
+    for (const pagedCsv of invalid) {
+      await expect(instance.export('csv', { pagedCsv } as never)).rejects.toMatchObject({
+        code: 'INVALID_ARGUMENT',
+      });
+    }
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
   it('cancels a PDF waiting for fonts when destroyed without allocating or downloading', async () => {
     const instance = make();
     const createElement = vi.fn();

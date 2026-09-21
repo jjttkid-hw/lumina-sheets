@@ -449,6 +449,8 @@ XLSX 常量错误迁移：文件中没有公式的标准错误单元格（#N/A�
 
 分页 CSV 文本容量：ReportDataCsvOptions 新增 maxPageTextUnits，默认 8,000,000、硬上限 32,000,000，须为正整数，按响应每页所有文本 UTF-16 单元累计；单格仍不得超过 32,767。超过上限在该页任何字节/进度输出前拒绝，不截断；若此前已写入其他页，整次导出仍失败，调用方必须丢弃部分文件。容量按页重置，可减小 pageSize 后重新完整导出。SDK 下载支持 grid.export('csv', { pagedCsv: { pageSize: 32, maxPageTextUnits: 8000000, maxRows: 100000 } })，仅应用于绑定分页源的 CSV，独立于视区缓存配置；普通静态表和其他格式忽略该选项。maxRows 仍为拒绝扫描上限，不能用于截取文件。成功页面的文本副本受限，但源响应/JSON 解析和 Blob 完整文件不在此保证内。
 
+分页 CSV 选项校验：`grid.export('csv', { pagedCsv })` 会在发起任何分页请求前校验嵌套对象。`pageSize`、`maxRows` 必须为 1–1,048,576 的安全整数，`maxPageTextUnits` 必须为 1–32,000,000 的整数，且不接受未知字段、数组、`NaN` 或无穷值。配置错误统一抛出 `LuminaError`（`code: 'INVALID_ARGUMENT'`），不会被包装成数据源错误，也不会清空缓存或改变现有工作簿；修正配置后可直接重试。
+
 
 REST 响应取消：restDataSource 对忽略 AbortSignal 的迟到响应不再读取或解析 JSON，并尝试取消未使用的响应体；HTTP 非成功响应也释放未消费的 body，清理失败或悬挂不会替代原始 HTTP 错误。已开始 JSON 解析时无法强制中断解析，但解析完成后若已取消，不再校验/复制结果。请求取消仍及时以 AbortError 结束等待。此保护不承诺底层网络一定停止，真实浏览器网络资源回收待实测。
 

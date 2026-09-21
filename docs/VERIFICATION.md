@@ -2216,3 +2216,8 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 - 严格清单 138 份材料、0 错误、4 项待审、68 个未解决内嵌组件；saxes 缺失正文已关闭，其余门槛仍失败。9 项补充证据回归覆盖错误来源、哈希、版本、包完整性和符号链接越界。
 - 首次全量 2293 通过、1 失败（宽行 CSV，STACK_TRACE_ERROR，约 6.43 秒）；未认定资源负载原因。该文件单独复测 3 项通过，构建结束后默认配置全量复测 162 文件 / 2294 项通过。首次和复测 JSON 保留于 artifacts/verification/，不抹除首次失败。
 - format:check、git diff --check、build:site、check:api、check:sdk、HTTP 63 文件 / 65 请求通过。SDK 39 文件 / 639089 字节，SHA-256 `3976d561c6153bb3f7df88f33cf1612ad3ce705149ed7672b670effcedce620f`；站点 `406a14ff6cbbdf8d89a92c5479c5bea17837e166892ff6d7fad923c710c92e1b`。历史浏览器与性能证据未改签为新制品，本轮仍不宣布 1.0。
+### 2026-09-21 — 分页 CSV 导出选项前置校验
+
+- SDK `LuminaSpreadsheet.export` 现在在任何分页请求之前严格校验 `pagedCsv` 嵌套选项：页长/扫描上限必须为安全整数，文本上限须在 1–32,000,000 范围内，未知字段、数组、`NaN` 和无穷值均拒绝；错误稳定归类为 `INVALID_ARGUMENT`，不会伪装成 `DATA_SOURCE`，也不会改变缓存或工作簿。
+- 新增回归覆盖非法页长、扫描上限、文本容量、未知字段，并验证失败配置不会触碰已绑定数据源。`tests/sdk-quality.test.ts` 定向 30 项通过；`build:sdk`、`check:api`、`check:sdk` 和格式检查通过。
+- 本次 SDK 制品：39 文件、651,514 字节，SHA-256 `655f7ebe0002bd78d5a365487e314abd3ba4d1bed5dffcbc40ad56168fb7027c`。严格许可证仍为 4 个 reviewItems、51 个未解决预打包组件；真实浏览器完整矩阵和 v1.0 门槛保持未完成。

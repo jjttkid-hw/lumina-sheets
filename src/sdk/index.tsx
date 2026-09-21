@@ -186,6 +186,31 @@ function validateClipboardMode(value: unknown): asserts value is ClipboardMode {
   if (value !== 'visible' && value !== 'all')
     throw new LuminaError('INVALID_ARGUMENT', 'clipboardMode 必须为 visible 或 all');
 }
+/** Validate nested export budgets before any source request starts.
+ *
+ * These options are part of the public SDK boundary. Keeping the checks here
+ * means malformed host configuration is reported as INVALID_ARGUMENT rather
+ * than being mistaken for a remote DATA_SOURCE failure by the paged exporter.
+ */
+function validateExportBudgets(value: unknown): asserts value is ExportOptions['pagedCsv'] {
+  if (value === undefined) return;
+  if (!plainRecord(value)) throw new LuminaError('INVALID_ARGUMENT', '无效分页 CSV 导出选项');
+  const allowed = new Set(['pageSize', 'maxPageTextUnits', 'maxRows']);
+  if (Reflect.ownKeys(value).some((key) => typeof key !== 'string' || !allowed.has(key)))
+    throw new LuminaError('INVALID_ARGUMENT', '无效分页 CSV 导出选项');
+  const pageSize = value.pageSize;
+  const maxRows = value.maxRows;
+  const maxPageTextUnits = value.maxPageTextUnits;
+  if (pageSize !== undefined && !validInteger(pageSize, 1, MAX_ROWS))
+    throw new LuminaError('INVALID_ARGUMENT', '分页 CSV pageSize 必须为正整数');
+  if (maxRows !== undefined && !validInteger(maxRows, 1, MAX_ROWS))
+    throw new LuminaError('INVALID_ARGUMENT', '分页 CSV maxRows 必须为正整数');
+  if (maxPageTextUnits !== undefined && !validInteger(maxPageTextUnits, 1, 32_000_000))
+    throw new LuminaError(
+      'INVALID_ARGUMENT',
+      '分页 CSV maxPageTextUnits 必须为 1–32,000,000 的整数',
+    );
+}
 function copyRules(input: ConditionalRule[]): ConditionalRule[] {
   if (!Array.isArray(input)) throw new LuminaError('INVALID_ARGUMENT', '无效条件格式规则');
   return input.map((rule) => {
@@ -878,6 +903,7 @@ export class LuminaSpreadsheet {
       (options.signal !== undefined && !(options.signal instanceof AbortSignal))
     )
       throw new LuminaError('INVALID_ARGUMENT', '无效导出选项');
+    validateExportBudgets(options.pagedCsv);
     if (!['xlsx', 'csv', 'pdf', 'json'].includes(format))
       throw new LuminaError('INVALID_ARGUMENT', '无效导出格式');
     if (options.signal?.aborted)
