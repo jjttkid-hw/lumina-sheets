@@ -1,6 +1,6 @@
 # 第三方依赖许可清单
 
-2026-09-22 最新：saxes 5.0.1 官方固定提交的 LICENSE 已接入清单与安装包。当前实际检查为 **138 份材料、0 个错误、4 项待审、49 个未解决预打包组件**，严格门禁仍失败。原文和来源记录见 [third-party/saxes-5.0.1](third-party/saxes-5.0.1/provenance.json)，官方 npm 包完整性与锁文件一致，源码 package.json 确认版本和 ISC 声明。ExcelJS 浏览器 source map 中已有 19 个组件绑定完整性校验通过的官方 npm 归档和许可正文；具体清单见 `third-party/embedded/exact-sources/manifest.json`。
+2026-09-22 最新：saxes 5.0.1 官方固定提交的 LICENSE 已接入清单与安装包。当前实际检查为 **138 份材料、0 个错误、4 项待审、48 个未解决预打包组件**，严格门禁仍失败。原文和来源记录见 [third-party/saxes-5.0.1](third-party/saxes-5.0.1/provenance.json)，官方 npm 包完整性与锁文件一致，源码 package.json 确认版本和 ISC 声明。ExcelJS 浏览器 source map 中已有 20 个组件绑定完整性校验通过的官方 npm 归档和许可正文；具体清单见 `third-party/embedded/exact-sources/manifest.json`。
 
 补充材料不伪装成 node_modules 自带文件：清单使用 kind=upstream-license-text、逻辑路径 @upstream/LICENSE，附完整 provenance；正文逐字收入 THIRD_PARTY_NOTICES.txt。构建和真实包安装检查固定核对名称、版本、包 integrity、来源 commit/URL、许可证 SHA-256 和字节数，缺失或篡改直接失败；更新依赖版本不会自动沿用旧版文本。材料来自官方版本但 tag 未签名，未证明源码到 npm 包的可重复构建，也不代表法律授权审查全部完成。该项仅关闭 saxes 缺失许可正文；binary、buffers、chainsaw 和 ExcelJS 内嵌组件继续待核实。
 
@@ -29,9 +29,9 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 
 当前安装的 ExcelJS 4.4.0 的 browser 入口是 `dist/exceljs.min.js`。其 `dist/LICENSE` 仅包含 Guyon Roche 的 MIT 文本，并不是所有预打包组件的逐项许可清单。
 
-脚本读取随包安装的 `dist/exceljs.min.js.map`，按 source paths 提取内嵌组件名称，记录证据文件及其哈希。当前发现 **68 个组件名称**，包括 core-js、regenerator-runtime、crypto-browserify 等；其中 18 个有独立 exact-source 记录，其余 49 个许可审查状态仍为 `unresolved-vendor-bundle-review`；不会把本机同名包的当前锁定版本误写成 ExcelJS 历史打包版本。source map 的名称也不单独证明该组件在最终发布包中实际保留的代码数量。
+脚本读取随包安装的 `dist/exceljs.min.js.map`，按 source paths 提取内嵌组件名称，记录证据文件及其哈希。当前发现 **68 个组件名称**，包括 core-js、regenerator-runtime、crypto-browserify 等；其中 19 个有独立 exact-source 记录，其余 48 个许可审查状态仍为 `unresolved-vendor-bundle-review`；不会把本机同名包的当前锁定版本误写成 ExcelJS 历史打包版本。source map 的名称也不单独证明该组件在最终发布包中实际保留的代码数量。
 
-源码映射确实内嵌 package.json 时，现在只解析 JSON 或字面 `module.exports =` 包装后的 JSON，绝不执行其中的 JavaScript。记录源路径、原文 SHA-256、声明版本与许可；名称不匹配、版本非法或非 JSON 内容不采信，多份声明冲突保留证据且不选定值。当前能从原始嵌入声明确认 elliptic 6.5.4 / MIT；exact-source 归档则同时绑定文件内容、npm integrity 和许可正文。该声明不是完整许可文本，也不是安全漏洞审查结果，仍有 49 项待完成许可核验，严格门禁不因此放行。
+源码映射确实内嵌 package.json 时，现在只解析 JSON 或字面 `module.exports =` 包装后的 JSON，绝不执行其中的 JavaScript。记录源路径、原文 SHA-256、声明版本与许可；名称不匹配、版本非法或非 JSON 内容不采信，多份声明冲突保留证据且不选定值。当前能从原始嵌入声明确认 elliptic 6.5.4 / MIT；exact-source 归档则同时绑定文件内容、npm integrity 和许可正文。该声明不是完整许可文本，也不是安全漏洞审查结果，仍有 48 项待完成许可核验，严格门禁不因此放行。
 
 商业再分发前，需要确认这些预打包源的实际版本、对应完整许可和通知义务，或改用可准确追踪的构建输入后重新生成。当前清单如实记录缺口，**商业授权审计尚未通过**。
 
@@ -51,7 +51,7 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 - `binary`：声明 MIT，README 仅声明名称，缺少完整许可文本。
 - `buffers`：未找到许可元数据或许可文本。
 - `chainsaw`：声明 MIT/X11，但安装包未找到完整许可文本。
-- ExcelJS 预打包组件：49 个名称的具体打包版本和对应许可仍待核实；19 个组件已有可复验技术证据（elliptic 加 18 个 exact-source 归档）。
+- ExcelJS 预打包组件：48 个名称的具体打包版本和对应许可仍待核实；20 个组件已有可复验技术证据（elliptic 加 19 个 exact-source 归档）。
 
 依赖更新后应重新生成并以 JSON 实际输出为准。此文件记录技术证据和核验边界，不替代权利人的授权或法律审核。
 

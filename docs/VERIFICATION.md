@@ -2241,3 +2241,13 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 - ExcelJS 浏览器 source map 中的 `process/browser.js` 已逐字匹配官方 `process@0.11.10` npm 归档。清单绑定 registry URL、npm integrity、归档 SHA-256、源文件 SHA-256 及完整 MIT 正文；`tests/vendor-evidence.test.ts` 与 `tests/license-evidence.test.ts` 共 52 项通过。
 - `npm run build:sdk`、`npm run check:sdk`、`npm run format:check` 通过。当前 SDK 安装包为 39 个文件、676,042 字节，SHA-256 `5aaeba2d44753247b8f933f4da923487b35df6225562adb9bbee5fe6d808cc96`。
 - 许可生成结果为 138 份材料、0 个错误、4 项待审、49 个未解决预打包组件；`check:licenses --strict` 仍按预期阻断，未发布 npm，版本仍为 0.29.0。
+
+## 2026-09-22 exact-source 许可证据增量（events）
+
+- ExcelJS 浏览器 source map 中的 `events/events.js` 已逐字匹配官方 `events@2.1.0` npm 归档，并绑定完整 MIT 正文、npm integrity、归档及源文件 SHA-256。exact-source 回归现覆盖 19 个归档记录。
+- 本轮变更仅扩充可追溯证据，不改变运行时实现；完整测试仍需通过后才可进入发布候选。
+
+## 2026-09-22 exact-source 许可证据增量（events 完成校验）
+
+- `events@2.1.0` 的归档 LICENSE 已按原文重新写入清单并通过字节哈希校验；exact-source 回归与许可证据回归共 52 项通过。
+- SDK 构建和安装包消费检查通过；当前制品为 39 个文件、676,411 字节，SHA-256 `a991f834aeb3a7127b48931aafd06571a344b1463b19c40a16730aca015973bf`。许可生成结果为 138 份材料、0 个错误、4 项待审、48 个未解决预打包组件；严格门禁仍阻断发布。
