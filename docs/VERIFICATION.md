@@ -2229,3 +2229,9 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 - SDK `viewport()` 现在先检查实例生命周期：已销毁实例同步返回 `DESTROYED`；缺失、非法、`NaN`、无穷值或字符串行号同步返回 `INVALID_ARGUMENT`，不会创建请求或触碰数据源。
 - 新增 6 类回归；全量 163 个测试文件、2,305 项通过。`build:sdk`、`check:api`、`check:sdk`、格式检查和差异检查通过。
 - 当前 SDK 制品 39 文件、651,553 字节，SHA-256 `f92edf37131268b71815be686b57c63b5733823832fc99ba257222858f39735e`。严格许可证仍为 4 个 reviewItems、51 个未解决预打包组件；版本保持 0.29.0，未声明 v1.0。
+
+### 2026-09-22 — JSZip exact-source 许可证据增量
+
+- ExcelJS browser source map 中的 `jszip/dist/jszip.min.js` 已逐字匹配官方 `jszip@3.10.1` npm 归档；归档完整性、MIT/GPL 双许可正文和 source-map 文件摘要已写入 `docs/third-party/embedded/exact-sources/manifest.json`，并由供应链回归逐项核验。
+- 严格清单当前为 138 份材料、0 个错误、4 个待审项目、50 个未解决预打包组件。该增量只关闭一个可复验的技术来源记录，不代表其余 ExcelJS 组件或商业法律复核完成。
+- 重新构建并检查 SDK 通过：39 文件、675,329 字节，SHA-256 `031431e03f112672b49b78970e539f65b431f8ef4dee5f59eea47c141d9e3956`。版本保持 0.29.0，npm 发布和稳定版门禁仍未通过。

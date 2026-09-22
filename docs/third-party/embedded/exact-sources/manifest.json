@@ -100,6 +100,29 @@
       ]
     },
     {
+      "name": "jszip",
+      "version": "3.10.1",
+      "declaredLicense": "MIT OR GPL-3.0-or-later",
+      "registry": "https://registry.npmjs.org/jszip/3.10.1",
+      "tarball": "https://registry.npmjs.org/jszip/-/jszip-3.10.1.tgz",
+      "integrity": "sha512-xXDvecyTpGLrqFrvkrUSoxxfJI5AH7U8zxxtVclpsUtMCq4JQ290LY8AW5c7Ggnr/Y/oK+bQMbqK2qmtk3pN4g==",
+      "archive": "jszip-3.10.1.tgz",
+      "archiveSha256": "5117f4a2a645aeb307bf3b829c575ad58135cc97e75291e594532ab5b5b21b23",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/jszip/dist/jszip.min.js",
+          "archivePath": "package/dist/jszip.min.js",
+          "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE.markdown",
+          "sha256": "566c953c6090b1218ca6217dd7359d45dde46581968586dc607d59a78af6a9c4"
+        }
+      ]
+    },
+    {
       "name": "lodash.escaperegexp",
       "version": "4.1.2",
       "declaredLicense": "MIT",
