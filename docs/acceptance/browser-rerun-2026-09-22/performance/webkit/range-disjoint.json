@@ -1,17 +1,17 @@
 {
   "version": "0.5",
-  "measuredAt": "2026-09-22T03:29:54.825Z",
+  "measuredAt": "2026-09-22T04:09:05.356Z",
   "layout": "disjoint",
   "formulaCount": 10000,
   "storedCells": 50000,
   "iterations": 30,
-  "preparationMs": 139.00000000000003,
+  "preparationMs": 131,
   "samples": [
     {
       "inputRow": 1,
       "invalidationMs": 0,
-      "incrementalReadMs": 6.999999999999972,
-      "fullRecalculationMs": 66,
+      "incrementalReadMs": 7.000000000000028,
+      "fullRecalculationMs": 67.99999999999997,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -43,9 +43,9 @@
     },
     {
       "inputRow": 1333,
-      "invalidationMs": 1,
+      "invalidationMs": 0,
       "incrementalReadMs": 8,
-      "fullRecalculationMs": 64.00000000000006,
+      "fullRecalculationMs": 66.00000000000006,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -77,9 +77,9 @@
     },
     {
       "inputRow": 2665,
-      "invalidationMs": 0.9999999999999432,
-      "incrementalReadMs": 7,
-      "fullRecalculationMs": 69,
+      "invalidationMs": 1,
+      "incrementalReadMs": 5.999999999999943,
+      "fullRecalculationMs": 84,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -113,7 +113,7 @@
       "inputRow": 4001,
       "invalidationMs": 0,
       "incrementalReadMs": 8,
-      "fullRecalculationMs": 70,
+      "fullRecalculationMs": 88.00000000000006,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -146,8 +146,8 @@
     {
       "inputRow": 5333,
       "invalidationMs": 0,
-      "incrementalReadMs": 6,
-      "fullRecalculationMs": 66,
+      "incrementalReadMs": 7,
+      "fullRecalculationMs": 66.99999999999994,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -180,8 +180,8 @@
     {
       "inputRow": 6665,
       "invalidationMs": 0,
-      "incrementalReadMs": 6,
-      "fullRecalculationMs": 75,
+      "incrementalReadMs": 7,
+      "fullRecalculationMs": 62,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -215,7 +215,7 @@
       "inputRow": 8001,
       "invalidationMs": 0,
       "incrementalReadMs": 5,
-      "fullRecalculationMs": 58,
+      "fullRecalculationMs": 64,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -248,8 +248,8 @@
     {
       "inputRow": 9333,
       "invalidationMs": 0,
-      "incrementalReadMs": 6,
-      "fullRecalculationMs": 64,
+      "incrementalReadMs": 6.000000000000114,
+      "fullRecalculationMs": 74.99999999999989,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -282,8 +282,8 @@
     {
       "inputRow": 10665,
       "invalidationMs": 0,
-      "incrementalReadMs": 5,
-      "fullRecalculationMs": 64,
+      "incrementalReadMs": 6,
+      "fullRecalculationMs": 95,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -316,8 +316,8 @@
     {
       "inputRow": 12001,
       "invalidationMs": 0,
-      "incrementalReadMs": 7,
-      "fullRecalculationMs": 65,
+      "incrementalReadMs": 8,
+      "fullRecalculationMs": 119,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -349,9 +349,9 @@
     },
     {
       "inputRow": 13333,
-      "invalidationMs": 0,
-      "incrementalReadMs": 6,
-      "fullRecalculationMs": 61,
+      "invalidationMs": 1,
+      "incrementalReadMs": 12,
+      "fullRecalculationMs": 85,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -384,8 +384,8 @@
     {
       "inputRow": 14665,
       "invalidationMs": 0,
-      "incrementalReadMs": 5.000000000000114,
-      "fullRecalculationMs": 61,
+      "incrementalReadMs": 6,
+      "fullRecalculationMs": 72,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -418,8 +418,8 @@
     {
       "inputRow": 16001,
       "invalidationMs": 0,
-      "incrementalReadMs": 4.999999999999886,
-      "fullRecalculationMs": 67,
+      "incrementalReadMs": 6,
+      "fullRecalculationMs": 87.00000000000023,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -452,8 +452,8 @@
     {
       "inputRow": 17333,
       "invalidationMs": 0,
-      "incrementalReadMs": 5,
-      "fullRecalculationMs": 64.00000000000023,
+      "incrementalReadMs": 8,
+      "fullRecalculationMs": 72.99999999999977,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -486,8 +486,8 @@
     {
       "inputRow": 18665,
       "invalidationMs": 0,
-      "incrementalReadMs": 4.999999999999773,
-      "fullRecalculationMs": 69,
+      "incrementalReadMs": 8,
+      "fullRecalculationMs": 79,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -519,9 +519,9 @@
     },
     {
       "inputRow": 20001,
-      "invalidationMs": 1,
-      "incrementalReadMs": 11,
-      "fullRecalculationMs": 72,
+      "invalidationMs": 0,
+      "incrementalReadMs": 7,
+      "fullRecalculationMs": 66,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -554,8 +554,8 @@
     {
       "inputRow": 21333,
       "invalidationMs": 0,
-      "incrementalReadMs": 9,
-      "fullRecalculationMs": 98,
+      "incrementalReadMs": 6,
+      "fullRecalculationMs": 66,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -588,8 +588,8 @@
     {
       "inputRow": 22665,
       "invalidationMs": 0,
-      "incrementalReadMs": 10,
-      "fullRecalculationMs": 94.00000000000023,
+      "incrementalReadMs": 5,
+      "fullRecalculationMs": 66,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -622,8 +622,8 @@
     {
       "inputRow": 24001,
       "invalidationMs": 0,
-      "incrementalReadMs": 6,
-      "fullRecalculationMs": 74.99999999999977,
+      "incrementalReadMs": 5.000000000000227,
+      "fullRecalculationMs": 65.99999999999977,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -656,8 +656,8 @@
     {
       "inputRow": 25333,
       "invalidationMs": 0,
-      "incrementalReadMs": 5,
-      "fullRecalculationMs": 69,
+      "incrementalReadMs": 6,
+      "fullRecalculationMs": 60,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -691,7 +691,7 @@
       "inputRow": 26665,
       "invalidationMs": 0,
       "incrementalReadMs": 6,
-      "fullRecalculationMs": 70.00000000000023,
+      "fullRecalculationMs": 56,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -724,8 +724,8 @@
     {
       "inputRow": 28001,
       "invalidationMs": 0,
-      "incrementalReadMs": 4.999999999999773,
-      "fullRecalculationMs": 66,
+      "incrementalReadMs": 6,
+      "fullRecalculationMs": 56.00000000000023,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -757,9 +757,9 @@
     },
     {
       "inputRow": 29333,
-      "invalidationMs": 1,
-      "incrementalReadMs": 5,
-      "fullRecalculationMs": 80.00000000000023,
+      "invalidationMs": 0,
+      "incrementalReadMs": 4.999999999999773,
+      "fullRecalculationMs": 68,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -792,8 +792,8 @@
     {
       "inputRow": 30665,
       "invalidationMs": 0,
-      "incrementalReadMs": 7.999999999999773,
-      "fullRecalculationMs": 76,
+      "incrementalReadMs": 7,
+      "fullRecalculationMs": 69,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -826,7 +826,7 @@
     {
       "inputRow": 32001,
       "invalidationMs": 0,
-      "incrementalReadMs": 6,
+      "incrementalReadMs": 5,
       "fullRecalculationMs": 68,
       "retainedCaches": 9999,
       "incremental": {
@@ -860,8 +860,8 @@
     {
       "inputRow": 33333,
       "invalidationMs": 0,
-      "incrementalReadMs": 7,
-      "fullRecalculationMs": 79,
+      "incrementalReadMs": 9.000000000000455,
+      "fullRecalculationMs": 59.999999999999545,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -894,8 +894,8 @@
     {
       "inputRow": 34665,
       "invalidationMs": 0,
-      "incrementalReadMs": 6,
-      "fullRecalculationMs": 91,
+      "incrementalReadMs": 8,
+      "fullRecalculationMs": 68,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -929,7 +929,7 @@
       "inputRow": 36001,
       "invalidationMs": 0,
       "incrementalReadMs": 6,
-      "fullRecalculationMs": 71,
+      "fullRecalculationMs": 63,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -962,8 +962,8 @@
     {
       "inputRow": 37333,
       "invalidationMs": 0,
-      "incrementalReadMs": 10,
-      "fullRecalculationMs": 73,
+      "incrementalReadMs": 6,
+      "fullRecalculationMs": 79,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -996,8 +996,8 @@
     {
       "inputRow": 38665,
       "invalidationMs": 0,
-      "incrementalReadMs": 8,
-      "fullRecalculationMs": 66,
+      "incrementalReadMs": 7,
+      "fullRecalculationMs": 67,
       "retainedCaches": 9999,
       "incremental": {
         "formulaEvaluations": 1,
@@ -1032,9 +1032,9 @@
     "invalidationP50Ms": 0,
     "invalidationP95Ms": 1,
     "incrementalReadP50Ms": 6,
-    "incrementalReadP95Ms": 10,
-    "fullRecalculationP50Ms": 69,
-    "fullRecalculationP95Ms": 94.00000000000023,
+    "incrementalReadP95Ms": 9.000000000000455,
+    "fullRecalculationP50Ms": 67.99999999999997,
+    "fullRecalculationP95Ms": 95,
     "meanRecomputedFormulas": 1,
     "meanCandidateChecks": 13.033333333333333,
     "meanIndexVisits": 26.733333333333334
@@ -1046,7 +1046,7 @@
     "mode": "production",
     "sourceSha256": "1f33dfc9a54e690d6856c5e2d2c7640d72367d2e34c0dae318e8a15e71f3eec3",
     "sourceFiles": 140,
-    "sourceTimestamp": "2026-09-22T02:26:48.000Z",
+    "sourceTimestamp": "2026-09-22T03:56:31.000Z",
     "timestampSource": "git-commit",
     "scope": "Source/build configuration fingerprint; excludes installed dependency bytes and final artifacts. Development identity is captured at server startup and may precede HMR changes. Acceptance still requires site and SDK archive digests."
   },

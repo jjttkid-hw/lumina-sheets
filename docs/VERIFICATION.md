@@ -1,6 +1,8 @@
 # 验证记录
 
-2026-09-22 候选构建浏览器复验：以同一 `0.29.0` 构建运行 Chromium 153.0.8010.53、Firefox 144.0.2、WebKit 26.0 的 smoke、交互、布局、焦点和性能套件；三引擎全部通过，均无 page/console/run error。Chromium 另完成 3 项 CDP 触控检查。结果与性能原始 JSON 见 [候选复验记录](acceptance/browser-rerun-2026-09-22/README.md)，并绑定站点摘要 `c185e1a628da9fdb199a3d89a7f1c3188ac44e02b78bf2d331ab28acc22a42a4` 与 SDK 摘要 `ed35573b14f8c8fbd2089755feb94269d76de5b437f58a7f9a209559b0752148`。这是自动化候选证据，不是正式 Safari、实体触控、原生 IME、屏幕阅读器或商业许可验收；v1.0 门槛仍未完成。
+2026-09-22 候选构建浏览器复验：以同一 `0.29.0` 构建运行 Chromium 153.0.8010.53、Firefox 144.0.2、WebKit 26.0 的 smoke、交互、布局、焦点和性能套件；三引擎全部通过，均无 page/console/run error。Chromium 另完成 3 项 CDP 触控检查。结果与性能原始 JSON 见 [候选复验记录](acceptance/browser-rerun-2026-09-22/README.md)，并绑定最新站点摘要 `adbc9f9a304e9206f6d570f1619df03660a07fd96ed447cadbea4b78ab630d5c` 与 SDK 摘要 `f6469681d7f2874c816f8d7674faf9f19eb4c62443836820f853388c0c2881ac`。这是自动化候选证据，不是正式 Safari、实体触控、原生 IME、屏幕阅读器或商业许可验收；v1.0 门槛仍未完成。
+
+2026-09-22 依赖证据增量：dayjs source-map 三个文件与官方 npm 归档逐字匹配并随 SDK 包重新生成；`check:sdk`、站点 HTTP、API 契约和三引擎浏览器复验重新绑定新制品。许可证严格门禁仍有 4 项 review 和 46 个未解决预打包组件。
 
 2026-09-22 SDK 视口生命周期：`viewport` 现对非法起止行号同步返回 `INVALID_ARGUMENT`，销毁实例统一返回 `DESTROYED`；新增 5 个定向回归，未发起额外数据请求。定向 SDK 质量测试 31 项、`build:sdk`、`check:api`、`check:sdk` 通过；SDK 制品哈希见当次命令输出。完整浏览器矩阵、许可证和 v1.0 门槛仍保持未完成。
 

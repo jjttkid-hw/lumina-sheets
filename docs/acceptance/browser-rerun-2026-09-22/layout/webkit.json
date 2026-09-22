@@ -3,31 +3,31 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-09-22T03:29:32.177Z",
+  "executedAt": "2026-09-22T04:08:42.752Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "c185e1a628da9fdb199a3d89a7f1c3188ac44e02b78bf2d331ab28acc22a42a4",
-  "artifactSha256": "ed35573b14f8c8fbd2089755feb94269d76de5b437f58a7f9a209559b0752148",
+  "siteSha256": "adbc9f9a304e9206f6d570f1619df03660a07fd96ed447cadbea4b78ab630d5c",
+  "artifactSha256": "f6469681d7f2874c816f8d7674faf9f19eb4c62443836820f853388c0c2881ac",
   "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
   "checks": [
     {
       "name": "hidden-axis-keyboard",
       "status": "passed",
-      "elapsedMs": 115
+      "elapsedMs": 130
     },
     {
       "name": "merge-hit-edit-navigation",
       "status": "passed",
-      "elapsedMs": 250
+      "elapsedMs": 206
     },
     {
       "name": "frozen-row-scroll-hit",
       "status": "passed",
-      "elapsedMs": 199,
+      "elapsedMs": 185,
       "details": {
         "scrollTop": 199
       }
@@ -35,7 +35,7 @@
     {
       "name": "sparse-million-row-locate-edit",
       "status": "passed",
-      "elapsedMs": 166,
+      "elapsedMs": 171,
       "details": {
         "selection": {
           "row": 999999,
@@ -53,7 +53,7 @@
     {
       "name": "row-height-column-width-hit-undo",
       "status": "passed",
-      "elapsedMs": 243,
+      "elapsedMs": 235,
       "details": {
         "columnWidths": {
           "0": 200
@@ -66,7 +66,7 @@
     {
       "name": "filtered-navigation-visible-clipboard",
       "status": "passed",
-      "elapsedMs": 462
+      "elapsedMs": 469
     }
   ],
   "pageErrors": [],

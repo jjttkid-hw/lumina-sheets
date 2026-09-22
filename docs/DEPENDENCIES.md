@@ -1,6 +1,6 @@
 # 第三方依赖许可清单
 
-2026-09-22 最新：saxes 5.0.1 官方固定提交的 LICENSE 已接入清单与安装包。当前实际检查为 **138 份材料、0 个错误、4 项待审、47 个未解决预打包组件**，严格门禁仍失败。原文和来源记录见 [third-party/saxes-5.0.1](third-party/saxes-5.0.1/provenance.json)，官方 npm 包完整性与锁文件一致，源码 package.json 确认版本和 ISC 声明。ExcelJS 浏览器 source map 中已有 21 个组件绑定完整性校验通过的官方 npm 归档和许可正文；具体清单见 `third-party/embedded/exact-sources/manifest.json`。
+2026-09-22 最新：saxes 5.0.1 官方固定提交的 LICENSE 已接入清单与安装包；ExcelJS source map 新增 dayjs 三个源文件与官方 npm 归档的逐字校验。当前实际检查为 **138 份材料、0 个错误、4 项待审、46 个未解决预打包组件**，严格门禁仍失败。原文和来源记录见 [third-party/saxes-5.0.1](third-party/saxes-5.0.1/provenance.json) 与 `third-party/embedded/exact-sources/manifest.json`，官方 npm 包完整性与锁文件一致。dayjs 的 1.11.10、1.11.11、1.11.12 归档含相同的三份源字节，因此记录明确不把匹配结果当作历史构建版本的唯一证明；完整 MIT 正文仍逐字绑定到 1.11.10 归档。ExcelJS 浏览器 source map 中已有 22 个组件绑定完整性校验通过的官方 npm 归档和许可正文。
 
 补充材料不伪装成 node_modules 自带文件：清单使用 kind=upstream-license-text、逻辑路径 @upstream/LICENSE，附完整 provenance；正文逐字收入 THIRD_PARTY_NOTICES.txt。构建和真实包安装检查固定核对名称、版本、包 integrity、来源 commit/URL、许可证 SHA-256 和字节数，缺失或篡改直接失败；更新依赖版本不会自动沿用旧版文本。材料来自官方版本但 tag 未签名，未证明源码到 npm 包的可重复构建，也不代表法律授权审查全部完成。该项仅关闭 saxes 缺失许可正文；binary、buffers、chainsaw 和 ExcelJS 内嵌组件继续待核实。
 

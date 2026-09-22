@@ -6,12 +6,12 @@
     "mode": "production",
     "sourceSha256": "1f33dfc9a54e690d6856c5e2d2c7640d72367d2e34c0dae318e8a15e71f3eec3",
     "sourceFiles": 140,
-    "sourceTimestamp": "2026-09-22T02:26:48.000Z",
+    "sourceTimestamp": "2026-09-22T03:56:31.000Z",
     "timestampSource": "git-commit",
     "scope": "Source/build configuration fingerprint; excludes installed dependency bytes and final artifacts. Development identity is captured at server startup and may precede HMR changes. Acceptance still requires site and SDK archive digests."
   },
   "product": "Lumina JavaScript performance laboratory",
-  "measuredAt": "2026-09-22T03:28:19.776Z",
+  "measuredAt": "2026-09-22T04:08:16.497Z",
   "qualification": "本机实测；未配置性能通过预算；不表示第三方性能或商业认证",
   "environment": {
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0",
@@ -26,9 +26,9 @@
   "fixture": {
     "storedCells": 1000000,
     "formulaCount": 100000,
-    "dataReadyMs": 1597,
-    "generatedMs": 1583,
-    "firstDrawMs": 1602,
+    "dataReadyMs": 1777,
+    "generatedMs": 1680,
+    "firstDrawMs": 1792,
     "logicalRows": 1000000,
     "logicalColumns": 256,
     "populatedColumns": 10
@@ -50,7 +50,7 @@
         "durationMs": 2,
         "paintedCells": 156,
         "domNodes": 4,
-        "timestamp": 20157
+        "timestamp": 23208
       }
     ],
     "note": "实际Canvas绘制耗时，不等于整帧时间或FPS"
@@ -60,8 +60,8 @@
     "observedFrames": 5,
     "droppedFrames": 0,
     "sampleLimit": 10000,
-    "averageMs": 5.6,
-    "p50Ms": 5,
+    "averageMs": 7,
+    "p50Ms": 7,
     "p95Ms": 9,
     "p99Ms": 9,
     "maxMs": 9,
@@ -69,7 +69,7 @@
     "averageDomNodes": 4,
     "samples": [
       {
-        "durationMs": 5,
+        "durationMs": 6,
         "paintedCells": 156,
         "domNodes": 4
       },
@@ -79,7 +79,12 @@
         "domNodes": 4
       },
       {
-        "durationMs": 4,
+        "durationMs": 8,
+        "paintedCells": 156,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 5,
         "paintedCells": 156,
         "domNodes": 4
       },
@@ -87,18 +92,13 @@
         "durationMs": 7,
         "paintedCells": 156,
         "domNodes": 4
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 156,
-        "domNodes": 4
       }
     ]
   },
   "workerCalculation": {
     "targets": 100000,
-    "roundTripMs": 2225,
-    "calculationMs": 2222,
+    "roundTripMs": 2531,
+    "calculationMs": 2528,
     "firstValue": 54,
     "lastValue": 500000
   },

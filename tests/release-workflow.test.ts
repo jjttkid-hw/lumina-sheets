@@ -23,12 +23,13 @@ describe('release workflow artifact alignment', () => {
     const cd = await workflow('cd.yml');
     expect(ci).toMatch(/npm run build:site/);
     expect(ci).toMatch(/npm run check:site-runtime/);
-    expect(ci).toMatch(/npm run check:licenses/);
+    expect(ci).toMatch(/node scripts\/package-notices\.mjs/);
+    expect(ci).toMatch(/Block dependency integrity errors/);
     expect(ci).toMatch(/actions\/upload-artifact@v7/);
     expect(cd).toMatch(/actions\/download-artifact@v8/);
     expect(cd).toMatch(/check-deploy-site\.mjs/);
     expect(cd).toMatch(/actions\/deploy-pages@v5/);
-    expect(ci.indexOf('npm run check:licenses')).toBeLessThan(
+    expect(ci.indexOf('node scripts/package-notices.mjs')).toBeLessThan(
       ci.indexOf('actions/upload-artifact@v7'),
     );
   });

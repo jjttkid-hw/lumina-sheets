@@ -76,6 +76,40 @@
       ]
     },
     {
+      "name": "dayjs",
+      "version": "1.11.10",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/dayjs/1.11.10",
+      "tarball": "https://registry.npmjs.org/dayjs/-/dayjs-1.11.10.tgz",
+      "integrity": "sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==",
+      "archive": "dayjs-1.11.10.tgz",
+      "archiveSha256": "9bb274e616ba03807b8bf126bf4af5b78004524e82c755bf2f8d4da5279e6d01",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/dayjs/dayjs.min.js",
+          "archivePath": "package/dayjs.min.js",
+          "sha256": "9cfdb93f38afcf2d076abecd66d32bfd3383cdf1967654ebc26a26605daf4173"
+        },
+        {
+          "sourcePath": "node_modules/dayjs/plugin/customParseFormat.js",
+          "archivePath": "package/plugin/customParseFormat.js",
+          "sha256": "cb72289f70690b272267a0741402cdc3f4099ae40c834a13cb60a59f99fdc091"
+        },
+        {
+          "sourcePath": "node_modules/dayjs/plugin/utc.js",
+          "archivePath": "package/plugin/utc.js",
+          "sha256": "a837c8231aa94616166b9e37a7a007677db7c53dc1f0eea22d9154016b44409c"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "5faab7526d055651be3aab769d58897be6bd91f3d39d137f25f12dba1b31d5dc",
+          "text": "MIT License\n\nCopyright (c) 2018-present, iamkun\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+        }
+      ]
+    },
+    {
       "name": "events",
       "version": "2.1.0",
       "declaredLicense": "MIT",
