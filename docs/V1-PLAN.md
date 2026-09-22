@@ -1,6 +1,6 @@
 # v1.0 交付计划与验收账本
 
-2026-09-23 当前候选更新：产品提交 `98549a7`（SDK 构建身份诊断 API）已由 GitHub CI `35786623624` 与 CD `35786955747` 验证并部署。线上 `build-info.json` 已确认版本 `0.29.0`、提交 `98549a70d3fbc5f6799b109e4186c25aa8e750e4`、站点 SHA-256 `8498fe8071429cfff3e80a382a18d2a48014ae0f8dea50d4255d613387120346`；npm 注册表仍未发布，不能据此宣布 v1.0.0。
+2026-09-23 当前候选更新：产品提交 `98549a7`（SDK 构建身份诊断 API）已由 GitHub CI `35786623624` 与 CD `35786955747` 验证并部署；随后文档同步提交也已通过 CI/CD。线上 `build-info.json` 当前版本仍为 `0.29.0`，并以其记录的提交和站点 SHA-256 作为部署核验依据；npm 注册表仍未发布，不能据此宣布 v1.0.0。
 
 2026-09-23 npm 发布尝试：手动运行 `v0.29.0` 的 npm 工作流 `35785677207`，所有发布前门禁和 GitHub Release 制品上传通过，发布步骤以 `ENEEDAUTH` 失败。需要在 npm 包 `lumina-report-sdk` 的 **Settings → Trusted Publishers** 配置 `jjttkid-hw / lumina-sheets / npm.yml / npm`，之后再重试同一 0.x Release；这不改变稳定版验收门槛。
 

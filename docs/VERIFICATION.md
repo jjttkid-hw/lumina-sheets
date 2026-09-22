@@ -2,7 +2,7 @@
 
 ## 当前状态（2026-09-23）
 
-- 当前主线为 `0.29.0` 开发线；提交 `98549a7` 已通过 CI `35786623624` 与 CD `35786955747`。线上 Pages `build-info.json` 已核对提交 `98549a70d3fbc5f6799b109e4186c25aa8e750e4` 和站点 SHA-256 `8498fe8071429cfff3e80a382a18d2a48014ae0f8dea50d4255d613387120346`，工作区与 `origin/main` 同步。
+- 当前主线为 `0.29.0` 开发线；提交 `98549a7` 已通过 CI `35786623624` 与 CD `35786955747`，随后文档同步也已通过 CI/CD。线上 Pages `build-info.json` 已核对版本与部署摘要，工作区与 `origin/main` 同步；后续核验应以该文件的提交和站点 SHA-256 为准。
 - GitHub CI/CD 已连续通过全量测试、格式检查、API/SDK 契约、隔离安装包、严格许可证、可重复构建和 HTTP 部署检查。`npm run check:stable` 在 0.x 上明确输出开发/预发布包，不声明稳定验收。
 - 本地全量测试基线为 163 个测试文件、2,306 项测试；严格许可证技术门禁为 `0 errors / 0 reviewItems / 0 unresolvedVendorComponents`。这仍需要权利人/法务复核，不等于商业授权结论。
 - 已有定向 macOS Safari 线上证据，以及绑定较早候选制品的 Chromium/Firefox/WebKit 自动化报告；当前没有把这些证据扩展为原生中文 IME、实体移动触控、屏幕阅读器、跨设备性能或完整 XLSX/Excel 语料通过。
