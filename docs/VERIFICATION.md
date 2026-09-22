@@ -1,5 +1,12 @@
 # 验证记录
 
+### 2026-09-23 — 当前候选 `9b6e239`
+
+- 报表示例点击“应用”后同步刷新公式栏、选中地址和计算结果；新增回归覆盖 `=SUM(1,2,3)`，避免依赖延迟 Canvas 绘制或异步 SDK 回调才能看到结果。
+- 当前本地 `npm test` 通过 163 个测试文件、2,306 项测试；`format:check`、`git diff --check`、`check:api`、`check:sdk`、`check:site-runtime`、`check:licenses -- --strict` 和 `check:reproducibility` 均通过。严格许可证清单为 0 errors、0 reviewItems、0 unresolvedVendorComponents。
+- 可重复构建摘要：版本 `0.29.0`，提交 `9b6e239f186e8ac4674d8b300f718405831c695f`，来源时间 `1790098486`，站点 SHA-256 `82bb01e5ae9d0d487bca3bfa31b3d9ea4aa017fbace97e135b4dd8a2ceee37b2`，SDK SHA-256 `b7f9637c41454e83b0b4248303f6ab520afacb3d3d8e5d16e5d1d987343c5951`，制品大小 `716791` 字节。
+- 当前提交本地领先 `origin/main` 一个提交；本轮推送尝试因连接 `github.com:443` 超时未确认。npm 包仍未在注册表出现，真实 Safari、原生中文 IME、实体移动触控、屏幕阅读器、跨设备性能、真实 XLSX 语料和商业许可复核仍是稳定版门槛。
+
 ### 2026-09-22 — 提交 `41a9e51` 的远端 CI/CD
 
 - GitHub Actions [CI run 35736775847](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35736775847) 已成功完成；它在干净 Ubuntu 环境执行 npm ci、全量测试、格式、站点构建、API、SDK、依赖许可证、可重复构建和站点 HTTP 检查。
