@@ -2235,3 +2235,9 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 - ExcelJS browser source map 中的 `jszip/dist/jszip.min.js` 已逐字匹配官方 `jszip@3.10.1` npm 归档；归档完整性、MIT/GPL 双许可正文和 source-map 文件摘要已写入 `docs/third-party/embedded/exact-sources/manifest.json`，并由供应链回归逐项核验。
 - 严格清单当前为 138 份材料、0 个错误、4 个待审项目、50 个未解决预打包组件。该增量只关闭一个可复验的技术来源记录，不代表其余 ExcelJS 组件或商业法律复核完成。
 - 重新构建并检查 SDK 通过：39 文件、675,329 字节，SHA-256 `031431e03f112672b49b78970e539f65b431f8ef4dee5f59eea47c141d9e3956`。版本保持 0.29.0，npm 发布和稳定版门禁仍未通过。
+
+## 2026-09-22 exact-source 许可证据增量
+
+- ExcelJS 浏览器 source map 中的 `process/browser.js` 已逐字匹配官方 `process@0.11.10` npm 归档。清单绑定 registry URL、npm integrity、归档 SHA-256、源文件 SHA-256 及完整 MIT 正文；`tests/vendor-evidence.test.ts` 与 `tests/license-evidence.test.ts` 共 52 项通过。
+- `npm run build:sdk`、`npm run check:sdk`、`npm run format:check` 通过。当前 SDK 安装包为 39 个文件、676,042 字节，SHA-256 `5aaeba2d44753247b8f933f4da923487b35df6225562adb9bbee5fe6d808cc96`。
+- 许可生成结果为 138 份材料、0 个错误、4 项待审、49 个未解决预打包组件；`check:licenses --strict` 仍按预期阻断，未发布 npm，版本仍为 0.29.0。
