@@ -2,7 +2,16 @@
 
 2026-09-22 SDK 视口生命周期：`viewport` 现对非法起止行号同步返回 `INVALID_ARGUMENT`，销毁实例统一返回 `DESTROYED`；新增 5 个定向回归，未发起额外数据请求。定向 SDK 质量测试 31 项、`build:sdk`、`check:api`、`check:sdk` 通过；SDK 制品哈希见当次命令输出。完整浏览器矩阵、许可证和 v1.0 门槛仍保持未完成。
 
-### 2026-09-23 — 当前候选 `9b6e239`
+## 当前状态（2026-09-23）
+
+- 当前主线为 `0.29.0` 开发线；最近的产品提交之后仅继续修订验收账本和部署记录，未把文档提交当成新的功能候选。工作区与 `origin/main` 同步，最新 Pages `build-info.json` 应作为线上提交和站点摘要的权威来源。
+- GitHub CI/CD 已连续通过全量测试、格式检查、API/SDK 契约、隔离安装包、严格许可证、可重复构建和 HTTP 部署检查。`npm run check:stable` 在 0.x 上明确输出开发/预发布包，不声明稳定验收。
+- 本地全量测试基线为 163 个测试文件、2,306 项测试；严格许可证技术门禁为 `0 errors / 0 reviewItems / 0 unresolvedVendorComponents`。这仍需要权利人/法务复核，不等于商业授权结论。
+- 已有定向 macOS Safari 线上证据，以及绑定较早候选制品的 Chromium/Firefox/WebKit 自动化报告；当前没有把这些证据扩展为原生中文 IME、实体移动触控、屏幕阅读器、跨设备性能或完整 XLSX/Excel 语料通过。
+- `lumina-report-sdk` 仍未出现在 npm 注册表；Trusted Publisher 绑定或可用发布凭据完成前，不创建 1.0.0 稳定发布记录。
+- 本轮真实浏览器工具仍返回 `unsupported Codex auth method: apikey`，没有新增可控标签页或通过记录；该工具故障不被记录为产品通过或失败。
+
+### 历史记录（已由当前状态条目取代）— 2026-09-23 — 提交 `9b6e239`
 
 - 报表示例点击“应用”后同步刷新公式栏、选中地址和计算结果；新增回归覆盖 `=SUM(1,2,3)`，避免依赖延迟 Canvas 绘制或异步 SDK 回调才能看到结果。
 - 当前本地 `npm test` 通过 163 个测试文件、2,306 项测试；`format:check`、`git diff --check`、`check:api`、`check:sdk`、`check:site-runtime`、`check:licenses -- --strict` 和 `check:reproducibility` 均通过。严格许可证清单为 0 errors、0 reviewItems、0 unresolvedVendorComponents。
