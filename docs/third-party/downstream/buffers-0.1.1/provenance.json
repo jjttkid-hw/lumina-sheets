@@ -1,0 +1,24 @@
+{
+  "name": "buffers",
+  "version": "0.1.1",
+  "integrity": "sha512-9q/rDEGSb/Qsvv2qvzIzdluL5k7AaJOTrw23z9reQthrbF7is4CtlT0DXyO1oei2DCp4uojjzQ7igaSHp1kAEQ==",
+  "registry": "https://registry.npmjs.org/buffers/0.1.1",
+  "tarball": "https://registry.npmjs.org/buffers/-/buffers-0.1.1.tgz",
+  "archiveSha256": "f8de49c60e467005182d9687b5d87775bbcec6385ac63220b7741327441deb6d",
+  "archiveBytes": 4195,
+  "packageIndexSha256": "97801e296ba5f3c32242f647e1daac5917e300367fed7935ab1e62f40adb1b8a",
+  "downstream": {
+    "distribution": "Debian",
+    "sourcePackage": "node-buffers",
+    "version": "0.1.1-5",
+    "url": "https://sources.debian.org/data/main/n/node-buffers/0.1.1-5/debian/copyright",
+    "sha256": "7ed63688e5bc3c442bcebf756f04a4be5337a51ec8d4b51804349977a9667f0a",
+    "scope": "Downstream copyright evidence reproduces the Expat grant and attributes the upstream package to James Halliday. It is not represented as an upstream LICENSE file. The npm tarball and installed index.js were compared byte-for-byte to bind the evidence to the reviewed package."
+  },
+  "comparison": {
+    "packagePath": "package/index.js",
+    "installedPath": "node_modules/buffers/index.js",
+    "allExact": true
+  },
+  "retrievedAt": "2026-09-22"
+}

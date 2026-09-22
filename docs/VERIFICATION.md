@@ -1,5 +1,17 @@
 # 验证记录
 
+### 2026-09-22 — `core-js@3.33.0` exact-source 证据
+
+- ExcelJS browser source map 内部的 `core-js/internals/shared.js` 自报 `3.33.0`；对应的 160 个 source-map 文件全部与完整性校验通过的官方 npm 归档逐字节相同。证据同时绑定归档内 MIT 正文，未使用当前安装的同名包或通用许可模板。
+- 供应链定向回归 62 项通过；`build:sdk` 与隔离安装包消费检查通过。当前 SDK tgz 为 39 个文件、712,836 字节，SHA-256 `1a55f44fdd28c3c418f8aa5ec7334ee515f96d27d7bbbc65c9143c3607f6f56d`。许可结果为 140 份材料、0 个错误、2 项待审、6 个未解决预打包组件。
+- `diffie-hellman@5.0.2` 的 3 个 JavaScript 文件和 JSON 结构可与 npm 归档对应，但归档与固定的上游提交都没有完整 LICENSE 正文，因此仍保留 unresolved，未用标准 MIT 模板强行关闭。版本继续保持 0.29.0，未宣布 v1.0 或 npm 已发布。
+
+### 2026-09-22 — ExcelJS exact-source 多版本证据（inherits）
+
+- ExcelJS source map 中的两个 `inherits/inherits_browser.js` 路径分别逐字匹配官方 `inherits@2.0.4` 与 `inherits@2.0.1` 归档；清单按多版本记录绑定两个 npm integrity、归档摘要、源文件摘要及完整 ISC 正文。
+- 供应链回归 62 项通过；`build:sdk` 与 `check:sdk` 通过。当前 SDK tgz 为 39 个文件、703,783 字节，SHA-256 `f47cbdff7dd37d3a2dc08b59d2c1817deaa96f028bb37341a817e2e22cfec95b`。许可结果为 140 份材料、0 个错误、2 项待审、7 个未解决预打包组件。
+- 剩余组件仍未因名称或声明自动推断版本；严格门禁、商业许可复核、完整浏览器矩阵和 npm 发布仍未完成，版本保持 0.29.0。
+
 2026-09-22 候选构建浏览器复验：归档候选运行 Chromium 153.0.8010.53、Firefox 144.0.2、WebKit 26.0 的 smoke、交互、布局、焦点和性能套件；三引擎全部通过，均无 page/console/run error。Chromium 另完成 3 项 CDP 触控检查。结果见 [归档候选复验记录](acceptance/browser-rerun-2026-09-22/README.md)，绑定该目录声明的站点摘要 `c99c844e027a38896707b0dfabc4d049f23525231e26945053231c80a69acc5e` 与 SDK 摘要 `ed85fc15d9dff7c7d3cdd457805b3bb88fcdea2da4aac8b729a399cec376a670`。随后重新生成的本地 `0.29.0` 候选已变更为站点摘要 `23b774eeaac97788311f58589227e4bb1ed50a1ab8626787b5b9c61ba8db1078`、SDK 摘要 `ca51a70aa37c2c445b2e80df854c1efcdcc24ae392bcc056a644377d2c8797f2`，尚未绑定新的浏览器报告。这是自动化候选证据，不是正式 Safari、实体触控、原生 IME、屏幕阅读器或商业许可验收；v1.0 门槛仍未完成。
 
 2026-09-22 依赖证据增量：dayjs 与 buffer source-map 文件分别与官方 npm 归档逐字匹配并随 SDK 包重新生成；`check:sdk`、站点 HTTP、API 契约和全量测试通过。许可证严格门禁仍有 4 项 review 和 16 个未解决预打包组件。
@@ -2266,3 +2278,9 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 - ExcelJS browser source map 中的 `buffer/index.js` 已逐字匹配官方 `buffer@5.2.1` npm 归档；清单绑定 npm integrity、归档 SHA-256、源文件 SHA-256 和完整 MIT 正文，并由供应链回归逐项核验。
 - `npm run build:site`、`check:sdk`、`check:api`、`check:site-runtime` 和 `format:check` 通过；SDK 制品为 39 个文件、693,912 字节，SHA-256 `f1fbf31c9416e76d4950095a0e80179f22693297e22271ee0150da6ae221500a`，HTTP 站点摘要为 `022a3a45a6414a50c505415b3bccc7c327ff6793a10deac2058a2283fd66b592`。
 - 当前许可证统计为 138 份材料、0 个错误、4 个待审、16 个未解决预打包组件。全量测试需以单独回归结果为准；版本仍为 0.29.0，未创建稳定版记录或发布 npm。
+### 2026-09-22 — ExcelJS exact-source 证据收敛（browserify-sign / crypto-browserify / parse-asn1）
+
+- `browserify-sign@4.2.0` 的 6 个源文件、`crypto-browserify@3.12.0` 的入口文件和 `parse-asn1@5.1.6` 的 5 个源文件已与官方 npm 归档校验；JSON 包装文件使用结构比较，不执行嵌入代码。每条记录绑定 registry、npm integrity、归档 SHA-256、源文件 SHA-256 和归档内完整许可正文。
+- 当前许可证生成结果为 **102 个安装记录、89 个名称/版本组合、140 份材料、0 个错误、2 项待审、8 个未解决预打包组件**。剩余组件未因名称或声明自动推断版本；缺少完整许可证或源字节不一致时继续保持 unresolved。
+- 定向供应链回归 62 项通过；全量 **163 个测试文件、2,306 项测试通过**。`build:sdk`、`check:sdk`、`build:site`、`check:api`、`check:site-runtime`、`format:check` 和 `git diff --check` 通过。当前 SDK tgz 为 39 个文件、702,905 字节，SHA-256 `b608b8f10e44226962aa6252cbd38acc8791f63c7f35a10f7ac4643728fec715`。
+- 严格许可证门禁仍按预期阻断；真实浏览器完整矩阵、商业许可复核和 npm 发布仍未完成，版本保持 0.29.0。

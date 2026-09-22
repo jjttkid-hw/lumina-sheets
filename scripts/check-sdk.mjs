@@ -285,9 +285,11 @@ try {
     const licenseTexts = [];
     const supplements = await supplementalNotices(root, dependency);
     assert.deepEqual(
-      dependency.licenseFiles.filter((notice) => notice.kind === 'upstream-license-text'),
+      dependency.licenseFiles.filter((notice) =>
+        supplements.some((item) => item.notice.path === notice.path),
+      ),
       supplements.map((item) => item.notice),
-      'Supplemental upstream evidence missing or changed',
+      'Supplemental license evidence missing or changed',
     );
     for (const notice of dependency.licenseFiles) {
       const supplemental = supplements.find((item) => item.notice.path === notice.path);

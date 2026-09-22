@@ -246,31 +246,59 @@ export async function reviewedEmbeddedComponent(root, bundle, component, sourceM
     );
     if (!exact) return null;
     const project = await realpath(root);
-    const archive = await realpath(
-      path.join(project, 'docs/third-party/embedded/exact-sources', exact.archive),
-    );
-    assert(archive.startsWith(project + path.sep), 'Exact vendor archive escapes repository');
-    const archiveBytes = await readFile(archive);
-    assert.equal(
-      createHash('sha256').update(archiveBytes).digest('hex'),
-      exact.archiveSha256,
-      'Exact vendor archive changed',
-    );
+    const archiveCache = new Map();
+    async function archiveFor(name) {
+      if (archiveCache.has(name)) return archiveCache.get(name);
+      const filename = await realpath(
+        path.join(project, 'docs/third-party/embedded/exact-sources', name),
+      );
+      assert(filename.startsWith(project + path.sep), 'Exact vendor archive escapes repository');
+      const bytes = await readFile(filename);
+      const expected =
+        exact.archives?.find((item) => item.archive === name)?.archiveSha256 ??
+        (name === exact.archive ? exact.archiveSha256 : null);
+      assert(expected, `Exact vendor archive hash missing: ${name}`);
+      assert.equal(createHash('sha256').update(bytes).digest('hex'), expected, 'Exact vendor archive changed');
+      const value = { filename, bytes };
+      archiveCache.set(name, value);
+      return value;
+    }
+    await archiveFor(exact.archive);
     for (const comparison of exact.comparisons) {
       const index = sourceMap.sources.indexOf(comparison.sourcePath);
       assert(index >= 0, `Exact source missing from map: ${comparison.sourcePath}`);
       const source = Buffer.from(sourceMap.sourcesContent[index] ?? '');
-      const upstream = archiveEntry(archive, comparison.archivePath);
+      const selectedArchive = await archiveFor(comparison.archive ?? exact.archive);
+      const upstream = archiveEntry(selectedArchive.filename, comparison.archivePath);
       assert.equal(
         createHash('sha256').update(source).digest('hex'),
         comparison.sha256,
         'Exact embedded source hash changed',
       );
-      assert.deepEqual(source, upstream, `Exact embedded source differs: ${comparison.sourcePath}`);
+      if (comparison.mode === 'module-export-json') {
+        const moduleJson = source
+          .toString('utf8')
+          .trim()
+          .replace(/^module\.exports\s*=\s*/, '')
+          .replace(/;\s*$/, '');
+        assert.equal(
+          createHash('sha256').update(upstream).digest('hex'),
+          comparison.upstreamSha256,
+          'Transformed embedded source archive hash changed',
+        );
+        assert.deepEqual(
+          JSON.parse(moduleJson),
+          JSON.parse(upstream.toString('utf8')),
+          `Transformed embedded JSON differs: ${comparison.sourcePath}`,
+        );
+      } else {
+        assert.deepEqual(source, upstream, `Exact embedded source differs: ${comparison.sourcePath}`);
+      }
     }
     assert(exact.notices?.length > 0, `Exact vendor archive has no complete notice: ${exact.name}`);
     const notice = exact.notices[0];
-    const noticeText = archiveEntry(archive, notice.archivePath).toString('utf8');
+    const noticeArchive = await archiveFor(notice.archive ?? exact.archive);
+    const noticeText = archiveEntry(noticeArchive.filename, notice.archivePath).toString('utf8');
     assert.equal(
       createHash('sha256').update(noticeText).digest('hex'),
       notice.sha256,
@@ -279,7 +307,7 @@ export async function reviewedEmbeddedComponent(root, bundle, component, sourceM
     return {
       status: 'upstream-source-and-license-reviewed',
       licenseEvidence: {
-        path: `docs/third-party/embedded/exact-sources/${exact.archive}#${notice.archivePath}`,
+        path: `docs/third-party/embedded/exact-sources/${notice.archive ?? exact.archive}#${notice.archivePath}`,
         sha256: notice.sha256,
         bytes: Buffer.byteLength(noticeText),
         text: noticeText,

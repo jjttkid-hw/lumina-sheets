@@ -10,6 +10,12 @@ const dependency = {
   integrity:
     'sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==',
 };
+const downstreamDependency = {
+  name: 'buffers',
+  version: '0.1.1',
+  integrity:
+    'sha512-9q/rDEGSb/Qsvv2qvzIzdluL5k7AaJOTrw23z9reQthrbF7is4CtlT0DXyO1oei2DCp4uojjzQ7igaSHp1kAEQ==',
+};
 const roots: string[] = [];
 afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
@@ -31,6 +37,15 @@ it('loads the actual pinned upstream grant for only the matching locked version'
   await expect(
     supplementalNotices(process.cwd(), { ...dependency, integrity: 'different' }),
   ).rejects.toThrow('integrity');
+});
+
+it('loads downstream copyright evidence with an explicit provenance type', async () => {
+  const [item] = await supplementalNotices(process.cwd(), downstreamDependency);
+  expect(item.notice.kind).toBe('downstream-copyright-evidence');
+  expect(item.notice.path).toBe('@downstream/debian-copyright');
+  expect(item.text).toContain('License: Expat');
+  expect(item.notice.provenance.downstream.distribution).toBe('Debian');
+  expect(item.notice.provenance.comparison.allExact).toBe(true);
 });
 it.each(['name', 'version', 'commit', 'sha256', 'integrity', 'source'])(
   'rejects changed provenance %s',

@@ -1,5 +1,13 @@
 # 第三方依赖许可清单
 
+2026-09-22 `core-js` 证据增量：ExcelJS source map 内部的 `shared.js` 明确记录版本 `3.33.0`，全部 160 个 `core-js` 源文件均已与官方 `core-js@3.33.0` npm 归档逐字节匹配。清单绑定 npm integrity、归档 SHA-256、每个源文件摘要及归档内完整 MIT 正文。当前生成结果为 **140 份材料、0 个错误、2 项待审、6 个未解决预打包组件**；剩余项是 `@fast-csv/format`、`@fast-csv/parse`、`diffie-hellman`、`fast-csv`、`saxes`、`xmlchars`，strict 门禁仍失败。
+
+2026-09-22 追加复核：`inherits` 的两个 ExcelJS source-map 路径已分别绑定官方 `inherits@2.0.4` 与 `inherits@2.0.1` 归档，并按多版本记录保存完整 ISC 正文。当前生成结果为 **140 份材料、0 个错误、2 项待审、7 个未解决预打包组件**；strict 门禁仍失败。
+
+上述历史记录在 `core-js` 增量前保留作对照；以当前清单为准时，source map 共发现 68 个预打包组件名称，61 条 exact-source 版本记录已有可复核字节证据，6 个组件仍未解决。
+
+2026-09-22 当前复核：在 ExcelJS browser source map 中，`browserify-sign@4.2.0`、`crypto-browserify@3.12.0`、`parse-asn1@5.1.6` 的源文件已逐字匹配官方 npm 归档；其中 JSON 文件按 `module.exports` 包装与原始 JSON 结构比较，并绑定归档完整性、源文件摘要和完整许可正文。当前生成结果为 **140 份材料、0 个错误、2 项待审、7 个未解决预打包组件**。未解决项是 `@fast-csv/format`、`@fast-csv/parse`、`core-js`、`diffie-hellman`、`fast-csv`、`saxes`、`xmlchars`；其中部分版本的 source map 字节与当前 npm 归档不一致，未被强行标记为 exact-source。`diffie-hellman` 归档缺少 LICENSE，`fast-csv` 系列和 `saxes`/`xmlchars` 仍需独立完整证据。严格门禁仍失败，版本保持 0.29.0，未发布 npm。
+
 2026-09-22 最新：saxes 5.0.1 官方固定提交的 LICENSE 已接入清单与安装包；ExcelJS source map 新增 dayjs 三个源文件与官方 npm 归档的逐字校验。当前实际检查为 **138 份材料、0 个错误、4 项待审、46 个未解决预打包组件**，严格门禁仍失败。原文和来源记录见 [third-party/saxes-5.0.1](third-party/saxes-5.0.1/provenance.json) 与 `third-party/embedded/exact-sources/manifest.json`，官方 npm 包完整性与锁文件一致。dayjs 的 1.11.10、1.11.11、1.11.12 归档含相同的三份源字节，因此记录明确不把匹配结果当作历史构建版本的唯一证明；完整 MIT 正文仍逐字绑定到 1.11.10 归档。ExcelJS 浏览器 source map 中已有 22 个组件绑定完整性校验通过的官方 npm 归档和许可正文。
 
 补充材料不伪装成 node_modules 自带文件：清单使用 kind=upstream-license-text、逻辑路径 @upstream/LICENSE，附完整 provenance；正文逐字收入 THIRD_PARTY_NOTICES.txt。构建和真实包安装检查固定核对名称、版本、包 integrity、来源 commit/URL、许可证 SHA-256 和字节数，缺失或篡改直接失败；更新依赖版本不会自动沿用旧版文本。材料来自官方版本但 tag 未签名，未证明源码到 npm 包的可重复构建，也不代表法律授权审查全部完成。该项仅关闭 saxes 缺失许可正文；binary、buffers、chainsaw 和 ExcelJS 内嵌组件继续待核实。

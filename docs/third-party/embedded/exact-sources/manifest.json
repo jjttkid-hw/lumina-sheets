@@ -116,6 +116,58 @@
       ]
     },
     {
+      "name": "bn.js",
+      "version": "MULTI:4.12.0,5.2.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/bn.js",
+      "tarball": [
+        "https://registry.npmjs.org/bn.js/-/bn.js-4.12.0.tgz",
+        "https://registry.npmjs.org/bn.js/-/bn.js-5.2.1.tgz"
+      ],
+      "integrity": [
+        "sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==",
+        "sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ=="
+      ],
+      "archive": "bn.js-4.12.0.tgz",
+      "archiveSha256": "b6fee0574045a4b068abdddd0d5ca5b2351d07223ea1425cf83d349c6dab6238",
+      "archives": [
+        {
+          "version": "4.12.0",
+          "archive": "bn.js-4.12.0.tgz",
+          "archiveSha256": "b6fee0574045a4b068abdddd0d5ca5b2351d07223ea1425cf83d349c6dab6238",
+          "integrity": "sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA=="
+        },
+        {
+          "version": "5.2.1",
+          "archive": "bn.js-5.2.1.tgz",
+          "archiveSha256": "f26b46b24baf3ef601433dd2ff9bb2aee6892e5d57d31850871ed36e39607957",
+          "integrity": "sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ=="
+        }
+      ],
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/asn1.js/node_modules/bn.js/lib/bn.js",
+          "archivePath": "package/lib/bn.js",
+          "archive": "bn.js-4.12.0.tgz",
+          "sha256": "a2b84dfdb04612a265d8cde7f62eacf3f51057f25ff8b2e9202d6a6f09d2e604"
+        },
+        {
+          "sourcePath": "node_modules/bn.js/lib/bn.js",
+          "archivePath": "package/lib/bn.js",
+          "archive": "bn.js-5.2.1.tgz",
+          "sha256": "7498cc7830ca21d862be33570436e1632596d8b397c8e83ee7f6dbdec168892c"
+        }
+      ],
+      "notices": [
+        {
+          "archive": "bn.js-4.12.0.tgz",
+          "archivePath": "package/LICENSE",
+          "sha256": "445739f5b5eb63e5aeff5aeb0f35a45080a421615dce0d97f9939aeea498acdd",
+          "text": "Copyright Fedor Indutny, 2015.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+        }
+      ]
+    },
+    {
       "name": "brorand",
       "version": "1.1.0",
       "declaredLicense": "MIT",
@@ -159,6 +211,112 @@
         {
           "archivePath": "package/LICENSE",
           "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b"
+        }
+      ]
+    },
+    {
+      "name": "browserify-aes",
+      "version": "1.2.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/browserify-aes/1.2.0",
+      "tarball": "https://registry.npmjs.org/browserify-aes/-/browserify-aes-1.2.0.tgz",
+      "integrity": "sha512-+7CHXqGuspUn/Sl5aO7Ea0xWGAtETPXNSAjHo48JfLdPWcMng33Xe4znFvQweqc/uzk5zSOI3H52CYnjCfb5hA==",
+      "archive": "browserify-aes-1.2.0.tgz",
+      "archiveSha256": "9b64ba05c9ad861e2f61933cda370d031d0adcb0582428a212b6746c9ca2e168",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browserify-aes/aes.js",
+          "archivePath": "package/aes.js",
+          "sha256": "43a449f4d71e6a620342978c01fec5de27d88c3290ccb9029bba294af96edb3a"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/authCipher.js",
+          "archivePath": "package/authCipher.js",
+          "sha256": "f4e8e779501668cbc7f808a982a04b677254d905527557e787d219b61b3ebf4e"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "41041745c022c18d9a030db8b0e708d77a907cea2e982df3988d28864c5ccbc0"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/decrypter.js",
+          "archivePath": "package/decrypter.js",
+          "sha256": "e4a06ad8b024e16bebab4551dbf11b7b1e0c43df4cae9eb6d48695d50b29be63"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/encrypter.js",
+          "archivePath": "package/encrypter.js",
+          "sha256": "18aaa488af11e6bd5145505082f41c077c57373c17dfe9a03d6c19c042f1d416"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/ghash.js",
+          "archivePath": "package/ghash.js",
+          "sha256": "a9524bd90c2b79518be27f6e3b3501ebf83f9c5dd8626c2a19e4ae3022e3f709"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/incr32.js",
+          "archivePath": "package/incr32.js",
+          "sha256": "9649b43bf1ecba8df2685702c2fbf01215930301393cc090703b7690bb0687d6"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/cbc.js",
+          "archivePath": "package/modes/cbc.js",
+          "sha256": "ab72523c819bceec0b3f6d5b4aea2016c3d034c0716bf12707b603c15c83b078"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/cfb.js",
+          "archivePath": "package/modes/cfb.js",
+          "sha256": "dfd893b63c779056a5bfb256546b30d414da93e3c3c5fe4900a324cf8c26f998"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/cfb1.js",
+          "archivePath": "package/modes/cfb1.js",
+          "sha256": "df60f615a53a6c143b279892e3b4f8004d80ab925e738de4fc43a046281bd823"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/cfb8.js",
+          "archivePath": "package/modes/cfb8.js",
+          "sha256": "609b36209b38c7b2dd837f78fed547695a1041398a9b7807b45b0cebb6b0f982"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/ctr.js",
+          "archivePath": "package/modes/ctr.js",
+          "sha256": "f8d25d20bffcd3dfa89a27c03a6f4a3c1519325b141339e0fdf673c77e7f45c8"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/ecb.js",
+          "archivePath": "package/modes/ecb.js",
+          "sha256": "267529218af4296a0392e6ef35ebd2dc91ae11ba48747cad0e4e258ab5f9d771"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/index.js",
+          "archivePath": "package/modes/index.js",
+          "sha256": "35dbdd9266fb9ff2eafb99da6da393fa5935e450dd374d58b48b0abc9ab3f74f"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/list.json",
+          "archivePath": "package/modes/list.json",
+          "mode": "module-export-json",
+          "sha256": "d5bbd2e135eb6cf1e5af184f23579b3a78704147e9f277cb6729ed80a910f408",
+          "upstreamSha256": "7b91d0c5fb9e201bd0ccb46ef9ddb902a14290ed3e6cf43a00d579fc53cd013b"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/modes/ofb.js",
+          "archivePath": "package/modes/ofb.js",
+          "sha256": "6af39e08cfbfcf6fdd6c46e229d1bf1a3be29753867d2f42f797fa0a181c3f5e"
+        },
+        {
+          "sourcePath": "node_modules/browserify-aes/streamCipher.js",
+          "archivePath": "package/streamCipher.js",
+          "sha256": "84305b5e1a82361db17a468a54799379140c9b8e7ce54dd1a5175116b58a9ce4"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "82ba430b068b75a41438568e1e4ed1f96e02699c9b51735154af03e9b59d6b0d",
+          "text": "The MIT License (MIT)\n\nCopyright (c) 2014-2017 browserify-aes contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
         }
       ]
     },
@@ -233,6 +391,59 @@
         {
           "archivePath": "package/LICENSE",
           "sha256": "d7314f44f0873f703b3cbaad5d60b947eb252a70072df586488e20a236c1223f"
+        }
+      ]
+    },
+    {
+      "name": "browserify-sign",
+      "version": "4.2.0",
+      "declaredLicense": "ISC",
+      "registry": "https://registry.npmjs.org/browserify-sign/4.2.0",
+      "tarball": "https://registry.npmjs.org/browserify-sign/-/browserify-sign-4.2.0.tgz",
+      "integrity": "sha512-hEZC1KEeYuoHRqhGhTy6gWrpJA3ZDjFWv0DE61643ZnOXAKJb3u7yWcrU0mMc9SwAqK1n7myPGndkp0dFG7NFA==",
+      "archive": "browserify-sign-4.2.0.tgz",
+      "archiveSha256": "e62869a5a4639492f02f7a502dbc3eb3fe365544ade149c54dfcc339d831b273",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browserify-sign/algos.js",
+          "archivePath": "package/algos.js",
+          "sha256": "d71764fdbd7aae0d61988af6d3702ae0a342f564d3be01a9f4c2b38b2d0d9ae7"
+        },
+        {
+          "sourcePath": "node_modules/browserify-sign/browser/algorithms.json",
+          "archivePath": "package/browser/algorithms.json",
+          "mode": "module-export-json",
+          "sha256": "dc92cd94708a9c2389145dec72ed93e0b5565e849b5378d26dd978fc129bdf6b",
+          "upstreamSha256": "9253fe669f4fba9b10ec5a58f95142702705d5551c48ecdbe9a6d420c5194a10"
+        },
+        {
+          "sourcePath": "node_modules/browserify-sign/browser/curves.json",
+          "archivePath": "package/browser/curves.json",
+          "mode": "module-export-json",
+          "sha256": "6c8e2d44108868f674d7d51c2d3109421725cc4d85257dcceec611f8f6638965",
+          "upstreamSha256": "867e2483cd948580150a6c5f3df0bb2ec9f3971c4f56f50424eba61523c91a22"
+        },
+        {
+          "sourcePath": "node_modules/browserify-sign/browser/index.js",
+          "archivePath": "package/browser/index.js",
+          "sha256": "3e57dca3969c294c5294716d304d8ec9ae4dff51269190faf7b9c13c21ce48b4"
+        },
+        {
+          "sourcePath": "node_modules/browserify-sign/browser/sign.js",
+          "archivePath": "package/browser/sign.js",
+          "sha256": "c8a93c4ed10021ad91b3284463c5ff3a7914fca27389614845818e94764d10f3"
+        },
+        {
+          "sourcePath": "node_modules/browserify-sign/browser/verify.js",
+          "archivePath": "package/browser/verify.js",
+          "sha256": "494868f5759d3c5e165984d92de993c3918ffd3cb2b5696b575a55d524448286"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "a0e06d86a5a17341fa6134ee30ef18d73251cf32b8a577cdfd6aad6ad34af61d",
+          "text": "Copyright (c) 2014-2015 Calvin Metcalf and browserify-sign contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\nOR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n"
         }
       ]
     },
@@ -410,6 +621,30 @@
       ]
     },
     {
+      "name": "crypto-browserify",
+      "version": "3.12.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/crypto-browserify/3.12.0",
+      "tarball": "https://registry.npmjs.org/crypto-browserify/-/crypto-browserify-3.12.0.tgz",
+      "integrity": "sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==",
+      "archive": "crypto-browserify-3.12.0.tgz",
+      "archiveSha256": "046ae534ee4a7f76955eb7114e814eb17f998928da55bd5639aa350b61cf7508",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/crypto-browserify/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "a239d8d6260f2ffef3600163ee9de593838ac2302513a901ed24c2963413220b"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "6134c69bc22c8289252e70de3af20bd67071233459055be74d83acfcc4865e7e",
+          "text": "The MIT License\n\nCopyright (c) 2013 Dominic Tarr\n\nPermission is hereby granted, free of charge, \nto any person obtaining a copy of this software and \nassociated documentation files (the \"Software\"), to \ndeal in the Software without restriction, including \nwithout limitation the rights to use, copy, modify, \nmerge, publish, distribute, sublicense, and/or sell \ncopies of the Software, and to permit persons to whom \nthe Software is furnished to do so, \nsubject to the following conditions:\n\nThe above copyright notice and this permission notice \nshall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, \nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES \nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. \nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR \nANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, \nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE \nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+        }
+      ]
+    },
+    {
       "name": "dayjs",
       "version": "1.11.10",
       "declaredLicense": "MIT",
@@ -539,6 +774,30 @@
       ]
     },
     {
+      "name": "hash-base",
+      "version": "3.1.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/hash-base/3.1.0",
+      "tarball": "https://registry.npmjs.org/hash-base/-/hash-base-3.1.0.tgz",
+      "integrity": "sha512-1nmYp/rhMDiE7AYkDw+lLwlAzz0AntGIe51F3RfFfEqyQ3feY2eI/NcwC6umIQVOASPMsWJLJScWKSSvzL9IVA==",
+      "archive": "hash-base-3.1.0.tgz",
+      "archiveSha256": "cf77fccc889f84a7fb615b0e1cd195685c9a61418cf5e23ff42dbea5608f461d",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/hash-base/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "935babc148e0e35beb7a2208049e135f01620ccd3c543344efd773e0c13c4268"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "898f204abbbbde58c6230a31842c59aeb8040fbcffa924db28e6d0b1d7631a3a",
+          "text": "The MIT License (MIT)\n\nCopyright (c) 2016 Kirill Fomichev\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
       "name": "hash.js",
       "version": "1.1.7",
       "declaredLicense": "MIT",
@@ -660,6 +919,64 @@
           "archivePath": "package/LICENSE",
           "sha256": "18d45466ba3253deae04667e267a91ea8de8548f18c1125264d1c9db28194cc1",
           "text": "Copyright 2008 Fair Oaks Labs, Inc.\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n\n2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n\n3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
+        }
+      ]
+    },
+    {
+      "name": "inherits",
+      "version": "MULTI:2.0.1,2.0.4",
+      "declaredLicense": "ISC",
+      "registry": "https://registry.npmjs.org/inherits",
+      "tarball": [
+        "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz",
+        "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz"
+      ],
+      "integrity": [
+        "sha512-8nWq2nLTAwd02jTqJExUYFSD/fKq6VH9Y/oG2accc/kdI0V98Bag8d5a4gi3XHz73rDWa2PvTtvcWYquKqSENA==",
+        "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ=="
+      ],
+      "archive": "inherits-2.0.1.tgz",
+      "archiveSha256": "e0d5493f8142aff09125344665a90a8227b9a3ffa4bb8d086d0fb471c00deb29",
+      "archives": [
+        {
+          "version": "2.0.1",
+          "archive": "inherits-2.0.1.tgz",
+          "archiveSha256": "e0d5493f8142aff09125344665a90a8227b9a3ffa4bb8d086d0fb471c00deb29",
+          "integrity": "sha512-8nWq2nLTAwd02jTqJExUYFSD/fKq6VH9Y/oG2accc/kdI0V98Bag8d5a4gi3XHz73rDWa2PvTtvcWYquKqSENA=="
+        },
+        {
+          "version": "2.0.4",
+          "archive": "inherits-2.0.4.tgz",
+          "archiveSha256": "d94dbc6c1bb3c5ac0fb12a73ade187108fc60de273a1b754f55044eb5e24afaf",
+          "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ=="
+        }
+      ],
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/inherits/inherits_browser.js",
+          "archivePath": "package/inherits_browser.js",
+          "archive": "inherits-2.0.4.tgz",
+          "sha256": "ad322a7b1dec60f3d2ebda2091816469efb55b567d241cf3cf0fa4c5a4afe500"
+        },
+        {
+          "sourcePath": "node_modules/util/node_modules/inherits/inherits_browser.js",
+          "archivePath": "package/inherits_browser.js",
+          "archive": "inherits-2.0.1.tgz",
+          "sha256": "34a98a1fcd39e12adbc98cc2d6dc3d99bb5a5a83ce8e57050826e9e539b4ecb0"
+        }
+      ],
+      "notices": [
+        {
+          "archive": "inherits-2.0.1.tgz",
+          "archivePath": "package/LICENSE",
+          "sha256": "5ffe28e7ade7d8f10d85d5337a73fd793dac5c462fb9a28fbf8c5046c7fbca3b",
+          "text": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM\nLOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR\nOTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR\nPERFORMANCE OF THIS SOFTWARE.\n\n"
+        },
+        {
+          "archive": "inherits-2.0.4.tgz",
+          "archivePath": "package/LICENSE",
+          "sha256": "5ffe28e7ade7d8f10d85d5337a73fd793dac5c462fb9a28fbf8c5046c7fbca3b",
+          "text": "The ISC License\n\nCopyright (c) Isaac Z. Schlueter\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM\nLOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR\nOTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR\nPERFORMANCE OF THIS SOFTWARE.\n\n"
         }
       ]
     },
@@ -995,6 +1312,52 @@
       ]
     },
     {
+      "name": "parse-asn1",
+      "version": "5.1.6",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/parse-asn1/5.1.6",
+      "tarball": "https://registry.npmjs.org/parse-asn1/-/parse-asn1-5.1.6.tgz",
+      "integrity": "sha512-RnZRo1EPU6JBnra2vGHj0yhp6ebyjBZpmUCLHWiFhxlzvBCCpAuZ7elsBp1PVAbQN0/04VD/19rfzlBSwLstMw==",
+      "archive": "parse-asn1-5.1.6.tgz",
+      "archiveSha256": "6bf4679313c62f9bc4669ef1413857d9685829c2329c3f36071e9ca7a065b531",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/parse-asn1/aesid.json",
+          "archivePath": "package/aesid.json",
+          "mode": "module-export-json",
+          "sha256": "a7342a675faa9ec3aef2cba8caf2fc0c94a7f9d155dbd4539d2857cba56f94da",
+          "upstreamSha256": "97d9cf3fd98a962ee7b5220726f802ad5641d046fabf3e69603abb6619074183"
+        },
+        {
+          "sourcePath": "node_modules/parse-asn1/asn1.js",
+          "archivePath": "package/asn1.js",
+          "sha256": "4112f3cc1e460109e85d9d4cdbbe5f3e5cb5d54e02af75164561d0974ed031c7"
+        },
+        {
+          "sourcePath": "node_modules/parse-asn1/certificate.js",
+          "archivePath": "package/certificate.js",
+          "sha256": "03da7ef73ae21bff28ce4dabf47f32db56c631a186a16ece402470ca68a0a4a2"
+        },
+        {
+          "sourcePath": "node_modules/parse-asn1/fixProc.js",
+          "archivePath": "package/fixProc.js",
+          "sha256": "674d78bdf3027dcf1973b6a73641d86df55b109af9a33d7427a6822fb4b60442"
+        },
+        {
+          "sourcePath": "node_modules/parse-asn1/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "fcee0acab9653857512fb0a5369b78a6877f1a67e7512e71186db2eecaf200d4"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "bc5ed4eed738303bf403ec3b7e0a8e76760ef60664ad050a0ff61db23da77e66",
+          "text": "Copyright (c) 2017, crypto-browserify contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\nOR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n"
+        }
+      ]
+    },
+    {
       "name": "pbkdf2",
       "version": "3.1.2",
       "declaredLicense": "MIT",
@@ -1185,6 +1548,208 @@
       ]
     },
     {
+      "name": "readable-stream",
+      "version": "MULTI:2.3.8,3.6.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/readable-stream",
+      "tarball": [
+        "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.8.tgz",
+        "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.2.tgz"
+      ],
+      "integrity": [
+        "sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==",
+        "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA=="
+      ],
+      "archive": "readable-stream-2.3.8.tgz",
+      "archiveSha256": "1648613948f68ac9cbbe8f72a3f93a67ecdb862ffb57946a2c0bbb5a1479a532",
+      "archives": [
+        {
+          "version": "2.3.8",
+          "archive": "readable-stream-2.3.8.tgz",
+          "archiveSha256": "1648613948f68ac9cbbe8f72a3f93a67ecdb862ffb57946a2c0bbb5a1479a532",
+          "integrity": "sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA=="
+        },
+        {
+          "version": "3.6.2",
+          "archive": "readable-stream-3.6.2.tgz",
+          "archiveSha256": "edd866c05e318aa9c091763eebdd4207409b7a7648be19c5317a96047305ab5d",
+          "integrity": "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA=="
+        }
+      ],
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/duplex-browser.js",
+          "archivePath": "package/duplex-browser.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "b492b180e158a495afa7b394de1440e037c5d60524bb2fce839aeb690e6ff968"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/lib/_stream_duplex.js",
+          "archivePath": "package/lib/_stream_duplex.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "fd17d6a92dd9ba004c85f8e364b2771af10d012a83766437447dbae63879fa6b"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/lib/_stream_passthrough.js",
+          "archivePath": "package/lib/_stream_passthrough.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "bf61450b1ff5f94fea9d46665e931119642034c903e63cc224b4c96472eed4d4"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/lib/_stream_readable.js",
+          "archivePath": "package/lib/_stream_readable.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "216e051224eff89a5d5eec76bef25addac078d9ebd2e88bd0a3d73a0e605091d"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/lib/_stream_transform.js",
+          "archivePath": "package/lib/_stream_transform.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "56220d9dd58b976f1739bfc85948b267d79772ba23672ff402d13b6b3fcf4e40"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/lib/_stream_writable.js",
+          "archivePath": "package/lib/_stream_writable.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "e6359ac652ed97f5f328c586c7a6b8f163782a9ca13da476e609a981c75e0469"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/lib/internal/streams/BufferList.js",
+          "archivePath": "package/lib/internal/streams/BufferList.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "387991bfee34bbb7938e0c0a3f345c3e5e4c37d5b0cb600e6d432c9995321fa7"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/lib/internal/streams/destroy.js",
+          "archivePath": "package/lib/internal/streams/destroy.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "a59f90daec030125875a6028b32f93e2e2bc9fafd703991dbc36244f5cb21176"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/passthrough.js",
+          "archivePath": "package/passthrough.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "809dbc03b4c312355ff74eb14b2ccc77267ee71e04f519f437eb4b203407c4b7"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/readable-browser.js",
+          "archivePath": "package/readable-browser.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "ec8e6f4e484d5269bc134752e11770b66b6be3a470217c2a0166e977965f53c6"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/transform.js",
+          "archivePath": "package/transform.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "155f794c5c789568b7bc632cd37f28b9064890e887bfab96a4393100218d4230"
+        },
+        {
+          "sourcePath": "node_modules/stream-browserify/node_modules/readable-stream/writable-browser.js",
+          "archivePath": "package/writable-browser.js",
+          "archive": "readable-stream-2.3.8.tgz",
+          "sha256": "427bae9a6a026082e46acb500da48b270234ebc2a1ded1315b49eccfa6311c61"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/errors-browser.js",
+          "archivePath": "package/errors-browser.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "346033597378d23e59068d120d6257f7cd85ae88c40b1f85c3329cece0d119c4"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/_stream_duplex.js",
+          "archivePath": "package/lib/_stream_duplex.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "e2e55263df344f33d016a3e051de1a86e2206989a2162951e651e5557665954c"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/_stream_passthrough.js",
+          "archivePath": "package/lib/_stream_passthrough.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "af6250df6a49a0148eed8b5f2e28b2f692c3ffa9df538a59dc716a4bd10901e2"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/_stream_readable.js",
+          "archivePath": "package/lib/_stream_readable.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "9837de8cae91f9a80da75368855b45c3ada9a858983355fd873d8885cab1c5ab"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/_stream_transform.js",
+          "archivePath": "package/lib/_stream_transform.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "a2f6e6d17a74dfa75bc7b34b50546ebcb76eeb2f4aac6d1090f80915aee20342"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/_stream_writable.js",
+          "archivePath": "package/lib/_stream_writable.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "0f3f2accecd343dfae91d7daa72f3ad125b6f139d5883ff51362042d8cb65cf6"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/async_iterator.js",
+          "archivePath": "package/lib/internal/streams/async_iterator.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "56a7dde0d36ee9f55032df01e78229602c6afed6b6915362f33dc65bc0359972"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/buffer_list.js",
+          "archivePath": "package/lib/internal/streams/buffer_list.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "15b266db6ad5c6ee0309d13ed4ce137d8974d2fd236c1af7f3d602b7028a90df"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/destroy.js",
+          "archivePath": "package/lib/internal/streams/destroy.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "e1c1a185a2cc4bee2be5e7d33b5e294eb0fb55c1a47b61853a8c43e50cb822a4"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/end-of-stream.js",
+          "archivePath": "package/lib/internal/streams/end-of-stream.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "2c35cabc9b279cb81e73d0d14859b2056ea10d9688d16a12199d2ca9904b93ae"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/from-browser.js",
+          "archivePath": "package/lib/internal/streams/from-browser.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "4b4404c7bd6f66a2175cb7a29c60ce4395c055775ec45eaa35af4357656f604f"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/pipeline.js",
+          "archivePath": "package/lib/internal/streams/pipeline.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "6d51b72e1ae5ee0965f0f549e27ececdb4963605995ffad8b698d5359a9999c2"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/state.js",
+          "archivePath": "package/lib/internal/streams/state.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "bf9c5ce1ccde2131d474422bef258dc968d6d19ccac72f9b178e8246faf0c9ed"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/lib/internal/streams/stream-browser.js",
+          "archivePath": "package/lib/internal/streams/stream-browser.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "72d46a15491627d8fb1489a47d03583cfe5c21902918016ab532b53e615e5a9a"
+        },
+        {
+          "sourcePath": "node_modules/readable-stream/readable-browser.js",
+          "archivePath": "package/readable-browser.js",
+          "archive": "readable-stream-3.6.2.tgz",
+          "sha256": "c4ff3ea62ef65a2c68ea721dcbd58b621150660facd02be95ebfc556c4dd123f"
+        }
+      ],
+      "notices": [
+        {
+          "archive": "readable-stream-2.3.8.tgz",
+          "archivePath": "package/LICENSE",
+          "sha256": "ec62dc96da0099b87f4511736c87309335527fb7031639493e06c95728dc8c54",
+          "text": "Node.js is licensed for use as follows:\n\n\"\"\"\nCopyright Node.js contributors. All rights reserved.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE.\n\"\"\"\n\nThis license applies to parts of Node.js originating from the\nhttps://github.com/joyent/node repository:\n\n\"\"\"\nCopyright Joyent, Inc. and other Node contributors. All rights reserved.\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE.\n\"\"\"\n"
+        }
+      ]
+    },
+    {
       "name": "regenerator-runtime",
       "version": "0.13.11",
       "declaredLicense": "MIT",
@@ -1227,6 +1792,58 @@
         {
           "archivePath": "package/LICENSE",
           "sha256": "4847d2fd9ed54cc006dd79f5a14fa5dd35eb8274dca511418166e195e277c05b"
+        }
+      ]
+    },
+    {
+      "name": "safe-buffer",
+      "version": "MULTI:5.1.2,5.2.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/safe-buffer",
+      "tarball": [
+        "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz",
+        "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz"
+      ],
+      "integrity": [
+        "sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==",
+        "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="
+      ],
+      "archive": "safe-buffer-5.1.2.tgz",
+      "archiveSha256": "e09206c60fccafb952c854af7629cbb031a98d6da2e143fb3aa3c8a48402aa22",
+      "archives": [
+        {
+          "version": "5.1.2",
+          "archive": "safe-buffer-5.1.2.tgz",
+          "archiveSha256": "e09206c60fccafb952c854af7629cbb031a98d6da2e143fb3aa3c8a48402aa22",
+          "integrity": "sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g=="
+        },
+        {
+          "version": "5.2.1",
+          "archive": "safe-buffer-5.2.1.tgz",
+          "archiveSha256": "5d181804516c4a693a384272a7bd0e42d17e0d4b301ccfbe408669ccafdcb3e8",
+          "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="
+        }
+      ],
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browserify/node_modules/safe-buffer/index.js",
+          "archivePath": "package/index.js",
+          "archive": "safe-buffer-5.1.2.tgz",
+          "sha256": "d58af21cb0518864d0c505742d1af71e5b5e1f142f4c0f27353aa0f431a616d4"
+        },
+        {
+          "sourcePath": "node_modules/safe-buffer/index.js",
+          "archivePath": "package/index.js",
+          "archive": "safe-buffer-5.2.1.tgz",
+          "sha256": "184d5c4a83512e3f49d4d5b52f7073f601f933bad11f1fbb3ad364ca5e6478e1"
+        }
+      ],
+      "notices": [
+        {
+          "archive": "safe-buffer-5.1.2.tgz",
+          "archivePath": "package/LICENSE",
+          "sha256": "c7cc929b57080f4b9d0c6cf57669f0463fc5b39906344dfc8d3bc43426b30eac",
+          "text": "The MIT License (MIT)\n\nCopyright (c) Feross Aboukhadijeh\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
         }
       ]
     },
@@ -1523,6 +2140,825 @@
           "archivePath": "package/LICENSE.md",
           "sha256": "beaa6b04fb82e41dd2ad679e19e27953afb5999b1abbb455b6564e78ebfeb332",
           "text": "The MIT License (MIT)\n\nCopyright (c) 2010-2020 Robert Kieffer and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "core-js",
+      "version": "3.33.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/core-js/3.33.0",
+      "tarball": "https://registry.npmjs.org/core-js/-/core-js-3.33.0.tgz",
+      "integrity": "sha512-HoZr92+ZjFEKar5HS6MC776gYslNOKHt75mEBKWKnPeFDpZ6nH5OeF3S6HFT1mUAUZKrzkez05VboaX8myjSuw==",
+      "archive": "core-js-3.33.0.tgz",
+      "archiveSha256": "57eba2b26ca84d2597e1e15ca9baaf16071f45104a8da851aa4542823af35a79",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/core-js/internals/a-callable.js",
+          "archivePath": "package/internals/a-callable.js",
+          "sha256": "7271ae2895236796ca02aee62f3371cdba088a0b081b56abcbba618ba5c9ae28"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/a-constructor.js",
+          "archivePath": "package/internals/a-constructor.js",
+          "sha256": "7cdba9ff95b3cbee2ae65ba958c09a7d7c03d0ee9f60378a7a661d6fa9594349"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/a-possible-prototype.js",
+          "archivePath": "package/internals/a-possible-prototype.js",
+          "sha256": "51522db861f9550db345046f6b56b0cd2b90ad072d7395c3ed21a471f5f7df17"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/add-to-unscopables.js",
+          "archivePath": "package/internals/add-to-unscopables.js",
+          "sha256": "571a9276ffcf45f862070939fd1dbe946f0b8307281191426a2e213073a444a1"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/an-instance.js",
+          "archivePath": "package/internals/an-instance.js",
+          "sha256": "479735dd6da637e8eb8d7c8d4bd824918171082271e12aff569f1d833c76472d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/an-object.js",
+          "archivePath": "package/internals/an-object.js",
+          "sha256": "af8e757769de5cca85d0e753211f60b1b3efe20762bd0dbd9b6ddfe147556858"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/array-includes.js",
+          "archivePath": "package/internals/array-includes.js",
+          "sha256": "c78b476a782b5f51868c0ec7818c127dd006e23fea380f4f8bec70173af1ed1e"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/array-iteration.js",
+          "archivePath": "package/internals/array-iteration.js",
+          "sha256": "f4801e5aaf9d9ce11a2ddbae0969c00b6f0e72d8b00bb8aab72810c07e99c83b"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/array-slice-simple.js",
+          "archivePath": "package/internals/array-slice-simple.js",
+          "sha256": "47b255b744d4cbc58842165509e12f9fe2d21e77923517db74913e81870588c7"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/array-slice.js",
+          "archivePath": "package/internals/array-slice.js",
+          "sha256": "afe05ba1ab6149f22101c20d917bea11a32c81047dd75250d113592cd6a57f13"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/array-species-constructor.js",
+          "archivePath": "package/internals/array-species-constructor.js",
+          "sha256": "d0fd2b9ce48377649f4f7c0298ac717ca33880f9bf68c2a22fab247733c09762"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/array-species-create.js",
+          "archivePath": "package/internals/array-species-create.js",
+          "sha256": "60f973986b88e2576793aa4ba100f87f25bd2dd60b24078af123a5e7af1f46e7"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/check-correctness-of-iteration.js",
+          "archivePath": "package/internals/check-correctness-of-iteration.js",
+          "sha256": "84a676d2e46077cf62f94d1a5bc3c52352b6d7bfde9dddee6fac58f9a6c9af15"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/classof-raw.js",
+          "archivePath": "package/internals/classof-raw.js",
+          "sha256": "dfd2770b89482e9f0e4fc439a290df157761f0cf8a77ce5399123fc8da3cdbaa"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/classof.js",
+          "archivePath": "package/internals/classof.js",
+          "sha256": "b8b699c1420f604314480906d9f71d298c5d2a037fe71f6206f71bece3075d7f"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/copy-constructor-properties.js",
+          "archivePath": "package/internals/copy-constructor-properties.js",
+          "sha256": "cdc3add20999a7d6fb35c8376bc9b50f2feeaf61796a397fa464f9c90e975c5b"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/correct-is-regexp-logic.js",
+          "archivePath": "package/internals/correct-is-regexp-logic.js",
+          "sha256": "4076428ba3378e762ec9ac4ce909411f06a6168b24e20a9d0f8250c33086f959"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/correct-prototype-getter.js",
+          "archivePath": "package/internals/correct-prototype-getter.js",
+          "sha256": "06936abe78c178b1b1a7fc2364fca000112e9a113fd414535e68657ef9874e7d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/create-iter-result-object.js",
+          "archivePath": "package/internals/create-iter-result-object.js",
+          "sha256": "d223065eea43cf3abae6e3691f9fdbf1c25975a1a4a10b2d1fb306df7e21ab01"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/create-non-enumerable-property.js",
+          "archivePath": "package/internals/create-non-enumerable-property.js",
+          "sha256": "bfa936797ed8669560dbe02fa17de9458c9cf0ff6ec96ebbf579250b88299d64"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/create-property-descriptor.js",
+          "archivePath": "package/internals/create-property-descriptor.js",
+          "sha256": "9493c088938de273c9749d76d0eed99dead6efa1044613a79871894889435200"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/create-property.js",
+          "archivePath": "package/internals/create-property.js",
+          "sha256": "7136e9ba3ebf51c539892d3f1e18809090b2627b4b23455c613e0960ccafee40"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/define-built-in-accessor.js",
+          "archivePath": "package/internals/define-built-in-accessor.js",
+          "sha256": "8b16b0cf9222d66bc1bd9fae097f8d7beaa0e732ca42a784f8a7f1e1da8ab548"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/define-built-in.js",
+          "archivePath": "package/internals/define-built-in.js",
+          "sha256": "7df70928211c33e1c56b7169fcf1c01afa809839fe19e8bf7d4159cc81c03745"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/define-global-property.js",
+          "archivePath": "package/internals/define-global-property.js",
+          "sha256": "0589f6fdc5993622731244a8383f8281a1c67b6da6d81af245d56e806741a7b8"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/descriptors.js",
+          "archivePath": "package/internals/descriptors.js",
+          "sha256": "a9172a2bd245ef9dee088d5215fc21cd826e9a129e86346f6fa146f6e244db58"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/document-all.js",
+          "archivePath": "package/internals/document-all.js",
+          "sha256": "7034d5f4b857fb1d87a1ad8e2c152d89916f2be271691f409ae93942aab88df3"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/document-create-element.js",
+          "archivePath": "package/internals/document-create-element.js",
+          "sha256": "b24d835118f3cc34db4ccc31477891b8ea58cca181615f2c30d1e846316ba662"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-is-browser.js",
+          "archivePath": "package/internals/engine-is-browser.js",
+          "sha256": "9832af809e7c4182cacfcba74414e46a59ca413f6a097fc51c5c5706a0cddeb4"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-is-deno.js",
+          "archivePath": "package/internals/engine-is-deno.js",
+          "sha256": "3096091a105c8fdb720519308182b42df6c6f1ad263890bc6f2f41c94f85b252"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-is-ios-pebble.js",
+          "archivePath": "package/internals/engine-is-ios-pebble.js",
+          "sha256": "d5df7b7370fe85bc84449d7d4c5f4521d1de76cd3283949c393f5d4612d0d538"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-is-ios.js",
+          "archivePath": "package/internals/engine-is-ios.js",
+          "sha256": "164c7c688c970e8269c09cd9b3400074a4ea88e2baf552f3d2b62f49bfac3e71"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-is-node.js",
+          "archivePath": "package/internals/engine-is-node.js",
+          "sha256": "cf4490f147bd9c6f34bd1b2d42bcf70dd8e28e7a19166b6671fa079bab96022e"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-is-webos-webkit.js",
+          "archivePath": "package/internals/engine-is-webos-webkit.js",
+          "sha256": "02529cac02c217d2da33c7d140570d754814dea5049503cabbd03607507d1844"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-user-agent.js",
+          "archivePath": "package/internals/engine-user-agent.js",
+          "sha256": "eb82cbd2b7dedb9a8bcde30b525e37595d4d150c24ee1d2353e2034406aca6ec"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/engine-v8-version.js",
+          "archivePath": "package/internals/engine-v8-version.js",
+          "sha256": "42935250f039b0dfc058604a93517a427d52b89536b07cd2f2ac48b1460e924d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/enum-bug-keys.js",
+          "archivePath": "package/internals/enum-bug-keys.js",
+          "sha256": "57c521cd58c0463a4d739cc14f6ea0401b6a8582cd26300fe6d60db94c072680"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/export.js",
+          "archivePath": "package/internals/export.js",
+          "sha256": "4e1d0f0504631aab0c8cd6f71ed5bde5ebd7500d5e66e0a1b5e7707e47810bde"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/fails.js",
+          "archivePath": "package/internals/fails.js",
+          "sha256": "33e4e0204cf4d283f4075c847fc8c6ecad9329a7c320ffec5121741b3bba60b5"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-apply.js",
+          "archivePath": "package/internals/function-apply.js",
+          "sha256": "f6bf32c1acd179b9e1cb79c496cb2b665f2a96806dc463e31d64cd004ccac6cc"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-bind-context.js",
+          "archivePath": "package/internals/function-bind-context.js",
+          "sha256": "111bca956d6604fdebf45aeebced1714a981cab711d1a16d5c2e72091ac49825"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-bind-native.js",
+          "archivePath": "package/internals/function-bind-native.js",
+          "sha256": "fb5aea13e7ff037d082054a7d1859fdf0dba61f6bcd135bf664b0f69d6d1a0f7"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-call.js",
+          "archivePath": "package/internals/function-call.js",
+          "sha256": "061dbefcd5a342bc8d00b18588c994bc866391f6a0dabfa89fe7ffb9fdd96011"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-name.js",
+          "archivePath": "package/internals/function-name.js",
+          "sha256": "c22bda93dc222131512a5aedd4745f69a527a4fa8624fbcbbf8117fbcb2a8154"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-uncurry-this-accessor.js",
+          "archivePath": "package/internals/function-uncurry-this-accessor.js",
+          "sha256": "0596699e04579cae759e4a28b17ef714de24460a98a88a6c5cc62f05a7ce93e3"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-uncurry-this-clause.js",
+          "archivePath": "package/internals/function-uncurry-this-clause.js",
+          "sha256": "87eb5a294d1cecf8009476525e38bf712c8596203e52a46df8a431ca3458c007"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/function-uncurry-this.js",
+          "archivePath": "package/internals/function-uncurry-this.js",
+          "sha256": "c34e5d87c85c5d89551bf434b2114188e3ee2d58ff4b3b6134c98677bf986c4a"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/get-built-in.js",
+          "archivePath": "package/internals/get-built-in.js",
+          "sha256": "3610facd6300ea42582f1a9ac743503eb26732c6ab49c826d19b8cafd1e8a829"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/get-iterator-method.js",
+          "archivePath": "package/internals/get-iterator-method.js",
+          "sha256": "0e464a29ed61f33fc3e1fe23eeaac83894cda82509550d19f786c64c02a423b1"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/get-iterator.js",
+          "archivePath": "package/internals/get-iterator.js",
+          "sha256": "4719991cc5c0afd8a5ee663a917d6df4a9ecf87072aff2a249e1e8a929bf3807"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/get-json-replacer-function.js",
+          "archivePath": "package/internals/get-json-replacer-function.js",
+          "sha256": "7bf99325b72f2811a87d642fe406fc433eb79e5addd2ce3b8e4d54e257104f8d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/get-method.js",
+          "archivePath": "package/internals/get-method.js",
+          "sha256": "867e914854ff853099cd6ba95f5eb3fc49a1390cec1c1a6367f4cf965c26f6b2"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/global.js",
+          "archivePath": "package/internals/global.js",
+          "sha256": "74115e78bb76f61e47dd61839ec15c16c4c4bf26e6a043f29282c4316489196e"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/has-own-property.js",
+          "archivePath": "package/internals/has-own-property.js",
+          "sha256": "58082c7f8750c0a4c74912a54560ea375831a101dc43e05bbe61079503ea689b"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/hidden-keys.js",
+          "archivePath": "package/internals/hidden-keys.js",
+          "sha256": "322ee46d71101bed25f260f2e78a419b5472e28d1ba02831ced05c73b44e5bb8"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/host-report-errors.js",
+          "archivePath": "package/internals/host-report-errors.js",
+          "sha256": "4dd5e008459307831677ba84e7b803b9f65790ce10215a6f384a52731f5dcf53"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/html.js",
+          "archivePath": "package/internals/html.js",
+          "sha256": "2b9fba4e9c0e5592c49f79a50bb4189f7bf8bd3d077836cb3bfa70e99dd30baa"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/ie8-dom-define.js",
+          "archivePath": "package/internals/ie8-dom-define.js",
+          "sha256": "1dc5dfcf67501ede76f99ab12826b99f19f6b94e97734eb58a86631e911442c6"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/indexed-object.js",
+          "archivePath": "package/internals/indexed-object.js",
+          "sha256": "8ef9ef6fcba2544f290c3c6a1118d1f4e6beac63cfa583d1cfe2ac88911f4169"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/inspect-source.js",
+          "archivePath": "package/internals/inspect-source.js",
+          "sha256": "ef4075497622a3c1475b3041a50fb39f8c4eeddc26c14aea2db66ea03663dec8"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/internal-state.js",
+          "archivePath": "package/internals/internal-state.js",
+          "sha256": "be7b6928da6d403d1fd60242f5991b41c5db690568915576161adce8c7c59bbc"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-array-iterator-method.js",
+          "archivePath": "package/internals/is-array-iterator-method.js",
+          "sha256": "dc34f734af2d68cb164493549f7baa80f21574aec5b71c4e20c027ddcc83a9b3"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-array.js",
+          "archivePath": "package/internals/is-array.js",
+          "sha256": "cc3cf461375e89e11772b49b132a7feb056b8b9d6cd6df72458a4ce8268c23be"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-callable.js",
+          "archivePath": "package/internals/is-callable.js",
+          "sha256": "85bae11360c4bb051f4c6dafd231f745aa850d66369be8e5f64bdd35883e9dd7"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-constructor.js",
+          "archivePath": "package/internals/is-constructor.js",
+          "sha256": "9d4eec783c35a62211af25e270b9f465712cdcb7e423598354cd8bdcd1df4456"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-forced.js",
+          "archivePath": "package/internals/is-forced.js",
+          "sha256": "aeee987f667f1f9176dd010576661e4676b767eacda1fb3767b9bd7c72c67bfb"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-null-or-undefined.js",
+          "archivePath": "package/internals/is-null-or-undefined.js",
+          "sha256": "720ca187c6cd75515d7192f35d4b7e05d0ae696464f62a11dcd333d1f0072ca0"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-object.js",
+          "archivePath": "package/internals/is-object.js",
+          "sha256": "b26bfc51a59afe6e0a440d85a313922f71df8ed35d6a0eb2825088b85bec1e55"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-pure.js",
+          "archivePath": "package/internals/is-pure.js",
+          "sha256": "aaa3a1e7c859215256dd78798126f59a3aa38e4d539187119587000e38ec8936"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-regexp.js",
+          "archivePath": "package/internals/is-regexp.js",
+          "sha256": "ccff96d6648f8206b855d3c94876afec07190334b9950aa406af28e5244aebe2"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/is-symbol.js",
+          "archivePath": "package/internals/is-symbol.js",
+          "sha256": "c70f1861bf96f11a7cd8c3fc636f75499802e4cdee4ac803e08922087fce58f2"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/iterate.js",
+          "archivePath": "package/internals/iterate.js",
+          "sha256": "b8c9765e8bcb6aaab4b91e50f89b6a0e286ba3bdf9a2bc3941e9feeb52dacf3d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/iterator-close.js",
+          "archivePath": "package/internals/iterator-close.js",
+          "sha256": "88ec9fb844024c82568a2b33916cb0f4224b0d8a7816d034d0e4e97f4990ff14"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/iterator-create-constructor.js",
+          "archivePath": "package/internals/iterator-create-constructor.js",
+          "sha256": "d6917505bd2829e6577baa8d26c91332a5d91372fc320d45ccb0df557a4b92ba"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/iterator-define.js",
+          "archivePath": "package/internals/iterator-define.js",
+          "sha256": "f2dc75feb69f7e754ada7eca1337e4c554834dc35cf5b9ee9a5cfe68fd9ee68d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/iterators-core.js",
+          "archivePath": "package/internals/iterators-core.js",
+          "sha256": "4331d17e91aed43b1db1e33baa0866333d93b4e2975944a944cdaed1a2d2cea8"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/length-of-array-like.js",
+          "archivePath": "package/internals/length-of-array-like.js",
+          "sha256": "a258366c44ddd90f808bc00cc593a02b6deca15304fba02cf6c709b14449efb9"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/make-built-in.js",
+          "archivePath": "package/internals/make-built-in.js",
+          "sha256": "a934cb95a79f6ee18ff90657af7d60df119990a8e98fa749c9dc4584b23b5844"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/math-trunc.js",
+          "archivePath": "package/internals/math-trunc.js",
+          "sha256": "8d294fa265f5b7569798c7350104a1d6e6d53154636b316bc85d7cfbd346d230"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/microtask.js",
+          "archivePath": "package/internals/microtask.js",
+          "sha256": "5fca496eff05463f0b3afbd715666889091b38f1b1effc73d1c339343b07bbae"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/new-promise-capability.js",
+          "archivePath": "package/internals/new-promise-capability.js",
+          "sha256": "dc38f45812497b2a26568a0ba6d751f80d5517f39d5dcbe38418dfe435baa1c3"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/not-a-regexp.js",
+          "archivePath": "package/internals/not-a-regexp.js",
+          "sha256": "7283800bfd4e6bf1cb5b94636b176730d1c3698d0dd45111bcd3aadf60f1afbb"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-assign.js",
+          "archivePath": "package/internals/object-assign.js",
+          "sha256": "d92780fe851642e3e65d9c53d523f06c51b80f417b446eb3939bf8eedff8a2e5"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-create.js",
+          "archivePath": "package/internals/object-create.js",
+          "sha256": "dc49f47c2cfdb2bc684e16e5b8d204513b309d6ff9a3d81d9c5ceae0c7d06f60"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-define-properties.js",
+          "archivePath": "package/internals/object-define-properties.js",
+          "sha256": "59698fcc506e1712cb91f214df895ae7e3b7d55c977a9e64ff2c5bbcc93dd2d0"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-define-property.js",
+          "archivePath": "package/internals/object-define-property.js",
+          "sha256": "34d42091801b7405547a5fc8210997eaefea065b2b257b64460b1c0432fe16dc"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-get-own-property-descriptor.js",
+          "archivePath": "package/internals/object-get-own-property-descriptor.js",
+          "sha256": "9af72699268ce4085c52da765612ee2581ed78a54520ec8ba18e5341dbef6971"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-get-own-property-names-external.js",
+          "archivePath": "package/internals/object-get-own-property-names-external.js",
+          "sha256": "89380e79330279b143007a0d343a2315b61ef758aefc6c5bfce0cbcdd5b623a9"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-get-own-property-names.js",
+          "archivePath": "package/internals/object-get-own-property-names.js",
+          "sha256": "d3727a7c390fc9afda62b5f71f4ad7259434b2dc1e5a3189713150abe74529aa"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-get-own-property-symbols.js",
+          "archivePath": "package/internals/object-get-own-property-symbols.js",
+          "sha256": "f0f09a16006e03ef040d0db4a6a4e48fc02b312588f8bbc6c0b9d407c6cf304f"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-get-prototype-of.js",
+          "archivePath": "package/internals/object-get-prototype-of.js",
+          "sha256": "ce20261ef017469886b129ee30349f4e690b45ce100350d971b315c74abe1c77"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-is-prototype-of.js",
+          "archivePath": "package/internals/object-is-prototype-of.js",
+          "sha256": "c13158baae02d5eaa9224c172e6a03622276200eb66b170f8845d8be5ba9f66a"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-keys-internal.js",
+          "archivePath": "package/internals/object-keys-internal.js",
+          "sha256": "e4dbacb776a44e2867c757d992158b80db68b8d7c4c48ec02c8dc79dc89c7816"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-keys.js",
+          "archivePath": "package/internals/object-keys.js",
+          "sha256": "b3d000df0c0797b0a023c5f75d7949ca4e961cfedcc91167b36a9ec23b609bc2"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-property-is-enumerable.js",
+          "archivePath": "package/internals/object-property-is-enumerable.js",
+          "sha256": "731f8738050dbd0f0294b8409982c780d01beb9c6b5f4ad2e1b975c6a8f3b9d4"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-set-prototype-of.js",
+          "archivePath": "package/internals/object-set-prototype-of.js",
+          "sha256": "afe40f4ed6538edcdbcef4e4583e664d1ecea79d81a9aeb723780dfacc7104e1"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/object-to-array.js",
+          "archivePath": "package/internals/object-to-array.js",
+          "sha256": "19d04227260aaed15b4a5f8d91ef1a832db3ea4e1a66856310ba40b300101111"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/ordinary-to-primitive.js",
+          "archivePath": "package/internals/ordinary-to-primitive.js",
+          "sha256": "b91df043d15b9eb57fdca07f83704022a601aafb128cfbf33cebd66e1183f3f8"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/own-keys.js",
+          "archivePath": "package/internals/own-keys.js",
+          "sha256": "5e702480f39dc7e967ae1a94a7e6b143af3aa8bd83f6c6f95d42c08d92a61490"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/path.js",
+          "archivePath": "package/internals/path.js",
+          "sha256": "b42e2a12993a5bbd217aabadf9dd1f9df825a2f8f88ab256fbf35e0aaa8ad1b1"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/perform.js",
+          "archivePath": "package/internals/perform.js",
+          "sha256": "79bf64f2a09e7885f8236fc83d84a3a56d9800a9c6a86dfac98fb22d1e618020"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/promise-constructor-detection.js",
+          "archivePath": "package/internals/promise-constructor-detection.js",
+          "sha256": "707c0fff89d3f28c948ebe1b3d101ca5ac7ac870167719299d30aade0ef6527a"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/promise-native-constructor.js",
+          "archivePath": "package/internals/promise-native-constructor.js",
+          "sha256": "aca6444ba6e0d2e4863803803c9b2eb0bc0c03eb12813c8ebed00fcbbf0200e1"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/promise-resolve.js",
+          "archivePath": "package/internals/promise-resolve.js",
+          "sha256": "564020dbb6676ce66281624d90262fd6612127a1aef0041e06674431c52131ed"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/promise-statics-incorrect-iteration.js",
+          "archivePath": "package/internals/promise-statics-incorrect-iteration.js",
+          "sha256": "9c52c785a4c2bb1502363aa238f9bbf14b73ff0e112df3a3a7ea8efe0de6d575"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/queue.js",
+          "archivePath": "package/internals/queue.js",
+          "sha256": "c3a692dcf3e44cf2f7e7ab5e48736347012a3b9eb1f1ed785b529310e5eded29"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/require-object-coercible.js",
+          "archivePath": "package/internals/require-object-coercible.js",
+          "sha256": "9d0e31f19c657e1620b4ca2af22725b53155c6ffd21676b3bd8af9c86d537fb8"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/set-species.js",
+          "archivePath": "package/internals/set-species.js",
+          "sha256": "6c24dbd904466494994ac31bf515e43abea33c3c0aa1ab7181595ac9ac266406"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/set-to-string-tag.js",
+          "archivePath": "package/internals/set-to-string-tag.js",
+          "sha256": "322114b953cc78c6fa1cc7af308fa4dcc5a044e808fb13646768374b1869127e"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/shared-key.js",
+          "archivePath": "package/internals/shared-key.js",
+          "sha256": "96e28befc4487e8245241a117222d73fda3d56ad898023b35e51201fa10ccac7"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/shared-store.js",
+          "archivePath": "package/internals/shared-store.js",
+          "sha256": "07f39b0d9e9376e6d59c9a5fcce1d75f3f7f21f4f0c6180d8dec3835b7d75b1c"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/shared.js",
+          "archivePath": "package/internals/shared.js",
+          "sha256": "bdb3e4a215efabef3708ec77b98e64f68ebf2c9510aa05448452f4cef7c55554"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/species-constructor.js",
+          "archivePath": "package/internals/species-constructor.js",
+          "sha256": "2d7cd6d271ec30a2b75c4ec5b5adfc86f6e6b4b673f5d7052b7e41e6b038e975"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/symbol-constructor-detection.js",
+          "archivePath": "package/internals/symbol-constructor-detection.js",
+          "sha256": "bf5a4d7facf921bb669ba3b5d2a98241546783f8c2225debdd8d3d71f1bdccfb"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/symbol-define-to-primitive.js",
+          "archivePath": "package/internals/symbol-define-to-primitive.js",
+          "sha256": "d538a834bdb8e61d334c546a89b86094b87c7dc3dc073e40eba4a1a67fe6c6b4"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/symbol-registry-detection.js",
+          "archivePath": "package/internals/symbol-registry-detection.js",
+          "sha256": "123f215b76ef6f7355ea5c8b97c1a678a7a641b3f4fcdfa8d0199f09afa1af09"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/task.js",
+          "archivePath": "package/internals/task.js",
+          "sha256": "0958b3edd1bb9a6a4cb050b34895c1b727fa0e12629aaaf1fad5ee86977ffb20"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-absolute-index.js",
+          "archivePath": "package/internals/to-absolute-index.js",
+          "sha256": "2f6d7201c1b6296b2fc6e87130e2ca0784639c5f04297bea1e9aaee1329c6ede"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-indexed-object.js",
+          "archivePath": "package/internals/to-indexed-object.js",
+          "sha256": "4621dcfb3e81880504393fa03dacb730c91319f7d64367264c7a1abbeae87caf"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-integer-or-infinity.js",
+          "archivePath": "package/internals/to-integer-or-infinity.js",
+          "sha256": "e8490288942e4f6ae3d5831a027f19415d1e6c100183c1971413f4a61c4041ea"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-length.js",
+          "archivePath": "package/internals/to-length.js",
+          "sha256": "5711a64ae2b62185288b0d829009087a3421227bf14d315751e7ce41f02cec81"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-object.js",
+          "archivePath": "package/internals/to-object.js",
+          "sha256": "9b40b1b6d56f46ad3f09b6a9fffb4a168ac6dcb2840d9d43f71adaf8ea2b7eb3"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-primitive.js",
+          "archivePath": "package/internals/to-primitive.js",
+          "sha256": "f4315838edece309fcb9caff7321d2e2eaef8ec9dcd7421b9e642b824a4f92b5"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-property-key.js",
+          "archivePath": "package/internals/to-property-key.js",
+          "sha256": "3967f43a082a39738c3140744236f7ad54179bf1712f7d14b1601625e68a1624"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-string-tag-support.js",
+          "archivePath": "package/internals/to-string-tag-support.js",
+          "sha256": "60293004bf5bfc68df4fcf83fe532b5a06dbd693ab57fae6e7b04618585be74a"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/to-string.js",
+          "archivePath": "package/internals/to-string.js",
+          "sha256": "5590f18bf545c0150afbd1ffd51de255b5952ada2b216386806ff43ad3d717b6"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/try-to-string.js",
+          "archivePath": "package/internals/try-to-string.js",
+          "sha256": "4996594ddd158235f24f1e7d7c8aa2ae243df473feaa2e8718e704ba09aaf095"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/uid.js",
+          "archivePath": "package/internals/uid.js",
+          "sha256": "c7600c41068d1ec807fad1adee8ac58dc1ece14dee77efe103db59fad749f60a"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/use-symbol-as-uid.js",
+          "archivePath": "package/internals/use-symbol-as-uid.js",
+          "sha256": "16340400b4d3848f45aadf1ced8aa7c9d30cd471f6b912d97e2d726434ffffc4"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/v8-prototype-define-bug.js",
+          "archivePath": "package/internals/v8-prototype-define-bug.js",
+          "sha256": "e70645e33e4d09ba21d23ff5fe7bc2a0da1cbb7a23311cb88b59110f43fefdcd"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/validate-arguments-length.js",
+          "archivePath": "package/internals/validate-arguments-length.js",
+          "sha256": "350b697ee2bb71b5f2c892ac0499e86295f805c1a138bef4a9cf7e0f24170227"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/weak-map-basic-detection.js",
+          "archivePath": "package/internals/weak-map-basic-detection.js",
+          "sha256": "e5f15f1aada463b8ef8e0ef3b4d9032df1a5c2f8cc20f8b991f16db1d1a01fcf"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/well-known-symbol-define.js",
+          "archivePath": "package/internals/well-known-symbol-define.js",
+          "sha256": "1aa268c7d43879572f24d7d3aa52de16e10dacd2e0a6aa4b1b4428a770381129"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/well-known-symbol-wrapped.js",
+          "archivePath": "package/internals/well-known-symbol-wrapped.js",
+          "sha256": "90a96f5102e2541cb4ee64b7830b015788548b25e70b62e78ee77ccf1282e28d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/internals/well-known-symbol.js",
+          "archivePath": "package/internals/well-known-symbol.js",
+          "sha256": "2b2fc5e0f66669e4d5de7690f29e4706c04fd5d2be5397edf005688cf8d5f6d6"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.array.find-index.js",
+          "archivePath": "package/modules/es.array.find-index.js",
+          "sha256": "1d4c8341b23b7347f2caff080ca727703299cd9135a711ddf9c90d5df3ccd0c0"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.array.find.js",
+          "archivePath": "package/modules/es.array.find.js",
+          "sha256": "ad0233a4ac173c61f67a2d80457f30cd40210f43474945cf5abe1f541d92b68a"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.array.includes.js",
+          "archivePath": "package/modules/es.array.includes.js",
+          "sha256": "689d8ba3367c5c5ad99ae797a410822abdd18807bed0bcb12ff9d6bc7968532a"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.array.iterator.js",
+          "archivePath": "package/modules/es.array.iterator.js",
+          "sha256": "4b4777e54c66ca46f68feddadce9a8c0ae85eecaa173a55774ed6c4a40bfa836"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.json.stringify.js",
+          "archivePath": "package/modules/es.json.stringify.js",
+          "sha256": "8ac474404394c51d937322895bc043a236a0badb43606ebfca770a723d8ec538"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.number.is-nan.js",
+          "archivePath": "package/modules/es.number.is-nan.js",
+          "sha256": "ac5707184d96374e6b2a2ac6dae427d4f13458b3e503229fedb31ab39c82240e"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.object.assign.js",
+          "archivePath": "package/modules/es.object.assign.js",
+          "sha256": "1167b4ca565b7fae69e91014e289dde0a0b9b3810222c168593fe6178c8f6e06"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.object.get-own-property-symbols.js",
+          "archivePath": "package/modules/es.object.get-own-property-symbols.js",
+          "sha256": "59744a1754b2385061b6a01205b1d4a8f510453f12e4ac1e555b718179742057"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.object.keys.js",
+          "archivePath": "package/modules/es.object.keys.js",
+          "sha256": "7c9ca6d0b5e47cb448cc720365ffa08bd2d6ac453658b3ca86fd1f8286ee8938"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.object.values.js",
+          "archivePath": "package/modules/es.object.values.js",
+          "sha256": "22fa63b425a56cf434970474987fb94b96d28bfc7695b5409d2285e683cc1c2f"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.all.js",
+          "archivePath": "package/modules/es.promise.all.js",
+          "sha256": "5f9bc503e03363b1d2893ff38332c851fd540c954b69614907eec3a5f565ac31"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.catch.js",
+          "archivePath": "package/modules/es.promise.catch.js",
+          "sha256": "f27b4a9c013d51c06c219bcaeb2df1b0fbd8191cbfcb91162eaefa46f6b2d340"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.constructor.js",
+          "archivePath": "package/modules/es.promise.constructor.js",
+          "sha256": "ad26475249f4f392cb7bf6e375d28caebe15788ebdd09f8b86a92d79f063ee80"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.finally.js",
+          "archivePath": "package/modules/es.promise.finally.js",
+          "sha256": "8c397e45f3601a8af944e5ad772d26978825bb89b0eaaf8d84dd0c6205bf3c9d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.js",
+          "archivePath": "package/modules/es.promise.js",
+          "sha256": "6d9bcf129c947f056e4fa62cc75c7c5295d9018430084e782d8e2a21c374bad3"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.race.js",
+          "archivePath": "package/modules/es.promise.race.js",
+          "sha256": "ec27f42e11cf70ebf9111750c58cba5fd6da5cf1e83584238653aa7893bd58be"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.reject.js",
+          "archivePath": "package/modules/es.promise.reject.js",
+          "sha256": "140112b2ff1118e671b081339432785250eb78f432fc207928ed52da12cf6870"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.promise.resolve.js",
+          "archivePath": "package/modules/es.promise.resolve.js",
+          "sha256": "bbecf1051b0660dedf8bd731935e260f1b1ff40bb118ac14ce58d72e8906fe20"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.string.from-code-point.js",
+          "archivePath": "package/modules/es.string.from-code-point.js",
+          "sha256": "b0bd4e1cbf801ea8ded84d7aa08986c135d20f3b187375a42d80a97e1b03e9e7"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.string.includes.js",
+          "archivePath": "package/modules/es.string.includes.js",
+          "sha256": "6b1e6ee6c75641278b0c8749f6f79b198e18986eae51313b9f0491a905913ddd"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.symbol.async-iterator.js",
+          "archivePath": "package/modules/es.symbol.async-iterator.js",
+          "sha256": "cac2d6c26f043222db06961fef171371057641afdb1547a824dda3539347cc23"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.symbol.constructor.js",
+          "archivePath": "package/modules/es.symbol.constructor.js",
+          "sha256": "a1a87327e200953555ea153641cf5869e4d52d0ca8596c92aaa0f2f3c8973624"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.symbol.for.js",
+          "archivePath": "package/modules/es.symbol.for.js",
+          "sha256": "307ed60b759cbd0f4d7ece62d885d8a0c4d15f18113873dc9ccb05bdb6c45b4d"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.symbol.js",
+          "archivePath": "package/modules/es.symbol.js",
+          "sha256": "aa046b56fa2c29b1f3791bd617cbafdbeb5a5ce9ffe8c37dd68ca10bada7a4e8"
+        },
+        {
+          "sourcePath": "node_modules/core-js/modules/es.symbol.key-for.js",
+          "archivePath": "package/modules/es.symbol.key-for.js",
+          "sha256": "35477b22d465b501cbe0da32a1bbee9b07a4a395664adb59d7ce1a819c604542"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "66c014a988c01fdfd53ea344563c0aca795b321c66fe619a0cf40049fe0912de",
+          "text": "Copyright (c) 2014-2023 Denis Pushkarev\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
         }
       ]
     }

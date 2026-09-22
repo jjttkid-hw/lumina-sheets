@@ -110,18 +110,20 @@ async function visit(packagePath, requiredBy) {
   }
   const name = installed.name ?? packagePath.split('node_modules/').at(-1);
   const version = locked.version ?? installed.version;
-  const license =
+  let license =
     normalizeLicense(installed.license) ??
     normalizeLicense(locked.license) ??
     (Array.isArray(installed.licenses)
       ? installed.licenses.map(normalizeLicense).filter(Boolean).join(' OR ') || null
       : null);
   const notices = await noticeFiles(packagePath);
-  for (const { notice, text } of await supplementalNotices(root, {
+  const supplements = await supplementalNotices(root, {
     name,
     version,
     integrity: locked.integrity,
-  })) {
+  });
+  if (!license) license = supplements.find((item) => item.notice.license)?.notice.license ?? null;
+  for (const { notice, text } of supplements) {
     notices.push(notice);
     files.set(`${packagePath}/${notice.path}`, text);
   }
@@ -390,6 +392,13 @@ const text = [
       '',
       `--- ${record.location}/${notice.path} ---`,
       files.get(`${record.location}/${notice.path}`),
+      ...(notice.kind === 'downstream-copyright-evidence'
+        ? [
+            'Evidence type: downstream copyright record; this is not represented as an upstream LICENSE file.',
+            `Evidence source: ${notice.provenance?.downstream?.url ?? 'not recorded'}`,
+            `Evidence scope: ${notice.provenance?.downstream?.scope ?? 'not recorded'}`,
+          ]
+        : []),
     ]),
     ...(record.licenseFiles.length
       ? []
