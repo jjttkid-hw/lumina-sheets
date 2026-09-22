@@ -1,5 +1,11 @@
 # 验证记录
 
+### 2026-09-22 — 当前主线提交的真实浏览器复验（r2）
+
+- 对提交 `048568e6871ff40bbd5cf048a7a67c1c9fef1813` 以 `SOURCE_DATE_EPOCH=1790079444` 重新构建并运行本地静态候选。站点 SHA-256 为 `4920cf45ef12ebc0e0bbc766805a9cce5ac6754c98c36a6811e1c1a4d38d63b3`，SDK tgz SHA-256 为 `2162954eb6990ace6509868822bbb779b3ebae170fd1552e58dfac70e360e1c5`。
+- Chromium `153.0.8010.53`、Firefox `144.0.2`、WebKit `26.0` 各通过 smoke 8、交互 6、布局 6、焦点 4、性能 6 项；Chromium 另通过 3 项 CDP 触控检查。全部报告 `pageErrors`、`consoleErrors`、`runErrors` 均为 0。逐项报告、摘要和字节清单见 [当前候选复验记录](acceptance/browser-candidate-2026-09-22-r2/README.md)。
+- 许可证严格门禁仍为 0 errors、1 review item、0 unresolved vendor components；`binary@0.3.0` 缺少可验证的完整授权正文，故仍不发布 `1.0.0` 或稳定 npm 标签。
+
 ### 2026-09-22 — SDK 生命周期修复后的主线复验
 
 - 当前 `main` 工作树干净；`npm test` 通过 163 个测试文件、2,306 项测试。`format:check`、`git diff --check`、`check:sdk`、`check:api`、`check:site-runtime` 和 `check:reproducibility` 均通过。
