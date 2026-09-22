@@ -4,8 +4,8 @@
 
 候选绑定：
 
-- 站点 `dist/` 摘要：`fec2fa53ea4e8d5813e8cdbbb7fd7e6a6e70cd8a2ab4c054316326efe5c2c858`
-- SDK `lumina-report-sdk-0.29.0.tgz` 摘要：`47099f8b5bf603a6054ec5c234acdd9a36f91350bb5f0111395b1705177ca940`
+- 站点 `dist/` 摘要：`c99c844e027a38896707b0dfabc4d049f23525231e26945053231c80a69acc5e`
+- SDK `lumina-report-sdk-0.29.0.tgz` 摘要：`ed85fc15d9dff7c7d3cdd457805b3bb88fcdea2da4aac8b729a399cec376a670`
 - Node `v24.14.0`、npm `11.9.0`、macOS `darwin/arm64`
 - Playwright 模块：`/tmp/lumina-playwright-48011/node_modules/playwright/index.mjs`
 - 本地服务基路径：`http://127.0.0.1:4274/lumina-sheets/`

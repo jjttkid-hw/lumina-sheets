@@ -4,6 +4,94 @@
   "interpretation": "Exact source coverage against integrity-verified official npm archives. Matching source bytes do not uniquely identify the historical build version; notice text is preserved only when present in the archive.",
   "records": [
     {
+      "name": "asn1.js",
+      "version": "5.4.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/asn1.js/5.4.1",
+      "tarball": "https://registry.npmjs.org/asn1.js/-/asn1.js-5.4.1.tgz",
+      "integrity": "sha512-+I//4cYPccV8LdmBLiX8CYvf9Sp3vQsrqu2QNXRcrbiWvcx/UdlFiqUJJzxRQxgsZmvhXhn4cSKeSmoFjVdupA==",
+      "archive": "asn1.js-5.4.1.tgz",
+      "archiveSha256": "9cc59e0b515f254ee8ecc9fe584d6fb02d86b2a10f6de6c5d6923ef0d8f8c2a1",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1.js",
+          "archivePath": "package/lib/asn1.js",
+          "sha256": "3c28dbbad70ade3a02eb723ec14e0bf1d8d2454c0e1df15b279a639dcd8d0921"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/api.js",
+          "archivePath": "package/lib/asn1/api.js",
+          "sha256": "bb26a4a9dc4b4eb6498ba567d5edef88eed9f716f922d98f26abf9e9a516a960"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/base/buffer.js",
+          "archivePath": "package/lib/asn1/base/buffer.js",
+          "sha256": "cd360f0a80cab827d3828bd0f62b4bdb9a1e720d8af7bb6ae1856ee10cbb2f95"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/base/index.js",
+          "archivePath": "package/lib/asn1/base/index.js",
+          "sha256": "411b775d3e4098f6e1fbdd665160f246338ad8a64f6d998f54cae472fecc5d9f"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/base/node.js",
+          "archivePath": "package/lib/asn1/base/node.js",
+          "sha256": "29408f47178558c942b814695c203415ed4345fb0e40fedd9a7cd779d0f68b86"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/base/reporter.js",
+          "archivePath": "package/lib/asn1/base/reporter.js",
+          "sha256": "8519bddfc5de8a49a96f82a01ade31b1233301cf70b6ccdbaf3e0cc377bbfd01"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/constants/der.js",
+          "archivePath": "package/lib/asn1/constants/der.js",
+          "sha256": "a9186f2b120b3a4a6875a895a03b300a05e15a362695d5ddeb46967d7621552f"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/constants/index.js",
+          "archivePath": "package/lib/asn1/constants/index.js",
+          "sha256": "01aaefdd24bf1869347b14c35dc5d9b350a12eb3b80852e1b31477b2c52a0b18"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/decoders/der.js",
+          "archivePath": "package/lib/asn1/decoders/der.js",
+          "sha256": "a8d8c8dc73b0b7732138d3e2a3099f877f2dc5ea22ed89f273976cd425ae7c08"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/decoders/index.js",
+          "archivePath": "package/lib/asn1/decoders/index.js",
+          "sha256": "655474512dc950b76564d76814651cdb9518df98c799e3b53fe49cb6a48b2502"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/decoders/pem.js",
+          "archivePath": "package/lib/asn1/decoders/pem.js",
+          "sha256": "e33d58fc00591be586d5f1fe2e7ae7d26a718530ca9b496244178c0d240d7d7b"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/encoders/der.js",
+          "archivePath": "package/lib/asn1/encoders/der.js",
+          "sha256": "ac3ce693c7b6e89708f6ab7c44de6b1b672a4eaf1a8bd192e55e4f16da1150de"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/encoders/index.js",
+          "archivePath": "package/lib/asn1/encoders/index.js",
+          "sha256": "9ca424f5991c7590c1d81b5faf53d2f699b7812533e48e505c203839e762cef7"
+        },
+        {
+          "sourcePath": "node_modules/asn1.js/lib/asn1/encoders/pem.js",
+          "archivePath": "package/lib/asn1/encoders/pem.js",
+          "sha256": "3e83d029ad6ce53f88851984f64d66c6fd0b1461db1cd54b315de503fd931b5e"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "251ecdcdb2bafa7b106187a8cce96f322d0074c66e557c3c94cb49c769970408"
+        }
+      ]
+    },
+    {
       "name": "base64-js",
       "version": "1.5.1",
       "declaredLicense": "MIT",
@@ -48,6 +136,103 @@
           "archivePath": "package/README.md",
           "sha256": "d506a235e27d2912c7c93be50beaaffaa9cd11e5c3852acc08362005108b61dc",
           "text": "# Brorand\n\n#### LICENSE\n\nThis software is licensed under the MIT License.\n\nCopyright Fedor Indutny, 2014.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to permit\npersons to whom the Software is furnished to do so, subject to the\nfollowing conditions:\n\nThe above copyright notice and this permission notice shall be included\nin all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\nOR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\nNO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\nDAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\nOTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\nUSE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "browser-pack",
+      "version": "6.1.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/browser-pack/6.1.0",
+      "tarball": "https://registry.npmjs.org/browser-pack/-/browser-pack-6.1.0.tgz",
+      "integrity": "sha512-erYug8XoqzU3IfcU8fUgyHqyOXqIE4tUTTQ+7mqUjQlvnXkOO6OlT9c/ZoJVHYoAaqGxr09CN53G7XIsO4KtWA==",
+      "archive": "browser-pack-6.1.0.tgz",
+      "archiveSha256": "13db68f814f0b0b943de116b36eee620f23eb857fba80c342791288cf0320dd1",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browser-pack/_prelude.js",
+          "archivePath": "package/_prelude.js",
+          "sha256": "1d549fc758217477cc0b2f8ababee6c244df66ad9a618f6ac5d1b6e5cae3c0b2"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b"
+        }
+      ]
+    },
+    {
+      "name": "browserify-cipher",
+      "version": "1.0.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/browserify-cipher/1.0.1",
+      "tarball": "https://registry.npmjs.org/browserify-cipher/-/browserify-cipher-1.0.1.tgz",
+      "integrity": "sha512-sPhkz0ARKbf4rRQt2hTpAHqn47X3llLkUGn+xEJzLjwY8LRs2p0v7ljvI5EyoRO/mexrNunNECisZs+gw2zz1w==",
+      "archive": "browserify-cipher-1.0.1.tgz",
+      "archiveSha256": "2d28155c2ae999ae5b69a6223f591ffcced3985d607d5d63238327327c6a06e4",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browserify-cipher/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "50af71f0b25355a5e37faa02178916734d68c69ba4ae016acf918c21e04ab4d8"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "dc09aa476634db0dbae1a296f099d5bd39e27c96b876d4d20b236fa565002bb6"
+        }
+      ]
+    },
+    {
+      "name": "browserify-des",
+      "version": "1.0.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/browserify-des/1.0.2",
+      "tarball": "https://registry.npmjs.org/browserify-des/-/browserify-des-1.0.2.tgz",
+      "integrity": "sha512-BioO1xf3hFwz4kc6iBhI3ieDFompMhrMlnDFC4/0/vd5MokpuAc3R+LYbwTA9A5Yc9pq9UYPqffKpW2ObuwX5A==",
+      "archive": "browserify-des-1.0.2.tgz",
+      "archiveSha256": "b7503b6a58abbd1a3b0f0aabfcd978edff54ad33ebf97a6f0bbdf45bebda9421",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browserify-des/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "4113d6c7a3eecb19d461c1b7c2842273308eab0a5eda20e080a16f271cc84a30"
+        },
+        {
+          "sourcePath": "node_modules/browserify-des/modes.js",
+          "archivePath": "package/modes.js",
+          "sha256": "a94b289311c43405e49553644202a5287d7362238579d1c3cd77daa95f24ead8"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/license",
+          "sha256": "e54f1a2edadb1d8d3a482bcd0712acad2947337ae35e40ca34b22eb77940863f"
+        }
+      ]
+    },
+    {
+      "name": "browserify-rsa",
+      "version": "4.1.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/browserify-rsa/4.1.0",
+      "tarball": "https://registry.npmjs.org/browserify-rsa/-/browserify-rsa-4.1.0.tgz",
+      "integrity": "sha512-AdEER0Hkspgno2aR97SAf6vi0y0k8NuOpGnVH3O99rcA5Q6sh8QxcngtHuJ6uXwnfAXNM4Gn1Gb7/MV1+Ymbog==",
+      "archive": "browserify-rsa-4.1.0.tgz",
+      "archiveSha256": "489ced11ec555e756dfcf34a05786d06e6e1c1e778479e0208aa13f3da8c3268",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/browserify-rsa/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "da9e4007152e7948ad238bac946325a5a9dedbc7d741bff3c2efd79c98884779"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "d7314f44f0873f703b3cbaad5d60b947eb252a70072df586488e20a236c1223f"
         }
       ]
     },
@@ -122,6 +307,85 @@
       ]
     },
     {
+      "name": "create-ecdh",
+      "version": "4.0.4",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/create-ecdh/4.0.4",
+      "tarball": "https://registry.npmjs.org/create-ecdh/-/create-ecdh-4.0.4.tgz",
+      "integrity": "sha512-mf+TCx8wWc9VpuxfP2ht0iSISLZnt0JgWlrOKZiNqyUZWnjIaCIVNQArMHnCZKfEYRg6IM7A+NeJoN8gf/Ws0A==",
+      "archive": "create-ecdh-4.0.4.tgz",
+      "archiveSha256": "990182d062df4f280785c5eac9cd0c28d10d0105b93fcf53e4580c3901713ce1",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/create-ecdh/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "d1b3b79f6494b3f759c06cda78df85b60cf69ec836b11278685bac8df2a234be"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "d4ad87ad0bb7d57c17ae73b46e064243b972edc3036c38c222172c9600a20b56"
+        }
+      ]
+    },
+    {
+      "name": "create-hash",
+      "version": "1.2.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/create-hash/1.2.0",
+      "tarball": "https://registry.npmjs.org/create-hash/-/create-hash-1.2.0.tgz",
+      "integrity": "sha512-z00bCGNHDG8mHAkP7CtT1qVu+bFQUPjYq/4Iv3C3kWjTFV10zIjfSoeqXo9Asws8gwSHDGj/hl2u4OGIjapeCg==",
+      "archive": "create-hash-1.2.0.tgz",
+      "archiveSha256": "fe4079490bd932ccf1f1530f49a88aaca57dbdb6f337c9144749a225e2014bad",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/create-hash/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "c9c2a16630be4c8ed56319322710a952609dc2088e2064e2ee0a648187da65bb"
+        },
+        {
+          "sourcePath": "node_modules/create-hash/md5.js",
+          "archivePath": "package/md5.js",
+          "sha256": "4f8af7f660ba72d8e582a31e2e8b433a9f37ab214414b43c4b4678375b02af6b"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "cf93ad78cfd5f3523248675aeb2a46e003367596883d4fa26a0c38d553ab0f61"
+        }
+      ]
+    },
+    {
+      "name": "create-hmac",
+      "version": "1.1.7",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/create-hmac/1.1.7",
+      "tarball": "https://registry.npmjs.org/create-hmac/-/create-hmac-1.1.7.tgz",
+      "integrity": "sha512-MJG9liiZ+ogc4TzUwuvbER1JRdgvUFSB5+VR/g5h82fGaIRWMWddtKBHi7/sVhfjQZ6SehlyhvQYrcYkaUIpLg==",
+      "archive": "create-hmac-1.1.7.tgz",
+      "archiveSha256": "fd77daf860b84566d8ccc30561eaba00a9efc4fbba94d4a5f417f4f636337aa7",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/create-hmac/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "870f53b70b38dff83f80980e4d54f9fdbdacda61076d547a2df8c3fed4f81226"
+        },
+        {
+          "sourcePath": "node_modules/create-hmac/legacy.js",
+          "archivePath": "package/legacy.js",
+          "sha256": "6cc64aff7c2effc1771818b786f2745fe5ce4177d684451e1876db6c17ec00fa"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "cf93ad78cfd5f3523248675aeb2a46e003367596883d4fa26a0c38d553ab0f61"
+        }
+      ]
+    },
+    {
       "name": "dayjs",
       "version": "1.11.10",
       "declaredLicense": "MIT",
@@ -156,6 +420,54 @@
       ]
     },
     {
+      "name": "des.js",
+      "version": "1.1.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/des.js/1.1.0",
+      "tarball": "https://registry.npmjs.org/des.js/-/des.js-1.1.0.tgz",
+      "integrity": "sha512-r17GxjhUCjSRy8aiJpr8/UadFIzMzJGexI3Nmz4ADi9LYSFx4gTBp80+NaX/YsXWWLhpZ7v/v/ubEc/bCNfKwg==",
+      "archive": "des.js-1.1.0.tgz",
+      "archiveSha256": "9a06b8294e38ca9bb70a6257290cc217e9172dfc0059f7639f59f074a924ef9d",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/des.js/lib/des.js",
+          "archivePath": "package/lib/des.js",
+          "sha256": "66692139a8808069342c4f10718224eab0073169c548cb61b8232e224b4a85e0"
+        },
+        {
+          "sourcePath": "node_modules/des.js/lib/des/cbc.js",
+          "archivePath": "package/lib/des/cbc.js",
+          "sha256": "495d0393a1ea82e22adc66e86b41711709bb5a3fb478edadfbc226d09a34b013"
+        },
+        {
+          "sourcePath": "node_modules/des.js/lib/des/cipher.js",
+          "archivePath": "package/lib/des/cipher.js",
+          "sha256": "fa92086ab2851f83b56df2257a6fe634d70ddceb2ff5289c86c2d7d2fcf74afd"
+        },
+        {
+          "sourcePath": "node_modules/des.js/lib/des/des.js",
+          "archivePath": "package/lib/des/des.js",
+          "sha256": "54192db58062af95acc53450048918ebe0af20f9fd6bde0a3b8969715b529012"
+        },
+        {
+          "sourcePath": "node_modules/des.js/lib/des/ede.js",
+          "archivePath": "package/lib/des/ede.js",
+          "sha256": "e8081679c3c9990004ea1663e2757fdb93b2349540867bcb2ba02821702ddb40"
+        },
+        {
+          "sourcePath": "node_modules/des.js/lib/des/utils.js",
+          "archivePath": "package/lib/des/utils.js",
+          "sha256": "a4e3feb244f065dcc2fdb819dfb849b8a3544bfd70ab2388afde038a66a3ef13"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/README.md",
+          "sha256": "7bd8e5c11d17eac3766b25d421e158cdb7bacb0bcc520ac4a614520b7fd56c08"
+        }
+      ]
+    },
+    {
       "name": "events",
       "version": "2.1.0",
       "declaredLicense": "MIT",
@@ -176,6 +488,130 @@
           "archivePath": "package/LICENSE",
           "sha256": "631987b7616a325a5b97566c232418481ddf7dbb5ecadefb991e791876cc2599",
           "text": "MIT\n\nCopyright Joyent, Inc. and other Node contributors.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to permit\npersons to whom the Software is furnished to do so, subject to the\nfollowing conditions:\n\nThe above copyright notice and this permission notice shall be included\nin all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\nOR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\nNO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\nDAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\nOTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\nUSE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "evp_bytestokey",
+      "version": "1.0.3",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/evp_bytestokey/1.0.3",
+      "tarball": "https://registry.npmjs.org/evp_bytestokey/-/evp_bytestokey-1.0.3.tgz",
+      "integrity": "sha512-/f2Go4TognH/KvCISP7OUsHn85hT9nUkxxA9BEWxFn+Oj9o8ZNLm/40hdlgSLyuOimsrTKLUMEorQexp/aPQeA==",
+      "archive": "evp_bytestokey-1.0.3.tgz",
+      "archiveSha256": "c10a145896ed84fb886f273bd583d3895390561d6b513b17f5cf70312f7c40e1",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/evp_bytestokey/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "63da9aaefd647d966944cf464f3fd71c472a8bb29c204c9329340350db8b5043"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "cf93ad78cfd5f3523248675aeb2a46e003367596883d4fa26a0c38d553ab0f61"
+        }
+      ]
+    },
+    {
+      "name": "hash.js",
+      "version": "1.1.7",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/hash.js/1.1.7",
+      "tarball": "https://registry.npmjs.org/hash.js/-/hash.js-1.1.7.tgz",
+      "integrity": "sha512-taOaskGt4z4SOANNseOviYDvjEJinIkRgmp7LbKP2YTTmVxWBl87s/uzK9r+44BclBSp2X7K1hqeNfz9JbBeXA==",
+      "archive": "hash.js-1.1.7.tgz",
+      "archiveSha256": "8eadfe0cbd33052fedb65ed4bf9acfe4645eafaabf877d99e3b1d9d771668ca6",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash.js",
+          "archivePath": "package/lib/hash.js",
+          "sha256": "2c2b7f9979522553acf1722b8d046f280a6364a6ceab10323ababf79247830ef"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/common.js",
+          "archivePath": "package/lib/hash/common.js",
+          "sha256": "e7f0b5c30a4fd0630cef07f95c54c96375c11a4666c77e5552251d6fa1409ef3"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/hmac.js",
+          "archivePath": "package/lib/hash/hmac.js",
+          "sha256": "88f1981433aa7bd1d53628ecec6dcb0dcaf72fba02b839398902dfea14e346ad"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/ripemd.js",
+          "archivePath": "package/lib/hash/ripemd.js",
+          "sha256": "3f4884df0b5b47b4ba3d8170de1b61b1a0411da3cec3769f6c6eda523ef7e5d4"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/sha.js",
+          "archivePath": "package/lib/hash/sha.js",
+          "sha256": "304f42a7945c5721bae922599e5a6e83fc47fdac08d540a15ad01fffa37ed161"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/sha/1.js",
+          "archivePath": "package/lib/hash/sha/1.js",
+          "sha256": "122290d248cdb95b0d8e272a7bc0d273cae6cd647a69cd5bca44aa29f1030da4"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/sha/224.js",
+          "archivePath": "package/lib/hash/sha/224.js",
+          "sha256": "b9479b26609538edca7a0a8631413fc15ceaf72777c4c2c0048489bd794f9aec"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/sha/256.js",
+          "archivePath": "package/lib/hash/sha/256.js",
+          "sha256": "1a7ad8ed3c9f3ffa9c40097dcac66eae788c34a1210cbb70c7efbee7c1c07635"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/sha/384.js",
+          "archivePath": "package/lib/hash/sha/384.js",
+          "sha256": "9e3230ff7f6dfce3f490156dc71bf99b3fa32a3d4c94b0166d13b5f0e2d769ca"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/sha/512.js",
+          "archivePath": "package/lib/hash/sha/512.js",
+          "sha256": "bccd07a74dae7a719c9da801da393970bdb7ad999a0a61bf306cad5f400ca63a"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/sha/common.js",
+          "archivePath": "package/lib/hash/sha/common.js",
+          "sha256": "28c0b8add8bc208930f5f9ca6e30844bc6d7eba06700e4fa04adc79d26807185"
+        },
+        {
+          "sourcePath": "node_modules/hash.js/lib/hash/utils.js",
+          "archivePath": "package/lib/hash/utils.js",
+          "sha256": "a4ca67e804ab52b5459c9c3e5e966043d53fc519213738d00c1de9e4d4d6a6e1"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/README.md",
+          "sha256": "5df660fe115c8ddcdb81c5d733c117b94abb706b91c26dac3ab7dc817dd9ba71"
+        }
+      ]
+    },
+    {
+      "name": "hmac-drbg",
+      "version": "1.0.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/hmac-drbg/1.0.1",
+      "tarball": "https://registry.npmjs.org/hmac-drbg/-/hmac-drbg-1.0.1.tgz",
+      "integrity": "sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==",
+      "archive": "hmac-drbg-1.0.1.tgz",
+      "archiveSha256": "321370d938a49a55cbdfcef124f63cde6d3a947b7231aeab1a5ba0ca62e35962",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/hmac-drbg/lib/hmac-drbg.js",
+          "archivePath": "package/lib/hmac-drbg.js",
+          "sha256": "5b89c7d8147fbba4c89d686d8ea08cd350d77eb994bf9a41e3904a3ffe7e6161"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/README.md",
+          "sha256": "31de905f4580f7a7f0eef6f2f09be85b261c64560bd072bc58d9b61ae225551f"
         }
       ]
     },
@@ -443,6 +879,52 @@
       ]
     },
     {
+      "name": "md5.js",
+      "version": "1.3.5",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/md5.js/1.3.5",
+      "tarball": "https://registry.npmjs.org/md5.js/-/md5.js-1.3.5.tgz",
+      "integrity": "sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg==",
+      "archive": "md5.js-1.3.5.tgz",
+      "archiveSha256": "06777b61b01229c755ab4c6f4208d8f692222db4201abc9263877e4415693d03",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/md5.js/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "4bcdf735109ff63eb5b5363c75ff196b30d8fb172d0fb7c6aa82f0453fd934a6"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "898f204abbbbde58c6230a31842c59aeb8040fbcffa924db28e6d0b1d7631a3a"
+        }
+      ]
+    },
+    {
+      "name": "miller-rabin",
+      "version": "4.0.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/miller-rabin/4.0.1",
+      "tarball": "https://registry.npmjs.org/miller-rabin/-/miller-rabin-4.0.1.tgz",
+      "integrity": "sha512-115fLhvZVqWwHPbClyntxEVfVDfl9DLLTuJvq3g2O/Oxi8AiNouAHvDSzHS0viUJc+V5vm3eq91Xwqn9dp4jRA==",
+      "archive": "miller-rabin-4.0.1.tgz",
+      "archiveSha256": "55bc46e7a4150804a546e634a971ea28844b47abbbe3136cb895951d84d6b8c9",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/miller-rabin/lib/mr.js",
+          "archivePath": "package/lib/mr.js",
+          "sha256": "4a4dba6e5936bbc0acb410a1b4eccf2c994e5deb91a1dd63ea7f2df612f74bca"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/README.md",
+          "sha256": "cca039d99212195a60c68f10f717c22fb53089df8eefca0aaab77515e858019a"
+        }
+      ]
+    },
+    {
       "name": "minimalistic-assert",
       "version": "1.0.1",
       "declaredLicense": "ISC",
@@ -462,6 +944,77 @@
         {
           "archivePath": "package/LICENSE",
           "sha256": "136fee1129ea96ce18b41c26a72f5d4ba196ee41bfd73b55d0b8509cdda148e9"
+        }
+      ]
+    },
+    {
+      "name": "minimalistic-crypto-utils",
+      "version": "1.0.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/minimalistic-crypto-utils/1.0.1",
+      "tarball": "https://registry.npmjs.org/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz",
+      "integrity": "sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==",
+      "archive": "minimalistic-crypto-utils-1.0.1.tgz",
+      "archiveSha256": "f35f6e02efe1b2d6e8764fea48ef6d1211693c838f54d6ef50f0bc9fe6fa9db3",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/minimalistic-crypto-utils/lib/utils.js",
+          "archivePath": "package/lib/utils.js",
+          "sha256": "fb5bcdfa3631a0ac40a83911d696ddc4e615f38a2cca560600fc0101479af727"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/README.md",
+          "sha256": "64608431631207282f74532d8b9eeda5cb42fced09c663f21e1462987270950c"
+        }
+      ]
+    },
+    {
+      "name": "pbkdf2",
+      "version": "3.1.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/pbkdf2/3.1.2",
+      "tarball": "https://registry.npmjs.org/pbkdf2/-/pbkdf2-3.1.2.tgz",
+      "integrity": "sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==",
+      "archive": "pbkdf2-3.1.2.tgz",
+      "archiveSha256": "3df5733b55d62726e968bc1661ed06b505345ed63b3503951b9e3bc9b46ed65f",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/pbkdf2/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "20320332a0b5b4c033c0d7eb564133ba035b62742a803d37967942d3b4f9a2c5"
+        },
+        {
+          "sourcePath": "node_modules/pbkdf2/lib/async.js",
+          "archivePath": "package/lib/async.js",
+          "sha256": "ff18ff0f61cd78081ce3a1a245fd66e43981158967b2a5faa09f56fc51744c45"
+        },
+        {
+          "sourcePath": "node_modules/pbkdf2/lib/default-encoding.js",
+          "archivePath": "package/lib/default-encoding.js",
+          "sha256": "3c65981189982203d47fcf04b809ebca0e40738bf1446eeebd8b882d5aa9806c"
+        },
+        {
+          "sourcePath": "node_modules/pbkdf2/lib/precondition.js",
+          "archivePath": "package/lib/precondition.js",
+          "sha256": "2fc367d532f5ca9144157403192146b4e31526016d6146f851a10582afb8aa96"
+        },
+        {
+          "sourcePath": "node_modules/pbkdf2/lib/sync-browser.js",
+          "archivePath": "package/lib/sync-browser.js",
+          "sha256": "027515bafd890f6188c8115669999fc4b8dceae00efecf2701d0ec0fcee01bed"
+        },
+        {
+          "sourcePath": "node_modules/pbkdf2/lib/to-buffer.js",
+          "archivePath": "package/lib/to-buffer.js",
+          "sha256": "8d9708909c603cfbc95129ff199c06f93eec994adc076e677336863f516fffb6"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "a9667a8bf55e7f20cf894cb47774f94ebd4eb366408aafb980f1f6547bcdc10a"
         }
       ]
     },
@@ -514,6 +1067,54 @@
       ]
     },
     {
+      "name": "public-encrypt",
+      "version": "4.0.3",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/public-encrypt/4.0.3",
+      "tarball": "https://registry.npmjs.org/public-encrypt/-/public-encrypt-4.0.3.tgz",
+      "integrity": "sha512-zVpa8oKZSz5bTMTFClc1fQOnyyEzpl5ozpi1B5YcvBrdohMjH2rfsBtyXcuNuwjsDIXmBYlF2N5FlJYhR29t8Q==",
+      "archive": "public-encrypt-4.0.3.tgz",
+      "archiveSha256": "7f0eeca034a7bf643451b10706af9e3ac5f1501a7ab022db4d25bcf011c2014b",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/public-encrypt/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "7570489fe7a111eff78b259bc235a7b96232fcab85a23c5bd79b09d5f009735f"
+        },
+        {
+          "sourcePath": "node_modules/public-encrypt/mgf.js",
+          "archivePath": "package/mgf.js",
+          "sha256": "be8843a9fee40eeba82d4ecf9ee68df16ce5e7b89ce063f5edc294bf3969a29f"
+        },
+        {
+          "sourcePath": "node_modules/public-encrypt/privateDecrypt.js",
+          "archivePath": "package/privateDecrypt.js",
+          "sha256": "7e3cb5c0ad0398928560d1a7569dceffd6deaff02081e5c8d2b86f91a06736db"
+        },
+        {
+          "sourcePath": "node_modules/public-encrypt/publicEncrypt.js",
+          "archivePath": "package/publicEncrypt.js",
+          "sha256": "94f55afb907ca6943b33c0f933436c83332841ecd6a7de13a11b67f029c776ed"
+        },
+        {
+          "sourcePath": "node_modules/public-encrypt/withPublic.js",
+          "archivePath": "package/withPublic.js",
+          "sha256": "5a10fae154bb06fd7a78c32f1b8603549e0d58eafb1fb4050e0df1c3b9496925"
+        },
+        {
+          "sourcePath": "node_modules/public-encrypt/xor.js",
+          "archivePath": "package/xor.js",
+          "sha256": "9d6e61ca6df4142294971372cdf4ba02c016d2d0f7d74aefb0d466cd6071024e"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "db6109f994692150ed82cd904bb053c73b97b23678bf52047f747bfec11e1934"
+        }
+      ]
+    },
+    {
       "name": "randombytes",
       "version": "2.1.0",
       "declaredLicense": "MIT",
@@ -527,6 +1128,29 @@
           "sourcePath": "node_modules/randombytes/browser.js",
           "archivePath": "package/browser.js",
           "sha256": "c5245d2d375ccb7dd5b42cd88b7c23b771ba6c759e9d081174db2caff1346a50"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "ddc0dd5947bd2966b9a4cfde098566b011de0acfbe7814536955636ce9e3eced"
+        }
+      ]
+    },
+    {
+      "name": "randomfill",
+      "version": "1.0.4",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/randomfill/1.0.4",
+      "tarball": "https://registry.npmjs.org/randomfill/-/randomfill-1.0.4.tgz",
+      "integrity": "sha512-87lcbR8+MhcWcUiQ+9e+Rwx8MyR2P7qnt15ynUlbm3TU/fjbgz4GsvfSUDTemtCCtVCqb4ZcEFlyPNTh9bBTLw==",
+      "archive": "randomfill-1.0.4.tgz",
+      "archiveSha256": "3b0c2fec576a572e139563606102e0ffd9dc8a2853525eb7aa1a30e0de754fa6",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/randomfill/browser.js",
+          "archivePath": "package/browser.js",
+          "sha256": "74ce43b3e4cd489851e353e3a930e71eca85ab5a32e28a7a318cb71280d92bf1"
         }
       ],
       "notices": [
@@ -560,6 +1184,29 @@
       ]
     },
     {
+      "name": "ripemd160",
+      "version": "2.0.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/ripemd160/2.0.2",
+      "tarball": "https://registry.npmjs.org/ripemd160/-/ripemd160-2.0.2.tgz",
+      "integrity": "sha512-ii4iagi25WusVoiC4B4lq7pbXfAp3D9v5CwfkY33vffw2+pkDjY1D8GaN7spsxvCSx8dkPqOZCEZyfxcmJG2IA==",
+      "archive": "ripemd160-2.0.2.tgz",
+      "archiveSha256": "44493c512eb8157f294dbfc44dfe38757b81f357d53c4030fdab6dc83f6f94ba",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/ripemd160/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "ca4c30d266490ce475871a6cf970eb7290fd3b01a08dfd09ee6efc0a6165ee93"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "4847d2fd9ed54cc006dd79f5a14fa5dd35eb8274dca511418166e195e277c05b"
+        }
+      ]
+    },
+    {
       "name": "safer-buffer",
       "version": "2.1.2",
       "declaredLicense": "MIT",
@@ -579,6 +1226,87 @@
         {
           "archivePath": "package/LICENSE",
           "sha256": "4bc935e71be198c67ddf3c2b5fddb195f6edc182bfc155a96a6db61b44b494b9"
+        }
+      ]
+    },
+    {
+      "name": "sha.js",
+      "version": "2.4.11",
+      "declaredLicense": "(MIT AND BSD-3-Clause)",
+      "registry": "https://registry.npmjs.org/sha.js/2.4.11",
+      "tarball": "https://registry.npmjs.org/sha.js/-/sha.js-2.4.11.tgz",
+      "integrity": "sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==",
+      "archive": "sha.js-2.4.11.tgz",
+      "archiveSha256": "a3ccf27df7edd393c7526cf608620f50bec8ef284975e59adb24ff4eb8d36c49",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/sha.js/hash.js",
+          "archivePath": "package/hash.js",
+          "sha256": "4cc85538f753e9035ceee03a91e172858650581fd8fdda4d385fb9fd85795f85"
+        },
+        {
+          "sourcePath": "node_modules/sha.js/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "bfd0555063040de547a98928811c656879b5fa3c4a4f91e948eeb8f4b54830a1"
+        },
+        {
+          "sourcePath": "node_modules/sha.js/sha.js",
+          "archivePath": "package/sha.js",
+          "sha256": "1d318916433bd8c42e901def23b0bdd9fe5c5d076f4afb95ac8a7bda42a23a2c"
+        },
+        {
+          "sourcePath": "node_modules/sha.js/sha1.js",
+          "archivePath": "package/sha1.js",
+          "sha256": "1d0553fc00a5c70e852adcbce2c518693201e53adaa4557d7ac64601ed1b16d4"
+        },
+        {
+          "sourcePath": "node_modules/sha.js/sha224.js",
+          "archivePath": "package/sha224.js",
+          "sha256": "edfccd40fad9502c3b2439ff9baef862687eff54b454af156ba5050f495b036d"
+        },
+        {
+          "sourcePath": "node_modules/sha.js/sha256.js",
+          "archivePath": "package/sha256.js",
+          "sha256": "2627dd4e42c86fca90a8aa7341558b912138eaff2260f3207f31941b32a81ab2"
+        },
+        {
+          "sourcePath": "node_modules/sha.js/sha384.js",
+          "archivePath": "package/sha384.js",
+          "sha256": "97926be66731d41fa016a4e04a4c91b155f66c150479ae93c8b7caa212c0526a"
+        },
+        {
+          "sourcePath": "node_modules/sha.js/sha512.js",
+          "archivePath": "package/sha512.js",
+          "sha256": "a80964d4c536dfd136f315cbb686a0a57fb9fc4c70534f2c5470df78a1f8039c"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "58dcf38be1438f739412b87eb70d64bf00e9976d529bb119f700d8b3167924f0"
+        }
+      ]
+    },
+    {
+      "name": "stream-browserify",
+      "version": "2.0.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/stream-browserify/2.0.2",
+      "tarball": "https://registry.npmjs.org/stream-browserify/-/stream-browserify-2.0.2.tgz",
+      "integrity": "sha512-nX6hmklHs/gr2FuxYDltq8fJA1GDlxKQCz8O/IM4atRqBH8OORmBNgfvW5gG10GT/qQ9u0CzIvr2X5Pkt6ntqg==",
+      "archive": "stream-browserify-2.0.2.tgz",
+      "archiveSha256": "1b977256eef691f7a8602397e9d88b6883baf72ed45d54391b1dd6d4ed921467",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/stream-browserify/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "8eedc39a34db9a219bb273ca77f2af4d826f41e047f2a41308fa3e0bb7b753de"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "ff151c00207c908581639851dd8504ce4255be0650b2b236edec2aa90342b0cd"
         }
       ]
     },
@@ -603,6 +1331,57 @@
           "archivePath": "package/LICENSE",
           "sha256": "11f2aafb37d06b3ee5bdaf06e9811141d0da05263c316f3d627f45c20d43261b",
           "text": "Node.js is licensed for use as follows:\n\n\"\"\"\nCopyright Node.js contributors. All rights reserved.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE.\n\"\"\"\n\nThis license applies to parts of Node.js originating from the\nhttps://github.com/joyent/node repository:\n\n\"\"\"\nCopyright Joyent, Inc. and other Node contributors. All rights reserved.\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE.\n\"\"\"\n\n"
+        }
+      ]
+    },
+    {
+      "name": "timers-browserify",
+      "version": "1.4.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/timers-browserify/1.4.2",
+      "tarball": "https://registry.npmjs.org/timers-browserify/-/timers-browserify-1.4.2.tgz",
+      "integrity": "sha512-PIxwAupJZiYU4JmVZYwXp9FKsHMXb5h0ZEFyuXTAn8WLHOlcij+FEcbrvDsom1o5dr1YggEtFbECvGCW2sT53Q==",
+      "archive": "timers-browserify-1.4.2.tgz",
+      "archiveSha256": "36262102bd53e991450aaec4ae8e897e1d03a6bb4b55325be7c70324b8cd835e",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/timers-browserify/main.js",
+          "archivePath": "package/main.js",
+          "sha256": "b746c189602b8905c86c58850368d88071b128789727615a2aac89a18063cfec"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE.md",
+          "sha256": "d5f14c3258420dfe5a3b641a143d6e6dd90eabb5962244d937e25699c3a45ec9"
+        }
+      ]
+    },
+    {
+      "name": "util",
+      "version": "0.10.4",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/util/0.10.4",
+      "tarball": "https://registry.npmjs.org/util/-/util-0.10.4.tgz",
+      "integrity": "sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==",
+      "archive": "util-0.10.4.tgz",
+      "archiveSha256": "399866c6c4a9be203246125c03ceaf6edc70eb3880971c0d62fb4c4eb3467a03",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/util/support/isBufferBrowser.js",
+          "archivePath": "package/support/isBufferBrowser.js",
+          "sha256": "a19427e215657e8c4a83a9a8376e81d73e52a9383002e6af901282be04546256"
+        },
+        {
+          "sourcePath": "node_modules/util/util.js",
+          "archivePath": "package/util.js",
+          "sha256": "97e1e87e074819dc1bca11437e9e0e3c2d1beaaed1b8e05d7802d876f3798ecc"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "6239c6144c31e58cf925c34483606969c555574d64ffa96518ab5d7f45c75d43"
         }
       ]
     },

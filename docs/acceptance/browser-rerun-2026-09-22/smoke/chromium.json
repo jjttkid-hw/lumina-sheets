@@ -3,40 +3,40 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "153.0.8010.53",
-  "executedAt": "2026-09-22T04:52:20.077Z",
+  "executedAt": "2026-09-22T05:34:47.710Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "fec2fa53ea4e8d5813e8cdbbb7fd7e6a6e70cd8a2ab4c054316326efe5c2c858",
-  "artifactSha256": "47099f8b5bf603a6054ec5c234acdd9a36f91350bb5f0111395b1705177ca940",
+  "siteSha256": "c99c844e027a38896707b0dfabc4d049f23525231e26945053231c80a69acc5e",
+  "artifactSha256": "ed85fc15d9dff7c7d3cdd457805b3bb88fcdea2da4aac8b729a399cec376a670",
   "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
   "checks": [
     {
       "name": "workspace-render",
       "status": "passed",
-      "elapsedMs": 916,
+      "elapsedMs": 692,
       "details": {
         "width": 860,
-        "height": 471
+        "height": 470
       }
     },
     {
       "name": "create-edit-history",
       "status": "passed",
-      "elapsedMs": 644
+      "elapsedMs": 683
     },
     {
       "name": "indexeddb-reload",
       "status": "passed",
-      "elapsedMs": 143
+      "elapsedMs": 114
     },
     {
       "name": "zoom-narrow-layout",
       "status": "passed",
-      "elapsedMs": 153,
+      "elapsedMs": 157,
       "details": {
         "client": 390,
         "scroll": 390
@@ -45,7 +45,7 @@
     {
       "name": "report-layouts",
       "status": "passed",
-      "elapsedMs": 7230,
+      "elapsedMs": 7318,
       "details": [
         {
           "layout": "list",
@@ -55,27 +55,27 @@
         {
           "layout": "group",
           "status": "已生成分组汇总 · 可直接编辑或导出",
-          "metrics": "43 行 × 5 列 · 公式计算 15 次 · 缓存 15 项 · 最近绘制 0.70 ms · 5 次绘制"
+          "metrics": "43 行 × 5 列 · 公式计算 15 次 · 缓存 15 项 · 最近绘制 0.80 ms · 5 次绘制"
         },
         {
           "layout": "nested",
           "status": "已生成多级分组 · 可直接编辑或导出",
-          "metrics": "53 行 × 5 列 · 公式计算 13 次 · 缓存 13 项 · 最近绘制 0.80 ms · 7 次绘制"
+          "metrics": "53 行 × 5 列 · 公式计算 13 次 · 缓存 13 项 · 最近绘制 0.70 ms · 7 次绘制"
         },
         {
           "layout": "cross",
           "status": "已生成交叉统计 · 可直接编辑或导出",
-          "metrics": "5 行 × 8 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 0.40 ms · 9 次绘制"
+          "metrics": "5 行 × 8 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 0.70 ms · 9 次绘制"
         },
         {
           "layout": "formulas",
           "status": "已生成公式示例 · 可直接编辑或导出",
-          "metrics": "19 行 × 6 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 0.50 ms · 11 次绘制"
+          "metrics": "19 行 × 6 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 0.70 ms · 11 次绘制"
         },
         {
           "layout": "sheets",
           "status": "已生成多工作表 · 可直接编辑或导出",
-          "metrics": "30 行 × 6 列 · 公式计算 38 次 · 缓存 38 项 · 最近绘制 0.40 ms · 13 次绘制"
+          "metrics": "30 行 × 6 列 · 公式计算 38 次 · 缓存 38 项 · 最近绘制 0.50 ms · 13 次绘制"
         },
         {
           "layout": "validation",
@@ -85,12 +85,12 @@
         {
           "layout": "print",
           "status": "已生成打印版式 · 可直接编辑或导出",
-          "metrics": "8 行 × 6 列 · 公式计算 5 次 · 缓存 5 项 · 最近绘制 2.70 ms · 16 次绘制"
+          "metrics": "8 行 × 6 列 · 公式计算 5 次 · 缓存 5 项 · 最近绘制 2.20 ms · 16 次绘制"
         },
         {
           "layout": "filter",
           "status": "已生成筛选合并区域 · 可直接编辑或导出",
-          "metrics": "11 行 × 5 列 · 公式计算 1 次 · 缓存 1 项 · 最近绘制 0.40 ms · 18 次绘制"
+          "metrics": "11 行 × 5 列 · 公式计算 1 次 · 缓存 1 项 · 最近绘制 1.40 ms · 17 次绘制"
         },
         {
           "layout": "sort",
@@ -100,25 +100,25 @@
         {
           "layout": "paged",
           "status": "已生成百万行分页数据 · 当前表格只读",
-          "metrics": "1,000,000 行 × 12 列 · 缓存 1/6 页 · 请求 0 · 最近绘制 1.20 ms · 22 次绘制"
+          "metrics": "1,000,000 行 × 12 列 · 缓存 1/6 页 · 请求 0 · 最近绘制 0.80 ms · 22 次绘制"
         },
         {
           "layout": "snapshot",
           "status": "已生成分页生成完整报表 · 可直接编辑或导出",
-          "metrics": "200 行 × 4 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 0.50 ms · 23 次绘制"
+          "metrics": "200 行 × 4 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 0.30 ms · 23 次绘制"
         }
       ]
     },
     {
       "name": "report-downloads-roundtrip",
       "status": "passed",
-      "elapsedMs": 581,
+      "elapsedMs": 942,
       "details": {
         "downloads": [
           {
             "format": "json",
             "bytes": 23158,
-            "sha256": "d5711a1ff0c9f7d5f19b70088ec260b9ef8fc7636a0182a142594ac51cf00f58"
+            "sha256": "7df28a7f4c5bd25e0e36976061a43672bebe7cb74714c10b80e2343922dcf301"
           },
           {
             "format": "csv",
@@ -127,8 +127,8 @@
           },
           {
             "format": "xlsx",
-            "bytes": 8270,
-            "sha256": "6d29d58f87b581db1d271f60c206ec1ea947c0d1246db7d299be126012751cf0"
+            "bytes": 8274,
+            "sha256": "3b766f4962357f6b5de23ba7a929dedf1a268f888d4abdd06ee9d691b745f513"
           },
           {
             "format": "pdf",
@@ -142,20 +142,20 @@
     {
       "name": "report-idle",
       "status": "passed",
-      "elapsedMs": 1082,
+      "elapsedMs": 1086,
       "details": " 1 秒内额外绘制 0 次 · 空闲时停止绘制"
     },
     {
       "name": "packed-sdk-example",
       "status": "passed",
-      "elapsedMs": 208,
+      "elapsedMs": 149,
       "details": [
         {
-          "value": "f161ab25-3f9b-42dd-a631-4de2c0c2f6f7",
+          "value": "ce072e05-5427-447f-a5ea-9e36c080ba01",
           "name": "销售明细"
         },
         {
-          "value": "0afd5ac3-2a1e-43af-a52d-935690ec4a37",
+          "value": "8e7a0555-d1f5-45d9-ac20-b739a0a009c0",
           "name": "经营汇总"
         }
       ]
