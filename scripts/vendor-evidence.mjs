@@ -379,7 +379,7 @@ export async function reviewedEmbeddedComponent(root, bundle, component, sourceM
         sha256: notice.sha256,
         bytes: Buffer.byteLength(noticeText),
         text: noticeText,
-        source: exact.registry,
+        source: notice.source ?? exact.registry,
       },
       provenance: {
         package: exact.name,
