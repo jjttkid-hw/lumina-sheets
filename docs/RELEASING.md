@@ -45,7 +45,7 @@ npm view lumina-report-sdk version
 
 首次本地发布没有 GitHub Actions 来源证明。发布成功后，在 npm 的包设置中配置 **Trusted Publisher → GitHub Actions**：
 
-首次或后续发布如果为 1.0.0 及以上的正式版，必须先通过 `npm run check:stable`；直接运行 npm publish 不会自动执行本仓库门禁。预发布版本本地发布也应显式加 `--tag next`，避免 npm 默认写入 latest。
+首次或后续发布如果为 1.0.0 及以上的正式版，必须先通过 `npm run check:stable`；直接运行 npm publish 不会自动执行本仓库门禁。0.x 开发线和预发布版本本地发布都应显式加 `--tag next`，避免 npm 默认写入 latest。
 
 | 字段                        | 值              |
 | --------------------------- | --------------- |
@@ -65,7 +65,7 @@ Trusted Publisher 的逐字段配置和发布后核验步骤见 [npm Trusted Pub
 3. 工作流检出对应 tag，核对版本，重新完成测试、构建与安装验证，将 `.tgz` 和 SHA-256 上传到该 GitHub Release，然后以 `--provenance --access public` 发布同一个包。
 4. 确认 npm 页面版本、来源证明、安装结果和 `npm release` 状态，再更新对外发布说明。
 
-也可从 Actions 手动运行 `npm release`，输入已存在的 Release tag，用于修复账号设置后重试。npm 版本不可覆盖；若已发布该版本，不要重跑发布步骤，应递增版本。预发布使用带后缀的新版本号，例如 `1.0.0-rc.1`，自动发布到 npm `next`；无预发布后缀的正式版本发布到 `latest`。GitHub Release 的 prerelease 标志必须与版本后缀一致，否则发布前失败。手动触发也按版本后缀选择通道。上传和发布均使用精确版本制品路径，不使用匹配历史包的通配符。
+也可从 Actions 手动运行 `npm release`，输入已存在的 Release tag，用于修复账号设置后重试。npm 版本不可覆盖；若已发布该版本，不要重跑发布步骤，应递增版本。0.x 开发线和带预发布后缀的新版本自动发布到 npm `next`；首个 1.x 及以后无预发布后缀的正式版本发布到 `latest`。GitHub Release 的 prerelease 标志必须与版本后缀一致，否则发布前失败。手动触发也按版本号选择通道。上传和发布均使用精确版本制品路径，不使用匹配历史包的通配符。
 
 没有 npm 账号授权、Trusted Publisher 或可用 `NPM_TOKEN` 时，工作流会在 npm 发布步骤失败，不能把配置完成等同于包已经上架。npm 版本/下载量徽章只在注册表确认包存在后启用。
 

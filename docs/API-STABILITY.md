@@ -24,7 +24,7 @@
 
 新增 `ImportOptions.signal` 和 `IMPORT_CANCELLED` 错误码。以前迟到导入会覆盖当前内容，现在成功编辑/替换、后续导入或销毁会拒绝旧导入。调用者必须处理 Promise；需要强制导入时，应在编辑操作完成后重新发起，不应忽略取消后假定数据已替换。取消不会保证底层文件解析立即停止。
 
-发布流程按 SemVer 后缀路由：`1.0.0-rc.1` 使用 npm `next`，`1.0.0` 使用 `latest`；GitHub Release prerelease 标志必须一致。此配置不证明 npm 权限已打通，实际发布另行验收。
+发布流程按 SemVer 路由：0.x 开发线和带预发布后缀的版本使用 npm `next`，首个 1.x 及以后无预发布后缀的正式版本使用 `latest`；GitHub Release prerelease 标志必须一致。此配置不证明 npm 权限已打通，实际发布另行验收。
 
 
 SDK 多工作表增量：新增 `ActiveSheetChangeEvent`、可选 `onActiveSheetChange`、`sheetInfos` 和 `setActiveSheet(sheetId)`。本次逐行比较构建声明：仅 `sdk/index.d.ts` 增加上述接口，其余 13 个声明文件与包 exports 不变；安装包 NodeNext/Bundler 消费示例检查事件类型与方法调用。行为修复包括分页快照只读及拒绝不完整导出、静态活动表 CSV 不误用另一张表的分页源。切表允许只读，保留编辑历史和正在进行的导入；详见 SDK.md。基线更新不代表浏览器验证或完整商业兼容通过。

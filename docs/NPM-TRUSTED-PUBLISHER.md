@@ -35,7 +35,7 @@ npm run check:reproducibility
 npm run check:stable
 ```
 
-随后创建与 `package.json` 完全一致的 `v<version>` tag，并发布对应的 GitHub Release。工作流会重新构建并校验 tag、上传同一份 `.tgz`，然后通过 OIDC 发布到 npm。`1.0.0-rc.*` 使用 `next`，正式版本使用 `latest`。
+随后创建与 `package.json` 完全一致的 `v<version>` tag，并发布对应的 GitHub Release。工作流会重新构建并校验 tag、上传同一份 `.tgz`，然后通过 OIDC 发布到 npm。0.x 开发线和所有带预发布后缀的版本使用 `next`；首个 1.x 正式版本起才使用 `latest`。
 
 ## 如何确认绑定成功
 
@@ -47,4 +47,3 @@ npm view lumina-report-sdk@<version> dist.integrity --json
 ```
 
 如果运行在发布步骤前失败，优先检查包名权限、Trusted Publisher 四个字段和 `npm` 环境名称；不要反复生成 CLI 登录验证码。CLI 登录状态与 GitHub Actions OIDC 是两条独立链路。
-
