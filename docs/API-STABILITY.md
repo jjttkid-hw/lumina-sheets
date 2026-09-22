@@ -8,7 +8,7 @@
 
 ## 1.x 预定兼容政策
 
-0.29 工作空间新增工作表重命名时，可达 `lib/formula-structure.d.ts` 仅增加 `renameFormulaSheet` 辅助声明；已逐字核对删除该行后与旧基线一致。包根导出和 SDK 类方法未变，未提供 SDK 重命名方法。基线更新只记录此增量，不表示内部模块成为受支持入口。
+0.29 工作空间最初新增工作表重命名时，可达 `lib/formula-structure.d.ts` 仅增加 `renameFormulaSheet` 辅助声明；已逐字核对删除该行后与旧基线一致。该阶段尚未提供 SDK 重命名方法，基线更新只记录内部辅助声明，不表示内部模块成为受支持入口；后续 SDK 重命名增量见下一段。
 
 随后 SDK 增加 `renameSheet(name, sheetId?): void`、`SheetRenameEvent` 和可选 `SpreadsheetOptions.onSheetRename`。本次基线差异只涉及 `sdk/index.d.ts` 的上述三个增量，其余 13 个声明文件、包 exports 均未改变。重命名不发送单元格/行列结构事件；宿主持久化需监听新增事件。重命名与结构事务共用十个快照历史上限，详见 SDK.md 与 CHANGELOG.md。NodeNext/Bundler 的安装包消费示例包含方法调用与事件类型检查。
 
