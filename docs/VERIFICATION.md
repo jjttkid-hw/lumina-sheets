@@ -2260,3 +2260,9 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 
 - ExcelJS 浏览器 source map 中的 `brorand/index.js` 已逐字匹配官方 `brorand@1.1.0` npm 归档。该包没有独立 LICENSE 文件，清单保留归档 README 的完整 MIT 授权段落，并绑定 npm integrity、归档和源文件 SHA-256。
 - exact-source 回归与许可证据回归共 52 项通过；SDK 构建和真实 tgz 消费检查通过。当前制品为 39 个文件、676,883 字节，SHA-256 `52f73f04a6c41a261b7f1f163966e62af0759d432aaa168ec57f9c0fad2bb04f`。当前未解决预打包组件为 47 个，严格许可证门禁仍阻断发布。
+
+## 2026-09-22 exact-source 许可证据增量（buffer）
+
+- ExcelJS browser source map 中的 `buffer/index.js` 已逐字匹配官方 `buffer@5.2.1` npm 归档；清单绑定 npm integrity、归档 SHA-256、源文件 SHA-256 和完整 MIT 正文，并由供应链回归逐项核验。
+- `npm run build:site`、`check:sdk`、`check:api`、`check:site-runtime` 和 `format:check` 通过；SDK 制品为 39 个文件、693,912 字节，SHA-256 `f1fbf31c9416e76d4950095a0e80179f22693297e22271ee0150da6ae221500a`，HTTP 站点摘要为 `022a3a45a6414a50c505415b3bccc7c327ff6793a10deac2058a2283fd66b592`。
+- 当前许可证统计为 138 份材料、0 个错误、4 个待审、16 个未解决预打包组件。全量测试需以单独回归结果为准；版本仍为 0.29.0，未创建稳定版记录或发布 npm。

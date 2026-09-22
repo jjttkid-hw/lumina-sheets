@@ -237,6 +237,30 @@
       ]
     },
     {
+      "name": "buffer",
+      "version": "5.2.1",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/buffer/5.2.1",
+      "tarball": "https://registry.npmjs.org/buffer/-/buffer-5.2.1.tgz",
+      "integrity": "sha512-c+Ko0loDaFfuPz3qX4dIi2eX8A7KcPvC+5L8dZfCW9NS7py4iw0tepcpQmZP6iXH6fg1B/nO9U3LzszmfLmMLnqg==",
+      "archive": "buffer-5.2.1.tgz",
+      "archiveSha256": "f4e32d23041abf7f4f5cfd7ce2db17d772763237cad2bddc4e556793e19b0a3e",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/buffer/index.js",
+          "archivePath": "package/index.js",
+          "sha256": "10696d8715103261a2619acc2bbfbe073886507bcdc475d372e0530ffb4f66eb"
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "06bafa45fdad2579ba0e43b0c9b2c6290287c99c4203c300254a462b38a307f6",
+          "text": "The MIT License (MIT)\n\nCopyright (c) Feross Aboukhadijeh, and other contributors.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
       "name": "buffer-xor",
       "version": "1.0.3",
       "declaredLicense": "MIT",

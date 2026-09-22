@@ -29,9 +29,9 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 
 当前安装的 ExcelJS 4.4.0 的 browser 入口是 `dist/exceljs.min.js`。其 `dist/LICENSE` 仅包含 Guyon Roche 的 MIT 文本，并不是所有预打包组件的逐项许可清单。
 
-脚本读取随包安装的 `dist/exceljs.min.js.map`，按 source paths 提取内嵌组件名称，记录证据文件及其哈希。当前发现 **68 个组件名称**，包括 core-js、regenerator-runtime、crypto-browserify 等；其中 20 个有独立 exact-source 记录，其余 47 个许可审查状态仍为 `unresolved-vendor-bundle-review`；不会把本机同名包的当前锁定版本误写成 ExcelJS 历史打包版本。source map 的名称也不单独证明该组件在最终发布包中实际保留的代码数量。
+脚本读取随包安装的 `dist/exceljs.min.js.map`，按 source paths 提取内嵌组件名称，记录证据文件及其哈希。当前发现 **68 个组件名称**，包括 core-js、regenerator-runtime、crypto-browserify 等；其中 51 个有独立 exact-source 记录，其余 16 个许可审查状态仍为 `unresolved-vendor-bundle-review`；不会把本机同名包的当前锁定版本误写成 ExcelJS 历史打包版本。source map 的名称也不单独证明该组件在最终发布包中实际保留的代码数量。
 
-源码映射确实内嵌 package.json 时，现在只解析 JSON 或字面 `module.exports =` 包装后的 JSON，绝不执行其中的 JavaScript。记录源路径、原文 SHA-256、声明版本与许可；名称不匹配、版本非法或非 JSON 内容不采信，多份声明冲突保留证据且不选定值。当前能从原始嵌入声明确认 elliptic 6.5.4 / MIT；exact-source 归档则同时绑定文件内容、npm integrity 和许可正文。该声明不是完整许可文本，也不是安全漏洞审查结果，仍有 47 项待完成许可核验，严格门禁不因此放行。
+源码映射确实内嵌 package.json 时，现在只解析 JSON 或字面 `module.exports =` 包装后的 JSON，绝不执行其中的 JavaScript。记录源路径、原文 SHA-256、声明版本与许可；名称不匹配、版本非法或非 JSON 内容不采信，多份声明冲突保留证据且不选定值。当前能从原始嵌入声明确认 elliptic 6.5.4 / MIT；exact-source 归档则同时绑定文件内容、npm integrity 和许可正文。该声明不是完整许可文本，也不是安全漏洞审查结果，仍有 16 项待完成许可核验，严格门禁不因此放行。
 
 商业再分发前，需要确认这些预打包源的实际版本、对应完整许可和通知义务，或改用可准确追踪的构建输入后重新生成。当前清单如实记录缺口，**商业授权审计尚未通过**。
 
@@ -56,6 +56,8 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 依赖更新后应重新生成并以 JSON 实际输出为准。此文件记录技术证据和核验边界，不替代权利人的授权或法律审核。
 
 0.24 起清单时间来自 `SOURCE_DATE_EPOCH` 或 Git 提交时间，并标注 timestampSource；无来源时为 null。此变化只消除墙钟引入的构建差异，不解决上述许可审查缺口。
+
+2026-09-22 exact-source 增量：ExcelJS browser source map 中的 `buffer/index.js` 已逐字匹配官方 `buffer@5.2.1` npm 归档。清单绑定 MIT 正文、npm integrity、归档 SHA-256 和源文件 SHA-256；归档已随安装包重新核验。未解决预打包组件从 17 降至 16，4 项待审仍保留，严格发布门禁继续阻断。
 
 
 2026-09-20 部分署名补充：除已有 15 份含授权/免责的文件头，现另收入 11 个组件的 13 份简短源文件署名（buffer、8 个 lodash 子包、regenerator-runtime、sha.js）。保留逐源文件与逐注释哈希，并标为 attributionEvidence；这些原文可能仅指向外部 LICENSE，不能证明完整授权或包版本，也不会关闭待审项。安装包消费校验确认所有 noticeEvidence/attributionEvidence 的文本哈希、源路径和通知文件收录一致。

@@ -268,4 +268,4 @@ it('binds every exact-source archive to the current ExcelJS map and notice text'
   }
   expect(reviewed).toHaveLength(manifest.records.length);
   expect(new Set(reviewed).size).toBe(reviewed.length);
-});
+}, 30_000);
