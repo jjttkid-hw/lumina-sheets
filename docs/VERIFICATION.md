@@ -2223,3 +2223,9 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 - SDK `LuminaSpreadsheet.export` 现在在任何分页请求之前严格校验 `pagedCsv` 嵌套选项：页长/扫描上限必须为安全整数，文本上限须在 1–32,000,000 范围内，未知字段、数组、`NaN` 和无穷值均拒绝；错误稳定归类为 `INVALID_ARGUMENT`，不会伪装成 `DATA_SOURCE`，也不会改变缓存或工作簿。
 - 新增回归覆盖非法页长、扫描上限、文本容量、未知字段，并验证失败配置不会触碰已绑定数据源。`tests/sdk-quality.test.ts` 定向 30 项通过；`build:sdk`、`check:api`、`check:sdk` 和格式检查通过。
 - 本次 SDK 制品：39 文件、651,514 字节，SHA-256 `655f7ebe0002bd78d5a365487e314abd3ba4d1bed5dffcbc40ad56168fb7027c`。严格许可证仍为 4 个 reviewItems、51 个未解决预打包组件；真实浏览器完整矩阵和 v1.0 门槛保持未完成。
+
+### 2026-09-22 — 分页视口生命周期错误分类
+
+- SDK `viewport()` 现在先检查实例生命周期：已销毁实例同步返回 `DESTROYED`；缺失、非法、`NaN`、无穷值或字符串行号同步返回 `INVALID_ARGUMENT`，不会创建请求或触碰数据源。
+- 新增 6 类回归；全量 163 个测试文件、2,305 项通过。`build:sdk`、`check:api`、`check:sdk`、格式检查和差异检查通过。
+- 当前 SDK 制品 39 文件、651,553 字节，SHA-256 `f92edf37131268b71815be686b57c63b5733823832fc99ba257222858f39735e`。严格许可证仍为 4 个 reviewItems、51 个未解决预打包组件；版本保持 0.29.0，未声明 v1.0。
