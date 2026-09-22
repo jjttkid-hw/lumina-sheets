@@ -1,5 +1,10 @@
 # 验证记录
 
+### 2026-09-22 — 最新主线提交的 CI/CD 复核
+
+- 提交 `1c4563863ae85b842271335b8566a21582d04fc1` 的 GitHub Actions [CI run 35730907407](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35730907407) 已完成并通过；随后触发的 [CD run 35731278113](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35731278113) 也已完成并通过。CD 下载并部署了该次 CI 产出的 Pages 制品，没有重新构建未验证文件。
+- 本地严格许可证检查仍为 `0 errors / 1 review item / 0 unresolvedVendorComponents`；唯一待审为 `binary@0.3.0` 缺少可验证的完整授权正文。npm 稳定发布、`1.0.0` 和 `latest` 标签继续保持阻断。
+
 ### 2026-09-22 — 当前浏览器候选的远端 CI/CD
 
 - 提交 `56e7dc0dc2212f46c3fbd5ae87378e5b4e5970dd` 的 GitHub Actions [CI run 35730406230](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35730406230) 已完成并通过；[CD run 35730742222](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35730742222) 也已完成并通过。CI 重新执行锁定依赖安装、测试、构建、SDK 隔离安装和站点检查；CD 使用该 CI 产物部署 Pages。
