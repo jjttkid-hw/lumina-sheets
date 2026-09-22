@@ -30,7 +30,7 @@ Trusted Publisher 只解决身份认证，不代表版本已经满足项目发�
 npm test
 npm run check:api
 npm run check:sdk
-npm run check:licenses
+npm run check:licenses -- --strict
 npm run check:reproducibility
 npm run check:stable
 ```

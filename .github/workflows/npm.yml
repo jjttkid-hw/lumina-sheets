@@ -58,7 +58,7 @@ jobs:
       - run: npm run check:api
       - run: npm run check:sdk
       - name: Require complete dependency-license evidence
-        run: npm run check:licenses
+        run: npm run check:licenses -- --strict
       - name: Verify reproducible release candidate
         run: npm run check:reproducibility
       - name: Smoke-test the final Pages build over HTTP

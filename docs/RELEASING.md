@@ -26,7 +26,7 @@ npm run format:check
 npm run build:all
 npm run check:api
 npm run check:sdk
-npm run check:licenses
+npm run check:licenses -- --strict
 npm run check:stable
 ```
 

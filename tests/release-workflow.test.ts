@@ -11,7 +11,7 @@ describe('release workflow artifact alignment', () => {
     expect(source).toMatch(/npm run build:site/);
     expect(source).toMatch(/npm run check:site-runtime/);
     expect(source).toMatch(/npm run check:reproducibility/);
-    expect(source).toMatch(/npm run check:licenses/);
+    expect(source).toMatch(/npm run check:licenses -- --strict/);
     expect(source).toMatch(/npm run check:stable/);
     expect(source).not.toMatch(/- run: npm run build:all/);
     expect(source.indexOf('npm run check:licenses')).toBeLessThan(source.indexOf('npm publish'));
@@ -24,6 +24,7 @@ describe('release workflow artifact alignment', () => {
     expect(ci).toMatch(/npm run build:site/);
     expect(ci).toMatch(/npm run check:site-runtime/);
     expect(ci).toMatch(/node scripts\/package-notices\.mjs/);
+    expect(ci).toMatch(/npm run check:licenses -- --strict/);
     expect(ci).toMatch(/Block dependency integrity errors/);
     expect(ci).toMatch(/actions\/upload-artifact@v7/);
     expect(cd).toMatch(/actions\/download-artifact@v8/);

@@ -39,6 +39,8 @@ jobs:
       - run: npm run check:sdk
       - name: Generate dependency-license inventory
         run: node scripts/package-notices.mjs
+      - name: Require complete dependency-license evidence
+        run: npm run check:licenses -- --strict
       - name: Block dependency integrity errors
         working-directory: .
         run: |
