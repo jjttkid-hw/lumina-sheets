@@ -251,3 +251,29 @@ describe('periodic discounted cash flow', () => {
     expect(evaluateCell(restored.sheets[1], 'B1', restored)).toBeCloseTo(expected, 10);
   });
 });
+
+describe('rate of return functions', () => {
+  it('computes IRR from direct cash flows and ranges', () => {
+    expect(evaluate('=IRR(-10000,3000,4200,6800)')).toBeCloseTo(0.1634056008, 9);
+    const book = createBlankWorkbook();
+    const sheet = book.sheets[0];
+    sheet.cells = {
+      A1: { value: -10000 },
+      A2: { value: 3000 },
+      A3: { value: 4200 },
+      A4: { value: 6800 },
+      A5: { value: '备注' },
+      B1: { value: '=IRR(A1:A5)' },
+    };
+    expect(evaluateCell(sheet, 'B1', book)).toBeCloseTo(0.1634056008, 9);
+  });
+
+  it('solves RATE for a payment schedule and rejects unsupported domains', () => {
+    expect(evaluate('=RATE(120,-121.327594355,10000)')).toBeCloseTo(0.08 / 12, 9);
+    expect(evaluate('=RATE(10,0,-100,110)')).toBeCloseTo(0.0095765827, 9);
+    for (const formula of ['=IRR(1,2,3)', '=IRR(-1,1,-1)', '=RATE(0,-1,1)', '=RATE(10,-1,1,0,2)'])
+      expect(evaluate(formula)).toBe('#NUM!');
+    expect(evaluate('=IRR(-10000,3000,1/0,6800)')).toBe('#DIV/0!');
+    expect(evaluate('=RATE(10,-1,1,1/0)')).toBe('#DIV/0!');
+  });
+});

@@ -313,6 +313,67 @@ const truthy = (value: Result): boolean => {
 const flatten = (values: Result[]): Scalar[] =>
   values.flatMap((value) => (isMatrix(value) ? value.rows.flat() : [value]));
 const finite = (value: number): number => (Number.isFinite(value) ? value : fail('#NUM!'));
+
+/** Solve a bounded financial rate without letting a bad Newton step escape the
+ * spreadsheet domain. Newton is attempted first (matching common spreadsheet
+ * implementations), then a logarithmically spaced bracket is bisected. */
+function solveFinancialRate(
+  equation: (rate: number) => number,
+  guess: number,
+  scale: number,
+): number {
+  const normalized = (rate: number) => {
+    const value = equation(rate);
+    return Number.isFinite(value) ? value / scale : value;
+  };
+  let rate = Math.min(Math.max(guess, -0.999999999), 1_000_000);
+  for (let iteration = 0; iteration < 100; iteration++) {
+    const value = normalized(rate);
+    if (Number.isFinite(value) && Math.abs(value) <= 1e-11) return rate;
+    const step = Math.max(1e-7, Math.abs(rate) * 1e-5);
+    const left = Math.max(-0.999999999, rate - step);
+    const right = Math.min(1_000_000, rate + step);
+    const derivative = (normalized(right) - normalized(left)) / (right - left);
+    if (!Number.isFinite(derivative) || Math.abs(derivative) < 1e-14) break;
+    const next = rate - value / derivative;
+    if (!Number.isFinite(next) || next <= -1 || next > 1_000_000) break;
+    rate = next;
+  }
+
+  const minimum = -0.999999999;
+  const maximum = 1_000_000;
+  let previousRate = minimum;
+  let previous = normalized(previousRate);
+  const samples = 320;
+  for (let index = 1; index <= samples; index++) {
+    const exponent = Math.log(1e-9) + (Math.log(1_000_001) - Math.log(1e-9)) * (index / samples);
+    const currentRate = Math.min(maximum, Math.max(minimum, Math.exp(exponent) - 1));
+    const current = normalized(currentRate);
+    if (Number.isFinite(current) && Math.abs(current) <= 1e-11) return currentRate;
+    if (Number.isFinite(previous) && Number.isFinite(current) && previous * current < 0) {
+      let low = previousRate,
+        high = currentRate,
+        lowValue = previous;
+      for (let iteration = 0; iteration < 120; iteration++) {
+        const middle = (low + high) / 2;
+        const middleValue = normalized(middle);
+        if (!Number.isFinite(middleValue)) break;
+        if (Math.abs(middleValue) <= 1e-11) return middle;
+        if (lowValue * middleValue <= 0) {
+          high = middle;
+        } else {
+          low = middle;
+          lowValue = middleValue;
+        }
+      }
+      const result = (low + high) / 2;
+      if (Math.abs(normalized(result)) <= 1e-8) return result;
+    }
+    previousRate = currentRate;
+    previous = current;
+  }
+  fail('#NUM!');
+}
 const shape = (value: Result): [number, number] =>
   isMatrix(value) ? [value.rows.length, value.rows[0]?.length ?? 0] : [1, 1];
 const sameShape = (a: Result, b: Result): boolean => {
@@ -859,6 +920,74 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
           }
         }
         return finite(sum + correction) || 0;
+      }
+      case 'IRR': {
+        count(1, 255);
+        const rangeWithGuess = args.length === 2 && args[0].kind === 'range';
+        const referencedValues =
+          rangeWithGuess ||
+          (args.length === 1 && (args[0].kind === 'range' || args[0].kind === 'ref'));
+        const values = rangeWithGuess
+          ? flatten([evaluate(args[0], sheet)])
+          : flatten(args.map((arg) => evaluate(arg, sheet)));
+        if (values.length < 2 || values.length > 100_000) fail('#NUM!');
+        const cashFlows: number[] = [];
+        for (const value of values) {
+          if (typeof value === 'number') cashFlows.push(finite(value));
+          else if (value !== null && !referencedValues) {
+            // Text and booleans inside a referenced range are ignored, while
+            // direct arguments follow normal numeric conversion rules.
+            if (typeof value === 'boolean') cashFlows.push(value ? 1 : 0);
+            else if (typeof value === 'string' && value.trim() !== '')
+              cashFlows.push(number(value));
+          }
+        }
+        if (
+          cashFlows.length < 2 ||
+          !cashFlows.some((value) => value > 0) ||
+          !cashFlows.some((value) => value < 0)
+        )
+          fail('#NUM!');
+        const guess = rangeWithGuess ? number(get(1)) : 0.1;
+        if (guess <= -1) fail('#NUM!');
+        const scale = Math.max(1, ...cashFlows.map((value) => Math.abs(value)));
+        return solveFinancialRate(
+          (rate) => {
+            if (rate <= -1) return NaN;
+            let total = 0;
+            for (let index = 0; index < cashFlows.length; index++) {
+              const discount = Math.exp(index * Math.log1p(rate));
+              if (!Number.isFinite(discount) || discount === 0)
+                return Math.sign(cashFlows[index]) * Infinity;
+              total += cashFlows[index] / discount;
+            }
+            return total;
+          },
+          guess,
+          scale,
+        );
+      }
+      case 'RATE': {
+        count(3, 6);
+        const periods = number(get(0));
+        const payment = number(get(1));
+        const present = number(get(2));
+        const future = args.length >= 4 ? number(get(3)) : 0;
+        const when = args.length >= 5 ? number(get(4)) : 0;
+        const guess = args.length >= 6 ? number(get(5)) : 0.1;
+        if (periods <= 0 || (when !== 0 && when !== 1) || guess <= -1) fail('#NUM!');
+        const scale = Math.max(1, Math.abs(payment), Math.abs(present), Math.abs(future));
+        return solveFinancialRate(
+          (rate) => {
+            if (rate <= -1) return NaN;
+            const exponent = periods * Math.log1p(rate);
+            const growth = Math.exp(exponent);
+            const annuity = rate === 0 ? periods : Math.expm1(exponent) / rate;
+            return present * growth + payment * (1 + rate * when) * annuity + future;
+          },
+          guess,
+          scale,
+        );
       }
       case 'NPER': {
         count(3, 5);

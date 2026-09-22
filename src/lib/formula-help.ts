@@ -56,6 +56,8 @@ export const FORMULA_HELP = [
   ['FV', 'rate, nper, pmt, [pv], [type]', '计算终值'],
   ['NPV', 'rate, value1, [value2], …', '计算期末现金流净现值；期初投资在函数外加上'],
   ['NPER', 'rate, pmt, pv, [fv], [type]', '计算所需期数；收付款使用相反符号'],
+  ['IRR', 'values, [guess]', '计算等间隔现金流的内部收益率'],
+  ['RATE', 'nper, pmt, pv, [fv], [type], [guess]', '计算等额现金流的周期利率'],
 ] as const;
 
 /** Help for the leading function only; never treat strings or sheet names as calls. */
