@@ -1,5 +1,10 @@
 # 验证记录
 
+### 2026-09-22 — 提交 `41a9e51` 的远端 CI/CD
+
+- GitHub Actions [CI run 35736775847](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35736775847) 已成功完成；它在干净 Ubuntu 环境执行 npm ci、全量测试、格式、站点构建、API、SDK、依赖许可证、可重复构建和站点 HTTP 检查。
+- 随后 [CD run 35737082042](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35737082042) 已成功完成，并部署同一份 CI 验证制品。该提交仍保持 `0.29.0`，稳定版门禁没有被版本号绕过。
+
 ### 2026-09-22 — `unzipper` 依赖替换后的当前候选（提交 `86ef259`）
 
 - 根 `package.json` 通过 `overrides` 固定 `unzipper@0.12.5`，移除 `exceljs` 解压路径中的 `binary`、`buffers` 和 `chainsaw`。ExcelJS 内存 XLSX 往返、全量测试和安装包检查继续通过。

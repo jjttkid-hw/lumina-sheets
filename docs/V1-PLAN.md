@@ -1,6 +1,6 @@
 # v1.0 交付计划与验收账本
 
-2026-09-22 当前候选更新：提交 `86ef259` 的 `unzipper@0.12.5` 依赖替换已消除严格许可证清单中的未解决项；三引擎真实浏览器自动化候选复验已重新绑定站点 SHA-256 `aa4a1663a3d70d2da7bac9e41ad6ba7e574f65120dd3d32894647691f1261025` 与 SDK SHA-256 `395baf25a395a64bf8bce7f9bb8efcbcff595769f69899274139e9625b19bc3a`，见 [browser-candidate-2026-09-22-r3](acceptance/browser-candidate-2026-09-22-r3/README.md)。推送后仍需通过远端 CI/CD，并重新评估 `check:stable`；因此不能据此宣布 `1.0.0`。
+2026-09-22 当前候选更新：提交 `86ef259` 的 `unzipper@0.12.5` 依赖替换已消除严格许可证清单中的未解决项；三引擎真实浏览器自动化候选复验已重新绑定站点 SHA-256 `aa4a1663a3d70d2da7bac9e41ad6ba7e574f65120dd3d32894647691f1261025` 与 SDK SHA-256 `395baf25a395a64bf8bce7f9bb8efcbcff595769f69899274139e9625b19bc3a`，见 [browser-candidate-2026-09-22-r3](acceptance/browser-candidate-2026-09-22-r3/README.md)。包含该实现的提交 `41a9e51` 已通过 CI `35736775847` 和 CD `35737082042`；仍需重新评估 `check:stable`，因此不能据此宣布 `1.0.0`。
 
 目标是继续建设高性能 JavaScript / Canvas 表格与报表产品，形成可安装、可验证、契约稳定的 v1.0。当前阶段 0.29.0；不能通过单独修改版本号宣布完成，也不能把 v1.0 等同于完整 SpreadJS API、Excel 兼容或商业 SLA。
 
