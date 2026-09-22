@@ -1,5 +1,7 @@
 # 验证记录
 
+2026-09-22 候选构建浏览器复验：以同一 `0.29.0` 构建运行 Chromium 153.0.8010.53、Firefox 144.0.2、WebKit 26.0 的 smoke、交互、布局、焦点和性能套件；三引擎全部通过，均无 page/console/run error。Chromium 另完成 3 项 CDP 触控检查。结果与性能原始 JSON 见 [候选复验记录](acceptance/browser-rerun-2026-09-22/README.md)，并绑定站点摘要 `c185e1a628da9fdb199a3d89a7f1c3188ac44e02b78bf2d331ab28acc22a42a4` 与 SDK 摘要 `ed35573b14f8c8fbd2089755feb94269d76de5b437f58a7f9a209559b0752148`。这是自动化候选证据，不是正式 Safari、实体触控、原生 IME、屏幕阅读器或商业许可验收；v1.0 门槛仍未完成。
+
 2026-09-22 SDK 视口生命周期：`viewport` 现对非法起止行号同步返回 `INVALID_ARGUMENT`，销毁实例统一返回 `DESTROYED`；新增 5 个定向回归，未发起额外数据请求。定向 SDK 质量测试 31 项、`build:sdk`、`check:api`、`check:sdk` 通过；SDK 制品哈希见当次命令输出。完整浏览器矩阵、许可证和 v1.0 门槛仍保持未完成。
 
 2026-09-21 elliptic 证据入包后：三引擎各 30 组、共 90 组及 Chromium 3 组触摸模拟通过，均绑定新制品。见 [最新报告](acceptance/browser-elliptic-2026-09-21/README.md)。这不代替完整稳定版矩阵。
