@@ -56,6 +56,8 @@ npm view lumina-report-sdk version
 
 后续发布使用 GitHub OIDC，不需要长期 npm token。应确保仓库已存在 `npm` 环境，并按维护者需要设置环境审批或分支限制。若账号暂不能配置 Trusted Publishing，可把有发布权限且允许 CI 非交互发布的 granular token 保存为仓库或 `npm` 环境的 `NPM_TOKEN` secret；工作流支持此备选。不要提交 token、密码或 `.npmrc`。
 
+Trusted Publisher 的逐字段配置和发布后核验步骤见 [npm Trusted Publisher 配置](NPM-TRUSTED-PUBLISHER.md)。
+
 ## 后续版本自动发布
 
 1. 更新 `package.json` 和 `package-lock.json` 的版本，补充变化与验证记录，提交主分支并确认 CI 通过。
