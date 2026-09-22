@@ -2961,6 +2961,876 @@
           "text": "Copyright (c) 2014-2023 Denis Pushkarev\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
         }
       ]
+    },
+    {
+      "name": "@fast-csv/format",
+      "version": "4.3.5",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/@fast-csv/format/4.3.5",
+      "tarball": "https://registry.npmjs.org/@fast-csv/format/-/format-4.3.5.tgz",
+      "integrity": "sha512-8iRn6QF3I8Ak78lNAa+Gdl5MJJBM5vRHivFtMRUWINdevNo00K7OXxS2PshawLKTejVwieIlPmK5YlLu6w4u8A==",
+      "archive": "fast-csv-format-4.3.5.tgz",
+      "archiveSha256": "9228e84cc06af205ae84f2e266a4b2a9018f87a5498f7850a5190774cde77d68",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/@fast-csv/format/build/src/CsvFormatterStream.js",
+          "archivePath": "package/build/src/CsvFormatterStream.js",
+          "mode": "babel-transform",
+          "sha256": "12723a7f80effcdcb203dc8b3675ea471d02e2d76a8fafa8b5e70accefc6faa2",
+          "upstreamSha256": "22e36b4cd4cd6e367d6614a2a6c3b37428b871a20209b72e980c7210cd9fec08",
+          "transformedSha256": "b9314cef673608242c8fefe989c0f2f045eed66dfa34862c9ad5013b3d1a980c",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/format/build/src/FormatterOptions.js",
+          "archivePath": "package/build/src/FormatterOptions.js",
+          "mode": "babel-transform",
+          "sha256": "7ac0c7355ec0811d24c6f11b33a9197986b60395583f850747356bb9961fdc02",
+          "upstreamSha256": "75e2119b5320590f2d3351b965c2fbf9f990e3932f774cb8cd4dcc7a0f139f60",
+          "transformedSha256": "e5efc04e564e3e91e6128c5bf3548cfe51cc7d281b53798cd6f6f058cba70fbb",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/format/build/src/formatter/FieldFormatter.js",
+          "archivePath": "package/build/src/formatter/FieldFormatter.js",
+          "mode": "babel-transform",
+          "sha256": "fa351a853bd24bd8fd092f746c72d8f1b8601f86b4f7bd5e0cc3ad835adf8a61",
+          "upstreamSha256": "70f52411bca1a5f6bfb18ca04239000c2feb6e886816eb933fbbc71817a992fa",
+          "transformedSha256": "a8b9c2dc77e90e899d94e77e2b8fb10b06521301207048cc78ea0f4652311785",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/format/build/src/formatter/RowFormatter.js",
+          "archivePath": "package/build/src/formatter/RowFormatter.js",
+          "mode": "babel-transform",
+          "sha256": "2a76c862c5aa969ad16588d81c50d2aec5b75e6c7a24221c8314393a15156a7b",
+          "upstreamSha256": "fd33902c097dd4ca51269746cb828f9b86bc9c411d374be2cfc9c6d153e25482",
+          "transformedSha256": "464de3644940eaa2bce307aa2d7a3becd086e7008ba11e214f36501bf912d05f",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/format/build/src/formatter/index.js",
+          "archivePath": "package/build/src/formatter/index.js",
+          "mode": "babel-transform",
+          "sha256": "06ac4978c478e6bf8555cd4093cab6596f9038b4c17cdf79e41bcad5bdfa969e",
+          "upstreamSha256": "294f78b08ff6ac7ce902961610c0a8d200fe0c0e07683ea3c9c16e6741610820",
+          "transformedSha256": "782ff075b402de8d39f5c6477f6d62788746e492a234bc05ab6b3b14c44dad95",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/format/build/src/index.js",
+          "archivePath": "package/build/src/index.js",
+          "mode": "babel-transform",
+          "sha256": "01ce74fe08483c4f945cdb72d25608f0a409bbc1bb3161d9258f717a6f402afd",
+          "upstreamSha256": "9342f333fb48e3d893db735d2131b1d6848a6aad2bbb89675d865c751b79bd37",
+          "transformedSha256": "d93b92cde8a61ecc6e01290a6234b5f57b27ec68c694de3a9c979f8add505454",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/format/build/src/types.js",
+          "archivePath": "package/build/src/types.js",
+          "mode": "babel-transform",
+          "sha256": "08b136816412e813bdf3d788831352d6126d6a8da8cc2d2e53f703d1ab8adfb8",
+          "upstreamSha256": "59f20bd65f79b5967e4bf091b156b99de2eac434d2b2a857a36867384bce432a",
+          "transformedSha256": "c2efa69d388e23571f77cce9cad0d3357dc9363f86cd754062dd4b71f4054469",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "2450088d1769a2b36e210a5a345a55b209944f4c6a9a89f7ce3aaba163680a42",
+          "text": "The MIT License\n\nCopyright (c) 2011-2019 C2FO\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE."
+        }
+      ]
+    },
+    {
+      "name": "@fast-csv/parse",
+      "version": "4.3.6",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/@fast-csv/parse/4.3.6",
+      "tarball": "https://registry.npmjs.org/@fast-csv/parse/-/parse-4.3.6.tgz",
+      "integrity": "sha512-uRsLYksqpbDmWaSmzvJcuApSEe38+6NQZBUsuAyMZKqHxH0g1wcJgsKUvN3WC8tewaqFjBMMGrkHmC+T7k8LvA==",
+      "archive": "fast-csv-parse-4.3.6.tgz",
+      "archiveSha256": "46adfa3525071748c0f77ec996435f8e6f09558be068b06605f4a61ed279222f",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/CsvParserStream.js",
+          "archivePath": "package/build/src/CsvParserStream.js",
+          "mode": "babel-transform",
+          "sha256": "65af74d673ace6b11bab3c39a36e24493d839f675d03d1cb69cf517f7c41cc22",
+          "upstreamSha256": "9b35580e55ea3372d7d78c992c0aff26c9d4dc46cafb1f1bc37b626433312f43",
+          "transformedSha256": "89f4a00207e0a83ed9cb2ac6ea719f0764e931936eb7db6fe48d5a03aece1bb9",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/ParserOptions.js",
+          "archivePath": "package/build/src/ParserOptions.js",
+          "mode": "babel-transform",
+          "sha256": "171414fea2015364462910358ca28cd8af2d274a06c23869f30fa6af46c5a2b5",
+          "upstreamSha256": "a4619132e0621cc7e595d04353734e62709d10fe56af427adf2d6f2866be142c",
+          "transformedSha256": "6accbb00a49c3ee9db27ee2e741d4a604a5241e46525a743ab51753cf5cbd2f7",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/index.js",
+          "archivePath": "package/build/src/index.js",
+          "mode": "babel-transform",
+          "sha256": "5b3ad5686f6fa5c57f1a5fd0a311c77eb2d3e9b083fc329d4c6d2066014369af",
+          "upstreamSha256": "270d0df5f4c6a6deea10303240da9389056330ce4015e4acbb50a70e3a896fa7",
+          "transformedSha256": "309d91f1a06d4d6a34e371a03b1660eac5ff9b83e3e6b645c9a67f88c58e6f87",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/Parser.js",
+          "archivePath": "package/build/src/parser/Parser.js",
+          "mode": "babel-transform",
+          "sha256": "922872805eb9ee1930d0454fa2e6a266c2e4264cc696b263a173e0b22f16af1e",
+          "upstreamSha256": "af6e6b48bafdd7a7681801368d500bfe3433b35db1292b01626e03822807c3e7",
+          "transformedSha256": "4833ff385406fb16c29db29ad03c5e8bcbfb2f2ad41acd14de4076a72f6e5c7c",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/RowParser.js",
+          "archivePath": "package/build/src/parser/RowParser.js",
+          "mode": "babel-transform",
+          "sha256": "ee13ee550a90e05a53dae21fd70fb578bca01fcafb7a40180f53fa95f88341b2",
+          "upstreamSha256": "091d5e1fccc31a5938f5396aef1f352fbd5d58d21530816eddfdd58e079a99d4",
+          "transformedSha256": "51788bdadac9ed96c9aa01fc0c2873a8d217040b4960df0aebfc5f5ddf99e5e4",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/Scanner.js",
+          "archivePath": "package/build/src/parser/Scanner.js",
+          "mode": "babel-transform",
+          "sha256": "c4800e372738ade0baa467b3b164ff6bc55bc57cfc86af02a4b12fe170043d5a",
+          "upstreamSha256": "ee5b412117e512c816ba0aaf053cdb3703c92122eaedda12d226be4c43a0f83d",
+          "transformedSha256": "f5280f41505c96a272540ecbbccc2403054d670329296d72e9775834d0c8cbce",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/Token.js",
+          "archivePath": "package/build/src/parser/Token.js",
+          "mode": "babel-transform",
+          "sha256": "5961ed83fc23636272fd73bc0be419464e8ede9b5e3c94c39a57d82f0a63f6d2",
+          "upstreamSha256": "05b498c9a43d61143f083274db9bc1a8a6afbfed97fc2a55dd784ce1923c6c9e",
+          "transformedSha256": "5b2018a3ec50853b1a5a11519557dbfacf9217fc6ef24fbbb2a2060cca6c1b12",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/column/ColumnFormatter.js",
+          "archivePath": "package/build/src/parser/column/ColumnFormatter.js",
+          "mode": "babel-transform",
+          "sha256": "a76c109651048d25a9d8c25a377073326c76aca29606be5d8d306944addefd3e",
+          "upstreamSha256": "c75803cdd419cfb78972536d0b63cf28ecfd7289bec16b91b8c66ca0e2dc02cf",
+          "transformedSha256": "07cabdc62c33b950c9e0ca744fdfca20ef5eb09a621e1b311c80fb0649afffce",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/column/ColumnParser.js",
+          "archivePath": "package/build/src/parser/column/ColumnParser.js",
+          "mode": "babel-transform",
+          "sha256": "31724a589cb7b72bbc4ee0e6b283b6e122dc11f1c1e9baab87c843a5a2fc9ab5",
+          "upstreamSha256": "06477cfba0cc7ee5a6f449420e7b80515a3ab44198d8db585494a4130238f27c",
+          "transformedSha256": "bae88427cda7733bd616785d7c097bfa3a5ce6fc493f8e84f8ecc51f6b4842d3",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/column/NonQuotedColumnParser.js",
+          "archivePath": "package/build/src/parser/column/NonQuotedColumnParser.js",
+          "mode": "babel-transform",
+          "sha256": "a2ec25de64928e1907bc3447dc640bc34765a4df5b80d173aa657a6a7a1e6243",
+          "upstreamSha256": "8b2f5dd8fe165b9d7e7843f374a164bcd5be3cf5d5dd6b237fe84dcf36f9029a",
+          "transformedSha256": "f34f10cb66c020e29e930496ed7f3b53e6a8d297417a4bc893fb4d0582a8cca0",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/column/QuotedColumnParser.js",
+          "archivePath": "package/build/src/parser/column/QuotedColumnParser.js",
+          "mode": "babel-transform",
+          "sha256": "0f820bfef35706dbd3ccfb73e3a3806f52fe6f0c7260dcc3ea665a6570c8a61e",
+          "upstreamSha256": "f3c20a64f39e82192ec80091c91bd053061a207e3a1bba0b37687ecf132ebd19",
+          "transformedSha256": "d78a4f99b318efb1965aba5bc710fe061d19d2b9450d202bda04febf2639ef4b",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/column/index.js",
+          "archivePath": "package/build/src/parser/column/index.js",
+          "mode": "babel-transform",
+          "sha256": "ccc140792a91ae67bb0272f09aa5f9f10c620ce2182d0de7006eb846fc97f6ae",
+          "upstreamSha256": "40b53d55d76587aa53a08d40aab0c9d37cc1a4978a583db717b4f7f74d38d064",
+          "transformedSha256": "52c7d63b8322822909bb5a10a73735b644a089a696a37766ab57f5bca3515fe4",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/parser/index.js",
+          "archivePath": "package/build/src/parser/index.js",
+          "mode": "babel-transform",
+          "sha256": "0e4668d51c6a7b324e9588209248539fe79fefaf6da358960a8005dfa3716c7a",
+          "upstreamSha256": "7103ee9fd61fa5c5bd3ea97721afee04f7170de92602bc67e02129ced382dc78",
+          "transformedSha256": "f0c942923552298f751de490b3428d893fa8833b56ec671c30ed6e003137082b",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/transforms/HeaderTransformer.js",
+          "archivePath": "package/build/src/transforms/HeaderTransformer.js",
+          "mode": "babel-transform",
+          "sha256": "8af80a5223de41ccdda44345b7d59ed8a3278fe6d4e948596d97d33558893642",
+          "upstreamSha256": "e83ba1208ab89ad5657ca80bdc7b454346b939b77745c2f1163ddad083db17ce",
+          "transformedSha256": "acb0777a38f6b0ba7abab54d0814c80865ec3e2fd3dd670d015e86b0aef014ec",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/transforms/RowTransformerValidator.js",
+          "archivePath": "package/build/src/transforms/RowTransformerValidator.js",
+          "mode": "babel-transform",
+          "sha256": "8e71c51a7e482b811b1f97e67212ceae6889bda538ea1f4666d85c3ba1bf0e14",
+          "upstreamSha256": "95928a5ebd05e5d3e08be2f02539a47255fbb21c59bb1cc3dd8c2d1f49695f6b",
+          "transformedSha256": "c788589bb76377b7ec10b94b5120e365dec51fba450867c5b655feca66d5b1df",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/transforms/index.js",
+          "archivePath": "package/build/src/transforms/index.js",
+          "mode": "babel-transform",
+          "sha256": "e39b8dbebc76a9388bb8b4d5cab1e2df590374dfb9df4e25c21edd4ee8be1575",
+          "upstreamSha256": "52173cb8e113efe40a16a0af5f35300fb69edd12bbc4fcd3b351312e9afa5d53",
+          "transformedSha256": "8696f60642f618a4a693a0f0c9966780a698213470267aaf71016ffee166e844",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/@fast-csv/parse/build/src/types.js",
+          "archivePath": "package/build/src/types.js",
+          "mode": "babel-transform",
+          "sha256": "32db5d4f6389a4a2f41971b285124650a41380e9181abb197c99d477d9e28d32",
+          "upstreamSha256": "7c43414668f2bfabacf4d453ce794b170a52c37606f724514dc98c5f153e394c",
+          "transformedSha256": "a49c0cc920469cc1a2de84ed1e0af13f5b2b6854f54a3f42f92b31f608cc917b",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "2450088d1769a2b36e210a5a345a55b209944f4c6a9a89f7ce3aaba163680a42",
+          "text": "The MIT License\n\nCopyright (c) 2011-2019 C2FO\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE."
+        }
+      ]
+    },
+    {
+      "name": "fast-csv",
+      "version": "4.3.6",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/fast-csv/4.3.6",
+      "tarball": "https://registry.npmjs.org/fast-csv/-/fast-csv-4.3.6.tgz",
+      "integrity": "sha512-2RNSpuwwsJGP0frGsOmTb9oUF+VkFSM4SyLTDgwf2ciHWTarN0lQTC+F2f/t5J9QjW+c65VFIAAu85GsvMIusw==",
+      "archive": "fast-csv-4.3.6.tgz",
+      "archiveSha256": "7cf4c182ae6f4242a513688423c9be4d1250541be69924e314e82d6624a9f4bb",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/fast-csv/build/src/index.js",
+          "archivePath": "package/build/src/index.js",
+          "mode": "babel-transform",
+          "sha256": "019a42b6d4ed7d9f1fda707db86c56fa8000a41ee841475f5dd5ceb047347369",
+          "upstreamSha256": "14b412b929b06bc21ac6e65d9333029a28690e5dcfed8a9c56ecd8f67d32a87b",
+          "transformedSha256": "906ea35c5ad883d1f3bbc32ecb3c0f834a65e624d8b33122a94445937b09ba7b",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "2450088d1769a2b36e210a5a345a55b209944f4c6a9a89f7ce3aaba163680a42",
+          "text": "The MIT License\n\nCopyright (c) 2011-2019 C2FO\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE."
+        }
+      ]
+    },
+    {
+      "name": "xmlchars",
+      "version": "2.2.0",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/xmlchars/2.2.0",
+      "tarball": "https://registry.npmjs.org/xmlchars/-/xmlchars-2.2.0.tgz",
+      "integrity": "sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==",
+      "archive": "xmlchars-2.2.0.tgz",
+      "archiveSha256": "bdf900298963e4bd95b76aa95e96d29f05687e6ae662d617061778267b576da8",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/xmlchars/xml/1.0/ed5.js",
+          "archivePath": "package/xml/1.0/ed5.js",
+          "mode": "babel-transform",
+          "sha256": "d563824355f2a83cc11969100983a8056ab88bc235fad0ebdc4e9f78146fc2ba",
+          "upstreamSha256": "ea350479ab6f6553c0c3395c30ec440fb39821f6902081939831ddf1b5e8fd0f",
+          "transformedSha256": "d911de8018129f3689318a513e5a604564c643bed48b234e8c876b839501625d",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/xmlchars/xml/1.1/ed2.js",
+          "archivePath": "package/xml/1.1/ed2.js",
+          "mode": "babel-transform",
+          "sha256": "f6a602a3b7a172a6c2c33641fa81cd498362b16969e986fc018cbef2829f6379",
+          "upstreamSha256": "461d5c71cc6076dc16aebbfd2d3c506481df5a74f43631d82372a6ffdc239d69",
+          "transformedSha256": "b714368e338380c2d30fc5ab17d79930187c902c149f1f6a06c62720b2282e6e",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        },
+        {
+          "sourcePath": "node_modules/xmlchars/xmlns/1.0/ed3.js",
+          "archivePath": "package/xmlns/1.0/ed3.js",
+          "mode": "babel-transform",
+          "sha256": "f26e032a6eebabd1f8578ff2e137e06f945079c54885a2d85f130b3dffc71e05",
+          "upstreamSha256": "ff14ffa3a2cdfdd1b6077c4a8443dc949f53d5bb56de5ed89d4dbc5d9fdf08f7",
+          "transformedSha256": "f1f196b0774c23f0f8ef87b9cbc0a81e5ea5a9cffbf2213189de45d944e31fab",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false
+          }
+        }
+      ],
+      "notices": [
+        {
+          "archivePath": "package/LICENSE",
+          "sha256": "45d196313c2647d313cc65ca9b093d2d6974b64d35ee7346f2c60c9d518dff2c",
+          "text": "Copyright Louis-Dominique Dubeau and contributors to xmlchars\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "saxes",
+      "version": "5.0.1",
+      "declaredLicense": "ISC",
+      "registry": "https://registry.npmjs.org/saxes/5.0.1",
+      "tarball": "https://registry.npmjs.org/saxes/-/saxes-5.0.1.tgz",
+      "integrity": "sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==",
+      "archive": "saxes-5.0.1.tgz",
+      "archiveSha256": "d39d114627a8c29d1c26fb295dc4c1b81e8805a619f827d39177dfc39904a24b",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/saxes/saxes.js",
+          "archivePath": "package/saxes.js",
+          "mode": "babel-transform",
+          "sha256": "b5d8323deb6b23b949cb5dcf03b6fcdc734695da46222d49cf762182a054ab01",
+          "upstreamSha256": "68e8f0dc9fb3237a481132211ba779865ce80b25e11fc03d1dbcf4dfc67ed5fb",
+          "transformedSha256": "fd5f44e75777c6e8861d1636355ee8ed0a6c0bb1ef75d1a2283fcd4f1aec2016",
+          "transform": {
+            "kind": "babel",
+            "plugins": [
+              [
+                "@babel/plugin-transform-modules-commonjs",
+                "7.29.7"
+              ],
+              [
+                "@babel/plugin-transform-parameters",
+                "7.29.7"
+              ]
+            ],
+            "babelrc": false,
+            "configFile": false,
+            "comments": true,
+            "sourceMaps": false,
+            "adjustments": [
+              {
+                "kind": "insert-empty-line-before-line",
+                "line": 1312
+              }
+            ]
+          }
+        }
+      ],
+      "notices": [
+        {
+          "file": "docs/third-party/embedded/exact-sources/saxes-5.0.1-LICENSE.txt",
+          "sha256": "0fac2374380621b22e6b50451057721a9c52935b02d16d106a9f04897f061d0e",
+          "text": "The ISC License\n\nCopyright (c) Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n\n====\n\nThe following license is the one that governed sax, from which saxes\nwas forked. Isaac Schlueter is not *directly* involved with saxes so\ndon't go bugging him for saxes issues.\n\nThe ISC License\n\nCopyright (c) Isaac Z. Schlueter and Contributors\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR\nIN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n\n====\n\n`String.fromCodePoint` by Mathias Bynens is no longer used, but it can\nstill be found in old commits. It was once used according to terms of\nMIT License, as follows:\n\n    Copyright Mathias Bynens <https://mathiasbynens.be/>\n\n    Permission is hereby granted, free of charge, to any person obtaining\n    a copy of this software and associated documentation files (the\n    \"Software\"), to deal in the Software without restriction, including\n    without limitation the rights to use, copy, modify, merge, publish,\n    distribute, sublicense, and/or sell copies of the Software, and to\n    permit persons to whom the Software is furnished to do so, subject to\n    the following conditions:\n\n    The above copyright notice and this permission notice shall be\n    included in all copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\n    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\n    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\n    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\n    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\n    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "diffie-hellman",
+      "version": "5.0.2",
+      "declaredLicense": "MIT",
+      "registry": "https://registry.npmjs.org/diffie-hellman/5.0.2",
+      "tarball": "https://registry.npmjs.org/diffie-hellman/-/diffie-hellman-5.0.2.tgz",
+      "integrity": "sha512-6bFNThpXO1MSkYrHm2SPXvfJQ3h4gChXxj5RToODJGCs7Df79q+KNJAiB71Nut2n50ZLc35NTOPVc7jYPPWwtg==",
+      "archive": "diffie-hellman-5.0.2.tgz",
+      "archiveSha256": "6f93bde6b54c116140db662ca065be2f42aae5488cc4c7e332e3bc2fab3e9ba6",
+      "comparisons": [
+        {
+          "sourcePath": "node_modules/diffie-hellman/browser.js",
+          "archivePath": "package/browser.js",
+          "mode": "exact",
+          "sha256": "884930d8aefe88247f80ce521817a53070c2559ed4c6b3c8c73d6e44cdc69072"
+        },
+        {
+          "sourcePath": "node_modules/diffie-hellman/lib/dh.js",
+          "archivePath": "package/lib/dh.js",
+          "mode": "exact",
+          "sha256": "a6fe943573be965517761a2ac3033a22339d65ca99ca4b9a62a7944d6a4e8bff"
+        },
+        {
+          "sourcePath": "node_modules/diffie-hellman/lib/generatePrime.js",
+          "archivePath": "package/lib/generatePrime.js",
+          "mode": "exact",
+          "sha256": "de6d0a9ec656d3ecff7249771ba9fc365f929b5b15d86e7c19cc77db225d5d64"
+        },
+        {
+          "sourcePath": "node_modules/diffie-hellman/lib/primes.json",
+          "archivePath": "package/lib/primes.json",
+          "mode": "module-export-json",
+          "sha256": "6d9512282f7feb213cd86fb2d0a8ba7f4ed886dffebdc9ebee8058ddd4deb824",
+          "upstreamSha256": "e795b9a69944e64c69c63beb284dd3fe6dc848ddf6cca7e567a2bb2bda56e8ad"
+        }
+      ],
+      "notices": [
+        {
+          "file": "docs/third-party/embedded/exact-sources/diffie-hellman-5.0.2-LICENSE.txt",
+          "sha256": "db6109f994692150ed82cd904bb053c73b97b23678bf52047f747bfec11e1934",
+          "text": "Copyright (c) 2017 Calvin Metcalf\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+        }
+      ]
     }
   ]
 }

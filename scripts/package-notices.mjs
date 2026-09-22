@@ -289,12 +289,14 @@ for (const record of records.values()) {
       components: [...components.values()].sort((a, b) => a.name.localeCompare(b.name)),
     };
     vendorBundles.push(bundle);
-    issue(
-      'review',
-      'PREBUNDLED_COMPONENTS_UNRESOLVED',
-      browserEntry,
-      `${bundle.components.length} embedded component names require upstream version/license confirmation; ExcelJS dist/LICENSE is its MIT notice, not an exhaustive embedded dependency inventory`,
-    );
+    const unresolved = bundle.components.filter((component) => !component.review);
+    if (unresolved.length)
+      issue(
+        'review',
+        'PREBUNDLED_COMPONENTS_UNRESOLVED',
+        browserEntry,
+        `${unresolved.length} embedded component names require upstream version/license confirmation; ExcelJS dist/LICENSE is its MIT notice, not an exhaustive embedded dependency inventory`,
+      );
   } catch (error) {
     issue('review', 'VENDOR_BUNDLE_MAP_UNAVAILABLE', browserEntry, error.message);
   }

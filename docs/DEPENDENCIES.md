@@ -93,3 +93,5 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 2026-09-21 exact-source 增量：又将 ExcelJS 浏览器 source map 中 16 个组件的源文件逐字绑定到完整性校验通过的官方 npm tarball，并保存包内 LICENSE/README 许可正文与 `manifest.json`。已审组件从 17 增至 18，未解决内嵌组件从 67 降至 51；reviewItems 仍包含 ExcelJS 预打包闭包及 binary、buffers、chainsaw。该证据只证明所列字节和正文来源，不推断缺失的组件版本，也不替代法律审查；严格发布门禁仍保持阻断。
 
 2026-09-22 exact-source 增量：继续绑定 ExcelJS 浏览器 source map 中的官方 `buffer@5.2.1` 源文件，并保存 npm registry 地址、integrity、归档 SHA-256、源文件 SHA-256 与完整 MIT 正文。当前安装闭包清单为 102 个安装记录、89 个唯一名称/版本、138 份通知材料；严格检查仍为 4 项 review，未解决内嵌组件为 16 个。`binary`、`buffers`、`chainsaw` 及 ExcelJS 预打包闭包仍需人工复核，不能据此发布商业稳定版。
+
+2026-09-22 供应链复核增量：为 `@fast-csv/format@4.3.5`、`@fast-csv/parse@4.3.6`、`fast-csv@4.3.6`、`xmlchars@2.2.0`、`saxes@5.0.1` 和 `diffie-hellman@5.0.2` 保存官方 npm 归档、integrity、归档摘要与完整许可证正文。source map 中的对应源文件逐项绑定；对 TypeScript/Babel 生成文件使用固定 Babel 7.29.7 插件链和显式单行生成差异记录，JSON 只按字面 `module.exports` 解析。ExcelJS 预打包组件未解决数已降为 0；当前严格门禁只剩 `binary@0.3.0` 的完整 MIT 授权正文缺失，`check:licenses --strict` 仍返回非零，不能发布 `1.0.0` 或稳定 npm 标签。

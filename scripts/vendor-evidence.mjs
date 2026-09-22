@@ -3,6 +3,9 @@ import path from 'node:path';
 import { readFile, realpath } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
+import { transformSync } from '@babel/core';
+import transformModulesCommonjs from '@babel/plugin-transform-modules-commonjs';
+import transformParameters from '@babel/plugin-transform-parameters';
 
 const root = path.resolve(new URL('..', import.meta.url).pathname);
 
@@ -220,6 +223,38 @@ function archiveEntry(archive, entry) {
   return execFileSync('tar', ['-xOf', archive, entry], { maxBuffer: 16 * 1024 * 1024 });
 }
 
+function stripInlineSourceMap(source) {
+  return source.replace(
+    /\n?\/\/# sourceMappingURL=data:application\/json[^\n]*$/,
+    '',
+  );
+}
+
+function transformEmbeddedSource(source, transform) {
+  assert.equal(transform?.kind, 'babel');
+  assert.deepEqual(transform.plugins, [
+    ['@babel/plugin-transform-modules-commonjs', '7.29.7'],
+    ['@babel/plugin-transform-parameters', '7.29.7'],
+  ]);
+  const result = transformSync(source, {
+    babelrc: false,
+    configFile: false,
+    comments: true,
+    sourceMaps: false,
+    plugins: [transformModulesCommonjs, transformParameters],
+  });
+  assert(result?.code, 'Babel transform produced no source');
+  let output = result.code;
+  for (const adjustment of transform.adjustments ?? []) {
+    assert.equal(adjustment.kind, 'insert-empty-line-before-line');
+    assert(Number.isInteger(adjustment.line) && adjustment.line > 0);
+    const lines = output.split('\n');
+    lines.splice(adjustment.line - 1, 0, '');
+    output = lines.join('\n');
+  }
+  return output;
+}
+
 /** Validate exact source-map/upstream evidence for one embedded component. */
 export async function reviewedEmbeddedComponent(root, bundle, component, sourceMap) {
   const key = `${component.name}@${component.bundledVersion ?? ''}`;
@@ -291,14 +326,47 @@ export async function reviewedEmbeddedComponent(root, bundle, component, sourceM
           JSON.parse(upstream.toString('utf8')),
           `Transformed embedded JSON differs: ${comparison.sourcePath}`,
         );
+      } else if (comparison.mode === 'babel-transform') {
+        const upstreamText = upstream.toString('utf8');
+        assert.equal(
+          createHash('sha256').update(upstream).digest('hex'),
+          comparison.upstreamSha256,
+          'Upstream transformed source archive hash changed',
+        );
+        const transformed = transformEmbeddedSource(upstreamText, comparison.transform);
+        assert.equal(
+          createHash('sha256').update(transformed).digest('hex'),
+          comparison.transformedSha256,
+          'Transformed embedded source hash changed',
+        );
+        assert.equal(
+          createHash('sha256').update(source).digest('hex'),
+          comparison.sha256,
+          'Transformed embedded source hash changed',
+        );
+        assert.equal(
+          stripInlineSourceMap(source.toString('utf8')),
+          transformed,
+          `Transformed embedded source differs: ${comparison.sourcePath}`,
+        );
       } else {
         assert.deepEqual(source, upstream, `Exact embedded source differs: ${comparison.sourcePath}`);
       }
     }
     assert(exact.notices?.length > 0, `Exact vendor archive has no complete notice: ${exact.name}`);
     const notice = exact.notices[0];
-    const noticeArchive = await archiveFor(notice.archive ?? exact.archive);
-    const noticeText = archiveEntry(noticeArchive.filename, notice.archivePath).toString('utf8');
+    let noticeText;
+    let noticePath;
+    if (notice.file) {
+      const filename = await realpath(path.join(project, notice.file));
+      assert(filename.startsWith(project + path.sep), 'Exact vendor notice escapes repository');
+      noticeText = await readFile(filename, 'utf8');
+      noticePath = notice.file;
+    } else {
+      const noticeArchive = await archiveFor(notice.archive ?? exact.archive);
+      noticeText = archiveEntry(noticeArchive.filename, notice.archivePath).toString('utf8');
+      noticePath = `docs/third-party/embedded/exact-sources/${notice.archive ?? exact.archive}#${notice.archivePath}`;
+    }
     assert.equal(
       createHash('sha256').update(noticeText).digest('hex'),
       notice.sha256,
@@ -307,7 +375,7 @@ export async function reviewedEmbeddedComponent(root, bundle, component, sourceM
     return {
       status: 'upstream-source-and-license-reviewed',
       licenseEvidence: {
-        path: `docs/third-party/embedded/exact-sources/${notice.archive ?? exact.archive}#${notice.archivePath}`,
+        path: noticePath,
         sha256: notice.sha256,
         bytes: Buffer.byteLength(noticeText),
         text: noticeText,
