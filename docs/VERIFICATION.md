@@ -9,6 +9,7 @@
 - 已有定向 macOS Safari 线上证据，以及绑定较早候选制品的 Chromium/Firefox/WebKit 自动化报告；当前没有把这些证据扩展为原生中文 IME、实体移动触控、屏幕阅读器、跨设备性能或完整 XLSX/Excel 语料通过。
 - `lumina-report-sdk` 仍未出现在 npm 注册表；Trusted Publisher 绑定或可用发布凭据完成前，不创建 1.0.0 稳定发布记录。
 - 已用已有 `v0.29.0` Release 手动运行 npm 工作流 `35785677207`；全部构建、测试、严格许可证、重复构建、HTTP 冒烟和制品上传步骤通过，最后的 OIDC 发布以 `ENEEDAUTH` 失败。该结果确认 GitHub Actions 尚未与 npm 包建立 Trusted Publisher 绑定，不能把 GitHub 登录或本地浏览器登录当作 CI 身份。
+- GitHub `v0.29.0` Release 最初被错误标为正式版，已修正为 prerelease；后续 0.x 发布重试应写入 npm `next`，不会再按 `latest` 路由。
 - 本轮真实浏览器工具仍返回 `unsupported Codex auth method: apikey`，没有新增可控标签页或通过记录；该工具故障不被记录为产品通过或失败。
 
 ### 历史记录（已由当前状态条目取代）— 2026-09-23 — 提交 `9b6e239`

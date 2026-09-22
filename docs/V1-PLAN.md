@@ -2,7 +2,7 @@
 
 2026-09-23 当前远端状态：浏览器验收归档提交 `5517053` 已由 GitHub CI `35790150657` 与 CD `35790481864` 验证并部署。线上 `build-info.json` 当前为版本 `0.29.0`、提交 `55170538df26287f54826f7259951969d2008a03`、站点 SHA-256 `77f9d66e1fa8ec9cc7674c176d6c7cef7decc01b999ecab6343f089989b731c9`。该部署证明主线门禁和部署链路通过，但不会将原先绑定本地候选哈希的浏览器报告自动改签；npm 注册表仍未发布，不能据此宣布 v1.0.0。
 
-2026-09-23 npm 发布尝试：手动运行 `v0.29.0` 的 npm 工作流 `35785677207`，所有发布前门禁和 GitHub Release 制品上传通过，发布步骤以 `ENEEDAUTH` 失败。需要在 npm 包 `lumina-report-sdk` 的 **Settings → Trusted Publishers** 配置 `jjttkid-hw / lumina-sheets / npm.yml / npm`，之后再重试同一 0.x Release；这不改变稳定版验收门槛。
+2026-09-23 npm 发布尝试：手动运行 `v0.29.0` 的 npm 工作流 `35785677207`，所有发布前门禁和 GitHub Release 制品上传通过，发布步骤以 `ENEEDAUTH` 失败；该 Release 最初错误地标为正式版，随后已改为 prerelease，使重试时按规则使用 `next` 而不是 `latest`。需要在 npm 包 `lumina-report-sdk` 的 **Settings → Trusted Publishers** 配置 `jjttkid-hw / lumina-sheets / npm.yml / npm`，之后再重试同一 0.x Release；这不改变稳定版验收门槛。
 
 2026-09-23 当前浏览器候选复验：提交 `28d8d09` 的构建已在 Chromium、Firefox、WebKit 完成 smoke、交互、焦点、布局、性能套件，并在 Chromium 完成 CDP 触控模拟；报告绑定站点 `00c64e949326bb3fee9660baf4fcda6691e947483e9f7bc81e109f3dd0650c8f` 与 SDK `9967b1a3f033d9a824d5acb0bb7d1e8186a9c87fd1923e50aa37e0cb1202d03b`，见 [browser-candidate-2026-09-23-r4](acceptance/browser-candidate-2026-09-23-r4/README.md)。这推进了桌面自动化证据，但仍不能替代正式 Safari、原生中文 IME、实体触控、屏幕阅读器、跨设备性能和完整文件语料。
 
