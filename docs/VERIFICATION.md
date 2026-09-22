@@ -2251,3 +2251,8 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 
 - `events@2.1.0` 的归档 LICENSE 已按原文重新写入清单并通过字节哈希校验；exact-source 回归与许可证据回归共 52 项通过。
 - SDK 构建和安装包消费检查通过；当前制品为 39 个文件、676,411 字节，SHA-256 `a991f834aeb3a7127b48931aafd06571a344b1463b19c40a16730aca015973bf`。许可生成结果为 138 份材料、0 个错误、4 项待审、48 个未解决预打包组件；严格门禁仍阻断发布。
+
+## 2026-09-22 exact-source 许可证据增量（brorand）
+
+- ExcelJS 浏览器 source map 中的 `brorand/index.js` 已逐字匹配官方 `brorand@1.1.0` npm 归档。该包没有独立 LICENSE 文件，清单保留归档 README 的完整 MIT 授权段落，并绑定 npm integrity、归档和源文件 SHA-256。
+- exact-source 回归与许可证据回归共 52 项通过；SDK 构建和真实 tgz 消费检查通过。当前制品为 39 个文件、676,883 字节，SHA-256 `52f73f04a6c41a261b7f1f163966e62af0759d432aaa168ec57f9c0fad2bb04f`。当前未解决预打包组件为 47 个，严格许可证门禁仍阻断发布。
