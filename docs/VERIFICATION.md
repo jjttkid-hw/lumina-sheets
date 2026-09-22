@@ -2,8 +2,8 @@
 
 ## 当前状态（2026-09-23）
 
-- 当前主线为 `0.29.0` 开发线；提交 `98549a7` 已通过 CI `35786623624` 与 CD `35786955747`，随后文档同步也已通过 CI/CD。线上 Pages `build-info.json` 已核对版本与部署摘要，工作区与 `origin/main` 同步；后续核验应以该文件的提交和站点 SHA-256 为准。
-- 当前提交 `28d8d09` 已重新完成三引擎真实浏览器套件：Chromium、Firefox、WebKit 各通过 smoke 8、交互 6、焦点 4、布局 6、性能 6 项；Chromium 另通过 3 项 CDP 触控模拟。报告与同一站点/SDK 摘要见 [browser-candidate-2026-09-23-r4](acceptance/browser-candidate-2026-09-23-r4/README.md)。该证据仍不覆盖正式 Safari、原生 IME、实体设备、屏幕阅读器、跨设备性能和完整 XLSX/Excel/WPS 语料。
+- 当前主线为 `0.29.0` 开发线；浏览器验收归档提交 `5517053` 已推送并通过 [CI 35790150657](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35790150657) 与 [CD 35790481864](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35790481864)。线上 Pages `build-info.json` 已核对为提交 `55170538df26287f54826f7259951969d2008a03`、站点 SHA-256 `77f9d66e1fa8ec9cc7674c176d6c7cef7decc01b999ecab6343f089989b731c9`；工作区与 `origin/main` 同步。
+- 提交 `28d8d09` 的本地候选已重新完成三引擎真实浏览器套件：Chromium、Firefox、WebKit 各通过 smoke 8、交互 6、焦点 4、布局 6、性能 6 项；Chromium 另通过 3 项 CDP 触控模拟。报告与实际受测站点/SDK 摘要见 [browser-candidate-2026-09-23-r4](acceptance/browser-candidate-2026-09-23-r4/README.md)。`5517053` 只归档这些结果并触发新的部署构建，因此不能把原报告的制品哈希自动改签为线上 `77f9d66e...`；该证据仍不覆盖正式 Safari、原生 IME、实体设备、屏幕阅读器、跨设备性能和完整 XLSX/Excel/WPS 语料。
 - GitHub CI/CD 已连续通过全量测试、格式检查、API/SDK 契约、隔离安装包、严格许可证、可重复构建和 HTTP 部署检查。`npm run check:stable` 在 0.x 上明确输出开发/预发布包，不声明稳定验收。
 - 本地全量测试基线为 163 个测试文件、2,306 项测试；严格许可证技术门禁为 `0 errors / 0 reviewItems / 0 unresolvedVendorComponents`。这仍需要权利人/法务复核，不等于商业授权结论。
 - 已有定向 macOS Safari 线上证据，以及绑定较早候选制品的 Chromium/Firefox/WebKit 自动化报告；当前没有把这些证据扩展为原生中文 IME、实体移动触控、屏幕阅读器、跨设备性能或完整 XLSX/Excel 语料通过。
