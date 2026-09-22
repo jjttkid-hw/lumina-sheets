@@ -6,12 +6,12 @@
     "mode": "production",
     "sourceSha256": "1f33dfc9a54e690d6856c5e2d2c7640d72367d2e34c0dae318e8a15e71f3eec3",
     "sourceFiles": 140,
-    "sourceTimestamp": "2026-09-22T03:56:31.000Z",
+    "sourceTimestamp": "2026-09-22T04:14:09.000Z",
     "timestampSource": "git-commit",
     "scope": "Source/build configuration fingerprint; excludes installed dependency bytes and final artifacts. Development identity is captured at server startup and may precede HMR changes. Acceptance still requires site and SDK archive digests."
   },
   "product": "Lumina JavaScript performance laboratory",
-  "measuredAt": "2026-09-22T04:09:02.635Z",
+  "measuredAt": "2026-09-22T04:55:18.685Z",
   "qualification": "本机实测；未配置性能通过预算；不表示第三方性能或商业认证",
   "environment": {
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15",
@@ -26,9 +26,9 @@
   "fixture": {
     "storedCells": 1000000,
     "formulaCount": 100000,
-    "dataReadyMs": 1573,
-    "generatedMs": 1565,
-    "firstDrawMs": 1579,
+    "dataReadyMs": 1786.999999999999,
+    "generatedMs": 1779.0000000000002,
+    "firstDrawMs": 1798.999999999999,
     "logicalRows": 1000000,
     "logicalColumns": 256,
     "populatedColumns": 10
@@ -38,19 +38,19 @@
     "observedFrames": 1,
     "droppedFrames": 0,
     "sampleLimit": 10000,
-    "averageMs": 1,
-    "p50Ms": 1,
-    "p95Ms": 1,
-    "p99Ms": 1,
-    "maxMs": 1,
+    "averageMs": 3,
+    "p50Ms": 3,
+    "p95Ms": 3,
+    "p99Ms": 3,
+    "maxMs": 3,
     "averagePaintedCells": 169,
     "averageDomNodes": 4,
     "samples": [
       {
-        "durationMs": 1,
+        "durationMs": 3,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 16703
+        "timestamp": 17345
       }
     ],
     "note": "实际Canvas绘制耗时，不等于整帧时间或FPS"
@@ -60,31 +60,31 @@
     "observedFrames": 5,
     "droppedFrames": 0,
     "sampleLimit": 10000,
-    "averageMs": 5.999999999999273,
-    "p50Ms": 4.999999999998181,
-    "p95Ms": 12.999999999998181,
-    "p99Ms": 12.999999999998181,
-    "maxMs": 12.999999999998181,
+    "averageMs": 3.600000000000364,
+    "p50Ms": 3.999999999998181,
+    "p95Ms": 4.000000000001819,
+    "p99Ms": 4.000000000001819,
+    "maxMs": 4.000000000001819,
     "averagePaintedCells": 169,
     "averageDomNodes": 4,
     "samples": [
-      {
-        "durationMs": 6,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
       {
         "durationMs": 3,
         "paintedCells": 169,
         "domNodes": 4
       },
       {
-        "durationMs": 12.999999999998181,
+        "durationMs": 3.999999999998181,
         "paintedCells": 169,
         "domNodes": 4
       },
       {
-        "durationMs": 4.999999999998181,
+        "durationMs": 4.000000000001819,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 4.000000000001819,
         "paintedCells": 169,
         "domNodes": 4
       },
@@ -97,8 +97,8 @@
   },
   "workerCalculation": {
     "targets": 100000,
-    "roundTripMs": 724.0000000000036,
-    "calculationMs": 717,
+    "roundTripMs": 691,
+    "calculationMs": 685,
     "firstValue": 54,
     "lastValue": 500000
   },

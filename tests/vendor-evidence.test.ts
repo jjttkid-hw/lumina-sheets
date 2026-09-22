@@ -266,6 +266,6 @@ it('binds every exact-source archive to the current ExcelJS map and notice text'
     expect(result.licenseEvidence.text.length).toBeGreaterThan(0);
     reviewed.push(record.name);
   }
-  expect(reviewed).toHaveLength(21);
+  expect(reviewed).toHaveLength(manifest.records.length);
   expect(new Set(reviewed).size).toBe(reviewed.length);
 });

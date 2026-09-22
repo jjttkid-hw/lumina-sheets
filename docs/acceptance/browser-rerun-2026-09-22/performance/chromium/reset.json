@@ -6,12 +6,12 @@
     "mode": "production",
     "sourceSha256": "1f33dfc9a54e690d6856c5e2d2c7640d72367d2e34c0dae318e8a15e71f3eec3",
     "sourceFiles": 140,
-    "sourceTimestamp": "2026-09-22T03:56:31.000Z",
+    "sourceTimestamp": "2026-09-22T04:14:09.000Z",
     "timestampSource": "git-commit",
     "scope": "Source/build configuration fingerprint; excludes installed dependency bytes and final artifacts. Development identity is captured at server startup and may precede HMR changes. Acceptance still requires site and SDK archive digests."
   },
   "product": "Lumina JavaScript performance laboratory",
-  "measuredAt": "2026-09-22T04:06:55.506Z",
+  "measuredAt": "2026-09-22T04:52:54.788Z",
   "qualification": "本机实测；未配置性能通过预算；不表示第三方性能或商业认证",
   "environment": {
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
@@ -22,17 +22,17 @@
     "hardwareConcurrency": 15,
     "devicePixelRatio": 1,
     "memory": {
-      "usedJsHeapSize": 126508045,
-      "totalJsHeapSize": 181601317,
+      "usedJsHeapSize": 142451452,
+      "totalJsHeapSize": 172426276,
       "jsHeapSizeLimit": 4395630592
     }
   },
   "fixture": {
     "storedCells": 1000000,
     "formulaCount": 100000,
-    "dataReadyMs": 1836.1000000238419,
-    "generatedMs": 1805.7000000476837,
-    "firstDrawMs": 1845.7999999523163,
+    "dataReadyMs": 1493.1999999284744,
+    "generatedMs": 1475.3999999761581,
+    "firstDrawMs": 1499,
     "logicalRows": 1000000,
     "logicalColumns": 256,
     "populatedColumns": 10

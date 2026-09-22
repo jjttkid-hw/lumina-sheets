@@ -6,12 +6,12 @@
     "mode": "production",
     "sourceSha256": "1f33dfc9a54e690d6856c5e2d2c7640d72367d2e34c0dae318e8a15e71f3eec3",
     "sourceFiles": 140,
-    "sourceTimestamp": "2026-09-22T03:56:31.000Z",
+    "sourceTimestamp": "2026-09-22T04:14:09.000Z",
     "timestampSource": "git-commit",
     "scope": "Source/build configuration fingerprint; excludes installed dependency bytes and final artifacts. Development identity is captured at server startup and may precede HMR changes. Acceptance still requires site and SDK archive digests."
   },
   "product": "Lumina JavaScript performance laboratory",
-  "measuredAt": "2026-09-22T04:08:16.497Z",
+  "measuredAt": "2026-09-22T04:54:21.371Z",
   "qualification": "本机实测；未配置性能通过预算；不表示第三方性能或商业认证",
   "environment": {
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0",
@@ -26,9 +26,9 @@
   "fixture": {
     "storedCells": 1000000,
     "formulaCount": 100000,
-    "dataReadyMs": 1777,
-    "generatedMs": 1680,
-    "firstDrawMs": 1792,
+    "dataReadyMs": 1722,
+    "generatedMs": 1707,
+    "firstDrawMs": 1742,
     "logicalRows": 1000000,
     "logicalColumns": 256,
     "populatedColumns": 10
@@ -38,19 +38,19 @@
     "observedFrames": 1,
     "droppedFrames": 0,
     "sampleLimit": 10000,
-    "averageMs": 2,
-    "p50Ms": 2,
-    "p95Ms": 2,
-    "p99Ms": 2,
-    "maxMs": 2,
+    "averageMs": 11,
+    "p50Ms": 11,
+    "p95Ms": 11,
+    "p99Ms": 11,
+    "maxMs": 11,
     "averagePaintedCells": 156,
     "averageDomNodes": 4,
     "samples": [
       {
-        "durationMs": 2,
+        "durationMs": 11,
         "paintedCells": 156,
         "domNodes": 4,
-        "timestamp": 23208
+        "timestamp": 24285
       }
     ],
     "note": "实际Canvas绘制耗时，不等于整帧时间或FPS"
@@ -60,14 +60,24 @@
     "observedFrames": 5,
     "droppedFrames": 0,
     "sampleLimit": 10000,
-    "averageMs": 7,
-    "p50Ms": 7,
+    "averageMs": 6.2,
+    "p50Ms": 6,
     "p95Ms": 9,
     "p99Ms": 9,
     "maxMs": 9,
     "averagePaintedCells": 156,
     "averageDomNodes": 4,
     "samples": [
+      {
+        "durationMs": 5,
+        "paintedCells": 156,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 8,
+        "paintedCells": 156,
+        "domNodes": 4
+      },
       {
         "durationMs": 6,
         "paintedCells": 156,
@@ -79,17 +89,7 @@
         "domNodes": 4
       },
       {
-        "durationMs": 8,
-        "paintedCells": 156,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 5,
-        "paintedCells": 156,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 7,
+        "durationMs": 3,
         "paintedCells": 156,
         "domNodes": 4
       }
@@ -97,8 +97,8 @@
   },
   "workerCalculation": {
     "targets": 100000,
-    "roundTripMs": 2531,
-    "calculationMs": 2528,
+    "roundTripMs": 4624,
+    "calculationMs": 4621,
     "firstValue": 54,
     "lastValue": 500000
   },

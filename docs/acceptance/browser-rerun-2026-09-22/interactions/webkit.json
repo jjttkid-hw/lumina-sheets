@@ -3,31 +3,31 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-09-22T04:08:40.945Z",
+  "executedAt": "2026-09-22T04:54:56.059Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "adbc9f9a304e9206f6d570f1619df03660a07fd96ed447cadbea4b78ab630d5c",
-  "artifactSha256": "f6469681d7f2874c816f8d7674faf9f19eb4c62443836820f853388c0c2881ac",
+  "siteSha256": "fec2fa53ea4e8d5813e8cdbbb7fd7e6a6e70cd8a2ab4c054316326efe5c2c858",
+  "artifactSha256": "47099f8b5bf603a6054ec5c234acdd9a36f91350bb5f0111395b1705177ca940",
   "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
   "checks": [
     {
       "name": "validation-editor-recovery",
       "status": "passed",
-      "elapsedMs": 210
+      "elapsedMs": 224
     },
     {
       "name": "validation-list-keyboard",
       "status": "passed",
-      "elapsedMs": 108
+      "elapsedMs": 116
     },
     {
       "name": "native-clipboard-atomic-validation",
       "status": "passed",
-      "elapsedMs": 364,
+      "elapsedMs": 411,
       "details": {
         "transport": "native keyboard copy/paste",
         "rejected": "B2:C2 unchanged",
@@ -37,12 +37,12 @@
     {
       "name": "native-copy-cut-paste",
       "status": "passed",
-      "elapsedMs": 127
+      "elapsedMs": 145
     },
     {
       "name": "sdk-mount-isolation-destroy",
       "status": "passed",
-      "elapsedMs": 18,
+      "elapsedMs": 28,
       "details": {
         "duplicate": "INVALID_ARGUMENT",
         "empty": 0,
@@ -54,7 +54,7 @@
     {
       "name": "sdk-pending-source-destroy",
       "status": "passed",
-      "elapsedMs": 154,
+      "elapsedMs": 156,
       "details": {
         "outcome": "AbortError",
         "lateCallbacks": 0,
