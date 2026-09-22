@@ -1735,7 +1735,16 @@ export class LuminaSpreadsheet {
     };
   };
   viewport = (range: { firstRow: number; lastRow: number }) => {
-    if (!this.cache || this.destroyed || this.workbook.activeSheetId !== this.boundSheetId) return;
+    this.assertLive();
+    if (
+      !record(range) ||
+      typeof range.firstRow !== 'number' ||
+      !Number.isFinite(range.firstRow) ||
+      typeof range.lastRow !== 'number' ||
+      !Number.isFinite(range.lastRow)
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '视口范围必须包含有限的起止行号');
+    if (!this.cache || this.workbook.activeSheetId !== this.boundSheetId) return;
     const first = Math.max(0, Math.min(this.currentSheet.rowCount - 1, Math.floor(range.firstRow)));
     const last = Math.max(
       first,

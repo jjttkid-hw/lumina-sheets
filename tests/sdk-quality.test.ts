@@ -182,6 +182,26 @@ describe('commercial SDK boundaries', () => {
     expect(fetchPage).toHaveBeenCalledTimes(1);
   });
 
+  it('classifies invalid and post-destroy viewport calls synchronously', async () => {
+    const instance = make();
+    const fetchPage = vi.fn(async () => ({ rows: [[1]], totalRows: 1 }));
+    await instance.bindData({ columnCount: 1, rowCount: 1, fetchPage });
+    for (const range of [
+      null,
+      { firstRow: Number.NaN, lastRow: 0 },
+      { firstRow: 0, lastRow: Number.POSITIVE_INFINITY },
+      { firstRow: '0', lastRow: 0 },
+    ])
+      expect(() => instance.viewport(range as never)).toThrowError(
+        expect.objectContaining({ code: 'INVALID_ARGUMENT' }),
+      );
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+    instance.destroy();
+    expect(() => instance.viewport({ firstRow: 0, lastRow: 0 })).toThrowError(
+      expect.objectContaining({ code: 'DESTROYED' }),
+    );
+  });
+
   it('cancels a PDF waiting for fonts when destroyed without allocating or downloading', async () => {
     const instance = make();
     const createElement = vi.fn();

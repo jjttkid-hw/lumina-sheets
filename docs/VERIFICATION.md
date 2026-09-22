@@ -1,5 +1,7 @@
 # 验证记录
 
+2026-09-22 SDK 视口生命周期：`viewport` 现对非法起止行号同步返回 `INVALID_ARGUMENT`，销毁实例统一返回 `DESTROYED`；新增 5 个定向回归，未发起额外数据请求。定向 SDK 质量测试 31 项、`build:sdk`、`check:api`、`check:sdk` 通过；SDK 制品哈希见当次命令输出。完整浏览器矩阵、许可证和 v1.0 门槛仍保持未完成。
+
 2026-09-21 elliptic 证据入包后：三引擎各 30 组、共 90 组及 Chromium 3 组触摸模拟通过，均绑定新制品。见 [最新报告](acceptance/browser-elliptic-2026-09-21/README.md)。这不代替完整稳定版矩阵。
 
 2026-09-21 布局补验：Chrome/Firefox/WebKit 新增各六组、共 18 组通过，覆盖隐藏行列、合并点击/编辑、冻结滚动、百万逻辑行定位、尺寸撤销和筛选可见剪贴板。见 [原始报告](acceptance/browser-layout-2026-09-21/README.md)。完整平台矩阵仍待完成。

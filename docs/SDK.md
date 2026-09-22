@@ -319,6 +319,8 @@ grid.setActiveSheet(sheets[1].id);
 
 数据绑定通知的同步重入：subscribe 在 bindData 提交状态时可调用 load、destroy 或再次 bindData。被替换的原绑定以 AbortError 拒绝，且不会读取新绑定的请求控制器、发起旧请求或把新源状态标为旧空源的 ready。调用方应处理 bindData 返回的 Promise（取消与网络失败不同）。clearDataCache 在取消请求或清缓存的通知中遇到重绑/销毁后即停止，不清除或重试新绑定。
 
+视口参数与生命周期：`viewport({ firstRow, lastRow })` 要求起止行号为有限数值；`NaN`、无穷值、字符串、空值或缺失字段同步抛出 `LuminaError`（`code: 'INVALID_ARGUMENT'`），不会创建请求或触碰数据源。已销毁实例调用 `viewport` 统一同步抛出 `DESTROYED`，即使此前没有绑定分页源。
+
 
 切表/视口取消也可能同步触发 subscribe。若该通知中加载、销毁、重绑、切表或发起新视口请求，较新的操作优先，原操作停止；不向新工作簿写入旧表 ID、不用新数据源抓取旧滚动范围、不发送旧请求错误。尤其切表取消通知中若宿主主动请求新视口，原切表会被取代；宿主应以 activeSheetInfo / onActiveSheetChange 的实际提交结果更新目录，而非假定调用必定完成。普通切表且无重入时仍按原契约重置 A1 与筛选。
 
