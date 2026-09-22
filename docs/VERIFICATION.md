@@ -1,5 +1,10 @@
 # 验证记录
 
+### 2026-09-22 — 当前浏览器候选的远端 CI/CD
+
+- 提交 `56e7dc0dc2212f46c3fbd5ae87378e5b4e5970dd` 的 GitHub Actions [CI run 35730406230](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35730406230) 已完成并通过；[CD run 35730742222](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35730742222) 也已完成并通过。CI 重新执行锁定依赖安装、测试、构建、SDK 隔离安装和站点检查；CD 使用该 CI 产物部署 Pages。
+- 该远端门禁确认文档与浏览器候选证据可在当前主线提交上重建；npm 稳定发布仍受 `binary@0.3.0` 许可证正文缺口阻断。
+
 ### 2026-09-22 — 当前主线提交的真实浏览器复验（r2）
 
 - 对提交 `048568e6871ff40bbd5cf048a7a67c1c9fef1813` 以 `SOURCE_DATE_EPOCH=1790079444` 重新构建并运行本地静态候选。站点 SHA-256 为 `4920cf45ef12ebc0e0bbc766805a9cce5ac6754c98c36a6811e1c1a4d38d63b3`，SDK tgz SHA-256 为 `2162954eb6990ace6509868822bbb779b3ebae170fd1552e58dfac70e360e1c5`。
