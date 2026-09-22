@@ -1146,6 +1146,11 @@
           const raw = $('#formula').value;
           const value = parseCellInput(raw);
           grid.setCell(cellKey(selection.row, selection.col), value);
+          // Refresh the formula bar synchronously as well as through the SDK
+          // change callback. This keeps the browser UI responsive when a
+          // canvas render or callback is deferred by the host browser.
+          selectionDirty = true;
+          syncSelection(true);
         } catch (error) {
           showError(error);
         }

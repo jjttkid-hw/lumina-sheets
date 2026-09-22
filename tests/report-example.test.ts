@@ -137,6 +137,19 @@ it('does not commit formula drafts on IME confirmation keys', async () => {
   expect(grid.getCell('A1')?.value).toBe('草稿');
 });
 
+it('refreshes the formula bar immediately after applying a formula', async () => {
+  const { grid, report, $ } = mount();
+  await report('formulas');
+  grid.select({ row: 0, col: 1 });
+  $('#formula').value = '=SUM(1,2,3)';
+  $('#apply').click();
+  expect(grid.getCell('B1')?.value).toBe('=SUM(1,2,3)');
+  expect(grid.getValue('B1')).toBe(6);
+  expect($('#selected').textContent).toBe('B1');
+  expect($('#value').textContent).toBe('结果：6');
+  expect($('#formula').value).toBe('=SUM(1,2,3)');
+});
+
 it('uses SDK import ownership so edits cancel late parsing instead of being overwritten', async () => {
   const { grid, $, report } = mount();
   await report('sheets');
