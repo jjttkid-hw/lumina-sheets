@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.53",
+  "executedAt": "2026-09-22T21:44:52.877Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "00c64e949326bb3fee9660baf4fcda6691e947483e9f7bc81e109f3dd0650c8f",
+  "artifactSha256": "9967b1a3f033d9a824d5acb0bb7d1e8186a9c87fd1923e50aa37e0cb1202d03b",
+  "scope": "Measured real-browser performance on this machine, no pass/fail latency budget or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.",
+  "checks": [
+    {
+      "name": "fixture-100000",
+      "status": "passed",
+      "elapsedMs": 5876,
+      "details": {
+        "fixture": {
+          "storedCells": 100000,
+          "formulaCount": 10000,
+          "dataReadyMs": 183.5,
+          "generatedMs": 122.29999995231628,
+          "firstDrawMs": 191.19999992847443,
+          "logicalRows": 1000000,
+          "logicalColumns": 256,
+          "populatedColumns": 10
+        },
+        "canvas": 1.5,
+        "edit": {
+          "frames": 5,
+          "observedFrames": 5,
+          "droppedFrames": 0,
+          "sampleLimit": 10000,
+          "averageMs": 6.339999985694885,
+          "p50Ms": 6.799999952316284,
+          "p95Ms": 9.799999952316284,
+          "p99Ms": 9.799999952316284,
+          "maxMs": 9.799999952316284,
+          "averagePaintedCells": 169,
+          "averageDomNodes": 4,
+          "samples": [
+            {
+              "durationMs": 7.399999976158142,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 6.799999952316284,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1.600000023841858,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 9.799999952316284,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 6.100000023841858,
+              "paintedCells": 169,
+              "domNodes": 4
+            }
+          ]
+        },
+        "worker": {
+          "targets": 10000,
+          "roundTripMs": 56.10000002384186,
+          "calculationMs": 55.299999952316284,
+          "firstValue": 5,
+          "lastValue": 50000
+        }
+      }
+    },
+    {
+      "name": "fixture-1000000",
+      "status": "passed",
+      "elapsedMs": 9262,
+      "details": {
+        "fixture": {
+          "storedCells": 1000000,
+          "formulaCount": 100000,
+          "dataReadyMs": 1561.8999999761581,
+          "generatedMs": 1544.7999999523163,
+          "firstDrawMs": 1564.5999999046326,
+          "logicalRows": 1000000,
+          "logicalColumns": 256,
+          "populatedColumns": 10
+        },
+        "canvas": 2,
+        "edit": {
+          "frames": 5,
+          "observedFrames": 5,
+          "droppedFrames": 0,
+          "sampleLimit": 10000,
+          "averageMs": 7.659999966621399,
+          "p50Ms": 7.5,
+          "p95Ms": 12.199999928474426,
+          "p99Ms": 12.199999928474426,
+          "maxMs": 12.199999928474426,
+          "averagePaintedCells": 169,
+          "averageDomNodes": 4,
+          "samples": [
+            {
+              "durationMs": 12.199999928474426,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 5.799999952316284,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 7.600000023841858,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 7.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 5.199999928474426,
+              "paintedCells": 169,
+              "domNodes": 4
+            }
+          ]
+        },
+        "worker": {
+          "targets": 100000,
+          "roundTripMs": 593.2000000476837,
+          "calculationMs": 579.2000000476837,
+          "firstValue": 5,
+          "lastValue": 500000
+        }
+      }
+    },
+    {
+      "name": "scroll-cancel-clear",
+      "status": "passed",
+      "elapsedMs": 190,
+      "details": {
+        "cancelled": {
+          "completed": 1,
+          "planned": 40,
+          "status": "cancelled",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        },
+        "reset": {
+          "completed": 0,
+          "planned": 40,
+          "status": "not-started",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        }
+      }
+    },
+    {
+      "name": "range-cancel",
+      "status": "passed",
+      "elapsedMs": 72
+    },
+    {
+      "name": "range-disjoint",
+      "status": "passed",
+      "elapsedMs": 2354,
+      "details": {
+        "invalidationP50Ms": 0.09999990463256836,
+        "invalidationP95Ms": 0.19999992847442627,
+        "incrementalReadP50Ms": 3.799999952316284,
+        "incrementalReadP95Ms": 4.699999928474426,
+        "fullRecalculationP50Ms": 52.5,
+        "fullRecalculationP95Ms": 60.200000047683716,
+        "meanRecomputedFormulas": 1,
+        "meanCandidateChecks": 13.033333333333333,
+        "meanIndexVisits": 26.733333333333334
+      }
+    },
+    {
+      "name": "range-overlapping",
+      "status": "passed",
+      "elapsedMs": 2367,
+      "details": {
+        "invalidationP50Ms": 8.899999976158142,
+        "invalidationP95Ms": 12.799999952316284,
+        "incrementalReadP50Ms": 23.100000023841858,
+        "incrementalReadP95Ms": 31.600000023841858,
+        "fullRecalculationP50Ms": 22.5,
+        "fullRecalculationP95Ms": 30.299999952316284,
+        "meanRecomputedFormulas": 10000,
+        "meanCandidateChecks": 10000,
+        "meanIndexVisits": 20000
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "fixture-100000",
+      "fixture-1000000",
+      "scroll-cancel-clear",
+      "range-cancel",
+      "range-disjoint",
+      "range-overlapping"
+    ],
+    "actualChecks": [
+      "fixture-100000",
+      "fixture-1000000",
+      "scroll-cancel-clear",
+      "range-cancel",
+      "range-disjoint",
+      "range-overlapping"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

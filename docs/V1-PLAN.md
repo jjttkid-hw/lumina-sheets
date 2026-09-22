@@ -4,6 +4,8 @@
 
 2026-09-23 npm 发布尝试：手动运行 `v0.29.0` 的 npm 工作流 `35785677207`，所有发布前门禁和 GitHub Release 制品上传通过，发布步骤以 `ENEEDAUTH` 失败。需要在 npm 包 `lumina-report-sdk` 的 **Settings → Trusted Publishers** 配置 `jjttkid-hw / lumina-sheets / npm.yml / npm`，之后再重试同一 0.x Release；这不改变稳定版验收门槛。
 
+2026-09-23 当前浏览器候选复验：提交 `28d8d09` 的构建已在 Chromium、Firefox、WebKit 完成 smoke、交互、焦点、布局、性能套件，并在 Chromium 完成 CDP 触控模拟；报告绑定站点 `00c64e949326bb3fee9660baf4fcda6691e947483e9f7bc81e109f3dd0650c8f` 与 SDK `9967b1a3f033d9a824d5acb0bb7d1e8186a9c87fd1923e50aa37e0cb1202d03b`，见 [browser-candidate-2026-09-23-r4](acceptance/browser-candidate-2026-09-23-r4/README.md)。这推进了桌面自动化证据，但仍不能替代正式 Safari、原生中文 IME、实体触控、屏幕阅读器、跨设备性能和完整文件语料。
+
 2026-09-22 当前候选更新：提交 `41a9e51` 的 `unzipper@0.12.5` 依赖替换已消除严格许可证清单中的未解决项；三引擎真实浏览器自动化候选复验已重新绑定站点 SHA-256 `aa4a1663a3d70d2da7bac9e41ad6ba7e574f65120dd3d32894647691f1261025` 与 SDK SHA-256 `395baf25a395a64bf8bce7f9bb8efcbcff595769f69899274139e9625b19bc3a`，见 [browser-candidate-2026-09-22-r3](acceptance/browser-candidate-2026-09-22-r3/README.md)。该候选已通过 CI `35736775847` 和 CD `35737082042`；后续发布策略修正已在 `7c2f9f4`、`30587da` 通过 CI/CD。`check:licenses --strict` 当前通过，但仍需正式 Safari、实体移动触控、屏幕阅读器、跨设备性能和稳定版证据账本，不能据此宣布 `1.0.0`。
 
 目标是继续建设高性能 JavaScript / Canvas 表格与报表产品，形成可安装、可验证、契约稳定的 v1.0。当前阶段 0.29.0；不能通过单独修改版本号宣布完成，也不能把 v1.0 等同于完整 SpreadJS API、Excel 兼容或商业 SLA。
