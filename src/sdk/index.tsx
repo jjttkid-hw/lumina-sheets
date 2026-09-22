@@ -41,6 +41,8 @@ import {
   type ReportRecord,
 } from '../lib/report';
 import { exportWorkbook, importFile } from '../lib/io';
+export { productBuildIdentity } from '../lib/product-build';
+export type { ProductBuildIdentity } from '../lib/product-build';
 import '../styles/spreadsheet.css';
 import './sdk.css';
 

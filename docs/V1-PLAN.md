@@ -2,6 +2,8 @@
 
 2026-09-23 当前候选更新：产品候选提交 `db42633` 已由 GitHub CI `35782388493` 与 CD `35782732045` 验证并部署；随后仅文档提交继续通过 CI/CD，未改变产品代码。线上版本仍为 `0.29.0`，Pages 的实际 `build-info.json`、站点摘要和部署提交以线上文件为准；npm 注册表仍未发布，不能据此宣布 v1.0.0。
 
+2026-09-23 npm 发布尝试：手动运行 `v0.29.0` 的 npm 工作流 `35785677207`，所有发布前门禁和 GitHub Release 制品上传通过，发布步骤以 `ENEEDAUTH` 失败。需要在 npm 包 `lumina-report-sdk` 的 **Settings → Trusted Publishers** 配置 `jjttkid-hw / lumina-sheets / npm.yml / npm`，之后再重试同一 0.x Release；这不改变稳定版验收门槛。
+
 2026-09-22 当前候选更新：提交 `41a9e51` 的 `unzipper@0.12.5` 依赖替换已消除严格许可证清单中的未解决项；三引擎真实浏览器自动化候选复验已重新绑定站点 SHA-256 `aa4a1663a3d70d2da7bac9e41ad6ba7e574f65120dd3d32894647691f1261025` 与 SDK SHA-256 `395baf25a395a64bf8bce7f9bb8efcbcff595769f69899274139e9625b19bc3a`，见 [browser-candidate-2026-09-22-r3](acceptance/browser-candidate-2026-09-22-r3/README.md)。该候选已通过 CI `35736775847` 和 CD `35737082042`；后续发布策略修正已在 `7c2f9f4`、`30587da` 通过 CI/CD。`check:licenses --strict` 当前通过，但仍需正式 Safari、实体移动触控、屏幕阅读器、跨设备性能和稳定版证据账本，不能据此宣布 `1.0.0`。
 
 目标是继续建设高性能 JavaScript / Canvas 表格与报表产品，形成可安装、可验证、契约稳定的 v1.0。当前阶段 0.29.0；不能通过单独修改版本号宣布完成，也不能把 v1.0 等同于完整 SpreadJS API、Excel 兼容或商业 SLA。

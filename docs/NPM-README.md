@@ -88,6 +88,19 @@ Imports accept an AbortSignal. A newer import, successful workbook edit/replacem
 
 Additional APIs cover layout, static row sorting, row/column insertion and deletion, input validation, conditional styles, print settings, data retries, and streaming CSV exports. [API documentation](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/SDK.md) describes contracts and examples. Errors from direct API calls should be handled by the caller; `onError` reports asynchronous data, interaction, and callback failures.
 
+## Build identity
+
+For support diagnostics and release verification, the package exposes the identity embedded in the build:
+
+```ts
+import { productBuildIdentity } from 'lumina-report-sdk';
+
+const build = productBuildIdentity();
+if (build) console.info(`Lumina ${build.version}`, build.sourceSha256);
+```
+
+The value contains the package version, a SHA-256 fingerprint of the tracked source/build inputs, the source timestamp and whether the bundle was produced in production or development mode. It is a diagnostic fingerprint, not a signature and not a substitute for the final SDK archive or site digest. A host must tolerate `null` when running an unbundled development build.
+
 ## Persistence and data ownership
 
 The SDK does not automatically save workbooks to a server or provide accounts, permissions, collaboration, or cloud storage. Use `toJSON()` and `load()` for explicit snapshots, and integrate the change callbacks with your own persistence. Structural changes have a separate `onStructureChange` callback. Worksheet renames use `onSheetRename`; include both callbacks when saving snapshots. `readOnly` controls editor behavior; enforce access permissions in your service.

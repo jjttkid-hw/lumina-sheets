@@ -93,10 +93,14 @@ import {
   type StructureChangeEvent,
   type SheetRenameEvent,
   type ActiveSheetChangeEvent,
+  productBuildIdentity,
+  type ProductBuildIdentity,
 } from 'lumina-report-sdk';
 import 'lumina-report-sdk/style.css';
 
 export function mount(host: HTMLElement, workbook: Workbook): LuminaSpreadsheet {
+  const build: ProductBuildIdentity | null = productBuildIdentity();
+  if (build) console.log(build.version, build.sourceSha256);
   const options: SpreadsheetOptions = {
     workbook,
     onChange(event) { const changes: CellChange[] = event.changes; void changes; },
@@ -514,9 +518,13 @@ try {
 import assert from 'node:assert/strict';
 assert.equal(typeof document, 'undefined');
 const sdk = await import('lumina-report-sdk');
-for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream', 'workbookFromReportData']) {
+for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream', 'workbookFromReportData', 'productBuildIdentity']) {
   assert.equal(typeof sdk[name], 'function', 'Missing runtime API: ' + name);
 }
+const build = sdk.productBuildIdentity();
+assert(build && build.schema === 1 && build.mode === 'production');
+assert.equal(build.version, '0.29.0');
+assert.match(build.sourceSha256, /^[a-f0-9]{64}$/);
 assert.equal(sdk.parseCellInput('1e-999'), '1e-999');
 assert.equal(sdk.parseCellInput('0.1234567890123456789'), '0.1234567890123456789');
 assert.equal(sdk.parseCellInput('12.5'), 12.5);

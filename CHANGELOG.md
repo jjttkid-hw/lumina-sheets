@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Expose `productBuildIdentity()` from the browser SDK so hosts can record the embedded version, source fingerprint and build timestamp when diagnosing a production report. The value is diagnostic metadata and may be `null` for unbundled development code.
+
 ## 0.29.0 — Canvas draft ownership, local verification
 
 - Verify Chrome, Firefox and WebKit with 30 browser groups each, plus three Chromium touch-emulation groups. Preserve artifact-bound reports and distinguish physical mobile, Safari, native IME and screen-reader work still pending.
