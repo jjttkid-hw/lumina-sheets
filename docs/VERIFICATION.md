@@ -1,5 +1,13 @@
 # 验证记录
 
+### 2026-09-22 — `unzipper` 依赖替换后的当前候选（提交 `86ef259`）
+
+- 根 `package.json` 通过 `overrides` 固定 `unzipper@0.12.5`，移除 `exceljs` 解压路径中的 `binary`、`buffers` 和 `chainsaw`。ExcelJS 内存 XLSX 往返、全量测试和安装包检查继续通过。
+- 严格许可证检查为 `92` 个安装实例、`127` 份授权材料、`0 errors / 0 reviewItems / 0 unresolvedVendorComponents`。该结果仍是技术证据，不替代法律审查。
+- 当前站点 SHA-256 为 `aa4a1663a3d70d2da7bac9e41ad6ba7e574f65120dd3d32894647691f1261025`，SDK tgz SHA-256 为 `395baf25a395a64bf8bce7f9bb8efcbcff595769f69899274139e9625b19bc3a`。
+- 新的真实浏览器复验见 [browser-candidate-2026-09-22-r3](acceptance/browser-candidate-2026-09-22-r3/README.md)：Chromium `153.0.8010.53`、Firefox `151.0`、WebKit `26.5` 各通过 smoke 8、交互 6、布局 6、焦点 4、性能 6 项，共 90 项；Chromium 另通过 3 项 CDP 触控。全部报告无 page、console、run error。
+- 这组报告已绑定提交 `86ef259` 和上述制品摘要；推送后仍需核验远端 CI/CD。仍未宣称正式 Safari、原生 IME、实体触控、屏幕阅读器、跨设备性能或完整 SpreadJS/Excel 兼容已验收。
+
 ### 2026-09-22 — 最新主线提交的 CI/CD 复核
 
 - 提交 `1c4563863ae85b842271335b8566a21582d04fc1` 的 GitHub Actions [CI run 35730907407](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35730907407) 已完成并通过；随后触发的 [CD run 35731278113](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35731278113) 也已完成并通过。CD 下载并部署了该次 CI 产出的 Pages 制品，没有重新构建未验证文件。

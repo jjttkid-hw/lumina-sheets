@@ -1,5 +1,7 @@
 # 浏览器验收矩阵（候选构建已验证，平台级矩阵仍待执行）
 
+2026-09-22 当前依赖修复候选：提交 `86ef259` 的三引擎自动化套件已针对 `unzipper@0.12.5` 后重新构建的站点和 SDK 执行，绑定站点 SHA-256 `aa4a1663a3d70d2da7bac9e41ad6ba7e574f65120dd3d32894647691f1261025` 与 SDK SHA-256 `395baf25a395a64bf8bce7f9bb8efcbcff595769f69899274139e9625b19bc3a`。Chromium `153.0.8010.53`、Firefox `151.0`、WebKit `26.5` 各通过 smoke 8、交互 6、布局 6、焦点 4、性能 6 项，Chromium 另通过 3 项 CDP 触控；无 page/console/run error。原始报告见 [browser-candidate-2026-09-22-r3](acceptance/browser-candidate-2026-09-22-r3/README.md)。WebKit 不替代正式 Safari，CDP 触控不替代实体设备；原生 IME、屏幕阅读器、跨设备和生产负载仍待验。
+
 2026-09-22 最终候选复验：以可重复构建摘要绑定的 `0.29.0` 制品在 Chromium 153.0.8010.53、Firefox 144.0.2、WebKit 26.0 分别通过 smoke 8 项、交互 6 项、布局 6 项、焦点 4 项和性能 6 项，共 90 项；Chromium 另通过 3 项 CDP 触控模拟。所有报告均为 0 page error、0 console error、0 run error，绑定站点 `6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0` 与 SDK `10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54`。原始 JSON 和性能样本见 [最终候选复验记录](acceptance/browser-candidate-2026-09-22/README.md)。这仍不替代正式 Safari、原生 IME、实体触控、屏幕阅读器、跨设备和商业许可验收。
 
 2026-09-21 elliptic 证据入包后：三引擎各 30 组、共 90 组及 Chromium 3 组触摸模拟通过，均绑定新制品。见 [最新报告](acceptance/browser-elliptic-2026-09-21/README.md)。这不代替完整稳定版矩阵。

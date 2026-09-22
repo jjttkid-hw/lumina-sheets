@@ -1,5 +1,7 @@
 # 第三方依赖许可清单
 
+2026-09-22 依赖替换：`exceljs@4.4.0` 的 Node 流式 XLSX 读取路径原本经 `unzipper@0.10.14` 引入 `binary@0.3.0`、`buffers` 和 `chainsaw`。这些历史包的 npm 元数据没有随包提供可验证的完整授权正文。项目现在通过根 `package.json` 的 npm `overrides` 固定 `unzipper@0.12.5`；该版本使用 `fs-extra`、`node-int64` 和 `bluebird`，不再安装这三个未能完成授权核验的包。ExcelJS 的内存 XLSX 读取、流式读取、取消和真实文件往返回归均继续通过；安装树和严格许可证清单均已重新生成。该替换只改变 Node 解压实现的依赖闭包，不改变 Lumina 对外 API 或浏览器 SDK 的接口。升级 ExcelJS 或 unzipper 时必须重新运行完整测试、安装包检查和许可证审计。
+
 2026-09-22 `core-js` 证据增量：ExcelJS source map 内部的 `shared.js` 明确记录版本 `3.33.0`，全部 160 个 `core-js` 源文件均已与官方 `core-js@3.33.0` npm 归档逐字节匹配。清单绑定 npm integrity、归档 SHA-256、每个源文件摘要及归档内完整 MIT 正文。当前生成结果为 **140 份材料、0 个错误、2 项待审、6 个未解决预打包组件**；剩余项是 `@fast-csv/format`、`@fast-csv/parse`、`diffie-hellman`、`fast-csv`、`saxes`、`xmlchars`，strict 门禁仍失败。
 
 2026-09-22 追加复核：`inherits` 的两个 ExcelJS source-map 路径已分别绑定官方 `inherits@2.0.4` 与 `inherits@2.0.1` 归档，并按多版本记录保存完整 ISC 正文。当前生成结果为 **140 份材料、0 个错误、2 项待审、7 个未解决预打包组件**；strict 门禁仍失败。
