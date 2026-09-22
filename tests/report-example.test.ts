@@ -115,6 +115,9 @@ it('refreshes directory and readonly controls when replacing the multi-sheet dem
   const { grid, report, $ } = mount();
   await report('sheets');
   await report('paged');
+  expect(grid.sheetInfos).toHaveLength(1);
+  expect(grid.activeSheetInfo.name).toBe('分页数据');
+  expect($('#sheet-select').options.map((option) => option.textContent)).toEqual(['分页数据']);
   expect($('#formula').disabled).toBe(true);
   expect($('#format').value).toBe('csv');
   expect($('#refresh').hidden).toBe(false);

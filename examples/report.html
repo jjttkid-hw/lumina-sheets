@@ -765,6 +765,20 @@
             $('#code').textContent =
               'const book = await workbookFromReportData(source, {\n  maxRows: 1000, maxCells: 4000, pageSize: 32, signal\n});\ngrid.load(book);\nawait grid.export("xlsx");';
           } else if (mode === 'paged') {
+            // A paged example is a single read-only report. When the user
+            // arrives here from the multi-sheet demo, discard the previous
+            // workbook's other sheets before binding the external source so
+            // the navigator cannot advertise stale sheets while the request
+            // is loading.
+            const pagedWorkbook = grid.toJSON();
+            const pagedSheet =
+              pagedWorkbook.sheets.find(({ id }) => id === pagedWorkbook.activeSheetId) ??
+              pagedWorkbook.sheets[0];
+            if (!pagedSheet) throw new Error('分页报表缺少工作表');
+            pagedSheet.name = '分页数据';
+            pagedWorkbook.sheets = [pagedSheet];
+            pagedWorkbook.activeSheetId = pagedSheet.id;
+            grid.load(pagedWorkbook);
             grid.setConditionalRules([]);
             $('#layout-note').textContent = '只读数据源 · 每页 128 行 · 缓存上限 6 页';
             $('#code').textContent =
@@ -773,6 +787,7 @@
             updateControls();
             await binding;
             if (generation !== reportGeneration) return;
+            updateControls();
           } else if (mode === 'sheets') {
             grid.report({ name: '多工作表经营分析', layout: 'list', columns }, records);
             const workbook = grid.toJSON();
