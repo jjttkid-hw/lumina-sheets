@@ -1,5 +1,12 @@
 # 验证记录
 
+### 2026-09-22 — SDK 生命周期修复后的主线复验
+
+- 当前 `main` 工作树干净；`npm test` 通过 163 个测试文件、2,306 项测试。`format:check`、`git diff --check`、`check:sdk`、`check:api`、`check:site-runtime` 和 `check:reproducibility` 均通过。
+- 本轮 `check:sdk` 生成的 SDK 归档为 39 个文件、721,219 字节，SHA-256 为 `70f27ec746d4c4e03c385a5046e3ead098f5199f714a586444c224d95d415e4b`；站点运行时字节检查 SHA-256 为 `5c789aec47bc5b602ac5e41627c952586a05b9d7fdd5063ba73d61d59f148c5c`。
+- 固定来源时间的两次构建完全一致：站点 SHA-256 `4920cf45ef12ebc0e0bbc766805a9cce5ac6754c98c36a6811e1c1a4d38d63b3`，SDK 归档 SHA-256 `2162954eb6990ace6509868822bbb779b3ebae170fd1552e58dfac70e360e1c5`。
+- `viewport` 对非法行号同步返回 `INVALID_ARGUMENT`，销毁实例统一返回 `DESTROYED`，并新增回归覆盖；不会发起额外数据请求。严格许可证门禁仍为 0 errors、1 review item、0 unresolved vendor components，唯一待审为 `binary@0.3.0` 缺少可验证的完整授权正文，因此版本仍为 0.29.0，未发布 v1.0 或稳定 npm 标签。
+
 ### 2026-09-22 — 最终候选构建真实浏览器复验
 
 - 以固定 `SOURCE_DATE_EPOCH=1790070581` 运行 `npm run check:reproducibility` 生成并核对可重复候选，站点 SHA-256 为 `6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0`，SDK tgz SHA-256 为 `10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54`。
