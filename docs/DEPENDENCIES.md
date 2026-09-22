@@ -83,3 +83,5 @@ SDK 构建另生成并随包交付 `bundle-inputs.json`：来自 Rollup 实际�
 2026-09-21 elliptic 增量：ExcelJS 内嵌 elliptic 6.5.4 的 15 个 JS 源文件逐字匹配官方 npm tarball，MIT 正文在 README 中完整取得并纳入包。来源、摘要和验证见 [证据](third-party/embedded/elliptic-6.5.4/README.md)。未审内嵌组件计数从 68 降到 67；reviewItems 仍为 4（binary、buffers、chainsaw 及 ExcelJS 整体内嵌依赖）。check:licenses 严格检查和正式版门禁仍拒绝发布。新包 640474 字节，SHA-256 b9b1cd84ea6a7719b20e1a0876b01ffa82e26531f146f1dad193b656095972ec；此增量不是法律/安全审计签署。
 
 2026-09-21 exact-source 增量：又将 ExcelJS 浏览器 source map 中 16 个组件的源文件逐字绑定到完整性校验通过的官方 npm tarball，并保存包内 LICENSE/README 许可正文与 `manifest.json`。已审组件从 17 增至 18，未解决内嵌组件从 67 降至 51；reviewItems 仍包含 ExcelJS 预打包闭包及 binary、buffers、chainsaw。该证据只证明所列字节和正文来源，不推断缺失的组件版本，也不替代法律审查；严格发布门禁仍保持阻断。
+
+2026-09-22 exact-source 增量：继续绑定 ExcelJS 浏览器 source map 中的官方 `buffer@5.2.1` 源文件，并保存 npm registry 地址、integrity、归档 SHA-256、源文件 SHA-256 与完整 MIT 正文。当前安装闭包清单为 102 个安装记录、89 个唯一名称/版本、138 份通知材料；严格检查仍为 4 项 review，未解决内嵌组件为 16 个。`binary`、`buffers`、`chainsaw` 及 ExcelJS 预打包闭包仍需人工复核，不能据此发布商业稳定版。

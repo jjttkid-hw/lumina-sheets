@@ -1,6 +1,6 @@
-# 2026-09-22 候选构建浏览器复验
+# 2026-09-22 候选构建浏览器复验（归档）
 
-本目录保存对同一 `0.29.0` 候选构建执行的真实 Playwright 浏览器复验。报告不是 v1.0 稳定版签收单；它们只记录当前候选的自动化浏览器证据。
+本目录保存对一个 `0.29.0` 候选构建执行的真实 Playwright 浏览器复验。报告不是 v1.0 稳定版签收单；它们只记录被摘要绑定的历史候选自动化浏览器证据。后续重新生成的 `0.29.0` 制品必须重新运行浏览器套件，不能复用本目录的制品摘要。
 
 候选绑定：
 
@@ -29,7 +29,7 @@ scripts/browser-focus.mjs
 scripts/browser-performance.mjs
 ```
 
-Chromium 另外执行 `scripts/browser-touch.mjs`。三引擎的上述五组套件均通过；每个 `result.json` 均为 `passed`，包含 0 个 page error、console error 和 run error。触控套件通过 3 项检查。
+Chromium 另外执行 `scripts/browser-touch.mjs`。三引擎的上述五组套件均通过；每个 `result.json` 均为 `passed`，包含 0 个 page error、console error 和 run error。触控套件通过 3 项检查。该结论仅适用于本目录列出的 `c99c844…` 站点摘要和 `ed85fc…` SDK 摘要。
 
 报告目录按套件拆分：`smoke/`、`interactions/`、`layout/`、`focus/`、`performance/`、`touch/`。性能目录保留三引擎的原始测量 JSON。`summary.json` 提供机器可读汇总，`sha256-manifest.json` 绑定本目录当前文件字节。
 
