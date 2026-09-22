@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { releasePolicy } from '../scripts/release-policy.mjs';
 
 describe('npm release routing', () => {
-  it.each(['0.23.0', '1.0.0', '1.2.3+build.5'])(
+  it.each(['1.0.0', '1.2.3+build.5'])(
     'routes stable %s to latest with one exact artifact',
     (version) => {
       expect(releasePolicy(version, `v${version}`, false)).toEqual({
@@ -15,6 +15,10 @@ describe('npm release routing', () => {
       });
     },
   );
+  it('keeps stable 0.x releases on the preview dist-tag', () => {
+    expect(releasePolicy('0.29.0', 'v0.29.0', false).distTag).toBe('next');
+    expect(releasePolicy('0.29.0', 'v0.29.0').distTag).toBe('next');
+  });
   it.each(['1.0.0-rc.1', '1.0.0-alpha', '1.0.0-0', '1.0.0-beta.2+build'])(
     'routes prerelease %s to next for release and manual dispatch',
     (version) => {

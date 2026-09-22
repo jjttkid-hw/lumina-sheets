@@ -16,7 +16,9 @@ export function releasePolicy(version, tag, prerelease) {
   return {
     version,
     tag,
-    distTag: candidate ? 'next' : 'latest',
+    // Keep the entire 0.x development line off `latest`; a stable-looking
+    // 0.x tag is still an opt-in preview until the first 1.x release.
+    distTag: candidate || Number(match[1]) === 0 ? 'next' : 'latest',
     artifact: `artifacts/lumina-report-sdk-${version}.tgz`,
   };
 }
