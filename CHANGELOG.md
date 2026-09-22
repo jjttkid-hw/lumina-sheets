@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add IRR and RATE financial examples to the report demo so the shipped commercial finance formulas are visible and regression-tested alongside the SDK engine.
 - Expose `productBuildIdentity()` from the browser SDK so hosts can record the embedded version, source fingerprint and build timestamp when diagnosing a production report. The value is diagnostic metadata and may be `null` for unbundled development code.
 
 ## 0.29.0 — Canvas draft ownership, local verification

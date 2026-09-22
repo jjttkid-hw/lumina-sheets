@@ -153,6 +153,13 @@ it('refreshes the formula bar immediately after applying a formula', async () =>
   expect($('#formula').value).toBe('=SUM(1,2,3)');
 });
 
+it('exposes the financial formula examples shipped by the engine', async () => {
+  const { grid, report } = mount();
+  await report('formulas');
+  expect(grid.getValue('B18')).toBeCloseTo(0.2488833566, 8);
+  expect(grid.getValue('B19')).toBeCloseTo(0.0292285408, 8);
+});
+
 it('uses SDK import ownership so edits cancel late parsing instead of being overwritten', async () => {
   const { grid, $, report } = mount();
   await report('sheets');
