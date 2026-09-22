@@ -6,6 +6,8 @@ Lumina 的发布工作流已经使用 GitHub Actions OIDC：`.github/workflows/n
 
 在 npmjs.com 登录拥有 `lumina-report-sdk` 发布权限的账号，进入包的 **Settings → Trusted Publishers**，新增 **GitHub Actions**，填写：
 
+首次发布前包页面可能尚不存在：先由拥有发布权限的 npm 账号完成一次本地 `0.29.0` `next` 发布，包出现后再打开 Settings 配置 Trusted Publisher。当前浏览器登录账号显示为 `kidweisiwen`；这是 npm 账号名，下面表格中的 `jjttkid-hw` 仍是 GitHub 仓库所有者，不能互换。
+
 | 字段 | 值 |
 | --- | --- |
 | Organization or user | `jjttkid-hw` |

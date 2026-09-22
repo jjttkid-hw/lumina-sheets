@@ -45,6 +45,8 @@ npm view lumina-report-sdk version
 
 首次本地发布没有 GitHub Actions 来源证明。发布成功后，在 npm 的包设置中配置 **Trusted Publisher → GitHub Actions**：
 
+如果包页面尚不存在，先用拥有发布权限的 npm 账号完成这一次本地发布；`lumina-report-sdk` 出现在注册表后才能在包 Settings 中新增 Trusted Publisher。当前 npm 登录账号为 `kidweisiwen`，GitHub Trusted Publisher 的组织/用户字段仍填写仓库所有者 `jjttkid-hw`。
+
 首次或后续发布如果为 1.0.0 及以上的正式版，必须先通过 `npm run check:stable`；直接运行 npm publish 不会自动执行本仓库门禁。0.x 开发线和预发布版本本地发布都应显式加 `--tag next`，避免 npm 默认写入 latest。
 
 | 字段                        | 值              |
