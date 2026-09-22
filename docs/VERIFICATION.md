@@ -1,5 +1,11 @@
 # 验证记录
 
+### 2026-09-22 — 当前提交的干净 CI 与可重复构建
+
+- 提交 `85e4921cad899c0a951d3c8d9e379a82c69f89c9` 已推送至 `main`；GitHub Actions [CI run 35711863756](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35711863756) 的 `validate` job 已完成且通过。它在干净 Ubuntu 环境重新执行全量测试、格式、站点构建、API 契约、隔离 SDK 安装包检查、站点 HTTP 检查和可重复构建检查。
+- 同提交的本地可重复构建两次均一致：站点 SHA-256 `90a35cf6246c56dc5d03e5278d0c90c63f238eeb25a75627b971810f5fafb484`，SDK 包 SHA-256 `54b70c96f0dc34c78c6f58113ee4200dd5e4719a0531e7034eb9aea1bd133a23`，39 个文件、712,847 字节。这是同机同依赖的重复构建证据，不代替跨机、真实浏览器或商业许可审计。
+- 严格许可门禁当前仍返回 1：0 个错误、2 项待审、6 个未解决预打包组件；版本继续保持 0.29.0，未创建 v1.0 稳定版验收记录，未发布 npm。
+
 ### 2026-09-22 — `core-js@3.33.0` exact-source 证据
 
 - ExcelJS browser source map 内部的 `core-js/internals/shared.js` 自报 `3.33.0`；对应的 160 个 source-map 文件全部与完整性校验通过的官方 npm 归档逐字节相同。证据同时绑定归档内 MIT 正文，未使用当前安装的同名包或通用许可模板。
