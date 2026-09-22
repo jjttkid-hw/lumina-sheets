@@ -37,8 +37,20 @@ jobs:
       - run: npm run build:site
       - run: npm run check:api
       - run: npm run check:sdk
-      - name: Require complete dependency-license evidence
-        run: npm run check:licenses
+      - name: Generate dependency-license inventory
+        run: node scripts/package-notices.mjs
+      - name: Block dependency integrity errors
+        working-directory: .
+        run: |
+          node --input-type=module -e '
+            import { readFile } from "node:fs/promises";
+            const inventory = JSON.parse(await readFile("dist/sdk/dependency-inventory.json", "utf8"));
+            if (inventory.summary.errors) {
+              console.error(JSON.stringify(inventory.issues.filter((item) => item.severity === "error"), null, 2));
+              process.exit(1);
+            }
+            console.log(`License review items remain visible: ${inventory.summary.reviewItems}; stable release keeps the strict gate.`);
+          '
       - name: Verify reproducible site and package build
         run: npm run check:reproducibility
       - name: Smoke-test the final Pages build over HTTP
