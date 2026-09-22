@@ -1,4 +1,6 @@
-# 浏览器验收矩阵（待执行）
+# 浏览器验收矩阵（候选构建已验证，平台级矩阵仍待执行）
+
+2026-09-22 最终候选复验：以可重复构建摘要绑定的 `0.29.0` 制品在 Chromium 153.0.8010.53、Firefox 144.0.2、WebKit 26.0 分别通过 smoke 8 项、交互 6 项、布局 6 项、焦点 4 项和性能 6 项，共 90 项；Chromium 另通过 3 项 CDP 触控模拟。所有报告均为 0 page error、0 console error、0 run error，绑定站点 `6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0` 与 SDK `10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54`。原始 JSON 和性能样本见 [最终候选复验记录](acceptance/browser-candidate-2026-09-22/README.md)。这仍不替代正式 Safari、原生 IME、实体触控、屏幕阅读器、跨设备和商业许可验收。
 
 2026-09-21 elliptic 证据入包后：三引擎各 30 组、共 90 组及 Chromium 3 组触摸模拟通过，均绑定新制品。见 [最新报告](acceptance/browser-elliptic-2026-09-21/README.md)。这不代替完整稳定版矩阵。
 

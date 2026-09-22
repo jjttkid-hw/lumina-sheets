@@ -1,5 +1,11 @@
 # 验证记录
 
+### 2026-09-22 — 最终候选构建真实浏览器复验
+
+- 以固定 `SOURCE_DATE_EPOCH=1790070581` 运行 `npm run check:reproducibility` 生成并核对可重复候选，站点 SHA-256 为 `6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0`，SDK tgz SHA-256 为 `10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54`。
+- Chromium 153.0.8010.53、Firefox 144.0.2、WebKit 26.0 各通过 smoke 8、交互 6、布局 6、焦点 4、性能 6 项，共 90 项；Chromium 另通过 3 项 CDP 触控模拟。全部报告的 page error、console error、run error 均为 0。原始报告、性能 JSON、摘要和目录哈希见 [最终候选复验记录](acceptance/browser-candidate-2026-09-22/README.md)。
+- `npm test` 通过 163 个文件 / 2,306 项测试；`format:check`、`git diff --check`、`check:sdk`、`check:api`、`check:site-runtime` 和 `check:reproducibility` 均通过。严格许可证门禁仍为 0 errors、2 review items、6 unresolved vendor components；版本继续为 0.29.0，未发布 npm，v1.0 仍未宣布。
+
 ### 2026-09-22 — 当前提交的干净 CI 与可重复构建
 
 - 提交 `85e4921cad899c0a951d3c8d9e379a82c69f89c9` 已推送至 `main`；GitHub Actions [CI run 35711863756](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35711863756) 的 `validate` job 已完成且通过。它在干净 Ubuntu 环境重新执行全量测试、格式、站点构建、API 契约、隔离 SDK 安装包检查、站点 HTTP 检查和可重复构建检查。

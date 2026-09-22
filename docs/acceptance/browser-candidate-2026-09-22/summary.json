@@ -1,0 +1,246 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-22T10:20:28.901Z",
+  "version": "0.29.0",
+  "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+  "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+  "engines": {
+    "chromium": {
+      "browserVersion": "153.0.8010.53",
+      "suites": {
+        "smoke": "passed",
+        "interactions": "passed",
+        "layout": "passed",
+        "focus": "passed",
+        "performance": "passed",
+        "touch": "passed"
+      }
+    },
+    "firefox": {
+      "browserVersion": "144.0.2",
+      "suites": {
+        "smoke": "passed",
+        "interactions": "passed",
+        "layout": "passed",
+        "focus": "passed",
+        "performance": "passed"
+      }
+    },
+    "webkit": {
+      "browserVersion": "26.0",
+      "suites": {
+        "smoke": "passed",
+        "interactions": "passed",
+        "layout": "passed",
+        "focus": "passed",
+        "performance": "passed"
+      }
+    }
+  },
+  "suites": {
+    "smoke": [
+      {
+        "engine": "chromium",
+        "status": "passed",
+        "browserVersion": "153.0.8010.53",
+        "checks": 8,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:13:34.684Z"
+      },
+      {
+        "engine": "firefox",
+        "status": "passed",
+        "browserVersion": "144.0.2",
+        "checks": 8,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:13:47.052Z"
+      },
+      {
+        "engine": "webkit",
+        "status": "passed",
+        "browserVersion": "26.0",
+        "checks": 8,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:13:59.782Z"
+      }
+    ],
+    "interactions": [
+      {
+        "engine": "chromium",
+        "status": "passed",
+        "browserVersion": "153.0.8010.53",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:12.254Z"
+      },
+      {
+        "engine": "firefox",
+        "status": "passed",
+        "browserVersion": "144.0.2",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:15.349Z"
+      },
+      {
+        "engine": "webkit",
+        "status": "passed",
+        "browserVersion": "26.0",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:18.008Z"
+      }
+    ],
+    "layout": [
+      {
+        "engine": "chromium",
+        "status": "passed",
+        "browserVersion": "153.0.8010.53",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:20.078Z"
+      },
+      {
+        "engine": "firefox",
+        "status": "passed",
+        "browserVersion": "144.0.2",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:23.474Z"
+      },
+      {
+        "engine": "webkit",
+        "status": "passed",
+        "browserVersion": "26.0",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:26.171Z"
+      }
+    ],
+    "focus": [
+      {
+        "engine": "chromium",
+        "status": "passed",
+        "browserVersion": "153.0.8010.53",
+        "checks": 4,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:28.559Z"
+      },
+      {
+        "engine": "firefox",
+        "status": "passed",
+        "browserVersion": "144.0.2",
+        "checks": 4,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:30.239Z"
+      },
+      {
+        "engine": "webkit",
+        "status": "passed",
+        "browserVersion": "26.0",
+        "checks": 4,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:31.761Z"
+      }
+    ],
+    "performance": [
+      {
+        "engine": "chromium",
+        "status": "passed",
+        "browserVersion": "153.0.8010.53",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:14:32.881Z"
+      },
+      {
+        "engine": "firefox",
+        "status": "passed",
+        "browserVersion": "144.0.2",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:15:20.018Z"
+      },
+      {
+        "engine": "webkit",
+        "status": "passed",
+        "browserVersion": "26.0",
+        "checks": 6,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:15:51.176Z"
+      }
+    ],
+    "touch": [
+      {
+        "engine": "chromium",
+        "status": "passed",
+        "browserVersion": "153.0.8010.53",
+        "checks": 3,
+        "pageErrors": 0,
+        "consoleErrors": 0,
+        "runErrors": 0,
+        "siteSha256": "6bc3e152d2de6f1520075c6f90a014a7abbc17efcbea341d3da857eb655465c0",
+        "artifactSha256": "10c083fff0c2727242fd0ed9b1794b73731d3169f87c18c5c8ecca2a5629cd54",
+        "executedAt": "2026-09-22T10:16:16.684Z"
+      }
+    ]
+  }
+}
