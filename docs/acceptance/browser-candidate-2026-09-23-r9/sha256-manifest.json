@@ -2,6 +2,26 @@
   "schema": 1,
   "files": [
     {
+      "path": "README.md",
+      "bytes": 1358,
+      "sha256": "b70196c1a03b2c5ee0f5de169081d66ad9aea11f11e832160273fe2127492440"
+    },
+    {
+      "path": "accessibility/chromium.json",
+      "bytes": 4371,
+      "sha256": "70460ec319c5542594c42728f8b7df9f5078aa3c16fa78fd5d8f84f43bc77381"
+    },
+    {
+      "path": "accessibility/firefox.json",
+      "bytes": 4365,
+      "sha256": "1be9c1c279ede7c303d9fc48a67eab96ee9043fe689ef8e6a9e74f3cdec2aa74"
+    },
+    {
+      "path": "accessibility/webkit.json",
+      "bytes": 4362,
+      "sha256": "344c282aebf009bce2188c281be342f03ae00185d08a413d97e9b0c0a59657c4"
+    },
+    {
       "path": "chromium/focus.json",
       "bytes": 1526,
       "sha256": "58231606fe5efc7c58ea2497ce0fb8d659c5f79880e965fb61f01e9212fc22b5"
@@ -50,11 +70,6 @@
       "path": "firefox/smoke.json",
       "bytes": 6363,
       "sha256": "282724f15419d44960273e45527233623cd4b9d8be3e91e83b0794e03405e0a0"
-    },
-    {
-      "path": "README.md",
-      "bytes": 1059,
-      "sha256": "2255d951e126b7c74d9077acd591b578dc7390b985b86a548f2a5d5de63e01fe"
     },
     {
       "path": "touch/result.json",

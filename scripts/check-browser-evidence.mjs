@@ -18,6 +18,7 @@ const expected = [
   ...['chromium', 'firefox', 'webkit'].flatMap((engine) =>
     ['smoke', 'interactions', 'focus', 'layout', 'performance'].map((suite) => `${engine}/${suite}.json`),
   ),
+  ...['chromium', 'firefox', 'webkit'].map((engine) => `accessibility/${engine}.json`),
   'touch/result.json',
 ];
 const expectedSet = new Set(expected);
