@@ -69,3 +69,5 @@ CSV 冻结结果修复增加内部 WorkbookExportOptions.frozenCsvValues（Reado
 
 
 0.29 REST 响应上限：RestDataSourceOptions 仅新增可选 maxResponseBytes；逐文件审查只改变 report-data 声明中的该字段，其余 14 声明及 exports 不变。默认 16 MiB 和标准 Response/body 要求的行为变化见迁移文档，安装包类型及运行时回归覆盖超限拒绝。
+
+2026-09-23 增量：新增 `LuminaSpreadsheet.zoom` 只读 getter 与 `setZoom(value: number): void`，现有签名不变。运行时输入沿用构造选项的正有限数及倍率/百分比规则；此项为兼容性新增，已明确更新声明基线与安装包消费者检查。

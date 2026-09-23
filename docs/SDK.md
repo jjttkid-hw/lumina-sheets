@@ -66,6 +66,7 @@ React/Vue 生命周期接入见 [FRAMEWORKS.md](FRAMEWORKS.md)。同一容器不
 | `activeSheetInfo`                          | 常量级工作表元数据，用于尺寸与只读状态展示                    |
 | `getSheetLayout(sheetId?)`                 | 仅复制稀疏布局元数据，不访问单元格                            |
 | `setSheetLayout(partial, sheetId?)`        | 原子修改五个布局字段；等值配置不新增历史                      |
+| `setZoom(value)` / `zoom`                  | 调整显示比例，保留选区、数据、计算缓存与撤销历史                |
 | `setFilter(text)` / `filterText`           | 静态行筛选视图；分页源不允许非空本地筛选                      |
 | `setClipboardMode(mode)` / `clipboardMode` | 默认 `visible` 仅操作可见坐标；`all` 使用原始矩形             |
 | `sortRows(request)`                        | 显式行范围稳定多键排序；整次验证和撤销，见 [SORT.md](SORT.md) |
@@ -84,6 +85,12 @@ React/Vue 生命周期接入见 [FRAMEWORKS.md](FRAMEWORKS.md)。同一容器不
 SDK 画布获得焦点时支持 `Ctrl/Cmd+Z` 撤销、`Ctrl/Cmd+Shift+Z` 与 `Ctrl/Cmd+Y` 重做。快捷键只作用于当前 SDK 实例；公式输入框、组合输入、只读状态以及宿主已调用 `preventDefault()` 的事件不会触发工作簿历史。宿主若自行监听键盘事件，应先判断事件是否已默认处理，避免重复调用 `undo()` / `redo()`。
 
 只读选项限制编辑，不是权限隔离；持有 JS 数据的宿主仍能读取数据。来源访问权限应由宿主服务端控制。
+
+## 运行时缩放
+
+`grid.setZoom(125)` 将显示比例设为 125%，`grid.zoom` 返回最近设置的原始数值，默认 100。沿用初始化 `zoom` 的解释规则：大于 3 按百分比，其余按倍率（`1.25` 与 `125` 显示一致），最终画布限制在 50%–200%。推荐宿主统一使用 50–200 百分比。非数值、零、负数和非有限数同步抛出 `INVALID_ARGUMENT`，不修改视图；销毁后读写抛出 `DESTROYED`。
+
+缩放只通知视图，不扫描单元格、不修改工作簿或计算缓存、不产生 `onChange` 或撤销事务，也不取消正在解析的导入。相同原始值不重复通知。选区与有效编辑草稿保留，布局变化会关闭选项浮层并取消尚未完成的拖动；只读/分页视图也可缩放。加载或切换报表继续保留比例；分页视区扩大时可正常请求新进入视区的页。报表示例的“显示比例”菜单使用此接口。
 
 ## v0.9 布局批量与筛选
 

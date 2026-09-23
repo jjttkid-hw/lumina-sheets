@@ -30,6 +30,9 @@ const archive = await readFile(`artifacts/lumina-report-sdk-${version}.tgz`);
 const browser = await engines[engine].launch({
   headless: process.env.BROWSER_HEADED !== '1',
   ...(engine === 'chromium' ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
+  // Only local candidate traffic skips system proxies; remote runs keep normal routing.
+  ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
+    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } } : {}),
 });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
@@ -234,6 +237,8 @@ try {
   await check('packed-sdk-example', async () => {
     await page.goto(new URL('sdk/example.html', origin).href);
     await page.getByRole('grid').waitFor();
+    await page.getByLabel('显示比例', { exact: true }).selectOption('150');
+    await page.waitForFunction(() => document.querySelector('#status')?.textContent === '显示比例已调整为 150%');
     await page.locator('[data-layout="sheets"]').click();
     await page.waitForFunction(() => document.querySelector('#sheet-select')?.options.length === 2);
     const options = await page
@@ -243,6 +248,7 @@ try {
       await page.locator('#sheet-select').selectOption(option.value);
       await page.getByRole('grid', { name: new RegExp(option.name) }).waitFor();
     }
+    assert.equal(await page.getByLabel('显示比例', { exact: true }).inputValue(), '150');
     await page.screenshot({ path: path.join(output, 'packed-sdk.png'), fullPage: true });
     return options;
   });

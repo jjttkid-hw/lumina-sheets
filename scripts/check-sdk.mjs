@@ -142,6 +142,9 @@ export function mount(host: HTMLElement, workbook: Workbook): LuminaSpreadsheet 
   grid.setActiveSheet(workbook.activeSheetId);
   grid.renameSheet("Renamed");
   grid.renameSheet("Renamed again", workbook.activeSheetId);
+  grid.setZoom(125);
+  const zoom: number = grid.zoom;
+  void zoom;
   grid.setCell('B1', '=A1*2');
   grid.getCell('B1');
   grid.undo();

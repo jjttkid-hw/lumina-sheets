@@ -348,6 +348,7 @@ describe('SDK asynchronous import ownership', () => {
     grid.select({ row: 1, col: 1 });
     grid.setFilter('original');
     grid.setClipboardMode('all');
+    grid.setZoom(150);
     grid.renameSheet(grid.activeSheetInfo.name);
     expect(() => grid.renameSheet('bad/name')).toThrow();
     expect(() => grid.setCell('invalid', 5)).toThrow();
@@ -355,6 +356,7 @@ describe('SDK asynchronous import ownership', () => {
     pending.resolve(imported('accepted'));
     await result;
     expect(grid.getValue('A1')).toBe('accepted');
+    expect(grid.zoom).toBe(150);
   });
   it('cancels promptly and consumes late parser errors after abort', async () => {
     const grid = make(),

@@ -2364,3 +2364,16 @@ Release workflow contract tests now assert that `check:licenses` and (where appl
 - 定向供应链回归 62 项通过；全量 **163 个测试文件、2,306 项测试通过**。`build:sdk`、`check:sdk`、`build:site`、`check:api`、`check:site-runtime`、`format:check` 和 `git diff --check` 通过。当前 SDK tgz 为 39 个文件、702,905 字节，SHA-256 `b608b8f10e44226962aa6252cbd38acc8791f63c7f35a10f7ac4643728fec715`。
 - 严格许可证门禁仍按预期阻断；真实浏览器完整矩阵、商业许可复核和 npm 发布仍未完成，版本保持 0.29.0。
 - 2026-09-23 最终当前主线：提交 `b268e959affa28f232328f2041a20a11dde6eb43` 的 CI [35851359749](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35851359749) 与 CD [35851676228](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35851676228) 成功。线上站点提交、版本和摘要已核对；确定性候选站点 SHA-256 为 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`，SDK tgz SHA-256 为 `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`。全量测试 163 个文件、2,309 项通过，严格许可证技术门禁为 `0/0/0`，r9 浏览器证据 25 份和 XLSX 语料 5 项均通过。npm 注册表仍未发布，不能宣布稳定 `1.0.0`。
+
+
+### 2026-09-23 — runtime SDK zoom candidate
+
+Added `setZoom(value)` and the read-only `zoom` getter, retaining constructor factor/percentage semantics and Canvas clamping. View changes preserve workbook data, pending imports, selection, calculation cache, draft content revision and undo/redo; read-only and paged instances are supported. The report and installed-package examples expose a labeled zoom selector. Public declaration baseline and strict installed-package consumers include the additive API.
+
+- Full regression: 164 files / 2,324 tests passed; formatting, type/build, API, isolated package, strict license and HTTP checks passed. License summary remains 0 errors / 0 reviewItems / 0 unresolvedVendorComponents.
+- Current three-engine browser reports and five XLSX corpus checks are archived in `acceptance/browser-candidate-2026-09-23-r10`. New layout coverage checks 50/125/200 percent and 1.5 scale hit testing, preserved focused draft after scaling, commit and undo/redo.
+- Firefox local navigation initially failed with NS_ERROR_NET_ERROR_RESPONSE. A two-run minimal HTTP-server experiment reproduced the failure with default system proxy settings and succeeded with `network.proxy.type=0`. Local candidate runs now use that isolated Firefox profile setting; remote runs retain normal routing. No OS-wide proxy settings were changed.
+- An initial reproducibility check rejected concurrent documentation edits despite identical output bytes. It is not recorded as a successful check; the final verification is run after edits settle. Likewise, initial mixed-time inventory/browser results are not used as candidate evidence; final reports share the fixed-source-time site and archive hashes.
+- Version remains 0.29.0. npm whoami still returns E401 and the registry package returns 404; no npm publication or stable-release acceptance is claimed. Native Safari full matrix, OS IME, physical touch, assistive readers, cross-device performance, desktop Excel/WPS corpus and legal review remain open.
+
+Final settled local reproducibility passed: two builds produced site `8e13b289517a70e1c27c8f347c9010f03bad2fab1ed53d655ffe025c8fcd6af4` and SDK `57f26f4d1da11a787072ddc988a416495d3921120820c836aa30b98b4509029e` (718,843 bytes), with SOURCE_DATE_EPOCH=1790122493. The report records dirty=true and proves same-machine repeatability only; all r10 browser and corpus bindings match these bytes.

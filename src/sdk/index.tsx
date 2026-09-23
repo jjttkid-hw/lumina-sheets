@@ -188,6 +188,10 @@ function validateClipboardMode(value: unknown): asserts value is ClipboardMode {
   if (value !== 'visible' && value !== 'all')
     throw new LuminaError('INVALID_ARGUMENT', 'clipboardMode 必须为 visible 或 all');
 }
+function validateZoom(value: unknown): asserts value is number {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0)
+    throw new LuminaError('INVALID_ARGUMENT', 'zoom 必须为正数');
+}
 /** Validate nested export budgets before any source request starts.
  *
  * These options are part of the public SDK boundary. Keeping the checks here
@@ -586,11 +590,10 @@ export class LuminaSpreadsheet {
       !options ||
       typeof options !== 'object' ||
       Array.isArray(options) ||
-      (options.readOnly !== undefined && typeof options.readOnly !== 'boolean') ||
-      (options.zoom !== undefined &&
-        (typeof options.zoom !== 'number' || !Number.isFinite(options.zoom) || options.zoom <= 0))
+      (options.readOnly !== undefined && typeof options.readOnly !== 'boolean')
     )
       throw new LuminaError('INVALID_ARGUMENT', '无效表格选项');
+    if (options.zoom !== undefined) validateZoom(options.zoom);
     if (options.clipboardMode !== undefined) validateClipboardMode(options.clipboardMode);
     for (const name of [
       'onChange',
@@ -753,6 +756,19 @@ export class LuminaSpreadsheet {
   get clipboardMode(): ClipboardMode {
     this.assertLive();
     return this.options.clipboardMode ?? 'visible';
+  }
+  /** Current view scale. Values above 3 are interpreted as percentages. */
+  get zoom(): number {
+    this.assertLive();
+    return this.options.zoom ?? 100;
+  }
+  /** Update view scale without changing workbook data or edit history. */
+  setZoom(value: number): void {
+    this.assertLive();
+    validateZoom(value);
+    if (value === this.zoom) return;
+    this.options.zoom = value;
+    this.changed(false);
   }
   setClipboardMode(mode: ClipboardMode) {
     this.assertLive();

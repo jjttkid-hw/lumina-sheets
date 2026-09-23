@@ -384,6 +384,16 @@
         <p>使用上方行高值和这里的列宽、冻结行数，一次保存；撤销一次即可恢复。</p>
       </details>
       <div class="bar" role="group" aria-label="报表筛选">
+        <label>显示比例
+          <select id="report-zoom" aria-label="显示比例">
+            <option value="50">50%</option>
+            <option value="75">75%</option>
+            <option value="100" selected>100%</option>
+            <option value="125">125%</option>
+            <option value="150">150%</option>
+            <option value="200">200%</option>
+          </select>
+        </label>
         <label>筛选内容 <input id="filter-text" placeholder="如 企业服务" size="16" /></label>
         <button id="apply-filter">应用筛选</button><button id="clear-filter">清除筛选</button>
         <span id="filter-note">筛选仅影响显示；导出保留完整报表，隐藏行列按文件格式处理。</span>
@@ -1307,6 +1317,16 @@
           syncSelection(true);
           syncLayout();
         } catch (error) {
+          showError(error);
+        }
+      };
+      $('#report-zoom').onchange = () => {
+        try {
+          grid.setZoom(Number($('#report-zoom').value));
+          status.dataset.error = 'false';
+          status.textContent = `显示比例已调整为 ${grid.zoom}%`;
+        } catch (error) {
+          $('#report-zoom').value = String(grid.zoom);
           showError(error);
         }
       };

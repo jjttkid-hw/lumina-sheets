@@ -76,6 +76,7 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 | `setCell(address, value, style?)`           | Edit one cell; strings beginning with `=` are formulas.             |
 | `setCells(changes)`                         | Apply a validated atomic batch; `cell: null` deletes a cell.        |
 | `getCell(address)` / `getValue(address)`    | Read an isolated raw cell or its current calculated value.          |
+| `setZoom(value)` / `zoom`                   | Change view scale without changing workbook data or undo history. |
 | `select({ row, col, endRow?, endCol? })`    | Select using zero-based coordinates.                                |
 | `undo()` / `redo()`                         | Undo or redo editing transactions.                                  |
 | `toJSON()` / `load(workbook)`               | Capture or restore a workbook snapshot; snapshots copy stored data. |
@@ -83,6 +84,8 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 | `report(definition, records)`               | Generate list, grouped, or cross-tab reports.                       |
 | `bindData(source, options?)`                | Bind a read-only paged source with bounded viewport caching.        |
 | `destroy()`                                 | Release the instance; safe to call repeatedly.                      |
+
+Use `grid.setZoom(125)` for 125%. The getter returns the supplied value; values above 3 are percentages, smaller positive values are scale factors, and Canvas clamps the effective scale to 50–200%. Read-only and paged views support zoom. Loading a workbook retains it.
 
 Imports accept an AbortSignal. A newer import, successful workbook edit/replacement, data binding, or destruction cancels the pending import with `IMPORT_CANCELLED`; late parsing cannot overwrite current content. Parsing may continue after cancellation, but its result is discarded.
 

@@ -30,6 +30,9 @@ const archive = await readFile(`artifacts/lumina-report-sdk-${version}.tgz`);
 const browser = await engines[engine].launch({
   headless: process.env.BROWSER_HEADED !== '1',
   ...(engine === 'chromium' ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
+  // Only local candidate traffic skips system proxies; remote runs keep normal routing.
+  ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
+    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } } : {}),
 });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
@@ -164,6 +167,38 @@ async function edit(address, value) {
 }
 try {
   await page.goto(new URL('sdk/example.html', origin).href);
+  await check('runtime-zoom-hit-draft-history', async () => {
+    await fixture();
+    const scales = [50, 125, 200, 1.5];
+    for (const zoom of scales) {
+      await page.evaluate((value) => window.layoutTest.setZoom(value), zoom);
+      await settled();
+      const scale = zoom > 3 ? zoom / 100 : zoom;
+      // A2 center uses the real default header/column/row geometry.
+      await grid.click({ position: { x: (44 + 48) * scale, y: (34 + 54) * scale } });
+      await selected(1, 0);
+      assert.equal(await page.evaluate(() => window.layoutTest.zoom), zoom);
+    }
+    await grid.press('F2');
+    const editor = page.getByRole('textbox', { name: '编辑单元格 A2', exact: true });
+    await editor.fill('缩放保留草稿');
+    const before = await editor.boundingBox();
+    await page.evaluate(() => window.layoutTest.setZoom(75));
+    await settled();
+    assert.equal(await editor.inputValue(), '缩放保留草稿');
+    assert.equal(await editor.evaluate((node) => node === document.activeElement), true);
+    const after = await editor.boundingBox();
+    assert(after.width < before.width, 'Editor must follow the new geometry');
+    await editor.press('Enter');
+    assert.equal(await page.evaluate(() => window.layoutTest.getValue('A2')), '缩放保留草稿');
+    await page.evaluate(() => { window.layoutTest.setZoom(125); window.layoutTest.undo(); });
+    assert.equal(await page.evaluate(() => window.layoutTest.getValue('A2')), 'alpha');
+    await page.evaluate(() => window.layoutTest.redo());
+    assert.equal(await page.evaluate(() => window.layoutTest.getValue('A2')), '缩放保留草稿');
+    await settled();
+    await page.screenshot({ path: path.join(output, 'runtime-zoom.png'), fullPage: true });
+    return { scales, draftRetained: true, historyRetained: true };
+  });
   await check('hidden-axis-keyboard', async () => {
     await fixture({ hiddenRows: [2], hiddenColumns: [1] });
     await select(1, 0);
@@ -327,6 +362,7 @@ try {
   throw error;
 } finally {
   finalizeBrowserReport(report, [
+    'runtime-zoom-hit-draft-history',
     'hidden-axis-keyboard',
     'merge-hit-edit-navigation',
     'frozen-row-scroll-hit',

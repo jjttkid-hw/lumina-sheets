@@ -87,6 +87,23 @@ function mount() {
   ) as { grid: sdk.LuminaSpreadsheet; report: (mode: string) => Promise<void> };
   return { ...result, $ };
 }
+it('changes report zoom and retains the preference across report replacement', async () => {
+  const { grid, report, $ } = mount();
+  const before = grid.toJSON();
+  $('#report-zoom').value = '150';
+  $('#report-zoom').onchange!();
+  expect(grid.zoom).toBe(150);
+  expect(grid.toJSON()).toEqual(before);
+  expect($('#status').dataset.error).toBe('false');
+  await report('sheets');
+  expect(grid.zoom).toBe(150);
+  $('#report-zoom').value = 'invalid';
+  $('#report-zoom').onchange!();
+  expect($('#report-zoom').value).toBe('150');
+  expect(grid.zoom).toBe(150);
+  expect($('#status').dataset.error).toBe('true');
+});
+
 it('exposes actual multi-sheet formula recalculation and workbook undo in the example', async () => {
   const { grid, report, $ } = mount();
   await report('sheets');

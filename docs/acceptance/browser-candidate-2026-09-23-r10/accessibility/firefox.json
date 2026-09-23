@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-23T12:43:36.520Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "8e13b289517a70e1c27c8f347c9010f03bad2fab1ed53d655ffe025c8fcd6af4",
+  "artifactSha256": "57f26f4d1da11a787072ddc988a416495d3921120820c836aa30b98b4509029e",
+  "scope": "Browser DOM accessibility semantics for the Canvas grid. This is not a screen-reader announcement or assistive-technology certification.",
+  "checks": [
+    {
+      "name": "grid-contract",
+      "status": "passed",
+      "elapsedMs": 37,
+      "details": {
+        "role": "grid",
+        "tabIndex": 0,
+        "rowCount": "100",
+        "colCount": "16",
+        "readOnly": "false",
+        "multiselectable": "true",
+        "activeId": "_r_1_",
+        "cellRole": "gridcell",
+        "cellText": "B2 中文",
+        "rowIndex": "2",
+        "colIndex": "2",
+        "selected": "true",
+        "rowRole": "row",
+        "live": "polite",
+        "atomic": "true",
+        "cellTabIndex": null,
+        "canvasHidden": "true",
+        "focused": false
+      }
+    },
+    {
+      "name": "active-cell-value",
+      "status": "passed",
+      "elapsedMs": 16,
+      "details": {
+        "role": "grid",
+        "tabIndex": 0,
+        "rowCount": "100",
+        "colCount": "16",
+        "readOnly": "false",
+        "multiselectable": "true",
+        "activeId": "_r_1_",
+        "cellRole": "gridcell",
+        "cellText": "B2 中文",
+        "rowIndex": "2",
+        "colIndex": "2",
+        "selected": "true",
+        "rowRole": "row",
+        "live": "polite",
+        "atomic": "true",
+        "cellTabIndex": null,
+        "canvasHidden": "true",
+        "focused": false
+      }
+    },
+    {
+      "name": "selection-announcement",
+      "status": "passed",
+      "elapsedMs": 23,
+      "details": {
+        "role": "grid",
+        "tabIndex": 0,
+        "rowCount": "100",
+        "colCount": "16",
+        "readOnly": "false",
+        "multiselectable": "true",
+        "activeId": "_r_1_",
+        "cellRole": "gridcell",
+        "cellText": "C3 2，已选择 A1:C3，3 行 3 列",
+        "rowIndex": "3",
+        "colIndex": "3",
+        "selected": "true",
+        "rowRole": "row",
+        "live": "polite",
+        "atomic": "true",
+        "cellTabIndex": null,
+        "canvasHidden": "true",
+        "focused": false
+      }
+    },
+    {
+      "name": "keyboard-focus-update",
+      "status": "passed",
+      "elapsedMs": 39,
+      "details": {
+        "role": "grid",
+        "tabIndex": 0,
+        "rowCount": "100",
+        "colCount": "16",
+        "readOnly": "false",
+        "multiselectable": "true",
+        "activeId": "_r_1_",
+        "cellRole": "gridcell",
+        "cellText": "B3 ",
+        "rowIndex": "3",
+        "colIndex": "2",
+        "selected": "true",
+        "rowRole": "row",
+        "live": "polite",
+        "atomic": "true",
+        "cellTabIndex": null,
+        "canvasHidden": "true",
+        "focused": true
+      }
+    },
+    {
+      "name": "read-only-contract",
+      "status": "passed",
+      "elapsedMs": 20,
+      "details": {
+        "role": "grid",
+        "tabIndex": 0,
+        "rowCount": "100",
+        "colCount": "16",
+        "readOnly": "true",
+        "multiselectable": "true",
+        "activeId": "_r_2_",
+        "cellRole": "gridcell",
+        "cellText": "A1 ",
+        "rowIndex": "1",
+        "colIndex": "1",
+        "selected": "true",
+        "rowRole": "row",
+        "live": "polite",
+        "atomic": "true",
+        "cellTabIndex": null,
+        "canvasHidden": "true",
+        "focused": false
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "grid-contract",
+      "active-cell-value",
+      "selection-announcement",
+      "keyboard-focus-update",
+      "read-only-contract"
+    ],
+    "actualChecks": [
+      "grid-contract",
+      "active-cell-value",
+      "selection-announcement",
+      "keyboard-focus-update",
+      "read-only-contract"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

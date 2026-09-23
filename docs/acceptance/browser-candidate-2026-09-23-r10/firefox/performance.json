@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-23T12:42:19.669Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "8e13b289517a70e1c27c8f347c9010f03bad2fab1ed53d655ffe025c8fcd6af4",
+  "artifactSha256": "57f26f4d1da11a787072ddc988a416495d3921120820c836aa30b98b4509029e",
+  "scope": "Measured real-browser performance on this machine, no pass/fail latency budget or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.",
+  "checks": [
+    {
+      "name": "fixture-100000",
+      "status": "passed",
+      "elapsedMs": 6942,
+      "details": {
+        "fixture": {
+          "storedCells": 100000,
+          "formulaCount": 10000,
+          "dataReadyMs": 126,
+          "generatedMs": 116,
+          "firstDrawMs": 141,
+          "logicalRows": 1000000,
+          "logicalColumns": 256,
+          "populatedColumns": 10
+        },
+        "canvas": 4,
+        "edit": {
+          "frames": 5,
+          "observedFrames": 5,
+          "droppedFrames": 0,
+          "sampleLimit": 10000,
+          "averageMs": 7.4,
+          "p50Ms": 8,
+          "p95Ms": 11,
+          "p99Ms": 11,
+          "maxMs": 11,
+          "averagePaintedCells": 156,
+          "averageDomNodes": 4,
+          "samples": [
+            {
+              "durationMs": 5,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 8,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 5,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 8,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 11,
+              "paintedCells": 156,
+              "domNodes": 4
+            }
+          ]
+        },
+        "worker": {
+          "targets": 10000,
+          "roundTripMs": 105,
+          "calculationMs": 103,
+          "firstValue": 5,
+          "lastValue": 50000
+        }
+      }
+    },
+    {
+      "name": "fixture-1000000",
+      "status": "passed",
+      "elapsedMs": 12342,
+      "details": {
+        "fixture": {
+          "storedCells": 1000000,
+          "formulaCount": 100000,
+          "dataReadyMs": 1687,
+          "generatedMs": 1670,
+          "firstDrawMs": 1697,
+          "logicalRows": 1000000,
+          "logicalColumns": 256,
+          "populatedColumns": 10
+        },
+        "canvas": 3,
+        "edit": {
+          "frames": 5,
+          "observedFrames": 5,
+          "droppedFrames": 0,
+          "sampleLimit": 10000,
+          "averageMs": 5.4,
+          "p50Ms": 4,
+          "p95Ms": 10,
+          "p99Ms": 10,
+          "maxMs": 10,
+          "averagePaintedCells": 156,
+          "averageDomNodes": 4,
+          "samples": [
+            {
+              "durationMs": 4,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 10,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 7,
+              "paintedCells": 156,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4,
+              "paintedCells": 156,
+              "domNodes": 4
+            }
+          ]
+        },
+        "worker": {
+          "targets": 100000,
+          "roundTripMs": 2009,
+          "calculationMs": 2001,
+          "firstValue": 5,
+          "lastValue": 500000
+        }
+      }
+    },
+    {
+      "name": "scroll-cancel-clear",
+      "status": "passed",
+      "elapsedMs": 168,
+      "details": {
+        "cancelled": {
+          "completed": 1,
+          "planned": 40,
+          "status": "cancelled",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        },
+        "reset": {
+          "completed": 0,
+          "planned": 40,
+          "status": "not-started",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        }
+      }
+    },
+    {
+      "name": "range-cancel",
+      "status": "passed",
+      "elapsedMs": 70
+    },
+    {
+      "name": "range-disjoint",
+      "status": "passed",
+      "elapsedMs": 7408,
+      "details": {
+        "invalidationP50Ms": 0,
+        "invalidationP95Ms": 1,
+        "incrementalReadP50Ms": 6,
+        "incrementalReadP95Ms": 7,
+        "fullRecalculationP50Ms": 198,
+        "fullRecalculationP95Ms": 292,
+        "meanRecomputedFormulas": 1,
+        "meanCandidateChecks": 13.033333333333333,
+        "meanIndexVisits": 26.733333333333334
+      }
+    },
+    {
+      "name": "range-overlapping",
+      "status": "passed",
+      "elapsedMs": 3376,
+      "details": {
+        "invalidationP50Ms": 19,
+        "invalidationP95Ms": 25,
+        "incrementalReadP50Ms": 35,
+        "incrementalReadP95Ms": 45,
+        "fullRecalculationP50Ms": 37,
+        "fullRecalculationP95Ms": 42,
+        "meanRecomputedFormulas": 10000,
+        "meanCandidateChecks": 10000,
+        "meanIndexVisits": 20000
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "fixture-100000",
+      "fixture-1000000",
+      "scroll-cancel-clear",
+      "range-cancel",
+      "range-disjoint",
+      "range-overlapping"
+    ],
+    "actualChecks": [
+      "fixture-100000",
+      "fixture-1000000",
+      "scroll-cancel-clear",
+      "range-cancel",
+      "range-disjoint",
+      "range-overlapping"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}
