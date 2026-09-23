@@ -28,7 +28,8 @@ const browser = await engines[engine].launch({
   ...(engine === 'chromium' ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
   // Only local candidate traffic skips system proxies; remote runs keep normal routing.
   ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
-    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } } : {}),
+    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } }
+    : {}),
 });
 const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
 const report = {
@@ -37,34 +38,68 @@ const report = {
   engine,
   browserVersion: browser.version(),
   executedAt: new Date().toISOString(),
-  environment: { platform: process.platform, arch: process.arch, node: process.version, headless: process.env.BROWSER_HEADED !== '1' },
+  environment: {
+    platform: process.platform,
+    arch: process.arch,
+    node: process.version,
+    headless: process.env.BROWSER_HEADED !== '1',
+  },
   siteSha256: site.sha256,
   artifactSha256: createHash('sha256').update(archive).digest('hex'),
-  scope: 'Browser DOM accessibility semantics for the Canvas grid. This is not a screen-reader announcement or assistive-technology certification.',
-  checks: [], pageErrors: [], consoleErrors: [], runErrors: [],
+  scope:
+    'Browser DOM accessibility semantics for the Canvas grid. This is not a screen-reader announcement or assistive-technology certification.',
+  checks: [],
+  pageErrors: [],
+  consoleErrors: [],
+  runErrors: [],
 };
 page.on('pageerror', (error) => report.pageErrors.push(error.message));
-page.on('console', (message) => { if (message.type() === 'error') report.consoleErrors.push({ text: message.text(), location: message.location() }); });
+page.on('console', (message) => {
+  if (message.type() === 'error')
+    report.consoleErrors.push({ text: message.text(), location: message.location() });
+});
 async function check(name, action) {
   const started = Date.now();
-  try { const details = await action(); report.checks.push({ name, status: 'passed', elapsedMs: Date.now() - started, details }); console.log(`PASS ${name}`); }
-  catch (error) { report.checks.push({ name, status: 'failed', elapsedMs: Date.now() - started, error: error.message }); console.log(`FAIL ${name}: ${error.message}`); }
+  try {
+    const details = await action();
+    report.checks.push({ name, status: 'passed', elapsedMs: Date.now() - started, details });
+    console.log(`PASS ${name}`);
+  } catch (error) {
+    report.checks.push({
+      name,
+      status: 'failed',
+      elapsedMs: Date.now() - started,
+      error: error.message,
+    });
+    console.log(`FAIL ${name}: ${error.message}`);
+  }
 }
-const state = async () => page.locator('#a11y-grid [role=grid]').evaluate((grid) => {
-  const id = grid.getAttribute('aria-activedescendant');
-  const cell = id ? document.getElementById(id) : null;
-  const row = cell?.parentElement;
-  return {
-    role: grid.getAttribute('role'), tabIndex: grid.tabIndex,
-    rowCount: grid.getAttribute('aria-rowcount'), colCount: grid.getAttribute('aria-colcount'),
-    readOnly: grid.getAttribute('aria-readonly'), multiselectable: grid.getAttribute('aria-multiselectable'),
-    activeId: id, cellRole: cell?.getAttribute('role'), cellText: cell?.textContent,
-    rowIndex: cell?.getAttribute('aria-rowindex'), colIndex: cell?.getAttribute('aria-colindex'), selected: cell?.getAttribute('aria-selected'),
-    rowRole: row?.getAttribute('role'), live: row?.getAttribute('aria-live'), atomic: row?.getAttribute('aria-atomic'),
-    cellTabIndex: cell?.getAttribute('tabindex'), canvasHidden: grid.querySelector('canvas')?.getAttribute('aria-hidden'),
-    focused: document.activeElement === grid,
-  };
-});
+const state = async () =>
+  page.locator('#a11y-grid [role=grid]').evaluate((grid) => {
+    const id = grid.getAttribute('aria-activedescendant');
+    const cell = id ? document.getElementById(id) : null;
+    const row = cell?.parentElement;
+    return {
+      role: grid.getAttribute('role'),
+      tabIndex: grid.tabIndex,
+      rowCount: grid.getAttribute('aria-rowcount'),
+      colCount: grid.getAttribute('aria-colcount'),
+      readOnly: grid.getAttribute('aria-readonly'),
+      multiselectable: grid.getAttribute('aria-multiselectable'),
+      activeId: id,
+      cellRole: cell?.getAttribute('role'),
+      cellText: cell?.textContent,
+      rowIndex: cell?.getAttribute('aria-rowindex'),
+      colIndex: cell?.getAttribute('aria-colindex'),
+      selected: cell?.getAttribute('aria-selected'),
+      rowRole: row?.getAttribute('role'),
+      live: row?.getAttribute('aria-live'),
+      atomic: row?.getAttribute('aria-atomic'),
+      cellTabIndex: cell?.getAttribute('tabindex'),
+      canvasHidden: grid.querySelector('canvas')?.getAttribute('aria-hidden'),
+      focused: document.activeElement === grid,
+    };
+  });
 try {
   await page.goto(new URL('sdk/example.html', origin).href, {
     waitUntil: 'domcontentloaded',
@@ -81,16 +116,89 @@ try {
   }
   await page.evaluate(async () => {
     const { createSpreadsheet } = await import('./lumina.js');
-    const host = document.createElement('div'); host.id = 'a11y-grid'; host.style.cssText = 'height:320px;width:760px'; document.body.replaceChildren(host);
-    window.a11yGrid = createSpreadsheet(host); window.a11yGrid.setCell('B2', '中文'); window.a11yGrid.setCell('C3', '=1+1'); window.a11yGrid.select({ row: 1, col: 1 });
+    const host = document.createElement('div');
+    host.id = 'a11y-grid';
+    host.style.cssText = 'height:320px;width:760px';
+    document.body.append(host);
+    window.a11yGrid = createSpreadsheet(host);
+    window.a11yGrid.setCell('B2', '中文');
+    window.a11yGrid.setCell('C3', '=1+1');
+    window.a11yGrid.select({ row: 1, col: 1 });
   });
   const grid = page.locator('#a11y-grid [role=grid]');
   await grid.waitFor();
-  await check('grid-contract', async () => { const x=await state(); assert.equal(x.role,'grid'); assert.equal(x.tabIndex,0); assert.equal(x.rowCount,'100'); assert.equal(x.colCount,'16'); assert.equal(x.multiselectable,'true'); assert.equal(x.canvasHidden,'true'); assert.equal(x.cellTabIndex,null); return x; });
-  await check('active-cell-value', async () => { const x=await state(); assert(x.activeId && x.cellRole==='gridcell'); assert.equal(x.cellText,'B2 中文'); assert.equal(x.rowIndex,'2'); assert.equal(x.colIndex,'2'); assert.equal(x.selected,'true'); assert.equal(x.rowRole,'row'); assert.equal(x.live,'polite'); assert.equal(x.atomic,'true'); return x; });
-  await check('selection-announcement', async () => { await page.evaluate(()=>window.a11yGrid.select({row:2,col:2,endRow:0,endCol:0})); await page.waitForFunction(()=>document.querySelector('#a11y-grid [role=gridcell]')?.textContent?.includes('已选择 A1:C3')); const x=await state(); assert.equal(x.cellText,'C3 2，已选择 A1:C3，3 行 3 列'); return x; });
-  await check('keyboard-focus-update', async () => { await grid.focus(); await page.keyboard.press('ArrowLeft'); await page.waitForFunction(()=>document.querySelector('#a11y-grid [role=gridcell]')?.textContent?.startsWith('B3 ')); const x=await state(); assert.equal(x.focused,true); assert.equal(x.cellText,'B3 '); return x; });
-  await check('read-only-contract', async () => { await page.evaluate(async()=>{window.a11yGrid.destroy(); const {createSpreadsheet}=await import('./lumina.js'); window.a11yGrid=createSpreadsheet(document.querySelector('#a11y-grid'),{readOnly:true});}); await page.locator('#a11y-grid [role=grid]').waitFor(); const x=await state(); assert.equal(x.readOnly,'true'); assert.equal(x.tabIndex,0); return x; });
-  await page.evaluate(()=>window.a11yGrid.destroy());
-} catch (error) { report.runErrors.push({ name: error?.name ?? 'Error', message: error?.message ?? String(error), stack: error?.stack }); throw error; }
-finally { finalizeBrowserReport(report, ['grid-contract','active-cell-value','selection-announcement','keyboard-focus-update','read-only-contract']); await writeFile(path.join(output,'result.json'),JSON.stringify(report,null,2)+'\n'); await browser.close(); if(report.status!=='passed')process.exitCode=1; }
+  await check('grid-contract', async () => {
+    const x = await state();
+    assert.equal(x.role, 'grid');
+    assert.equal(x.tabIndex, 0);
+    assert.equal(x.rowCount, '100');
+    assert.equal(x.colCount, '16');
+    assert.equal(x.multiselectable, 'true');
+    assert.equal(x.canvasHidden, 'true');
+    assert.equal(x.cellTabIndex, null);
+    return x;
+  });
+  await check('active-cell-value', async () => {
+    const x = await state();
+    assert(x.activeId && x.cellRole === 'gridcell');
+    assert.equal(x.cellText, 'B2 中文');
+    assert.equal(x.rowIndex, '2');
+    assert.equal(x.colIndex, '2');
+    assert.equal(x.selected, 'true');
+    assert.equal(x.rowRole, 'row');
+    assert.equal(x.live, 'polite');
+    assert.equal(x.atomic, 'true');
+    return x;
+  });
+  await check('selection-announcement', async () => {
+    await page.evaluate(() => window.a11yGrid.select({ row: 2, col: 2, endRow: 0, endCol: 0 }));
+    await page.waitForFunction(() =>
+      document.querySelector('#a11y-grid [role=gridcell]')?.textContent?.includes('已选择 A1:C3'),
+    );
+    const x = await state();
+    assert.equal(x.cellText, 'C3 2，已选择 A1:C3，3 行 3 列');
+    return x;
+  });
+  await check('keyboard-focus-update', async () => {
+    await grid.focus();
+    await page.keyboard.press('ArrowLeft');
+    await page.waitForFunction(() =>
+      document.querySelector('#a11y-grid [role=gridcell]')?.textContent?.startsWith('B3 '),
+    );
+    const x = await state();
+    assert.equal(x.focused, true);
+    assert.equal(x.cellText, 'B3 ');
+    return x;
+  });
+  await check('read-only-contract', async () => {
+    await page.evaluate(async () => {
+      window.a11yGrid.destroy();
+      const { createSpreadsheet } = await import('./lumina.js');
+      window.a11yGrid = createSpreadsheet(document.querySelector('#a11y-grid'), { readOnly: true });
+    });
+    await page.locator('#a11y-grid [role=grid]').waitFor();
+    const x = await state();
+    assert.equal(x.readOnly, 'true');
+    assert.equal(x.tabIndex, 0);
+    return x;
+  });
+  await page.evaluate(() => window.a11yGrid.destroy());
+} catch (error) {
+  report.runErrors.push({
+    name: error?.name ?? 'Error',
+    message: error?.message ?? String(error),
+    stack: error?.stack,
+  });
+  throw error;
+} finally {
+  finalizeBrowserReport(report, [
+    'grid-contract',
+    'active-cell-value',
+    'selection-announcement',
+    'keyboard-focus-update',
+    'read-only-contract',
+  ]);
+  await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
+  await browser.close();
+  if (report.status !== 'passed') process.exitCode = 1;
+}

@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-23T15:14:26.273Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "e432797f8db69cb4afc38ad69f7b6f8ad973fb99efcf3cf6ca9ab48cc655d7b0",
+  "artifactSha256": "066fefcbbf82ae7e49c44592b9769d282b567eb292e5af5197b9ab7c8c13eb25",
+  "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
+  "checks": [
+    {
+      "name": "host-focus-enter",
+      "status": "passed",
+      "elapsedMs": 694
+    },
+    {
+      "name": "host-focus-escape",
+      "status": "passed",
+      "elapsedMs": 241
+    },
+    {
+      "name": "ordinary-focus-return",
+      "status": "passed",
+      "elapsedMs": 75
+    },
+    {
+      "name": "synchronous-host-focus",
+      "status": "passed",
+      "elapsedMs": 101
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "host-focus-enter",
+      "host-focus-escape",
+      "ordinary-focus-return",
+      "synchronous-host-focus"
+    ],
+    "actualChecks": [
+      "host-focus-enter",
+      "host-focus-escape",
+      "ordinary-focus-return",
+      "synchronous-host-focus"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

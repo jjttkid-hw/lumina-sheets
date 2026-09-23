@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.54",
+  "executedAt": "2026-09-23T15:32:42.994Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "runnerSha256": "4ea6385f1581da41ead5ab3d67f8cb4f61bf1b16f7fe362b6d784b1efa235aa6",
+  "siteSha256": "e432797f8db69cb4afc38ad69f7b6f8ad973fb99efcf3cf6ca9ab48cc655d7b0",
+  "artifactSha256": "066fefcbbf82ae7e49c44592b9769d282b567eb292e5af5197b9ab7c8c13eb25",
+  "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
+  "checks": [
+    {
+      "name": "damaged-journal-download-and-raw-snapshot-restore",
+      "status": "passed",
+      "elapsedMs": 16082,
+      "details": {
+        "copyId": "927a6321-6cbb-4a01-9cdb-72672eb1c77b",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "backupSha256": "1b3c2f1c0ca982124f95ce8cd6882b1a53e93b4e4608fb3943eaaff58e1807b3",
+        "layoutChecks": [
+          {
+            "width": 1280,
+            "cardWidth": 580,
+            "viewportWidth": 1280,
+            "documentWidth": 1280,
+            "cardOverflow": false,
+            "headingBottom": 168.578125,
+            "alertTop": 228.375,
+            "alertBottom": 309.96875,
+            "actionsTop": 333.96875,
+            "buttons": [
+              {
+                "left": 387,
+                "right": 481,
+                "height": 44
+              },
+              {
+                "left": 493,
+                "right": 563,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 390,
+            "cardWidth": 358,
+            "viewportWidth": 390,
+            "documentWidth": 390,
+            "cardOverflow": false,
+            "headingBottom": 144.1875,
+            "alertTop": 227.78125,
+            "alertBottom": 333.171875,
+            "actionsTop": 357.171875,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 320,
+            "cardWidth": 288,
+            "viewportWidth": 320,
+            "documentWidth": 320,
+            "cardOverflow": false,
+            "headingBottom": 144.1875,
+            "alertTop": 227.78125,
+            "alertBottom": 356.96875,
+            "actionsTop": 380.96875,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              }
+            ]
+          }
+        ],
+        "keyboardRetry": true,
+        "navigationKey": "Tab",
+        "rawJournalRetained": true,
+        "sourceUnchanged": true
+      }
+    },
+    {
+      "name": "partial-backup-invalid-selection-search-and-cancel",
+      "status": "passed",
+      "elapsedMs": 4852,
+      "details": {
+        "copyId": "b71088b1-f8d8-4cf8-b6d7-3efce8eda9e2",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "invalidRejected": true,
+        "searchEnterDidNotRestore": true,
+        "cancelDidNotWrite": true,
+        "damagedSourceRetained": true
+      }
+    },
+    {
+      "name": "historical-snapshot-restores-independent-copy",
+      "status": "passed",
+      "elapsedMs": 13260,
+      "details": {
+        "copyId": "ea52d3a1-62c9-4024-bda2-4fe29c699423",
+        "name": "历史业务报表（恢复副本）",
+        "expectedValue": "历史版本正文",
+        "persistedAfterReload": true,
+        "formulaRetained": true,
+        "validationSheetRemapped": true,
+        "auxiliaryHistoryNotMerged": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "actualChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

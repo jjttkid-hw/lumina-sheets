@@ -32,7 +32,8 @@ const browser = await engines[engine].launch({
   ...(engine === 'chromium' ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
   // Only local candidate traffic skips system proxies; remote runs keep normal routing.
   ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
-    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } } : {}),
+    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } }
+    : {}),
 });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
@@ -94,7 +95,10 @@ async function download(button, name) {
   return JSON.parse(await readFile(filename, 'utf8'));
 }
 try {
-  await page.goto(new URL('?view=performance', origin).href);
+  await page.goto(new URL('?view=performance', origin).href, {
+    waitUntil: 'domcontentloaded',
+    timeout: 60_000,
+  });
   await page.getByRole('region', { name: '性能实验室' }).waitFor();
   for (const size of [100000, 1000000]) {
     await check(`fixture-${size}`, async () => {

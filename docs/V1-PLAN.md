@@ -1,3 +1,7 @@
+2026-09-23 r13 验证器修复：Firefox/本地候选浏览器脚本统一等待 `domcontentloaded`；无障碍夹具改为追加测试宿主，避免删除示例页面的 metrics 节点造成 page error。r13 的 25 份核心报告完整性检查已通过，摘要绑定 `e432797...` / `066fefc...`。
+
+2026-09-23 r13 候选重绑定：发布 README 变更后重新构建 SDK（`066fefc...`）和站点（`e432797...`），重新生成 25 份核心浏览器、触控、框架、恢复及 XLSX/WPS 证据；Firefox 本地导航等待 DOM 就绪，避免字体加载超时。CI 将使用 r13，不沿用旧摘要。npm 注册表仍为 404，尚未发布。
+
 2026-09-23 发布后核对加固：npm 工作流新增公开注册表 tarball integrity、包名/版本和临时目录独立安装检查；新增 `scripts/check-npm-registry.mjs`，注册表未出现版本时明确失败，不把 npm publish 返回成功当作首发证据。Trusted Publisher 仍需 `jjttkid-hw / lumina-sheets / npm.yml / npm` 配置，npm 首发门槛继续开放。
 
 2026-09-23 Safari r5 实机补验：Safari 27.0 / macOS 26.7 完成百万行分页定位（A1000000）、缓存刷新、CSV 导出取消、200 行快照 XLSX 实际下载及再次导入回读（C200=2990）。证据见 [Safari r5](acceptance/browser-safari-2026-09-23-r5/README.md)，绑定 r12 站点和 SDK 摘要。Safari 全平台矩阵、VoiceOver、实体移动触控、原生 IME、完整 Excel/WPS 与法律/npm 门槛仍开放。

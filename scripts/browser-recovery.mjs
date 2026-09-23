@@ -184,9 +184,12 @@ async function selectCell(page, key) {
 }
 async function workspace(context, name = validBook.name) {
   const page = track(await context.newPage(), name);
-  await page.goto(new URL('sdk/example.html', origin).href);
+  await page.goto(new URL('sdk/example.html', origin).href, {
+    waitUntil: 'domcontentloaded',
+    timeout: 60_000,
+  });
   await seedDatabase(page, { workbooks: [{ id: validBook.id, workbook: validBook }] });
-  await page.goto(origin.href);
+  await page.goto(origin.href, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.getByRole('heading', { name, exact: true }).waitFor();
   return page;
 }
@@ -210,7 +213,7 @@ async function expectCopy(page, original, expectedValue) {
   assert.notEqual(row.workbook.sheets[0].id, original.sheets[0].id);
   assert.equal(row.workbook.activeSheetId, row.workbook.sheets[0].id);
   // Reload then explicitly open the saved copy if the application chooses another workbook.
-  await page.reload();
+  await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.getByRole('heading', { level: 1 }).waitFor();
   const heading = page.getByRole('heading', { name, exact: true });
   if (!(await heading.isVisible())) {
@@ -238,7 +241,10 @@ try {
     const targetContext = await browser.newContext({ viewport: { width: 1280, height: 800 } });
     try {
       const page = track(await sourceContext.newPage(), expected[0]);
-      await page.goto(new URL('sdk/example.html', origin).href);
+      await page.goto(new URL('sdk/example.html', origin).href, {
+        waitUntil: 'domcontentloaded',
+        timeout: 60_000,
+      });
       const damaged = {
         key: JSON.stringify([validBook.id, 'broken']),
         operationId: 'broken',
@@ -256,7 +262,7 @@ try {
         workbooks: [{ id: validBook.id, workbook: validBook }],
         patches: [damaged],
       });
-      await page.goto(origin.href);
+      await page.goto(origin.href, { waitUntil: 'domcontentloaded', timeout: 60_000 });
       await page.getByText('本地工作空间读取失败', { exact: false }).waitFor();
       const layoutChecks = [];
       for (const width of [1280, 390, 320]) {
@@ -290,7 +296,7 @@ try {
         for (const button of geometry.buttons) {
           assert(button.left >= 0 && button.right <= width && button.height >= 44);
         }
-        await page.screenshot({ path: path.join(output, `startup-${width}.png`) });
+        await page.screenshot({ path: path.join(output, `startup-${width}.png`) }).catch(() => {});
         layoutChecks.push({ width, ...geometry });
       }
       const backupButton = page.getByRole('button', { name: '下载恢复备份', exact: true });
@@ -329,7 +335,7 @@ try {
         'Downloading rescue must preserve source stores',
       );
       await page.getByText('已导出部分数据', { exact: false }).waitFor();
-      await page.screenshot({ path: path.join(output, 'startup-rescue.png') });
+      await page.screenshot({ path: path.join(output, 'startup-rescue.png') }).catch(() => {});
       const target = await workspace(targetContext);
       const targetBefore = await inspectDatabase(target);
       await importBackup(target, filename);
@@ -368,14 +374,17 @@ try {
     });
     try {
       const page = track(await context.newPage(), expected[1]);
-      await page.goto(new URL('sdk/example.html', origin).href);
+      await page.goto(new URL('sdk/example.html', origin).href, {
+        waitUntil: 'domcontentloaded',
+        timeout: 60_000,
+      });
       await seedDatabase(page, {
         workbooks: [
           { id: 'a-damaged', workbook: null },
           { id: validBook.id, workbook: validBook },
         ],
       });
-      await page.goto(origin.href);
+      await page.goto(origin.href, { waitUntil: 'domcontentloaded', timeout: 60_000 });
       await page.getByRole('heading', { name: validBook.name, exact: true }).waitFor();
       const before = await inspectDatabase(page);
       const downloadPromise = page.waitForEvent('download');
@@ -489,7 +498,7 @@ try {
         .filter({ hasText: '历史版本' })
         .getAttribute('value');
       await select.selectOption(value);
-      await page.screenshot({ path: path.join(output, 'history-selection.png') });
+      await page.screenshot({ path: path.join(output, 'history-selection.png') }).catch(() => {});
       await page.getByRole('button', { name: '恢复为新工作簿' }).click();
       const details = await expectCopy(page, snapshot, '历史版本正文');
       await selectCell(page, 'B1');

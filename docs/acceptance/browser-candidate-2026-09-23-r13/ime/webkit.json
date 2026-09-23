@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "webkit",
+  "browserVersion": "26.0",
+  "executedAt": "2026-09-23T15:14:13.292Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "e432797f8db69cb4afc38ad69f7b6f8ad973fb99efcf3cf6ca9ab48cc655d7b0",
+  "artifactSha256": "066fefcbbf82ae7e49c44592b9769d282b567eb292e5af5197b9ab7c8c13eb25",
+  "scope": "Browser composition/input/keyboard event lifecycle against the production SDK and report example. Synthetic CompositionEvent sequences are not native operating-system IME candidate-window certification.",
+  "checks": [
+    {
+      "name": "canvas-blur-defers-final-composition",
+      "status": "passed",
+      "elapsedMs": 349,
+      "details": {
+        "value": "中文输入",
+        "changes": [
+          [
+            {
+              "key": "A1",
+              "cell": {
+                "value": "中文输入",
+                "style": {}
+              }
+            }
+          ]
+        ],
+        "editorCount": 0
+      }
+    },
+    {
+      "name": "canvas-composing-enter-does-not-commit",
+      "status": "passed",
+      "elapsedMs": 400,
+      "details": {
+        "composing": {
+          "value": "基线",
+          "changes": 0,
+          "editorCount": 1
+        },
+        "committed": {
+          "value": "候选文字",
+          "changes": 1,
+          "editorCount": 0
+        }
+      }
+    },
+    {
+      "name": "canvas-stale-composition-cannot-write-after-sheet-switch",
+      "status": "passed",
+      "elapsedMs": 257,
+      "details": {
+        "source": "保留值",
+        "target": "目标值",
+        "activeSheet": "ime-sheet-1",
+        "changes": 0,
+        "detached": true
+      }
+    },
+    {
+      "name": "report-formula-composing-enter-guard",
+      "status": "passed",
+      "elapsedMs": 380,
+      "details": {
+        "before": "结果：月份",
+        "during": "结果：月份",
+        "after": "结果：报表中文"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "canvas-blur-defers-final-composition",
+      "canvas-composing-enter-does-not-commit",
+      "canvas-stale-composition-cannot-write-after-sheet-switch",
+      "report-formula-composing-enter-guard"
+    ],
+    "actualChecks": [
+      "canvas-blur-defers-final-composition",
+      "canvas-composing-enter-does-not-commit",
+      "canvas-stale-composition-cannot-write-after-sheet-switch",
+      "report-formula-composing-enter-guard"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

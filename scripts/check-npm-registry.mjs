@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -13,6 +13,7 @@ assert(
   'Set NPM_VERSION to a SemVer',
 );
 const registry = process.env.NPM_REGISTRY ?? 'https://registry.npmjs.org';
+const expectedArchive = process.env.NPM_EXPECTED_ARCHIVE;
 const request = async (url) => {
   const response = await fetch(url, { headers: { accept: 'application/json' } });
   if (!response.ok) throw new Error(`Registry request failed ${response.status}: ${url}`);
@@ -31,6 +32,14 @@ const response = await fetch(dist.tarball);
 assert(response.ok, `Tarball request failed ${response.status}`);
 const bytes = Buffer.from(await response.arrayBuffer());
 const sha256 = createHash('sha256').update(bytes).digest('hex');
+if (expectedArchive) {
+  const expected = await readFile(expectedArchive);
+  assert.equal(
+    sha256,
+    createHash('sha256').update(expected).digest('hex'),
+    'Registry tarball differs from the release artifact uploaded by this workflow',
+  );
+}
 if (dist.shasum)
   assert.equal(
     createHash('sha1').update(bytes).digest('hex'),
@@ -45,7 +54,7 @@ if (dist.integrity) {
 const dir = await mkdtemp(path.join(os.tmpdir(), 'lumina-registry-'));
 try {
   const archive = path.join(dir, `${packageName.replace(/[\\/]/g, '-')}-${version}.tgz`);
-  await import('node:fs/promises').then(({ writeFile }) => writeFile(archive, bytes));
+  await writeFile(archive, bytes);
   execFileSync('npm', ['init', '-y'], { cwd: dir, stdio: 'ignore' });
   execFileSync('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', archive], {
     cwd: dir,

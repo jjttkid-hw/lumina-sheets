@@ -32,7 +32,8 @@ const browser = await engines[engine].launch({
   ...(engine === 'chromium' ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
   // Only local candidate traffic skips system proxies; remote runs keep normal routing.
   ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
-    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } } : {}),
+    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } }
+    : {}),
 });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
@@ -104,7 +105,7 @@ async function selectCell(key) {
 }
 try {
   await check('workspace-render', async () => {
-    await page.goto(origin.href);
+    await page.goto(origin.href, { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.getByRole('grid').waitFor();
     await page.getByText('已保存到本地', { exact: true }).waitFor();
     const canvas = await page
@@ -167,7 +168,10 @@ try {
   });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await check('report-layouts', async () => {
-    await page.goto(new URL('examples/report.html', origin).href);
+    await page.goto(new URL('examples/report.html', origin).href, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60_000,
+    });
     await page.getByRole('grid').waitFor();
     const layouts = await page
       .locator('[data-layout]')
@@ -235,10 +239,15 @@ try {
     return text;
   });
   await check('packed-sdk-example', async () => {
-    await page.goto(new URL('sdk/example.html', origin).href);
+    await page.goto(new URL('sdk/example.html', origin).href, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60_000,
+    });
     await page.getByRole('grid').waitFor();
     await page.getByLabel('显示比例', { exact: true }).selectOption('150');
-    await page.waitForFunction(() => document.querySelector('#status')?.textContent === '显示比例已调整为 150%');
+    await page.waitForFunction(
+      () => document.querySelector('#status')?.textContent === '显示比例已调整为 150%',
+    );
     await page.locator('[data-layout="sheets"]').click();
     await page.waitForFunction(() => document.querySelector('#sheet-select')?.options.length === 2);
     const options = await page
