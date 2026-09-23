@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-23T01:35:48.898Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "4c55a3b43f6418ce3a6242b3c46f20b7bcdce28ef907013186907d36f5ec21b0",
+  "artifactSha256": "d51f9a8664aa77623a684049dbf026b8fa73cfa56b045e0d6f47f1a9f650ed17",
+  "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
+  "checks": [
+    {
+      "name": "validation-editor-recovery",
+      "status": "passed",
+      "elapsedMs": 283
+    },
+    {
+      "name": "validation-list-keyboard",
+      "status": "passed",
+      "elapsedMs": 169
+    },
+    {
+      "name": "native-clipboard-atomic-validation",
+      "status": "passed",
+      "elapsedMs": 429,
+      "details": {
+        "transport": "native keyboard copy/paste",
+        "rejected": "B2:C2 unchanged",
+        "accepted": "both cells changed, one undo restores both"
+      }
+    },
+    {
+      "name": "native-copy-cut-paste",
+      "status": "passed",
+      "elapsedMs": 152
+    },
+    {
+      "name": "sdk-mount-isolation-destroy",
+      "status": "passed",
+      "elapsedMs": 18,
+      "details": {
+        "duplicate": "INVALID_ARGUMENT",
+        "empty": 0,
+        "restored": "customer-host",
+        "destroyed": "DESTROYED",
+        "other": 22
+      }
+    },
+    {
+      "name": "sdk-pending-source-destroy",
+      "status": "passed",
+      "elapsedMs": 172,
+      "details": {
+        "outcome": "AbortError",
+        "lateCallbacks": 0,
+        "value": "new session"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy"
+    ],
+    "actualChecks": [
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

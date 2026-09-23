@@ -1,3 +1,5 @@
+- 当前主线提交 `4941f4518effab4a9bbdeb6de33a0b2a5d244ee2` 的线上 Pages 部署已通过 CD；线上 `build-info.json` 为版本 `0.29.0`，站点 SHA-256 `4c55a3b43f6418ce3a6242b3c46f20b7bcdce28ef907013186907d36f5ec21b0`。r6 浏览器候选已重新绑定该固定来源时间构建：Chromium、Firefox、WebKit 各通过 smoke 8、交互 6、焦点 4、布局 6、性能 6 项，Chromium 触控 3 项也通过；所有页面、控制台和运行错误为 0。证据完整性检查通过，原始报告见 [browser-candidate-2026-09-23-r6](acceptance/browser-candidate-2026-09-23-r6/README.md)。`lumina-report-sdk` 仍未出现在 npm 注册表，不能创建稳定 `1.0.0` 发布记录。
+
 # 验证记录
 
 ## 当前状态（2026-09-23）

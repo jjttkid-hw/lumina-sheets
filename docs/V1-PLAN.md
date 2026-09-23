@@ -1,3 +1,5 @@
+2026-09-23 当前候选浏览器复验（r6）：提交 `4941f45` 使用 `SOURCE_DATE_EPOCH=1790122493` 重新构建并运行 Chromium、Firefox、WebKit 的 smoke、交互、焦点、布局和性能套件，三引擎各通过 8、6、4、6、6 项；Chromium 另通过 3 项触控模拟。报告统一绑定站点 `4c55a3b43f6418ce3a6242b3c46f20b7bcdce28ef907013186907d36f5ec21b0`、SDK `d51f9a8664aa77623a684049dbf026b8fa73cfa56b045e0d6f47f1a9f650ed17`，见 [browser-candidate-2026-09-23-r6](acceptance/browser-candidate-2026-09-23-r6/README.md)。证据完整性检查通过；正式 Safari、原生中文 IME、实体触控、屏幕阅读器、跨设备性能、完整文件语料和 npm 首发仍是 v1.0 门槛。
+
 # v1.0 交付计划与验收账本
 
 2026-09-23 当前远端状态：提交 `49a426a` 的 GitHub CI `35804841159` 与 CD `35805069184` 均成功。线上版本为 `0.29.0`，提交为 `49a426a77f7b1fa65ac1dd388aa71a375164bea1`；当前仓库已配置 `RELEASE_SOURCE_DATE_EPOCH=1790122493`，用于让验收文档提交保持候选站点摘要稳定。固定来源时间重建得到站点 SHA-256 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534`，npm 注册表仍未发布，不能据此宣布 v1.0.0。

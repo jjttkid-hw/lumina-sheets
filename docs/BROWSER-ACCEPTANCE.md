@@ -1,3 +1,5 @@
+2026-09-23 当前候选复验（r6）：提交 `4941f45` 使用 `SOURCE_DATE_EPOCH=1790122493` 重新构建并运行 Chromium、Firefox、WebKit 的 smoke、交互、焦点、布局和性能套件，三引擎均通过 8、6、4、6、6 项；Chromium 另通过 3 项触控模拟。报告统一绑定站点 SHA-256 `4c55a3b43f6418ce3a6242b3c46f20b7bcdce28ef907013186907d36f5ec21b0` 和 SDK SHA-256 `d51f9a8664aa77623a684049dbf026b8fa73cfa56b045e0d6f47f1a9f650ed17`，原始记录见 [browser-candidate-2026-09-23-r6](acceptance/browser-candidate-2026-09-23-r6/README.md)。证据完整性检查 `npm run check:browser-evidence` 通过；这仍不替代正式 Safari、原生中文 IME、实体移动设备、屏幕阅读器、跨设备性能、完整文件语料或商业许可证法律复核。
+
 # 浏览器验收矩阵（候选构建已验证，平台级矩阵仍待执行）
 
 2026-09-23 当前候选复验：提交 `f2a25a9` 使用固定来源时间重新运行 Chromium、Firefox、WebKit 的 smoke、交互、焦点、布局和性能套件，三引擎均通过；Chromium 另通过 3 项触控模拟。报告统一绑定站点 SHA-256 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534` 和 SDK SHA-256 `d51f9a8664aa77623a684049dbf026b8fa73cfa56b045e0d6f47f1a9f650ed17`，原始记录见 [browser-candidate-2026-09-23-r5](acceptance/browser-candidate-2026-09-23-r5/README.md)。这仍不替代正式 Safari、原生中文 IME、实体移动设备、屏幕阅读器、跨设备性能或商业许可证法律复核。
