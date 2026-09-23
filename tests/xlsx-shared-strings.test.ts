@@ -42,3 +42,44 @@ describe('XLSX shared string index validation', () => {
     expect(restored.sheets[0].cells.A1).toEqual(book.sheets[0].cells.A1);
   });
 });
+
+// Real WPS saves lowercase hex in ST_Xstring. ExcelJS's decoder only recognizes
+// uppercase hex, so ordinary shared/inline text must be canonicalized first.
+describe('desktop producer escape spelling', () => {
+  it.each(['shared', 'inline', 'hyperlink'] as const)(
+    'decodes mixed-case tokens once in %s strings and retains literals on roundtrip',
+    async (kind) => {
+      const source = new ExcelJS.Workbook();
+      const ws = source.addWorksheet('WPS');
+      ws.getCell('A1').value =
+        kind === 'hyperlink'
+          ? { text: 'placeholder', hyperlink: 'https://example.com' }
+          : 'placeholder';
+      ws.getCell('B1').value = 'placeholder';
+      const archive = await readXlsxArchive((await source.xlsx.writeBuffer()) as ArrayBuffer);
+      const encoded = '_x005f_x0041_|_x000d_|_x000b_|_xd83d__xde00_|_X0041_|_x005f_x005f_';
+      if (kind === 'inline') {
+        const { xmlElement } = await import('../src/lib/xlsx-archive');
+        const row = xmlChildren(xmlChild(archive.sheets[0].xml, 'sheetData')!, 'row')[0];
+        const cell = xmlChildren(row, 'c')[0];
+        cell.attributes.t = 'inlineStr';
+        cell.children = [xmlElement('is', {}, [xmlElement('t', {}, [encoded])])];
+      } else {
+        const file = archive.zip.file('xl/sharedStrings.xml')!;
+        archive.zip.file(
+          'xl/sharedStrings.xml',
+          (await file.async('string')).replace('placeholder', encoded),
+        );
+      }
+      const book = await workbookFromXlsx(await writeXlsxArchive(archive));
+      const expected = '_x0041_|\r|\u000b|😀|A|_x005f_';
+      expect(book.sheets[0].cells.A1.value).toBe(expected);
+      if (kind !== 'inline') expect(book.sheets[0].cells.B1.value).toBe(expected);
+      if (kind === 'hyperlink')
+        expect(book.sheets[0].cells.A1.hyperlink?.target).toBe('https://example.com');
+      expect((await workbookFromXlsx(await workbookToXlsx(book))).sheets[0].cells.A1).toEqual(
+        book.sheets[0].cells.A1,
+      );
+    },
+  );
+});

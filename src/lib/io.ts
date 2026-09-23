@@ -569,7 +569,8 @@ async function readXlsxWorkbook(
   const visibility = readXlsxVisibility(archive, IMPORT_LIMITS);
   const storedCells = readXlsxStoredCells(archive, IMPORT_LIMITS);
   const hyperlinks = await stage(() => readXlsxHyperlinks(archive));
-  const richTexts = await stage(() => readXlsxRichText(archive, signal));
+  const plainTexts = new Map<string, Map<string, string>>();
+  const richTexts = await stage(() => readXlsxRichText(archive, signal, plainTexts));
   for (const sheet of archive.sheets) {
     const stored = storedCells.get(sheet.name)!;
     const addresses = new Set(stored.addresses);
@@ -691,6 +692,8 @@ async function readXlsxWorkbook(
         reject(`XLSX 错误单元格缺少可验证的原始错误码：${ws.name}!${address}。`);
       const richText = richTexts.get(ws.name)!.get(address);
       if (richText) value = richText.map((run) => run.text).join('');
+      else if (plainTexts.get(ws.name)!.has(address))
+        value = plainTexts.get(ws.name)!.get(address)!;
       const hyperlink = copyHyperlink(hyperlinks.get(ws.name)!.get(address), value);
       sheet.cells[cell.address] = {
         value,

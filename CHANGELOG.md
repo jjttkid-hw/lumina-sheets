@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 修复 WPS 保存的普通共享字符串含小写 OOXML 转义时文字损坏，以及普通 inlineStr 转义未解码；新增真实 WPS 保存夹具和单次解码回归。
+
 2026-09-23：SDK 增加 `setZoom(value)` / `zoom` 运行时缩放与报表示例显示比例菜单；保留选区、有效编辑草稿、计算缓存、导入和撤销历史，支持只读/分页实例，沿用初始化倍率/百分比规则。版本继续为 0.29.0。
 
 - CI now validates only the current artifact-bound browser candidate (`browser-candidate-2026-09-23-r9`) instead of rerunning a historical r7 candidate. This reduces release noise without changing runtime output or acceptance scope; npm first publication is still pending.

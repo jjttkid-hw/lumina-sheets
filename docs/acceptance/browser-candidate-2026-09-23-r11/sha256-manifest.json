@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1129,
+      "sha256": "3020a883fb3bd317ef9f5fc51038929881309d6b623bc634dae379e38d7b3460"
+    },
+    {
+      "path": "accessibility/chromium.json",
+      "bytes": 4371,
+      "sha256": "977cf095f7ed6e0941fa2ab75a0b4cfd6444d79d554ee27dff7dc64b2d6c610d"
+    },
+    {
+      "path": "accessibility/firefox.json",
+      "bytes": 4364,
+      "sha256": "94d1482ccc7b79e43dbcb53307622190c53db4ca4bd6819425948d80a98537b2"
+    },
+    {
+      "path": "accessibility/webkit.json",
+      "bytes": 4360,
+      "sha256": "3a649c089289aed8d7f96eaf94072517fe1efdd59e56669f1b0c038d5da862e5"
+    },
+    {
+      "path": "chromium/focus.json",
+      "bytes": 1526,
+      "sha256": "3d3e389ee0183d2f371086fc72ff7d0fb59a24a48d09773c93f90e62c4fb0848"
+    },
+    {
+      "path": "chromium/interactions.json",
+      "bytes": 2546,
+      "sha256": "2228936999795c63b65c973ae5d2e182efa3caa24428fed474a2314432c43018"
+    },
+    {
+      "path": "chromium/layout.json",
+      "bytes": 2943,
+      "sha256": "2123ccb455ec552ec3ac4eea0b5a236de40ee0f8e04bae8a117b362de6a100fd"
+    },
+    {
+      "path": "chromium/performance.json",
+      "bytes": 6753,
+      "sha256": "7a1d14c9ac3957507718a594d838406554fdd9d33ab6afe4971e2e8c839f3a8b"
+    },
+    {
+      "path": "chromium/smoke.json",
+      "bytes": 6370,
+      "sha256": "291c4134366553327627e5a6d45645f25824b2dec65fcab8a64781e4357c2a19"
+    },
+    {
+      "path": "firefox/focus.json",
+      "bytes": 1520,
+      "sha256": "2de6b8a4796722298dc35a5f44f6950cdae0dbaa9e471564c80af180ab3d0e26"
+    },
+    {
+      "path": "firefox/interactions.json",
+      "bytes": 2540,
+      "sha256": "9e8203e21c0e8dff3d914941b44d96e499d3adc01b6a428ed3f2874126601b24"
+    },
+    {
+      "path": "firefox/layout.json",
+      "bytes": 2918,
+      "sha256": "d70f80373d18825b0d311d052acd2a2b83b4eeaba2d6c5ede8438374ea395f20"
+    },
+    {
+      "path": "firefox/performance.json",
+      "bytes": 6207,
+      "sha256": "7f2813ed29a69a37703f77da8afd850996a3bc7d6fdcdbd012333d862806fd9e"
+    },
+    {
+      "path": "firefox/smoke.json",
+      "bytes": 6363,
+      "sha256": "9600e4d31bb2053985d7f51160d810ae47d947ffae4ced1df23c6503e3faa641"
+    },
+    {
+      "path": "ime/chromium.json",
+      "bytes": 2794,
+      "sha256": "00e109adfa1657538c908fdee14d47d7adeb3d62e2bf9a93e0bec415b51cd8d1"
+    },
+    {
+      "path": "ime/firefox.json",
+      "bytes": 2786,
+      "sha256": "7019c5398207322906c907b90c313435d98bbfc7c9e3b6d1153872abeaba5f7a"
+    },
+    {
+      "path": "ime/webkit.json",
+      "bytes": 2782,
+      "sha256": "c85bf19096efb905a336f50e889f850ebce7bd16ff096074894ef0474f0f7988"
+    },
+    {
+      "path": "persistence/chromium.json",
+      "bytes": 2609,
+      "sha256": "43ae764dde50a0ac3d48f184f641caf5289e00111ac0fe8ec50d254c40f38494"
+    },
+    {
+      "path": "persistence/firefox.json",
+      "bytes": 2601,
+      "sha256": "fee7b51c68482eb955bf11999e5b13ab1681b766caabb2f58ba8dc972e3a54cb"
+    },
+    {
+      "path": "persistence/webkit.json",
+      "bytes": 2596,
+      "sha256": "cd4f91c12e4701ec05621d1ad69ef4e732a7c74dd4270647e3ae6af5e4bc74a6"
+    },
+    {
+      "path": "touch/result.json",
+      "bytes": 1919,
+      "sha256": "3588d97f056341fde52342e97a4c4f8dd4d800c1770526034283cadfa7358c9e"
+    },
+    {
+      "path": "webkit/focus.json",
+      "bytes": 1516,
+      "sha256": "50e5f11733d3919257d3fdd7d07b99a5f260dc4ccb911cf5043dfe26b7832351"
+    },
+    {
+      "path": "webkit/interactions.json",
+      "bytes": 2536,
+      "sha256": "64aaa4bbd484371c6cf6360e2b0a1faadf7f57c9fe66ca82e355661290e620a8"
+    },
+    {
+      "path": "webkit/layout.json",
+      "bytes": 2914,
+      "sha256": "9966ac7508fa152a007c4b7595e56dfc993d8ad89ca8f652b0dff73947903eba"
+    },
+    {
+      "path": "webkit/performance.json",
+      "bytes": 6312,
+      "sha256": "1c337bae94967d599c5d37f5b4312ae77aecb43f9d84e8c6ca50c7f7d482f972"
+    },
+    {
+      "path": "webkit/smoke.json",
+      "bytes": 6362,
+      "sha256": "a45d566649d72ad244e1b7eb474738fd204fd8b232f030bf02629370a88545bf"
+    },
+    {
+      "path": "wps-corpus.json",
+      "bytes": 900,
+      "sha256": "00483872de0d90c1d5d05f1473de30ed0b5db495c629e70caecc21b969b02f2b"
+    },
+    {
+      "path": "xlsx-corpus.json",
+      "bytes": 3852,
+      "sha256": "dd3cf79fd972dc5862fbbe40965efe14bec91158cfdfc8bd3608f825a9662621"
+    }
+  ]
+}

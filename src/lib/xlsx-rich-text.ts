@@ -15,6 +15,11 @@ import {
 function fail(detail: string): never {
   throw new Error(`XLSX 富文本：${detail}，无法无损导入。`);
 }
+function plainText(container: XmlElement): string {
+  const text = decodeXlsxString(xmlText(xmlChild(container, 't') ?? container));
+  if (text.length > 32767) fail('单元格文字超过 32,767 个字符');
+  return text;
+}
 function readRuns(container: XmlElement): RichTextRun[] | undefined {
   if (!xmlChildren(container, 'r').length) {
     const children = xmlChildren(container);
@@ -70,7 +75,11 @@ function readRuns(container: XmlElement): RichTextRun[] | undefined {
 }
 
 /** Read original XML because ExcelJS replaces rich hyperlink labels with plain text. */
-export async function readXlsxRichText(archive: XlsxArchive, signal?: AbortSignal) {
+export async function readXlsxRichText(
+  archive: XlsxArchive,
+  signal?: AbortSignal,
+  plainTexts?: Map<string, Map<string, string>>,
+) {
   signal?.throwIfAborted();
   const sharedFile = archive.zip.file('xl/sharedStrings.xml');
   let shared: XmlElement[] = [];
@@ -81,6 +90,7 @@ export async function readXlsxRichText(archive: XlsxArchive, signal?: AbortSigna
     shared = xmlChildren(await parseXlsxXmlAsync(text, signal), 'si');
   }
   const cache = new Map<number, RichTextRun[] | undefined>();
+  const plainCache = new Map<number, string>();
   const result = new Map<string, Map<string, RichTextRun[]>>();
   let scanned = 0;
   let textUnits = 0;
@@ -91,14 +101,20 @@ export async function readXlsxRichText(archive: XlsxArchive, signal?: AbortSigna
     signal?.throwIfAborted();
     const cells = new Map<string, RichTextRun[]>();
     result.set(sheet.name, cells);
+    const plainCells = new Map<string, string>();
+    plainTexts?.set(sheet.name, plainCells);
     const data = xmlChild(sheet.xml, 'sheetData');
     for (const row of data ? xmlChildren(data, 'row') : [])
       for (const cell of xmlChildren(row, 'c')) {
         signal?.throwIfAborted();
         let runs: RichTextRun[] | undefined;
+        let plain: string | undefined;
         if (cell.attributes.t === 'inlineStr') {
           const inline = xmlChild(cell, 'is');
-          if (inline) runs = readRuns(inline);
+          if (inline) {
+            runs = readRuns(inline);
+            if (!runs && plainTexts) plain = plainText(inline);
+          }
         } else if (cell.attributes.t === 's') {
           const v = xmlChild(cell, 'v');
           const text = v ? xmlText(v).trim() : '';
@@ -108,8 +124,20 @@ export async function readXlsxRichText(archive: XlsxArchive, signal?: AbortSigna
           const index = Number(text);
           if (!Number.isSafeInteger(index) || index < 0 || !shared[index])
             fail('共享字符串索引无效');
-          if (!cache.has(index)) cache.set(index, readRuns(shared[index]));
+          if (!cache.has(index)) {
+            const value = readRuns(shared[index]);
+            cache.set(index, value);
+            if (!value && plainTexts) plainCache.set(index, plainText(shared[index]));
+          }
           runs = cache.get(index);
+          plain = plainCache.get(index);
+        }
+        // Read original XML for ordinary text too. ExcelJS decodes only uppercase
+        // shared escapes and does not decode ordinary inline strings at all.
+        // Never decode its already-transformed value a second time.
+        if (plain !== undefined && !xmlChild(cell, 'f')) {
+          plainCells.set(cell.attributes.r, plain);
+          textUnits += plain.length;
         }
         if (runs) {
           if (xmlChild(cell, 'f')) fail('公式不能同时包含富文本片段');

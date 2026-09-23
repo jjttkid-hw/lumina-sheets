@@ -4,7 +4,7 @@
 
 ## 持续检查与演示部署
 
-- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-09-23-r10`，避免历史候选重复运行或掩盖当前制品绑定。
+- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-09-23-r11`，避免历史候选重复运行或掩盖当前制品绑定。
 - CI 和 npm 发布工作流都执行 `check:reproducibility`；站点和 SDK 包必须在同一候选构建中连续两次得到相同摘要/字节哈希，失败不会上传或发布。
 - 安装检查在全新临时目录运行，不借用工程的 React 类型。严格 NodeNext/Bundler、CSS 子路径、ES module 入口、公开类型/动态 JS 分包和示例引用均需通过。制品 `npm-package` 包含 `.tgz` 和 SHA-256，保留 14 天。
 - 主分支 CI 另保留 `lumina-site` 产物 7 天。`CD` 只在本仓库成功的主分支 CI 后触发，下载该次 CI 已验证的站点，不重新构建。PR 不能触发部署。

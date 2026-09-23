@@ -2377,3 +2377,10 @@ Added `setZoom(value)` and the read-only `zoom` getter, retaining constructor fa
 - Version remains 0.29.0. npm whoami still returns E401 and the registry package returns 404; no npm publication or stable-release acceptance is claimed. Native Safari full matrix, OS IME, physical touch, assistive readers, cross-device performance, desktop Excel/WPS corpus and legal review remain open.
 
 Final settled local reproducibility passed: two builds produced site `8e13b289517a70e1c27c8f347c9010f03bad2fab1ed53d655ffe025c8fcd6af4` and SDK `57f26f4d1da11a787072ddc988a416495d3921120820c836aa30b98b4509029e` (718,843 bytes), with SOURCE_DATE_EPOCH=1790122493. The report records dirty=true and proves same-machine repeatability only; all r10 browser and corpus bindings match these bytes.
+
+
+### 2026-09-23 — desktop WPS text corruption fix
+
+WPS 12.1.26055 on macOS 26.7 opened the synthetic SDK export, edited A2 to 200, recalculated the cross-sheet result to 340 and saved locally. The saved lowercase OOXML escape exposed real corruption in the old reader. Plain shared/inline text now uses original XML and single-pass decoding; rich text and formula handling remain distinct. Added a sanitized WPS fixture, source provenance, regression and installed-package CI check.
+
+Full regression: 165 files / 2,328 tests passed; strict format, build/type, API and package checks passed. r11 includes 25 current three-engine reports, 5 XLSX corpus checks and 2 WPS saved-fixture checks, bound to site 209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45 and SDK b6d6705b28b726aab6700f3e0c7be882cdc247e6f851fff93029701a36bc1266. Native platform and commercial gates remain open.

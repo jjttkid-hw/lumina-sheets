@@ -1,3 +1,5 @@
+2026-09-23 WPS 实际验收发现并修复小写 OOXML 转义文本损坏及普通 inlineStr 未解码；新增桌面保存夹具与当前安装包 CI 回归。见 [桌面记录](acceptance/wps-2026-09-23/README.md) 和 [r11 浏览器候选](acceptance/browser-candidate-2026-09-23-r11/README.md)。完整 Excel/WPS 语料门槛仍开放。
+
 2026-09-23 缩放候选：SDK 新增运行时 `setZoom` / `zoom`，报表示例增加 50%–200% 显示比例菜单。新增三引擎画布点击定位、缩放期间草稿/焦点和撤销验证，完整报告见 [r10](acceptance/browser-candidate-2026-09-23-r10/README.md)。版本仍为 0.29.0，npm 首发及平台级验收门槛保持开放。
 
 2026-09-23 Safari r3 多工作表复验：线上报表在 macOS Safari 干净刷新后完成多工作表入口、工作表选择器、销售明细 C2 编辑、经营汇总切回、B2 跨表公式从 8,199,000 重算为 8,299,000，以及撤销恢复为 8,199,000；AX 树持续显示 table/row/cell 语义与无错误状态。记录见 [browser-safari-2026-09-23-r3](acceptance/browser-safari-2026-09-23-r3/README.md)，绑定站点摘要 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`。
