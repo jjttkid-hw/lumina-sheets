@@ -2,7 +2,7 @@
 
 SDK 自带渲染运行时。宿主只负责一个有明确高度的空容器；不要同时让框架渲染这个容器的内部内容。一个容器最多一个活动实例；重复创建会抛出 `INVALID_ARGUMENT`。移除容器前调用 `destroy()`；可重复销毁，销毁后可在同一容器创建新实例。
 
-以下为接入示例，不是另行发布的 React/Vue 包。React 生命周期保护已通过控制器测试；实际 React StrictMode DOM 行为与 Vue 浏览器集成仍需验收。
+以下为接入示例，不是另行发布的 React/Vue 包。当前 0.29.0 安装包已在 React 19.3.0、Vue 3.5.43 独立宿主中完成开发/生产两种模式、Chromium/Firefox/WebKit 三引擎的 72 项实际浏览器检查，包含 React 开发 StrictMode 的 setup→cleanup→setup。见 [执行记录与制品摘要](acceptance/frameworks-2026-09-23/README.md)。此证据覆盖画布编辑、最新回调、文档切换、取消与 DOM 清理；不证明所有框架版本兼容、SSR 或堆内存无泄漏。
 
 ## React
 

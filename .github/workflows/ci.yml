@@ -81,3 +81,32 @@ jobs:
           path: dist/
           if-no-files-found: error
           retention-days: 7
+
+  frameworks:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: scripts/fixtures/frameworks/package-lock.json
+      - uses: actions/download-artifact@v8
+        with:
+          name: npm-package
+          path: artifacts
+      - name: Install pinned browser acceptance tools
+        run: npm ci --ignore-scripts --prefix scripts/fixtures/frameworks
+      - name: Install Chromium, Firefox and WebKit
+        run: node scripts/fixtures/frameworks/node_modules/playwright/cli.js install --with-deps chromium firefox webkit
+      - name: Verify installed SDK in React and Vue development and production hosts
+        run: node scripts/browser-frameworks.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: framework-browser-reports
+          path: artifacts/browser-frameworks/
+          if-no-files-found: error
+          retention-days: 14

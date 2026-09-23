@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "framework": "vue",
+  "mode": "production",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.54",
+  "executedAt": "2026-09-23T13:32:15.101Z",
+  "artifactSha256": "4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e",
+  "fixtureHashes": {
+    "index.html": "193ae1bdf669dd866e3f996beeae1e1bd5b30f150e0281fa621caacde3f983b2",
+    "main.js": "d70a401f9b23d73a52523feb843a44134560571be42c390d409db42063b9e8ae",
+    "package.json": "7a0e94b7e71fd710612c8f1e5f62348076a8f4f46da20d7cf032d1608d7970d3",
+    "package-lock.json": "875d57afeac996b1f1c1daf631dcdbb77dee7635bf1ccbcf25a9fa9cabc9bd31"
+  },
+  "runnerSha256": "a920d47c6e86aa3bc9805695cfdabb8b0e34bfeacbc5653d4c5da99024ef69d6",
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "vue": "3.5.43",
+    "vite": "6.4.3",
+    "playwright": "1.57.0",
+    "lumina-report-sdk": "0.29.0"
+  },
+  "environment": {
+    "node": "v24.14.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "headless": true
+  },
+  "scope": "Installed tgz in real React/Vue development and production hosts. Canvas edit, callback updates, remount and late I/O cancellation; DOM cleanup is not a heap-leak or SSR certification.",
+  "checks": [
+    {
+      "name": "mount-and-strict-effects",
+      "status": "passed",
+      "elapsedMs": 60,
+      "details": {
+        "created": 1,
+        "destroyed": 0,
+        "development": false,
+        "width": 900,
+        "height": 480,
+        "painted": true
+      }
+    },
+    {
+      "name": "canvas-edit-and-callback-update",
+      "status": "passed",
+      "elapsedMs": 169,
+      "details": {
+        "userEditPreserved": true,
+        "callbackRevision": 9,
+        "historyRetained": true
+      }
+    },
+    {
+      "name": "document-switch-and-duplicate-guard",
+      "status": "passed",
+      "elapsedMs": 29
+    },
+    {
+      "name": "cancel-import-after-switch",
+      "status": "passed",
+      "elapsedMs": 63
+    },
+    {
+      "name": "cancel-source-after-unmount",
+      "status": "passed",
+      "elapsedMs": 33
+    },
+    {
+      "name": "repeated-mount-cleanup",
+      "status": "passed",
+      "elapsedMs": 702,
+      "details": {
+        "created": 14,
+        "destroyed": 14,
+        "errors": [],
+        "staleNotifications": 0
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "mount-and-strict-effects",
+      "canvas-edit-and-callback-update",
+      "document-switch-and-duplicate-guard",
+      "cancel-import-after-switch",
+      "cancel-source-after-unmount",
+      "repeated-mount-cleanup"
+    ],
+    "actualChecks": [
+      "mount-and-strict-effects",
+      "canvas-edit-and-callback-update",
+      "document-switch-and-duplicate-guard",
+      "cancel-import-after-switch",
+      "cancel-source-after-unmount",
+      "repeated-mount-cleanup"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}
