@@ -6,10 +6,13 @@ import { siteDigest } from './site-evidence.mjs';
 
 const args = process.argv.slice(2);
 const verifyBuild = args.includes('--verify-build');
-const directories = args.filter((arg) => arg !== '--verify-build');
+const requireAccessibility = args.includes('--require-accessibility');
+const requireIme = args.includes('--require-ime');
+const flags = new Set(['--verify-build', '--require-accessibility', '--require-ime']);
+const directories = args.filter((arg) => !flags.has(arg));
 assert(
   directories.length <= 1,
-  'Usage: node scripts/check-browser-evidence.mjs [report-directory] [--verify-build]',
+  'Usage: node scripts/check-browser-evidence.mjs [report-directory] [--verify-build] [--require-accessibility] [--require-ime]',
 );
 const root = path.resolve(directories[0] ?? 'docs/acceptance/browser-candidate-2026-09-23-r8');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -18,7 +21,10 @@ const expected = [
   ...['chromium', 'firefox', 'webkit'].flatMap((engine) =>
     ['smoke', 'interactions', 'focus', 'layout', 'performance'].map((suite) => `${engine}/${suite}.json`),
   ),
-  ...['chromium', 'firefox', 'webkit'].map((engine) => `accessibility/${engine}.json`),
+  ...(requireAccessibility
+    ? ['chromium', 'firefox', 'webkit'].map((engine) => `accessibility/${engine}.json`)
+    : []),
+  ...(requireIme ? ['chromium', 'firefox', 'webkit'].map((engine) => `ime/${engine}.json`) : []),
   'touch/result.json',
 ];
 const expectedSet = new Set(expected);
