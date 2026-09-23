@@ -1,5 +1,7 @@
 历史 r14 候选记录保留在下方；当前候选以 r16 账本为准。
 
+2026-09-24 r16 远端同步：提交 `da55279` 的 GitHub CI [35917269616](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35917269616) 与 CD [35917893853](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35917893853) 均成功。线上 `build-info.json` 已核对为版本 `0.29.0`、同一提交 `da552797197ce369bc8be35c53261aeb686a8f10` 和站点摘要 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`；当前 SDK tgz 摘要为 `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。r16 的 25 份浏览器报告、首屏性能预算、API、许可证、可重复构建、XLSX/WPS 语料和 HTTP 运行时门禁均已绑定该候选。npm registry 首发、原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍是 v1.0 门槛。
+
 2026-09-24 r15 及远端同步：Safari 27.0 / macOS 26.7 实机新增筛选、清除筛选、100%→125% 缩放、XLSX 下载触发和刷新恢复记录，见 [browser-safari-2026-09-24-r15](acceptance/browser-safari-2026-09-24-r15/README.md)。提交 `9820eae` 的 CI `35910288568` 与 CD `35910896102` 均成功；线上 `build-info.json` 已绑定提交 `9820eaed4eddb3e8974b8245429fd880dfbebb92` 和站点摘要 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`。r15 仍不替代原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 语料、npm registry 或商业法务复核。
 
 2026-09-23 r13 验证器修复：Firefox/本地候选浏览器脚本统一等待 `domcontentloaded`；无障碍夹具改为追加测试宿主，避免删除示例页面的 metrics 节点造成 page error。r13 的 25 份核心报告完整性检查已通过，摘要绑定 `e432797...` / `066fefc...`。
