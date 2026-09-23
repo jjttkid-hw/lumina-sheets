@@ -69,3 +69,7 @@ PDF、数据源和验收产物的具体限制记录在 [docs/PDF.md](PDF.md)、[
 构建已生成依赖许可清单与预打包组件证据；当前技术清单为 `0 errors / 0 reviewItems / 0 unresolvedVendorComponents`。这只说明仓库材料与安装树通过了技术一致性门禁，仍需权利人/法务完成商业授权、专利和再分发义务复核。当前没有完整 SpreadJS/Excel 兼容认证，也没有据此承诺商业 SLA，详见 [DEPENDENCIES.md](DEPENDENCIES.md)。
 
 v0.27 工作空间工具栏增加“行列”入口，支持指定位置/数量插入或删除，跨表公式和支持的元数据一起调整；候选校验通过后一次保存并可撤销。批注保持坐标绑定，不随格移动。工作空间快照历史与 SDK 结构历史政策分别适用，浏览器验收待完成；详见 [WORKSPACE-EDIT.md](WORKSPACE-EDIT.md)。
+
+## 离线与内网交付
+
+生产 CSS 不依赖 Google Fonts 或其他运行时外部 URL。SDK 和演示站使用系统中英文字体回退，因此可在离线、内网、严格 CSP（禁止 `style-src`/`font-src` 外连）环境加载；宿主可以在自己的 CSS 中覆盖字体。产品仍不内置商业字体文件，字体外观会随操作系统不同而变化。

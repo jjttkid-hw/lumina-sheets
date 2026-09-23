@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "153.0.8010.54",
-  "executedAt": "2026-09-23T16:40:42.397Z",
+  "executedAt": "2026-09-23T16:59:33.790Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -11,8 +11,8 @@
     "headless": true
   },
   "runnerSha256": "a7fb6fa94937c43cba7bebed22008b1ab5d7d46570d8bc3448836e2b1859fa91",
-  "siteSha256": "e432797f8db69cb4afc38ad69f7b6f8ad973fb99efcf3cf6ca9ab48cc655d7b0",
-  "artifactSha256": "066fefcbbf82ae7e49c44592b9769d282b567eb292e5af5197b9ab7c8c13eb25",
+  "siteSha256": "6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c",
+  "artifactSha256": "8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e",
   "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
   "screenshots": [
     {
@@ -33,21 +33,20 @@
     },
     {
       "file": "history-selection.png",
-      "status": "failed",
-      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+      "status": "captured"
     }
   ],
   "checks": [
     {
       "name": "damaged-journal-download-and-raw-snapshot-restore",
       "status": "passed",
-      "elapsedMs": 10817,
+      "elapsedMs": 1917,
       "details": {
-        "copyId": "32a18854-3ced-4def-a105-7c568168de91",
+        "copyId": "984d9e62-c85d-4cf5-8ef2-681608c7d54a",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
-        "backupSha256": "c47051bb78f5d9ede9d69df414b6ec70c6849358b1095ea96c90e2c94d151def",
+        "backupSha256": "7b49298f2212f774e710c3c118d1250488c1983f79a5f333fe01ac0e458640fd",
         "layoutChecks": [
           {
             "width": 1280,
@@ -128,9 +127,9 @@
     {
       "name": "partial-backup-invalid-selection-search-and-cancel",
       "status": "passed",
-      "elapsedMs": 6085,
+      "elapsedMs": 1143,
       "details": {
-        "copyId": "267ed104-6561-463b-b45f-697097d4b7ab",
+        "copyId": "27b36c5e-5f49-43c2-adfc-937aa9965d84",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
@@ -143,9 +142,9 @@
     {
       "name": "historical-snapshot-restores-independent-copy",
       "status": "passed",
-      "elapsedMs": 9089,
+      "elapsedMs": 869,
       "details": {
-        "copyId": "ccc5c9a9-b780-41e6-acc7-c645bd61050c",
+        "copyId": "0d1ee8b2-ecc2-4770-9b0e-2301b7e45f6f",
         "name": "历史业务报表（恢复副本）",
         "expectedValue": "历史版本正文",
         "persistedAfterReload": true,
@@ -158,7 +157,7 @@
   "pageErrors": [],
   "consoleErrors": [],
   "runErrors": [],
-  "screenshotEvidence": "incomplete",
+  "screenshotEvidence": "complete",
   "validation": {
     "expectedChecks": [
       "damaged-journal-download-and-raw-snapshot-restore",

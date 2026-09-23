@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-09-23T16:41:09.559Z",
+  "executedAt": "2026-09-23T16:59:38.784Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -11,24 +11,21 @@
     "headless": true
   },
   "runnerSha256": "a7fb6fa94937c43cba7bebed22008b1ab5d7d46570d8bc3448836e2b1859fa91",
-  "siteSha256": "e432797f8db69cb4afc38ad69f7b6f8ad973fb99efcf3cf6ca9ab48cc655d7b0",
-  "artifactSha256": "066fefcbbf82ae7e49c44592b9769d282b567eb292e5af5197b9ab7c8c13eb25",
+  "siteSha256": "6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c",
+  "artifactSha256": "8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e",
   "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
   "screenshots": [
     {
       "file": "startup-1280.png",
-      "status": "failed",
-      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+      "status": "captured"
     },
     {
       "file": "startup-390.png",
-      "status": "failed",
-      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+      "status": "captured"
     },
     {
       "file": "startup-320.png",
-      "status": "failed",
-      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+      "status": "captured"
     },
     {
       "file": "startup-rescue.png",
@@ -36,21 +33,20 @@
     },
     {
       "file": "history-selection.png",
-      "status": "failed",
-      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+      "status": "captured"
     }
   ],
   "checks": [
     {
       "name": "damaged-journal-download-and-raw-snapshot-restore",
       "status": "passed",
-      "elapsedMs": 28937,
+      "elapsedMs": 1842,
       "details": {
-        "copyId": "763ee1f3-2996-40e0-98e5-2f866e4c31d4",
+        "copyId": "f3cf5bb8-2996-483a-8fd0-8d9382326a7f",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
-        "backupSha256": "f0690d374b2247364ca4214b9fc2a0f411ffecbdfa5b8c69ba160e4da5caf7a8",
+        "backupSha256": "58607418f8861d4cb11f555fa0a38612bb5914a41dcf84ab4d07d2ca8ab5cfb4",
         "layoutChecks": [
           {
             "width": 1280,
@@ -83,8 +79,8 @@
             "cardOverflow": false,
             "headingBottom": 144.1999969482422,
             "alertTop": 227.8000030517578,
-            "alertBottom": 334.1999969482422,
-            "actionsTop": 358.20001220703125,
+            "alertBottom": 333.1999969482422,
+            "actionsTop": 357.20001220703125,
             "buttons": [
               {
                 "left": 37,
@@ -106,8 +102,8 @@
             "cardOverflow": false,
             "headingBottom": 144.1999969482422,
             "alertTop": 227.8000030517578,
-            "alertBottom": 358,
-            "actionsTop": 382,
+            "alertBottom": 357,
+            "actionsTop": 381,
             "buttons": [
               {
                 "left": 37,
@@ -131,9 +127,9 @@
     {
       "name": "partial-backup-invalid-selection-search-and-cancel",
       "status": "passed",
-      "elapsedMs": 5783,
+      "elapsedMs": 1258,
       "details": {
-        "copyId": "c80deb43-4de5-4d5e-a583-23d3e07ac15a",
+        "copyId": "e5b23b31-3157-4f3e-b700-ce388cec5fee",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
@@ -146,9 +142,9 @@
     {
       "name": "historical-snapshot-restores-independent-copy",
       "status": "passed",
-      "elapsedMs": 8804,
+      "elapsedMs": 917,
       "details": {
-        "copyId": "8768d591-f09d-44e7-a304-acec87580447",
+        "copyId": "898d9053-c14c-41c6-98be-ff384f9eb1c2",
         "name": "历史业务报表（恢复副本）",
         "expectedValue": "历史版本正文",
         "persistedAfterReload": true,
@@ -161,7 +157,7 @@
   "pageErrors": [],
   "consoleErrors": [],
   "runErrors": [],
-  "screenshotEvidence": "incomplete",
+  "screenshotEvidence": "complete",
   "validation": {
     "expectedChecks": [
       "damaged-journal-download-and-raw-snapshot-restore",
