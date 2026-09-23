@@ -90,3 +90,4 @@
 支持矩阵与迁移入口已补齐：见 [SUPPORT-MATRIX.md](SUPPORT-MATRIX.md) 与 [MIGRATION.md](MIGRATION.md)。新增 `check:site-runtime` 对 Pages 基路径、工作空间、报表示例、SDK 示例及其 JS/CSS 资源执行 HTTP 冒烟；该检查不替代真实浏览器矩阵。
 
 发布工作流基路径修复：npm 候选使用 `build:site`，与 `/lumina-sheets/` HTTP 检查和 Pages 制品保持一致；根路径 `build:all` 仅用于本地开发构建。
+2026-09-23 最终当前状态：提交 `b268e959affa28f232328f2041a20a11dde6eb43` 的 CI [35851359749](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35851359749) 与 CD [35851676228](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35851676228) 均成功。线上 `build-info.json` 已核对为同一提交、版本 `0.29.0` 和站点 SHA-256 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`；SDK tgz SHA-256 为 `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`。r9 25 份浏览器报告、5 项 XLSX 语料和构建绑定门禁均通过。npm 注册表仍返回 404，正式 Safari 全矩阵、原生 IME、实体触控、屏幕阅读器、跨设备性能、完整 Excel/WPS 对照和商业法律复核仍未完成，版本继续保持 `0.29.0`。
