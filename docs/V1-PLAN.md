@@ -1,4 +1,4 @@
-2026-09-24 r14 候选（无外部字体依赖）：生产 CSS 移除 Google Fonts 运行时 `@import`，改用系统中英文字体回退，新增离线/CSP 回归。固定来源时间 `1790122493` 下，站点 SHA-256 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`，SDK SHA-256 `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。Chromium、Firefox、WebKit 各重跑 smoke 8、交互 6、焦点 4、布局 7、性能 6、DOM/ARIA 5、合成输入 4、持久化 4，Chromium 另触控 3；25 份报告全部绑定摘要并通过。恢复三引擎 9 项功能与截图证据通过，XLSX 5 项和 WPS 2 项通过。GitHub CI `35894621105`、CD `35895236363` 均成功，线上 `build-info.json` 已核对同一提交和站点摘要。npm registry 仍返回 404，CLI 仍未授权；原生系统 IME、真实读屏器、实体移动设备、完整 Excel/SpreadJS 兼容、跨设备性能和商业法务复核仍未完成，不创建 v1.0.0。
+历史 r14 候选记录保留在下方；当前候选以 r16 账本为准。
 
 2026-09-24 r15 及远端同步：Safari 27.0 / macOS 26.7 实机新增筛选、清除筛选、100%→125% 缩放、XLSX 下载触发和刷新恢复记录，见 [browser-safari-2026-09-24-r15](acceptance/browser-safari-2026-09-24-r15/README.md)。提交 `9820eae` 的 CI `35910288568` 与 CD `35910896102` 均成功；线上 `build-info.json` 已绑定提交 `9820eaed4eddb3e8974b8245429fd880dfbebb92` 和站点摘要 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`。r15 仍不替代原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 语料、npm registry 或商业法务复核。
 
