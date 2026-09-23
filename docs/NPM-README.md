@@ -71,19 +71,19 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 
 ## Core API
 
-| API                                         | Behavior                                                            |
-| ------------------------------------------- | ------------------------------------------------------------------- |
-| `setCell(address, value, style?)`           | Edit one cell; strings beginning with `=` are formulas.             |
-| `setCells(changes)`                         | Apply a validated atomic batch; `cell: null` deletes a cell.        |
-| `getCell(address)` / `getValue(address)`    | Read an isolated raw cell or its current calculated value.          |
-| `setZoom(value)` / `zoom`                   | Change view scale without changing workbook data or undo history. |
-| `select({ row, col, endRow?, endCol? })`    | Select using zero-based coordinates.                                |
-| `undo()` / `redo()`                         | Undo or redo editing transactions.                                  |
-| `toJSON()` / `load(workbook)`               | Capture or restore a workbook snapshot; snapshots copy stored data. |
+| API                                                   | Behavior                                                            |
+| ----------------------------------------------------- | ------------------------------------------------------------------- |
+| `setCell(address, value, style?)`                     | Edit one cell; strings beginning with `=` are formulas.             |
+| `setCells(changes)`                                   | Apply a validated atomic batch; `cell: null` deletes a cell.        |
+| `getCell(address)` / `getValue(address)`              | Read an isolated raw cell or its current calculated value.          |
+| `setZoom(value)` / `zoom`                             | Change view scale without changing workbook data or undo history.   |
+| `select({ row, col, endRow?, endCol? })`              | Select using zero-based coordinates.                                |
+| `undo()` / `redo()`                                   | Undo or redo editing transactions.                                  |
+| `toJSON()` / `load(workbook)`                         | Capture or restore a workbook snapshot; snapshots copy stored data. |
 | `import(file, options?)` / `export(format, options?)` | Browser file import and XLSX, CSV, PDF, or JSON download.           |
-| `report(definition, records)`               | Generate list, grouped, or cross-tab reports.                       |
-| `bindData(source, options?)`                | Bind a read-only paged source with bounded viewport caching.        |
-| `destroy()`                                 | Release the instance; safe to call repeatedly.                      |
+| `report(definition, records)`                         | Generate list, grouped, or cross-tab reports.                       |
+| `bindData(source, options?)`                          | Bind a read-only paged source with bounded viewport caching.        |
+| `destroy()`                                           | Release the instance; safe to call repeatedly.                      |
 
 Use `grid.setZoom(125)` for 125%. The getter returns the supplied value; values above 3 are percentages, smaller positive values are scale factors, and Canvas clamps the effective scale to 50–200%. Read-only and paged views support zoom. Loading a workbook retains it.
 
@@ -120,12 +120,23 @@ For large remote datasets, implement the `ReportDataSource` interface or use `re
 - Structural edits scan stored workbook cells and formulas and retain affected-sheet snapshots for undo. Large structural edits are not guaranteed to complete within an animation frame.
 - Input validation checks directly edited cells against the complete candidate batch. It is not a continuous constraint system for every dependent formula or a server-side validation boundary.
 
+## 发布后注册表核对
+
+GitHub Actions 使用 npm Trusted Publishing（OIDC）发布后，会立即读取 npm 注册表中的同一版本，核对名称、版本、tarball integrity，并在临时目录中用下载的 tarball 独立安装。发布工作流失败时不会把“发布命令返回成功”当作首发完成。
+
+手动核对已发布版本：
+
+```sh
+NPM_VERSION=1.0.0 node scripts/check-npm-registry.mjs
+```
+
+该命令只读取公开注册表并下载指定版本，不需要本地 npm 登录；包尚未发布时应明确失败。Trusted Publisher 必须指向 GitHub 用户 `jjttkid-hw`、仓库 `lumina-sheets`、工作流文件 `npm.yml`、环境 `npm`。首次发布前仍需在 npm 包设置中完成该绑定。
+
 ## License and support
 
 Project code is licensed under Apache-2.0. This package includes `LICENSE`, `NOTICE`, `THIRD_PARTY_NOTICES.txt`, and `dependency-inventory.json`. Third-party components retain their own licenses. The inventory identifies unresolved upstream notice/version review items; it is not a completed commercial redistribution audit. See [dependency review](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/DEPENDENCIES.md).
 
 Report reproducible issues with synthetic or redacted data at [GitHub Issues](https://github.com/jjttkid-hw/lumina-sheets/issues). No paid support service or enterprise SLA is currently provided by this package.
-
 
 ## Rename worksheets
 
@@ -133,24 +144,18 @@ Call `grid.renameSheet('Sales', sheetId)` or omit `sheetId` to rename the curren
 
 `onSheetRename({ sheetId, previousName, name, affectedSheetIds, phase })` runs after the complete commit. `phase` is `apply`, `undo` or `redo`, and names describe that operation's before/after state. Renames do not emit synthetic cell or structure events. Renames and row/column structural edits share a limit of ten snapshot transactions within the overall 100-transaction history; dropping an old snapshot drops its preceding history prefix.
 
-
 ## Rich text cells
 
 `Cell.richText` is an optional `RichTextRun[]`. Its concatenated text must exactly equal the cell's ordinary string `value`; formulas and numeric values cannot carry runs. Run styles support bold, italic, single underline, strike, six-digit RGB color, fontSize (6–96), and fontFamily. Use `setCells` to replace complete runs. Changing text via `setCell` clears previous runs; unchanged text preserves them, and undo restores them.
 
 Supported runs survive JSON/XLSX round trips and render through Canvas and raster PDF output. CSV and external plain-text clipboard operations carry text only. The Canvas text editor remains plain text. The workspace offers a separate selected-text formatting dialog; SDK hosts can supply runs through setCells. XLSX theme/index colors, double/accounting underlines, font scheme metadata and phonetic annotations are not supported and reject rich-text import instead of silently flattening it. Available system fonts determine appearance; fonts are not embedded. This is not complete Excel rich-text compatibility or browser certification.
 
-
 Rich runs also accept `verticalAlign: 'baseline' | 'superscript' | 'subscript'`, `fontFamilyClass` (0–5), and `charset` (0–255). These attributes round trip through XLSX; text remains Unicode. Canvas and PDF render scripts at 65% size with a 30% upward/downward offset and reserve line height. Font classification and charset are preserved metadata, not browser font selectors. Exact Excel typography and theme relationships remain unverified/unsupported.
-
 
 XLSX text export preserves CR/CRLF, XML control characters and literal escape-shaped strings such as `_x0041_` using OOXML string encoding. This applies to ordinary strings, hyperlink labels and rich runs. Rich text import decodes these escapes once; invalid Unicode units can be retained as data but may render as replacement glyphs. Actual Excel application compatibility remains pending.
 
-
 Formula string caches also use OOXML encoding; numeric, boolean and error caches keep their types. Export requests full recalculation on load in Excel. Lumina imports formulas and recomputes them with its supported engine subset. ExcelJS 4.4 does not itself decode ST_Xstring formula caches, so direct cache reads may expose escape strings; this is not Excel application certification.
 
-
 多工作表宿主可使用 `grid.sheetInfos` 创建目录，通过 `grid.setActiveSheet(id)` 切换，并监听 `onActiveSheetChange` 保存活动表偏好。切表保留工作簿撤销/重做与计算缓存，重置选区/筛选；只读也可切换。分页绑定期间整个实例保持只读；CSV 按当前表选择数据源，含分页表的完整工作簿导出需先生成静态报表。详见 SDK.md。浏览器切换交互仍待实际验收。
-
 
 安装包的 `example.html` 新增“多工作表”示例：销售明细与经营汇总通过跨表公式关联，可切表编辑、撤销及导出当前表 CSV。打开多工作表 Excel/JSON 后通过“当前工作表”选择器浏览其他表；导入期间若继续编辑，旧导入会取消以保留新编辑。需以 HTTP 服务打开示例。示例事件回归已执行，实际浏览器视觉/键盘/下载仍待验收。

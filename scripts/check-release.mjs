@@ -11,6 +11,6 @@ const plan = releasePolicy(version, process.env.RELEASE_TAG, prerelease);
 if (process.env.GITHUB_OUTPUT)
   await appendFile(
     process.env.GITHUB_OUTPUT,
-    `dist-tag=${plan.distTag}\nartifact=${plan.artifact}\n`,
+    `dist-tag=${plan.distTag}\nartifact=${plan.artifact}\nversion=${plan.version}\n`,
   );
 console.log(JSON.stringify(plan));

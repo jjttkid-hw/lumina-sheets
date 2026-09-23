@@ -77,3 +77,9 @@ jobs:
           SDK_ARTIFACT: ${{ steps.release.outputs.artifact }}
           NPM_DIST_TAG: ${{ steps.release.outputs.dist-tag }}
         run: npm publish "./$SDK_ARTIFACT" --tag "$NPM_DIST_TAG" --access public --provenance
+
+      - name: Verify the published registry tarball and isolated install
+        env:
+          NPM_VERSION: ${{ steps.release.outputs.version }}
+          NPM_PACKAGE: lumina-report-sdk
+        run: node scripts/check-npm-registry.mjs
