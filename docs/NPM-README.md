@@ -119,7 +119,7 @@ For large remote datasets, implement the `ReportDataSource` interface or use `re
 
 ## License and support
 
-Project code is licensed under Apache-2.0. This package includes `LICENSE`, `NOTICE`, `THIRD_PARTY_NOTICES.txt`, and `dependency-inventory.json`. Third-party components retain their own licenses. The current technical inventory passes with zero errors, review items, and unresolved bundled components; it is evidence of repository consistency, not a legal opinion or completed commercial redistribution audit. See [dependency review](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/DEPENDENCIES.md).
+Project code is licensed under Apache-2.0. This package includes `LICENSE`, `NOTICE`, `THIRD_PARTY_NOTICES.txt`, and `dependency-inventory.json`. Third-party components retain their own licenses. The inventory identifies unresolved upstream notice/version review items; it is not a completed commercial redistribution audit. See [dependency review](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/DEPENDENCIES.md).
 
 Report reproducible issues with synthetic or redacted data at [GitHub Issues](https://github.com/jjttkid-hw/lumina-sheets/issues). No paid support service or enterprise SLA is currently provided by this package.
 
