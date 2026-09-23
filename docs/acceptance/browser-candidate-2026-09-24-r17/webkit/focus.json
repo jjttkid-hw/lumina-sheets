@@ -3,36 +3,36 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-09-23T21:10:37.660Z",
+  "executedAt": "2026-09-23T21:26:14.881Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "cb2595da07ef6921964830cf1fc4d0086e3a5488e3a6ee42737a075187bcbbe9",
-  "artifactSha256": "e79013fb29766b582c4ff47aac08c1f6ff4ef55666fbe1be5a0dc6df8c7565c0",
+  "siteSha256": "1c772954b1139a5ab377a00b40b72d3170060218128557904f7586cabee5ad8a",
+  "artifactSha256": "c6a73bc48aa68cb479970c2260378764e0cec5820aba7adfbed3cc12be47c6af",
   "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
   "checks": [
     {
       "name": "host-focus-enter",
       "status": "passed",
-      "elapsedMs": 76
+      "elapsedMs": 78
     },
     {
       "name": "host-focus-escape",
       "status": "passed",
-      "elapsedMs": 33
+      "elapsedMs": 36
     },
     {
       "name": "ordinary-focus-return",
       "status": "passed",
-      "elapsedMs": 26
+      "elapsedMs": 15
     },
     {
       "name": "synchronous-host-focus",
       "status": "passed",
-      "elapsedMs": 37
+      "elapsedMs": 49
     }
   ],
   "pageErrors": [],
