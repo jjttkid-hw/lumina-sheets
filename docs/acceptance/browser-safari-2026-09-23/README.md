@@ -4,7 +4,9 @@
 - 浏览器：Safari 27.0
 - 操作系统：macOS 26.7 (25G227)
 - 站点：<https://jjttkid-hw.github.io/lumina-sheets/examples/report.html?accept=1>
-- 受测对象：GitHub Pages `build-info.json` 标识为提交 `2aeeac566ea67138add657d891a4f3eddc51b7c2` 的构建产物；站点摘要 `f0c98694007cab4dd88f49adbebddeb84aabae398465c183b0715404e2d67b3a`
+- 受测对象：GitHub Pages `build-info.json` 在本轮复验时标识为提交 `3b4c0c010a1952c7c1909643861f521aae7ac2de`；站点内容摘要 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534`
+
+站点摘要只计算实际部署文件，明确排除仅用于追踪提交的 `build-info.json`。因此后续只更新验收文档时，CD 重新生成的提交字段可以变化，但只要内容摘要保持一致，本报告仍绑定同一份可执行站点内容；需要重新验证的是摘要变化，而不是文档提交本身。
 
 ## 已执行检查
 
