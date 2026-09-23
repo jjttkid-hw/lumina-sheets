@@ -356,6 +356,60 @@ describe('data source adapters', () => {
     );
   });
 
+  it('retries opted-in transient HTTP failures with bounded backoff', async () => {
+    vi.useFakeTimers();
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(new Response('busy', { status: 503 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ rows: [[7]], totalRows: 1 })));
+    const source = restDataSource('https://example.test/reports', {
+      columnCount: 1,
+      fetcher,
+      retry: { retries: 1, baseDelayMs: 20, maxDelayMs: 20 },
+    });
+    const pending = source.fetchPage(0, 1);
+    await vi.advanceTimersByTimeAsync(19);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(pending).resolves.toEqual({ rows: [[7]], totalRows: 1 });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
+  });
+
+  it('does not retry malformed successful responses or non-transient statuses', async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(new Response('{broken', { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ rows: [[9]] }), { status: 400 }));
+    const source = restDataSource('https://example.test/reports', {
+      columnCount: 1,
+      fetcher,
+      retry: { retries: 3, baseDelayMs: 0 },
+    });
+    await expect(source.fetchPage(0, 1)).rejects.toThrow();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await expect(source.fetchPage(0, 1)).rejects.toThrow('HTTP 400');
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
+  it('cancels retry backoff without starting another request', async () => {
+    vi.useFakeTimers();
+    const fetcher = vi.fn().mockRejectedValue(new TypeError('network down'));
+    const source = restDataSource('https://example.test/reports', {
+      columnCount: 1,
+      fetcher,
+      retry: { retries: 3, baseDelayMs: 100 },
+    });
+    const controller = new AbortController();
+    const pending = source.fetchPage(0, 1, controller.signal);
+    await Promise.resolve();
+    controller.abort();
+    await expect(pending).rejects.toHaveProperty('name', 'AbortError');
+    await vi.advanceTimersByTimeAsync(500);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
+  });
+
   it('pre-aborted calls never contact the data source', async () => {
     const fetcher = vi.fn();
     const source = restDataSource('https://example.test/reports', { columnCount: 1, fetcher });

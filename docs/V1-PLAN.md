@@ -1,4 +1,6 @@
-历史 r14、r16 候选记录保留在下方；当前候选以 r17 账本为准。
+历史 r14、r16、r17 候选记录保留在下方；当前候选以 r18 账本为准。
+
+2026-09-24 r18 REST 重试增量及候选重建：`restDataSource` 新增显式 `retry` 策略，支持有限指数退避、临时 HTTP 状态筛选和 AbortSignal 取消；默认仍不重试，格式/容量错误不会重复请求。全量测试 167 个文件、2,343 项通过；固定来源时间制品重新执行 Chromium、Firefox、WebKit 的 25 份浏览器报告、Chromium 触控模拟、XLSX 5 项和 WPS 2 项。r18 绑定站点 `a6f6b49f799a4d20cb8a473c1193a4f76c360a87b80f2ab4926800361e0c5c13`、SDK `93f6975a3bd8053d76b26ed5040aebe1ee1c4d97be1155a9936a9fc625984975`，证据见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。CI 已切换至 r18；npm registry 首发、原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍未完成。
 
 2026-09-24 r17 生命周期补强及远端同步：提交 `1e23218` 为分页 `prefetch` 增加主动取消、重新绑定、替换工作簿、清空缓存、销毁和共享页请求消费者取消回归；上一提交 `077162d` 的 Chromium、Firefox、WebKit 真实浏览器预取验收继续绑定 r17 固定制品。最新 GitHub CI [35924791431](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35924791431) 与 CD [35925452441](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35925452441) 均成功；线上 `build-info.json` 已核对为提交 `1e2321802eb162f3563287b77b2723f1bfcb7a93`、版本 `0.29.0` 和站点摘要 `1c772954b1139a5ab377a00b40b72d3170060218128557904f7586cabee5ad8a`。npm registry 仍未出现 `lumina-report-sdk`，因此不创建 `1.0.0`；自动化预取和取消结果仍不替代原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料、npm 首发或商业法务复核。
 

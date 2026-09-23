@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.54",
+  "executedAt": "2026-09-23T22:31:35.807Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "a6f6b49f799a4d20cb8a473c1193a4f76c360a87b80f2ab4926800361e0c5c13",
+  "artifactSha256": "93f6975a3bd8053d76b26ed5040aebe1ee1c4d97be1155a9936a9fc625984975",
+  "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
+  "checks": [
+    {
+      "name": "validation-editor-recovery",
+      "status": "passed",
+      "elapsedMs": 238
+    },
+    {
+      "name": "validation-list-keyboard",
+      "status": "passed",
+      "elapsedMs": 100
+    },
+    {
+      "name": "native-clipboard-atomic-validation",
+      "status": "passed",
+      "elapsedMs": 350,
+      "details": {
+        "transport": "native keyboard copy/paste",
+        "rejected": "B2:C2 unchanged",
+        "accepted": "both cells changed, one undo restores both"
+      }
+    },
+    {
+      "name": "native-copy-cut-paste",
+      "status": "passed",
+      "elapsedMs": 103
+    },
+    {
+      "name": "sdk-mount-isolation-destroy",
+      "status": "passed",
+      "elapsedMs": 45,
+      "details": {
+        "duplicate": "INVALID_ARGUMENT",
+        "empty": 0,
+        "restored": "customer-host",
+        "destroyed": "DESTROYED",
+        "other": 22
+      }
+    },
+    {
+      "name": "sdk-pending-source-destroy",
+      "status": "passed",
+      "elapsedMs": 157,
+      "details": {
+        "outcome": "AbortError",
+        "lateCallbacks": 0,
+        "value": "new session"
+      }
+    },
+    {
+      "name": "sdk-prefetch-contract",
+      "status": "passed",
+      "elapsedMs": 25,
+      "details": {
+        "before": {
+          "row": 0,
+          "col": 0
+        },
+        "after": {
+          "row": 0,
+          "col": 0
+        },
+        "warmedValue": 20,
+        "outcome": "AbortError",
+        "offsets": [
+          0,
+          4,
+          20,
+          40,
+          0
+        ]
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract"
+    ],
+    "actualChecks": [
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

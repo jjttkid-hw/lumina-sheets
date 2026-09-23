@@ -131,6 +131,8 @@ For large remote datasets, implement the `ReportDataSource` interface or use `re
 
 For a paged source, `await grid.prefetch({ firstRow: 10_000, lastRow: 10_127 })` loads the required cache pages ahead of a planned navigation. It does not move the selection, change the active sheet, or make the instance writable. Pass an `AbortSignal` when navigation is superseded; cancellation rejects with `AbortError` and never changes the workbook.
 
+REST sources default to one request per page. For networks where transient failures are expected, opt into a bounded policy such as `retry: { retries: 2, baseDelayMs: 200, maxDelayMs: 2000 }`. Only network failures and the configured temporary HTTP statuses are retried; malformed payloads and capacity errors fail immediately. An abort during backoff stops the retry before another request starts.
+
 ## Current limits
 
 - Formula support is a documented subset, calculated synchronously on demand with dependency invalidation. There is no claim of complete Excel formula compatibility or universal performance superiority. See [supported formulas](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/FORMULAS.md) and [measured performance](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/PERFORMANCE.md).

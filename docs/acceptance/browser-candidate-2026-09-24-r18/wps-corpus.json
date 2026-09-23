@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "version": "0.29.0",
+  "executedAt": "2026-09-23T22:31:06.476Z",
+  "artifactSha256": "93f6975a3bd8053d76b26ed5040aebe1ee1c4d97be1155a9936a9fc625984975",
+  "fixture": "tests/fixtures/wps/edited-report.xlsx",
+  "fixtureSha256": "1e3eec7e59d716fc5a164f641e7bb331bb716db072771c6c2a02864f8404087c",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0"
+  },
+  "scope": "Installed SDK import/export of a retained WPS 12.1.26055 desktop-saved synthetic fixture. This run does not drive WPS or certify all desktop features.",
+  "checks": [
+    {
+      "name": "desktop-import",
+      "status": "passed",
+      "text": "_x0041_\r\n中文😀",
+      "formulaValue": 340
+    },
+    {
+      "name": "sdk-roundtrip",
+      "status": "passed",
+      "text": "_x0041_\r\n中文😀",
+      "formulaValue": 340
+    }
+  ],
+  "errors": []
+}

@@ -570,9 +570,72 @@ export interface RestDataSourceOptions {
   rowCount?: number;
   /** Decoded HTTP body bytes per response; default 16 MiB, maximum 64 MiB. */
   maxResponseBytes?: number;
+  /** Opt-in retry policy for transient transport/HTTP failures. */
+  retry?: RestRetryOptions;
   fetcher?: typeof fetch;
   headers?: HeadersInit;
   credentials?: RequestCredentials;
+}
+
+export interface RestRetryOptions {
+  /** Number of additional attempts after the first request; default 0, maximum 5. */
+  retries?: number;
+  /** Initial delay before the first retry in milliseconds; default 250, maximum 10,000. */
+  baseDelayMs?: number;
+  /** Exponential backoff ceiling in milliseconds; default 4,000. */
+  maxDelayMs?: number;
+  /** HTTP statuses eligible for retry; defaults to common transient statuses. */
+  statuses?: readonly number[];
+}
+
+const DEFAULT_RETRY_STATUSES = [408, 425, 429, 500, 502, 503, 504] as const;
+
+function retryPolicy(input: RestRetryOptions | undefined) {
+  if (input === undefined) {
+    return {
+      retries: 0,
+      baseDelayMs: 250,
+      maxDelayMs: 4_000,
+      statuses: new Set<number>(DEFAULT_RETRY_STATUSES),
+    };
+  }
+  if (!input || typeof input !== 'object' || Array.isArray(input))
+    throw new TypeError('REST 重试配置无效。');
+  const retries = integer(input.retries ?? 0, 0, 5, 'REST 重试次数');
+  const baseDelayMs = integer(input.baseDelayMs ?? 250, 0, 10_000, 'REST 重试初始等待');
+  const maxDelayMs = integer(input.maxDelayMs ?? 4_000, 0, 60_000, 'REST 重试等待上限');
+  if (maxDelayMs < baseDelayMs) throw new RangeError('REST 重试等待上限不能小于初始等待。');
+  const statuses = input.statuses ?? DEFAULT_RETRY_STATUSES;
+  if (
+    !Array.isArray(statuses) ||
+    !statuses.length ||
+    statuses.some((status) => !Number.isSafeInteger(status) || status < 100 || status > 599)
+  )
+    throw new RangeError('REST 重试状态码必须为 100–599 的非空整数列表。');
+  return { retries, baseDelayMs, maxDelayMs, statuses: new Set(statuses) };
+}
+
+function retryDelay(policy: ReturnType<typeof retryPolicy>, attempt: number) {
+  return Math.min(policy.maxDelayMs, policy.baseDelayMs * 2 ** attempt);
+}
+
+function waitForRetry(delay: number, signal?: AbortSignal) {
+  if (signal?.aborted) return Promise.reject(abortError());
+  if (!delay) return Promise.resolve();
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(done, delay);
+    const abort = () => {
+      clearTimeout(timer);
+      signal?.removeEventListener('abort', abort);
+      reject(abortError());
+    };
+    function done() {
+      signal?.removeEventListener('abort', abort);
+      if (signal?.aborted) reject(abortError());
+      else resolve();
+    }
+    signal?.addEventListener('abort', abort, { once: true });
+  });
 }
 
 /** Count the actual body stream; Content-Length may be absent or describe compressed bytes. */
@@ -643,6 +706,7 @@ export function restDataSource(url: string, options: RestDataSourceOptions): Rep
     64 * 1024 * 1024,
     'REST 响应字节上限',
   );
+  const retry = retryPolicy(options.retry);
   const source: ReportDataSource = {
     rowCount: options.rowCount,
     columnCount: options.columnCount,
@@ -655,33 +719,52 @@ export function restDataSource(url: string, options: RestDataSourceOptions): Rep
       target.searchParams.set('limit', String(limit));
       const headers = new Headers(options.headers);
       if (!headers.has('Accept')) headers.set('Accept', 'application/json');
-      const request = fetcher(target, {
-        method: 'GET',
-        signal,
-        headers,
-        credentials: options.credentials ?? 'same-origin',
-      }).then(async (response) => {
-        const discard = () => {
-          // A custom fetcher may ignore abort. Release an unused body without
-          // allowing slow/failed cleanup to replace the original outcome.
+      const request = (async () => {
+        let attempt = 0;
+        while (true) {
+          if (signal?.aborted) throw abortError();
+          let response: Response;
           try {
-            void response.body?.cancel().catch(() => {});
-          } catch {
-            // A locked/already consumed body cannot be cancelled here.
+            response = await fetcher(target, {
+              method: 'GET',
+              signal,
+              headers,
+              credentials: options.credentials ?? 'same-origin',
+            });
+          } catch (error) {
+            if (signal?.aborted || (error as { name?: string })?.name === 'AbortError')
+              throw abortError();
+            if (attempt >= retry.retries) throw error;
+            await waitForRetry(retryDelay(retry, attempt++), signal);
+            continue;
           }
-        };
-        if (signal?.aborted) {
-          discard();
-          throw abortError();
+          const discard = () => {
+            // A custom fetcher may ignore abort. Release an unused body without
+            // allowing slow/failed cleanup to replace the original outcome.
+            try {
+              void response.body?.cancel().catch(() => {});
+            } catch {
+              // A locked/already consumed body cannot be cancelled here.
+            }
+          };
+          if (signal?.aborted) {
+            discard();
+            throw abortError();
+          }
+          if (!response.ok) {
+            const status = response.status;
+            discard();
+            if (retry.statuses.has(status) && attempt < retry.retries) {
+              await waitForRetry(retryDelay(retry, attempt++), signal);
+              continue;
+            }
+            throw new Error(`数据源请求失败（HTTP ${status}）。`);
+          }
+          const payload = await readRestJson(response, maxResponseBytes, signal);
+          if (signal?.aborted) throw abortError();
+          return validatePage(payload, offset, limit, source.columnCount);
         }
-        if (!response.ok) {
-          discard();
-          throw new Error(`数据源请求失败（HTTP ${response.status}）。`);
-        }
-        const payload = await readRestJson(response, maxResponseBytes, signal);
-        if (signal?.aborted) throw abortError();
-        return validatePage(payload, offset, limit, source.columnCount);
-      });
+      })();
       return signal ? abortable(request, signal) : request;
     },
   };
