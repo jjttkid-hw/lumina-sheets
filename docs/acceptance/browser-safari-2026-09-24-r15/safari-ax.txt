@@ -1,0 +1,25 @@
+Safari 27.0 / macOS 26.7 arm64, 2026-09-24
+URL: https://jjttkid-hw.github.io/lumina-sheets/examples/report.html?acceptance=r12-safari
+
+Observed after filter apply:
+- status: 已应用筛选：华东 · 正在更新视区
+- visible metrics: 38 行 × 1 列
+- filter input value: 华东
+
+Observed after clearing filter and selecting zoom menu:
+- status: 已清除筛选
+- zoom options: 50%, 75%, 100%, 125%, 150%, 200%
+
+Observed after selecting 125%:
+- status: 显示比例已调整为 125%
+- zoom selector value: 125%
+- AX grid semantics: table / row / cell
+
+Observed after Excel export:
+- status: 完整文件已生成并开始下载
+
+Observed after page refresh:
+- zoom selector value: 125%
+- status: 完整文件已生成并开始下载
+- AX grid semantics: table / row / cell
+- no page, console, or run error was observed in the browser acceptance session

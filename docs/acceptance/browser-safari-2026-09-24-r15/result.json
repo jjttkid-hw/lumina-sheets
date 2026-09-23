@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "version": "0.29.0",
+  "browser": "Safari 27.0",
+  "environment": {
+    "os": "macOS 26.7",
+    "arch": "arm64"
+  },
+  "executedAt": "2026-09-24T03:32:35+08:00",
+  "commit": "9e980010896d6780c492c34d3b05247ddf817d9f",
+  "siteSha256": "6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c",
+  "artifactSha256": "8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e",
+  "checks": [
+    {
+      "name": "filter-apply-clear",
+      "status": "passed",
+      "details": {
+        "query": "华东",
+        "appliedMessage": "已应用筛选：华东 · 正在更新视区",
+        "clearMessage": "已清除筛选"
+      }
+    },
+    {
+      "name": "zoom-125",
+      "status": "passed",
+      "details": {
+        "before": "100%",
+        "after": "125%",
+        "statusMessage": "显示比例已调整为 125%"
+      }
+    },
+    {
+      "name": "xlsx-download",
+      "status": "passed",
+      "details": {
+        "statusMessage": "完整文件已生成并开始下载"
+      }
+    },
+    {
+      "name": "refresh-recovery",
+      "status": "passed",
+      "details": {
+        "canvasGrid": true,
+        "zoom": "125%",
+        "pageErrors": 0
+      }
+    }
+  ],
+  "validation": {
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "reportSha256": "f5d5658f808ab54e49e95523118aee23b8835e559712cc41aea6fbed0fd10adc"
+}
