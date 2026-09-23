@@ -130,6 +130,16 @@
       "path": "webkit/smoke.json",
       "bytes": 6354,
       "sha256": "673be9ee8605ef49a04c66949c30e2024c9a93d873b16c53e101ebb948cad4c7"
+    },
+    {
+      "path": "wps-corpus.json",
+      "bytes": 900,
+      "sha256": "9e692699f08b495f2423c1c81d10d31aed851cd86cdcf3bf97dc93bdbb36928b"
+    },
+    {
+      "path": "xlsx-corpus.json",
+      "bytes": 3852,
+      "sha256": "1445ddde9a01f5cb12cbdfc1a8079197232e622c879484c834b8b0889fa5404e"
     }
   ]
 }
