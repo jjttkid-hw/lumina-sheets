@@ -294,6 +294,46 @@ describe('embeddable SDK edit controller', () => {
 });
 
 describe('SDK paged source lifecycle', () => {
+  it('prefetches a paged viewport without changing view state', async () => {
+    const { instance } = make();
+    const fetchPage = vi.fn(async (offset: number, limit: number) => ({
+      rows: Array.from({ length: limit }, (_, index) => [offset + index]),
+      totalRows: 100,
+    }));
+    await instance.bindData(
+      { columnCount: 1, rowCount: 100, fetchPage },
+      { pageSize: 4, maxPages: 2 },
+    );
+    instance.select({ row: 2, col: 0 });
+    const before = instance.selectedRange;
+    await instance.prefetch({ firstRow: 20, lastRow: 23 });
+    expect(instance.selectedRange).toEqual(before);
+    expect(instance.activeSheetInfo.readOnly).toBe(true);
+    expect(instance.getValue('A21')).toBe(20);
+    expect(fetchPage.mock.calls.map((call) => call[0])).toEqual([0, 4, 20]);
+  });
+
+  it('cancels prefetch when its signal aborts or the binding is replaced', async () => {
+    const { instance } = make();
+    const gate = deferred<ReportPage>();
+    await instance.bindData(
+      {
+        columnCount: 1,
+        rowCount: 100,
+        fetchPage: (offset, limit) =>
+          offset === 0
+            ? Promise.resolve({ rows: Array.from({ length: limit }, () => [0]), totalRows: 100 })
+            : gate.promise,
+      },
+      { pageSize: 4, maxPages: 1 },
+    );
+    const controller = new AbortController();
+    const pending = instance.prefetch({ firstRow: 40, lastRow: 43 }, { signal: controller.signal });
+    controller.abort();
+    await expect(pending).rejects.toHaveProperty('name', 'AbortError');
+    expect(instance.selectedRange).toEqual({ row: 0, col: 0 });
+  });
+
   it('exports every data source row as CSV without filling the viewport cache or workbook', async () => {
     const { instance } = make();
     const source: ReportDataSource = {

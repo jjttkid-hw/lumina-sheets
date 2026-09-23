@@ -151,6 +151,11 @@ export interface ImportOptions {
   signal?: AbortSignal;
 }
 
+export interface PrefetchOptions {
+  /** Cancels the prefetch without changing the current view or cache contents. */
+  signal?: AbortSignal;
+}
+
 export interface ExportOptions {
   /** Applies only to CSV exported from a bound paged source; independent of viewport cache. */
   pagedCsv?: Pick<ReportDataCsvOptions, 'pageSize' | 'maxPageTextUnits' | 'maxRows'>;
@@ -910,6 +915,44 @@ export class LuminaSpreadsheet {
         }
       })();
     });
+  }
+  /** Warm a paged viewport without changing selection, scroll position or the active view. */
+  async prefetch(
+    range: { firstRow: number; lastRow: number },
+    options: PrefetchOptions = {},
+  ): Promise<void> {
+    this.assertLive();
+    if (
+      !record(range) ||
+      typeof range.firstRow !== 'number' ||
+      !Number.isFinite(range.firstRow) ||
+      typeof range.lastRow !== 'number' ||
+      !Number.isFinite(range.lastRow)
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '预取范围必须包含有限的起止行号');
+    if (
+      !options ||
+      typeof options !== 'object' ||
+      Array.isArray(options) ||
+      (options.signal !== undefined &&
+        (typeof AbortSignal === 'undefined' || !(options.signal instanceof AbortSignal)))
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '无效预取选项');
+    const cache = this.cache;
+    const sheet = this.currentSheet;
+    if (!cache || sheet.id !== this.boundSheetId)
+      throw new LuminaError('INVALID_ARGUMENT', '当前工作表没有分页数据源');
+    if (options.signal?.aborted) throw new DOMException('数据加载已取消。', 'AbortError');
+    const epoch = this.sourceEpoch;
+    const first = Math.max(0, Math.min(sheet.rowCount - 1, Math.floor(range.firstRow)));
+    const last = Math.max(first, Math.min(sheet.rowCount - 1, Math.floor(range.lastRow)));
+    try {
+      await cache.ensureRange(first, last, options.signal);
+    } catch (error) {
+      throw asDataError(error);
+    }
+    if (this.destroyed || this.cache !== cache || this.sourceEpoch !== epoch)
+      throw new DOMException('数据加载已取消。', 'AbortError');
   }
   async export(format: 'xlsx' | 'csv' | 'pdf' | 'json', options: ExportOptions = {}) {
     this.assertLive();

@@ -81,6 +81,7 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 | `undo()` / `redo()`                                   | Undo or redo editing transactions.                                  |
 | `toJSON()` / `load(workbook)`                         | Capture or restore a workbook snapshot; snapshots copy stored data. |
 | `import(file, options?)` / `export(format, options?)` | Browser file import and XLSX, CSV, PDF, or JSON download.           |
+| `prefetch(range, options?)`                          | Warm a paged viewport without changing selection or view state.    |
 | `report(definition, records)`                         | Generate list, grouped, or cross-tab reports.                       |
 | `bindData(source, options?)`                          | Bind a read-only paged source with bounded viewport caching.        |
 | `destroy()`                                           | Release the instance; safe to call repeatedly.                      |
@@ -109,6 +110,8 @@ The value contains the package version, a SHA-256 fingerprint of the tracked sou
 The SDK does not automatically save workbooks to a server or provide accounts, permissions, collaboration, or cloud storage. Use `toJSON()` and `load()` for explicit snapshots, and integrate the change callbacks with your own persistence. Structural changes have a separate `onStructureChange` callback. Worksheet renames use `onSheetRename`; include both callbacks when saving snapshots. `readOnly` controls editor behavior; enforce access permissions in your service.
 
 For large remote datasets, implement the `ReportDataSource` interface or use `restDataSource`. Paging is read-only and cached cells are not a complete workbook. Provide a stable source snapshot when exporting. See [data-source and export documentation](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/SDK.md).
+
+For a paged source, `await grid.prefetch({ firstRow: 10_000, lastRow: 10_127 })` loads the required cache pages ahead of a planned navigation. It does not move the selection, change the active sheet, or make the instance writable. Pass an `AbortSignal` when navigation is superseded; cancellation rejects with `AbortError` and never changes the workbook.
 
 ## Current limits
 

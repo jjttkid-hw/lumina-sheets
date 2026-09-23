@@ -77,6 +77,7 @@ React/Vue 生命周期接入见 [FRAMEWORKS.md](FRAMEWORKS.md)。同一容器不
 | `report(definition, records)`              | 在浏览器生成列表、多级分组或交叉统计                          |
 | `setConditionalRules(rules)`               | 设置显示规则；导出时固化当前已存储单元格的样式                |
 | `bindData(source, options)`                | 只读分页绑定；替换当前表的数据与布局                          |
+| `prefetch({firstRow,lastRow}, options?)`   | 预热分页视区；不改变选区、活动表或可写状态                    |
 | `retryData()` / `clearDataCache()`         | 显式重试当前视区 / 清空缓存并刷新                             |
 | `dataSourceState`                          | 小型状态对象：idle/loading/ready/error、缓存和请求数量        |
 | `export(format, options?)`                 | 下载 XLSX/CSV/PDF/JSON；支持取消与进度，见下文                |

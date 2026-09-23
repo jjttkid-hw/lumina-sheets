@@ -1,4 +1,6 @@
-历史 r14 候选记录保留在下方；当前候选以 r16 账本为准。
+历史 r14、r16 候选记录保留在下方；当前候选以 r17 账本为准。
+
+2026-09-24 r17 SDK 预取候选：新增 `prefetch({ firstRow, lastRow }, { signal? })`，绑定并重新执行本机 Chromium、Firefox、WebKit 的 smoke、交互、焦点、布局、性能、DOM/ARIA、合成输入、持久化和 Chromium 触控模拟，共 25 份报告；站点摘要 `cb2595da07ef6921964830cf1fc4d0086e3a5488e3a6ee42737a075187bcbbe9`，SDK 摘要 `e79013fb29766b582c4ff47aac08c1f6ff4ef55666fbe1be5a0dc6df8c7565c0`。证据见 [r17](acceptance/browser-candidate-2026-09-24-r17/README.md)，当前 CI 已切换至该目录。自动化结果仍不替代原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料、npm registry 首发或商业法务复核。
 
 2026-09-24 r16 远端同步：提交 `da55279` 的 GitHub CI [35917269616](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35917269616) 与 CD [35917893853](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35917893853) 均成功。线上 `build-info.json` 已核对为版本 `0.29.0`、同一提交 `da552797197ce369bc8be35c53261aeb686a8f10` 和站点摘要 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`；当前 SDK tgz 摘要为 `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。r16 的 25 份浏览器报告、首屏性能预算、API、许可证、可重复构建、XLSX/WPS 语料和 HTTP 运行时门禁均已绑定该候选。npm registry 首发、原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍是 v1.0 门槛。
 
