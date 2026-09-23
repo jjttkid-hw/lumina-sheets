@@ -313,7 +313,7 @@ describe('SDK paged source lifecycle', () => {
     expect(fetchPage.mock.calls.map((call) => call[0])).toEqual([0, 4, 20]);
   });
 
-  it('cancels prefetch when its signal aborts or the binding is replaced', async () => {
+  it('cancels prefetch when its signal aborts', async () => {
     const { instance } = make();
     const gate = deferred<ReportPage>();
     await instance.bindData(
@@ -332,6 +332,88 @@ describe('SDK paged source lifecycle', () => {
     controller.abort();
     await expect(pending).rejects.toHaveProperty('name', 'AbortError');
     expect(instance.selectedRange).toEqual({ row: 0, col: 0 });
+  });
+
+  it.each(['rebind', 'load', 'clear', 'destroy'] as const)(
+    'cancels a running prefetch on %s and ignores its late response',
+    async (action) => {
+      const { instance } = make();
+      const gate = deferred<ReportPage>();
+      const started = deferred<AbortSignal | undefined>();
+      await instance.bindData(
+        {
+          columnCount: 1,
+          rowCount: 100,
+          fetchPage: (offset, limit, signal) => {
+            if (offset === 40) {
+              started.resolve(signal);
+              return gate.promise;
+            }
+            return Promise.resolve({ rows: Array.from({ length: limit }, () => [0]) });
+          },
+        },
+        { pageSize: 4, maxPages: 1 },
+      );
+      const outcome = instance.prefetch({ firstRow: 40, lastRow: 43 }).catch((error) => error);
+      const signal = await started.promise;
+      if (action === 'rebind') {
+        await instance.bindData({
+          columnCount: 1,
+          rowCount: 1,
+          fetchPage: async () => ({ rows: [['replacement']] }),
+        });
+      } else if (action === 'load') {
+        const book = createBlankWorkbook();
+        book.sheets[0].cells.A1 = { value: 'replacement' };
+        instance.load(book);
+      } else if (action === 'clear') instance.clearDataCache();
+      else instance.destroy();
+      expect(await outcome).toHaveProperty('name', 'AbortError');
+      expect(signal?.aborted).toBe(true);
+      // The provider deliberately ignores cancellation and completes later.
+      gate.resolve({ rows: [[999], [999], [999], [999]] });
+      await tick();
+      if (action === 'destroy') {
+        expect(() => instance.getValue('A1')).toThrowError(
+          expect.objectContaining({ code: 'DESTROYED' }),
+        );
+      } else {
+        expect(instance.getValue('A41')).toBe('');
+        expect(instance.getValue('A1')).toBe(action === 'clear' ? 0 : 'replacement');
+        expect(instance.dataSourceStats?.loading ?? 0).toBe(0);
+      }
+    },
+  );
+
+  it('keeps a shared page request alive when only one prefetch consumer cancels', async () => {
+    const { instance } = make();
+    const gate = deferred<ReportPage>();
+    const started = deferred<AbortSignal | undefined>();
+    const fetchPage = vi.fn((offset: number, limit: number, signal?: AbortSignal) => {
+      if (offset === 40) {
+        started.resolve(signal);
+        return gate.promise;
+      }
+      return Promise.resolve({ rows: Array.from({ length: limit }, () => [0]) });
+    });
+    await instance.bindData(
+      { columnCount: 1, rowCount: 100, fetchPage },
+      { pageSize: 4, maxPages: 1 },
+    );
+    const controller = new AbortController();
+    const cancelled = instance
+      .prefetch({ firstRow: 40, lastRow: 43 }, { signal: controller.signal })
+      .catch((error) => error);
+    const survivor = instance.prefetch({ firstRow: 40, lastRow: 43 });
+    const signal = await started.promise;
+    controller.abort();
+    expect(await cancelled).toHaveProperty('name', 'AbortError');
+    expect(signal?.aborted).toBe(false);
+    gate.resolve({ rows: [[40], [41], [42], [43]] });
+    await survivor;
+    expect(instance.getValue('A41')).toBe(40);
+    expect(fetchPage.mock.calls.filter(([offset]) => offset === 40)).toHaveLength(1);
+    expect(instance.dataSourceStats?.loading).toBe(0);
   });
 
   it('exports every data source row as CSV without filling the viewport cache or workbook', async () => {
