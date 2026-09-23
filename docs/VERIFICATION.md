@@ -2393,3 +2393,9 @@ WPS 12.1.26055 on macOS 26.7 opened the synthetic SDK export, edited A2 to 200, 
 Full regression: 165 files / 2,328 tests passed; strict format, build/type, API and package checks passed. r11 includes 25 current three-engine reports, 5 XLSX corpus checks and 2 WPS saved-fixture checks, bound to site 209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45 and SDK 4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e. Native platform and commercial gates remain open.
 
 Final fixed-time archive verification: initial browser reports were bound to a tgz packed without SOURCE_DATE_EPOCH; the binding gate rejected it after repeat builds. Re-ran all 25 browser reports and both corpus runners against final tgz `4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e` (718,990 bytes). No hashes were substituted inside old reports. Two local builds passed with identical site and package bytes; working checkout dirty=true, not stable release evidence.
+## 当前状态（2026-09-24，提交 627e39e）
+
+- GitHub CI `35900682003` 和 CD `35901257082` 均成功；线上 `build-info.json` 已核对提交 `627e39ee4c088515eee3b24dca8724ba9bc31ad0`、版本 `0.29.0` 和站点 SHA-256 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`。
+- 新增发布安全门：`check:sdk` 校验依赖清单的 `generatedAt` / `timestampSource` 与 `SOURCE_DATE_EPOCH` 或 Git 提交时间一致；固定时间构建仍得到 SDK SHA-256 `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。未使用同一构建时钟时会要求先重建，而不是接受摘要漂移。
+- CI 已通过全量测试、格式、API/SDK 契约、XLSX/WPS 语料、25 份浏览器候选、恢复下载/导入/持久化与截图、React/Vue 三引擎框架检查及可重复构建。npm registry 仍返回 E401/尚未出现 `lumina-report-sdk`，因此不创建稳定 `1.0.0` 或 `latest` 发布记录。
+- 原生操作系统 IME、真实 VoiceOver/NVDA/JAWS、实体移动触控、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍未完成；真实浏览器工具当前因 `unsupported Codex auth method: apikey` 无法建立可控浏览器标签页，不能把该工具错误当作产品验收结果。
