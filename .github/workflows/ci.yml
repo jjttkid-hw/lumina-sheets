@@ -75,7 +75,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - uses: actions/upload-artifact@v7
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        # Also needed by browser acceptance on pull requests; CD still deploys main only.
         with:
           name: lumina-site
           path: dist/
@@ -97,16 +97,24 @@ jobs:
         with:
           name: npm-package
           path: artifacts
+      - uses: actions/download-artifact@v8
+        with:
+          name: lumina-site
+          path: dist
       - name: Install pinned browser acceptance tools
         run: npm ci --ignore-scripts --prefix scripts/fixtures/frameworks
       - name: Install Chromium, Firefox and WebKit
         run: node scripts/fixtures/frameworks/node_modules/playwright/cli.js install --with-deps chromium firefox webkit
       - name: Verify installed SDK in React and Vue development and production hosts
         run: node scripts/browser-frameworks.mjs
+      - name: Verify real recovery downloads, imports and persistent copies
+        run: node scripts/check-recovery-browser.mjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: framework-browser-reports
-          path: artifacts/browser-frameworks/
+          path: |
+            artifacts/browser-frameworks/
+            artifacts/browser-recovery/
           if-no-files-found: error
           retention-days: 14

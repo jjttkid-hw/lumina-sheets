@@ -1,3 +1,5 @@
+2026-09-23 原生存储救援闭环：Chromium、Firefox、WebKit 实际下载恢复 JSON、导入、显式选择并恢复新副本，刷新后内容保留，共 9 项检查通过。覆盖损坏日志原件救援、部分备份无效条目拒绝、搜索 Enter/取消无写入、历史版本及规则工作表标识重映射。见 [救援证据](acceptance/recovery-2026-09-23/README.md)。已加入 CI，仍不等同于物理断电恢复、跨设备同步或平台级验收完成。
+
 2026-09-23 框架接入验收：从当前 SDK tgz 安装到独立 React 19.3.0 / Vue 3.5.43 项目，开发及生产模式在 Chromium、Firefox、WebKit 全部通过，共 12 份报告、72 项检查；覆盖真实画布编辑、StrictMode 双挂载、回调更新、切换/卸载取消及十轮 DOM 清理。CI 新增独立框架浏览器任务，其失败将阻止 CD。见 [框架证据](acceptance/frameworks-2026-09-23/README.md)。版本仍为 0.29.0，其余稳定版门槛保持开放。
 
 2026-09-23 WPS 实际验收发现并修复小写 OOXML 转义文本损坏及普通 inlineStr 未解码；新增桌面保存夹具与当前安装包 CI 回归。见 [桌面记录](acceptance/wps-2026-09-23/README.md) 和 [r11 浏览器候选](acceptance/browser-candidate-2026-09-23-r11/README.md)。完整 Excel/WPS 语料门槛仍开放。

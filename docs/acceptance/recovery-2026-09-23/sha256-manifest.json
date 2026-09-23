@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3625,
+      "sha256": "f8a3ad42b78ca66e53460e0a51649834b69ecae86a25f3a7cdede8e2b35af463"
+    },
+    {
+      "path": "chromium/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "55db3f85d3866b6233d69bf476592946ca47b36f8b39f7609f7e7cc6dfb21f06"
+    },
+    {
+      "path": "chromium/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "chromium/history-selection.png",
+      "bytes": 227797,
+      "sha256": "0765c7ebc7b8c30b52b69f37104a06c35523f6395e2864399d0b9ae6323649f1"
+    },
+    {
+      "path": "chromium/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "1814ee9818f9ff0fff5d924bc80ee10691080291c0792ffc6db20654d56ce862"
+    },
+    {
+      "path": "chromium/result.json",
+      "bytes": 2920,
+      "sha256": "102746febc817a9b6e9fc6cd01850741cf157dfbeb41f0a84c1b6b205785204a"
+    },
+    {
+      "path": "chromium/startup-rescue.png",
+      "bytes": 35837,
+      "sha256": "820c1789e08e76d26a582ca05d21b9ccc8a2725ecae5828ca9a9dba73c2f5572"
+    },
+    {
+      "path": "firefox/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "c4d54e34441f077fc205ffc77cff54932f1fb0965203c7abf111d9e91bdaefb6"
+    },
+    {
+      "path": "firefox/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "firefox/history-selection.png",
+      "bytes": 204948,
+      "sha256": "30e68b4a3e413402e09fb28e202d372ad512c575f62f16edaa46d25e29f0ce1f"
+    },
+    {
+      "path": "firefox/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "eab278c550d148060dd3cc5bb9e6e688a69943b6e15bb62580703e9dbbb24ce4"
+    },
+    {
+      "path": "firefox/result.json",
+      "bytes": 2914,
+      "sha256": "408c27fe561e96731d703d6d68bfdae3d0a4d36ac65a5e55e973cbdd8fa9925b"
+    },
+    {
+      "path": "firefox/startup-rescue.png",
+      "bytes": 55182,
+      "sha256": "b7af6aa2f79b367d80670f27c2a26b1fb678b311cdcd780a0aee0177626c0026"
+    },
+    {
+      "path": "webkit/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "ab491e2e855f94491b7e6646c0d4cd175bc3c0425ef13e083de45e2395a001e4"
+    },
+    {
+      "path": "webkit/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "webkit/history-selection.png",
+      "bytes": 250027,
+      "sha256": "1bf12ab7f7b89f2087cca901a4c9497b5d62db2bf5a4f96fa320816e9b9c764e"
+    },
+    {
+      "path": "webkit/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "47d32a8d29a19cf4bdc386a1c80e63f8b75fd3beacbd73a422e872716a22a759"
+    },
+    {
+      "path": "webkit/result.json",
+      "bytes": 2910,
+      "sha256": "fccf96b5d6553f0608d6ade724f2a25d9d7db4dcc35e15d440021854e65b6287"
+    },
+    {
+      "path": "webkit/startup-rescue.png",
+      "bytes": 53783,
+      "sha256": "7354fa7083e5eb824404c658bece1b0f99d15d92edd02b4d8ee7a827881e6e20"
+    }
+  ]
+}

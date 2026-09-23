@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-23T13:46:44.922Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "runnerSha256": "ea3662094d7525f179d29b42c04f7343528a9e4eecaf2eb736b128f7f816d698",
+  "siteSha256": "209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45",
+  "artifactSha256": "4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e",
+  "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
+  "checks": [
+    {
+      "name": "damaged-journal-download-and-raw-snapshot-restore",
+      "status": "passed",
+      "elapsedMs": 14125,
+      "details": {
+        "copyId": "ea58e925-da9d-491a-8a46-3604df35ce9e",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "backupSha256": "c4d54e34441f077fc205ffc77cff54932f1fb0965203c7abf111d9e91bdaefb6",
+        "rawJournalRetained": true,
+        "sourceUnchanged": true
+      }
+    },
+    {
+      "name": "partial-backup-invalid-selection-search-and-cancel",
+      "status": "passed",
+      "elapsedMs": 7493,
+      "details": {
+        "copyId": "82a33f48-adf0-4e69-963d-eb2ad94b2c21",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "invalidRejected": true,
+        "searchEnterDidNotRestore": true,
+        "cancelDidNotWrite": true,
+        "damagedSourceRetained": true
+      }
+    },
+    {
+      "name": "historical-snapshot-restores-independent-copy",
+      "status": "passed",
+      "elapsedMs": 8072,
+      "details": {
+        "copyId": "7611ad23-b891-43e8-ac12-83d19982f49d",
+        "name": "历史业务报表（恢复副本）",
+        "expectedValue": "历史版本正文",
+        "persistedAfterReload": true,
+        "formulaRetained": true,
+        "validationSheetRemapped": true,
+        "auxiliaryHistoryNotMerged": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "actualChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

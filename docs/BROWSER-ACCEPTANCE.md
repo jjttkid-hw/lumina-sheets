@@ -1,3 +1,5 @@
+2026-09-23 恢复下载/导入增量：当前 r11 同一站点及 SDK 制品在三引擎通过 9 项真实恢复闭环检查，见 [执行记录与原始下载](acceptance/recovery-2026-09-23/README.md)。此记录补充下文原始日志救援、恢复搜索、历史快照、部分损坏记录和启动备份的待验项；不覆盖所有故障注入场景或实体设备。
+
 2026-09-23 Safari r3 多工作表增量：macOS Safari 线上页面在干净刷新后实际完成多工作表目录、活动表切换、销售明细 C2 从 100000 改为 200000、经营汇总 B2 跨表重算为 8,299,000，以及经营汇总撤销恢复为 8,199,000。记录见 [browser-safari-2026-09-23-r3](acceptance/browser-safari-2026-09-23-r3/README.md)，绑定站点摘要 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`。
 
 2026-09-23 当前候选复验（r9）：确定性 SDK 归档与生产构建指纹收敛后，同源构建在 Chromium、Firefox、WebKit 各通过 smoke 8、交互 6、焦点 4、布局 6、性能 6、无障碍语义 5、中文输入事件链 4 和浏览器原生持久化 4 项，Chromium 另通过 3 项触控模拟。持久化套件直接覆盖 IndexedDB/localStorage 迁移、两个页面并发迁移、损坏工作簿隔离和损坏日志闭锁。CI/Linux 与本机 macOS 生成相同站点 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268` 和 SDK `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`；报告见 [browser-candidate-2026-09-23-r9](acceptance/browser-candidate-2026-09-23-r9/README.md)。无障碍自动化验证 DOM/ARIA 状态；中文输入自动化验证 CompositionEvent/InputEvent/KeyboardEvent 处理链，二者分别不替代真实屏幕阅读器朗读和原生系统输入法候选窗口验收。
