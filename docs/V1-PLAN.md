@@ -1,3 +1,5 @@
+2026-09-23 Safari r3 多工作表复验：线上报表在 macOS Safari 干净刷新后完成多工作表入口、工作表选择器、销售明细 C2 编辑、经营汇总切回、B2 跨表公式从 8,199,000 重算为 8,299,000，以及撤销恢复为 8,199,000；AX 树持续显示 table/row/cell 语义与无错误状态。记录见 [browser-safari-2026-09-23-r3](acceptance/browser-safari-2026-09-23-r3/README.md)，绑定站点摘要 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`。
+
 2026-09-23 Safari r2 复验：在 macOS Safari 线上构建实际完成报表初始化、公式示例切换、`=SUM(1,2,3)` 结果 6、撤销恢复，以及 `=SUM(4,5,6)` 结果 15 的刷新恢复；AX 树出现 table/row/cell 语义。记录见 [browser-safari-2026-09-23-r2](acceptance/browser-safari-2026-09-23-r2/README.md)，绑定当前站点摘要 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`。该记录不替代原生 IME、VoiceOver、实体触控、跨设备性能或完整文件语料验收。
 
 2026-09-23 当前远端状态更新：提交 `39484f4` 的 GitHub CI `35820942633` 与 CD `35821172170` 均成功。线上 `build-info.json` 已核对为版本 `0.29.0`、同一提交和站点 SHA-256 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`；当前候选 SDK tgz SHA-256 为 `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`。全量测试为 163 个文件、2,309 项通过；XLSX 语料 5 项、r9 浏览器证据 25 份及构建绑定门禁均通过。npm 注册表仍未发布，正式 Safari、原生中文 IME、实体设备、真实屏幕阅读器、跨设备性能、完整 Excel/WPS 语料和商业许可法律复核仍是 v1.0 门槛。
