@@ -1,5 +1,7 @@
 # 浏览器验收矩阵（候选构建已验证，平台级矩阵仍待执行）
 
+2026-09-23 当前候选复验：提交 `f2a25a9` 使用固定来源时间重新运行 Chromium、Firefox、WebKit 的 smoke、交互、焦点、布局和性能套件，三引擎均通过；Chromium 另通过 3 项触控模拟。报告统一绑定站点 SHA-256 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534` 和 SDK SHA-256 `d51f9a8664aa77623a684049dbf026b8fa73cfa56b045e0d6f47f1a9f650ed17`，原始记录见 [browser-candidate-2026-09-23-r5](acceptance/browser-candidate-2026-09-23-r5/README.md)。这仍不替代正式 Safari、原生中文 IME、实体移动设备、屏幕阅读器、跨设备性能或商业许可证法律复核。
+
 2026-09-23 远端归档与部署核验：包含本轮原始浏览器报告的提交 `5517053` 已通过 GitHub CI `35790150657` 和 CD `35790481864`，线上 `build-info.json` 为提交 `55170538df26287f54826f7259951969d2008a03`、站点 SHA-256 `77f9d66e1fa8ec9cc7674c176d6c7cef7decc01b999ecab6343f089989b731c9`。CI/CD 证明报告已入库且部署链路通过；由于部署重新构建了站点，下面 `r4` 报告继续只对其记录的受测制品哈希负责，不能仅凭源码功能未变就视作线上制品已完成同一浏览器套件。
 
 2026-09-23 当前主线候选复验：以提交 `28d8d09` 的本地 `0.29.0` 构建重新运行 Chromium、Firefox、WebKit 的 smoke/交互/焦点/布局/性能套件，并运行 Chromium CDP 触控套件。三引擎各通过 8、6、4、6、6 项，Chromium 另通过 3 项触控模拟；站点 SHA-256 `00c64e949326bb3fee9660baf4fcda6691e947483e9f7bc81e109f3dd0650c8f`，SDK SHA-256 `9967b1a3f033d9a824d5acb0bb7d1e8186a9c87fd1923e50aa37e0cb1202d03b`。原始报告见 [browser-candidate-2026-09-23-r4](acceptance/browser-candidate-2026-09-23-r4/README.md)。这仍是桌面引擎与触控模拟证据，不替代正式 Safari、原生中文 IME、实体移动设备、屏幕阅读器、跨设备性能或完整文件语料验收。

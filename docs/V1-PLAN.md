@@ -2,6 +2,8 @@
 
 2026-09-23 当前远端状态：提交 `68d54e2` 的 GitHub CI `35802419022` 与 CD `35802650756` 均成功。线上版本为 `0.29.0`；当前仓库已配置 `RELEASE_SOURCE_DATE_EPOCH=1790122493`，用于让验收文档提交保持候选站点摘要稳定。固定来源时间重建得到站点 SHA-256 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534`，npm 注册表仍未发布，不能据此宣布 v1.0.0。
 
+2026-09-23 当前候选浏览器复验：提交 `f2a25a9` 的固定来源时间构建重新运行 Chromium、Firefox、WebKit 的 smoke、交互、焦点、布局和性能套件，三引擎各通过 8、6、4、6、6 项；Chromium 另通过 3 项触控模拟。所有报告均绑定站点 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534`、SDK `d51f9a8664aa77623a684049dbf026b8fa73cfa56b045e0d6f47f1a9f650ed17`，见 [browser-candidate-2026-09-23-r5](acceptance/browser-candidate-2026-09-23-r5/README.md)。这更新了自动化候选证据，但仍不能替代正式 Safari、原生中文 IME、实体触控、屏幕阅读器、跨设备性能、完整文件语料或商业许可证法律复核。
+
 2026-09-23 财务公式增量：公式引擎新增 `IRR` 与 `RATE`，支持一维现金流范围/直接现金流、可选初始猜测、受保护的牛顿迭代与二分回退；补充 `#NUM!` 域错误、公式错误传播、范围往返和公式栏签名回归。定向财务与公式帮助测试 27 项通过；该增量扩大支持子集，不代表完整 Excel/SpreadJS 财务函数兼容。
 
 2026-09-23 npm 发布尝试：手动运行 `v0.29.0` 的 npm 工作流 `35785677207`，所有发布前门禁和 GitHub Release 制品上传通过，发布步骤以 `ENEEDAUTH` 失败；该 Release 最初错误地标为正式版，随后已改为 prerelease，使重试时按规则使用 `next` 而不是 `latest`。需要在 npm 包 `lumina-report-sdk` 的 **Settings → Trusted Publishers** 配置 `jjttkid-hw / lumina-sheets / npm.yml / npm`，之后再重试同一 0.x Release；这不改变稳定版验收门槛。
