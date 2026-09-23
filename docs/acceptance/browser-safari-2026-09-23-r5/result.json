@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "version": "0.29.0",
+  "browser": "Safari 27.0",
+  "environment": {
+    "os": "macOS 26.7",
+    "arch": "arm64"
+  },
+  "siteSha256": "590d1b339fbfd652efbb81f4908e37f852c480894866a06676c07492245cfab8",
+  "artifactSha256": "0ddab00cacdc71ebbb6ae50c73c855f23eaa88d4cd037bdaf2749d7b2b9045a1",
+  "checks": [
+    {
+      "name": "paged-million-row-position",
+      "status": "passed",
+      "details": {
+        "row": "A1000000",
+        "value": 1000000,
+        "cache": "2/6"
+      }
+    },
+    {
+      "name": "paged-export-cancel",
+      "status": "passed",
+      "details": {
+        "message": "操作已取消"
+      }
+    },
+    {
+      "name": "snapshot-xlsx-download",
+      "status": "passed",
+      "details": {
+        "file": "safari-download.xlsx",
+        "bytes": 10415,
+        "downloaded": true
+      }
+    },
+    {
+      "name": "xlsx-import-last-row",
+      "status": "passed",
+      "details": {
+        "cell": "C200",
+        "value": 2990,
+        "rows": 200,
+        "columns": 16
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "reportSha256": "29de8de5b4adffb24f68f34ce31d116c2ff7efed6ad45e469e5df321d493ec9f"
+}

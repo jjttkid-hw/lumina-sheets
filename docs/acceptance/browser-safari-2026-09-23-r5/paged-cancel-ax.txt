@@ -1,0 +1,2 @@
+There has been no change in the accessibility tree for Window: "Lumina JS 报表组件".
+The focused UI element is 179 HTML内容 Description: Lumina JS 报表组件, URL: jjttkid-hw.github.io/lumina-sheets/examples/report.html?acceptance=r12-safari

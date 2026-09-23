@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1436,
+      "sha256": "dcb98cec0a91d918d5b3c3b83ddae843ae929c8d58e29d6345e827b56565a250"
+    },
+    {
+      "path": "paged-cancel-ax.txt",
+      "bytes": 249,
+      "sha256": "2cb4821115116cef57b84e6cc2211e18258b72129090602a61495953e48d7768"
+    },
+    {
+      "path": "result.json",
+      "bytes": 1214,
+      "sha256": "8bec41560e707aa22cb3e42ec3d0b421cda53c5839adf32eed715a4080cc2e1c"
+    },
+    {
+      "path": "safari-download.xlsx",
+      "bytes": 10415,
+      "sha256": "a4e45e57356fc323bc4ec94dc1873314d106fcbc27621f5839ca57c86e647357"
+    }
+  ]
+}
