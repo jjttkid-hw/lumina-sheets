@@ -1410,37 +1410,48 @@ export default function App() {
       {children}
     </button>
   );
-  if (!workspaceReady)
+  if (!workspaceReady) {
+    if (workspaceLoadFailed)
+      return (
+        <main className="workspace-startup" aria-labelledby="workspace-startup-title">
+          <section className="workspace-startup-card">
+            <p className="workspace-startup-eyebrow">本地数据恢复</p>
+            <h1 id="workspace-startup-title">本地工作空间读取失败</h1>
+            <p>尚未改动保存的数据。请先下载恢复备份，保留当前可读取的数据。</p>
+            {workspaceLoadError && (
+              <div className="workspace-startup-error" role="alert">
+                <strong>读取错误</strong>
+                <p>{workspaceLoadError}</p>
+              </div>
+            )}
+            <div className="workspace-startup-actions">
+              <button
+                className="button primary"
+                disabled={startupBackupBusy}
+                onClick={() => void backupFailedStartup()}
+              >
+                {startupBackupBusy ? '正在准备恢复备份…' : '下载恢复备份'}
+              </button>
+              <button
+                className="button"
+                onClick={() => setWorkspaceLoadAttempt((value) => value + 1)}
+              >
+                重试读取
+              </button>
+            </div>
+            <p className="workspace-startup-message" role="status" aria-live="polite">
+              {startupBackupMessage}
+            </p>
+          </section>
+        </main>
+      );
     return (
       <div className="busy-indicator" role="status">
-        {workspaceLoadFailed ? (
-          <>
-            本地工作空间读取失败，尚未改动保存的数据。
-            <p>请先下载恢复备份，保留当前可读取的数据。</p>
-            {workspaceLoadError && <p role="alert">{workspaceLoadError}</p>}
-            <button
-              className="button"
-              onClick={() => setWorkspaceLoadAttempt((value) => value + 1)}
-            >
-              重试读取
-            </button>
-            <button
-              className="button"
-              disabled={startupBackupBusy}
-              onClick={() => void backupFailedStartup()}
-            >
-              {startupBackupBusy ? '正在准备恢复备份…' : '下载恢复备份'}
-            </button>
-            {startupBackupMessage && <p role="status">{startupBackupMessage}</p>}
-          </>
-        ) : (
-          <>
-            <span />
-            正在恢复本地工作空间…
-          </>
-        )}
+        <span />
+        正在恢复本地工作空间…
       </div>
     );
+  }
   return (
     <div className={`app-shell ${sidebar ? '' : 'sidebar-collapsed'}`}>
       <input

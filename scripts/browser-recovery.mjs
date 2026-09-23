@@ -258,6 +258,55 @@ try {
       });
       await page.goto(origin.href);
       await page.getByText('本地工作空间读取失败', { exact: false }).waitFor();
+      const layoutChecks = [];
+      for (const width of [1280, 390, 320]) {
+        await page.setViewportSize({ width, height: 800 });
+        const geometry = await page.evaluate(() => {
+          const card = document.querySelector('.workspace-startup-card');
+          const heading = document.querySelector('h1').getBoundingClientRect();
+          const alert = document.querySelector('[role=alert]').getBoundingClientRect();
+          const actions = document
+            .querySelector('.workspace-startup-actions')
+            .getBoundingClientRect();
+          return {
+            cardWidth: card.getBoundingClientRect().width,
+            viewportWidth: innerWidth,
+            documentWidth: document.documentElement.scrollWidth,
+            cardOverflow: card.scrollWidth > card.clientWidth,
+            headingBottom: heading.bottom,
+            alertTop: alert.top,
+            alertBottom: alert.bottom,
+            actionsTop: actions.top,
+            buttons: [...card.querySelectorAll('button')].map((button) => {
+              const rect = button.getBoundingClientRect();
+              return { left: rect.left, right: rect.right, height: rect.height };
+            }),
+          };
+        });
+        assert(geometry.documentWidth <= width, 'Recovery page must not scroll horizontally');
+        assert.equal(geometry.cardOverflow, false);
+        assert(geometry.alertTop > geometry.headingBottom);
+        assert(geometry.actionsTop > geometry.alertBottom);
+        for (const button of geometry.buttons) {
+          assert(button.left >= 0 && button.right <= width && button.height >= 44);
+        }
+        await page.screenshot({ path: path.join(output, `startup-${width}.png`) });
+        layoutChecks.push({ width, ...geometry });
+      }
+      const backupButton = page.getByRole('button', { name: '下载恢复备份', exact: true });
+      await backupButton.focus();
+      const navigationKey =
+        engine === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab';
+      await page.keyboard.press(navigationKey);
+      assert.equal(
+        await page
+          .getByRole('button', { name: '重试读取', exact: true })
+          .evaluate((button) => button === document.activeElement),
+        true,
+      );
+      await page.keyboard.press('Enter');
+      await page.getByRole('heading', { name: '本地工作空间读取失败', exact: true }).waitFor();
+      await page.setViewportSize({ width: 1280, height: 800 });
       const before = await inspectDatabase(page);
       const downloadPromise = page.waitForEvent('download');
       await page.getByRole('button', { name: '下载恢复备份', exact: true }).click();
@@ -301,6 +350,9 @@ try {
       return {
         ...details,
         backupSha256: createHash('sha256').update(bytes).digest('hex'),
+        layoutChecks,
+        keyboardRetry: true,
+        navigationKey,
         rawJournalRetained: true,
         sourceUnchanged: true,
       };

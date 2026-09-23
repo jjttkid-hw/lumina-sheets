@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-23T13:57:30.457Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "590d1b339fbfd652efbb81f4908e37f852c480894866a06676c07492245cfab8",
+  "artifactSha256": "0ddab00cacdc71ebbb6ae50c73c855f23eaa88d4cd037bdaf2749d7b2b9045a1",
+  "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
+  "checks": [
+    {
+      "name": "runtime-zoom-hit-draft-history",
+      "status": "passed",
+      "elapsedMs": 443,
+      "details": {
+        "scales": [
+          50,
+          125,
+          200,
+          1.5
+        ],
+        "draftRetained": true,
+        "historyRetained": true
+      }
+    },
+    {
+      "name": "hidden-axis-keyboard",
+      "status": "passed",
+      "elapsedMs": 73
+    },
+    {
+      "name": "merge-hit-edit-navigation",
+      "status": "passed",
+      "elapsedMs": 154
+    },
+    {
+      "name": "frozen-row-scroll-hit",
+      "status": "passed",
+      "elapsedMs": 139,
+      "details": {
+        "scrollTop": 200
+      }
+    },
+    {
+      "name": "sparse-million-row-locate-edit",
+      "status": "passed",
+      "elapsedMs": 137,
+      "details": {
+        "selection": {
+          "row": 999999,
+          "col": 2
+        },
+        "value": "last row",
+        "draw": {
+          "drawMs": 0,
+          "paintedCells": 84,
+          "domNodes": 4
+        },
+        "domCells": 1
+      }
+    },
+    {
+      "name": "row-height-column-width-hit-undo",
+      "status": "passed",
+      "elapsedMs": 204,
+      "details": {
+        "columnWidths": {
+          "0": 200
+        },
+        "rowHeights": {
+          "0": 70
+        }
+      }
+    },
+    {
+      "name": "filtered-navigation-visible-clipboard",
+      "status": "passed",
+      "elapsedMs": 344
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "runtime-zoom-hit-draft-history",
+      "hidden-axis-keyboard",
+      "merge-hit-edit-navigation",
+      "frozen-row-scroll-hit",
+      "sparse-million-row-locate-edit",
+      "row-height-column-width-hit-undo",
+      "filtered-navigation-visible-clipboard"
+    ],
+    "actualChecks": [
+      "runtime-zoom-hit-draft-history",
+      "hidden-axis-keyboard",
+      "merge-hit-edit-navigation",
+      "frozen-row-scroll-hit",
+      "sparse-million-row-locate-edit",
+      "row-height-column-width-hit-undo",
+      "filtered-navigation-visible-clipboard"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}
