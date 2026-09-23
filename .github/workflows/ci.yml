@@ -109,6 +109,8 @@ jobs:
         run: node scripts/browser-frameworks.mjs
       - name: Verify real recovery downloads, imports and persistent copies
         run: node scripts/check-recovery-browser.mjs
+      - name: Verify recovery evidence and screenshots
+        run: node scripts/check-recovery-evidence.mjs artifacts/browser-recovery
       - uses: actions/upload-artifact@v7
         if: always()
         with:

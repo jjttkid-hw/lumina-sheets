@@ -30,7 +30,8 @@
     "check:browser-evidence": "node scripts/check-browser-evidence.mjs",
     "check:licenses": "node scripts/package-notices.mjs --strict",
     "check:stable": "node scripts/check-stable-release.mjs",
-    "check:reproducibility": "node scripts/check-reproducibility.mjs"
+    "check:reproducibility": "node scripts/check-reproducibility.mjs",
+    "check:recovery-evidence": "node scripts/check-recovery-evidence.mjs"
   },
   "dependencies": {
     "exceljs": "^4.4.0",
