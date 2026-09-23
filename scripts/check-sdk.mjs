@@ -241,6 +241,24 @@ try {
   const sourceEpoch =
     process.env.SOURCE_DATE_EPOCH ??
     run('git', ['log', '-1', '--format=%ct'], root).trim();
+  // package-notices.mjs records the build timestamp in the published
+  // dependency inventory. Keep the archive metadata and the generated
+  // metadata on the same deterministic clock; otherwise a local verification
+  // performed without SOURCE_DATE_EPOCH can silently produce a different
+  // tarball from the one built for CI/release.
+  const buildInventory = JSON.parse(
+    await readFile(path.join(sdkDirectory, 'dependency-inventory.json'), 'utf8'),
+  );
+  assert.equal(
+    buildInventory.timestampSource,
+    process.env.SOURCE_DATE_EPOCH === undefined ? 'git-commit' : 'SOURCE_DATE_EPOCH',
+    'SDK dependency inventory timestamp source does not match the verification clock',
+  );
+  assert.equal(
+    buildInventory.generatedAt,
+    new Date(Number(sourceEpoch) * 1000).toISOString(),
+    'SDK dependency inventory timestamp does not match the verification clock; rebuild with the same SOURCE_DATE_EPOCH',
+  );
   await deterministicPack(sdkDirectory, packedPaths, packedArchive, sourceEpoch);
 
   const consumer = path.join(temporary, 'consumer');
