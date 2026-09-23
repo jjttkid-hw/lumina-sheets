@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-09-23T22:32:35.018Z",
+  "executedAt": "2026-09-23T23:23:48.044Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "a6f6b49f799a4d20cb8a473c1193a4f76c360a87b80f2ab4926800361e0c5c13",
-  "artifactSha256": "93f6975a3bd8053d76b26ed5040aebe1ee1c4d97be1155a9936a9fc625984975",
+  "siteSha256": "2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87",
+  "artifactSha256": "e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29",
   "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
   "checks": [
     {
       "name": "workspace-render",
       "status": "passed",
-      "elapsedMs": 296,
+      "elapsedMs": 310,
       "details": {
         "width": 860,
         "height": 471
@@ -26,17 +26,17 @@
     {
       "name": "create-edit-history",
       "status": "passed",
-      "elapsedMs": 571
+      "elapsedMs": 590
     },
     {
       "name": "indexeddb-reload",
       "status": "passed",
-      "elapsedMs": 277
+      "elapsedMs": 333
     },
     {
       "name": "zoom-narrow-layout",
       "status": "passed",
-      "elapsedMs": 90,
+      "elapsedMs": 91,
       "details": {
         "client": 390,
         "scroll": 390
@@ -45,80 +45,80 @@
     {
       "name": "report-layouts",
       "status": "passed",
-      "elapsedMs": 7414,
+      "elapsedMs": 7419,
       "details": [
         {
           "layout": "list",
           "status": "已生成行式明细 · 可直接编辑或导出",
-          "metrics": "38 行 × 5 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 2.00 ms · 3 次绘制"
+          "metrics": "38 行 × 5 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 3.00 ms · 2 次绘制"
         },
         {
           "layout": "group",
           "status": "已生成分组汇总 · 可直接编辑或导出",
-          "metrics": "43 行 × 5 列 · 公式计算 15 次 · 缓存 15 项 · 最近绘制 3.00 ms · 5 次绘制"
+          "metrics": "43 行 × 5 列 · 公式计算 15 次 · 缓存 15 项 · 最近绘制 2.00 ms · 4 次绘制"
         },
         {
           "layout": "nested",
           "status": "已生成多级分组 · 可直接编辑或导出",
-          "metrics": "53 行 × 5 列 · 公式计算 13 次 · 缓存 13 项 · 最近绘制 2.00 ms · 7 次绘制"
+          "metrics": "53 行 × 5 列 · 公式计算 13 次 · 缓存 13 项 · 最近绘制 3.00 ms · 6 次绘制"
         },
         {
           "layout": "cross",
           "status": "已生成交叉统计 · 可直接编辑或导出",
-          "metrics": "5 行 × 8 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 1.00 ms · 9 次绘制"
+          "metrics": "5 行 × 8 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 1.00 ms · 8 次绘制"
         },
         {
           "layout": "formulas",
           "status": "已生成公式示例 · 可直接编辑或导出",
-          "metrics": "21 行 × 6 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 1.00 ms · 11 次绘制"
+          "metrics": "21 行 × 6 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 1.00 ms · 10 次绘制"
         },
         {
           "layout": "sheets",
           "status": "已生成多工作表 · 可直接编辑或导出",
-          "metrics": "30 行 × 6 列 · 公式计算 38 次 · 缓存 38 项 · 最近绘制 1.00 ms · 13 次绘制"
+          "metrics": "30 行 × 6 列 · 公式计算 38 次 · 缓存 38 项 · 最近绘制 1.00 ms · 12 次绘制"
         },
         {
           "layout": "validation",
           "status": "已生成订单填报 · 可直接编辑或导出",
-          "metrics": "5 行 × 6 列 · 公式计算 4 次 · 缓存 4 项 · 最近绘制 1.00 ms · 15 次绘制"
+          "metrics": "5 行 × 6 列 · 公式计算 4 次 · 缓存 4 项 · 最近绘制 1.00 ms · 14 次绘制"
         },
         {
           "layout": "print",
           "status": "已生成打印版式 · 可直接编辑或导出",
-          "metrics": "8 行 × 6 列 · 公式计算 5 次 · 缓存 5 项 · 最近绘制 5.00 ms · 16 次绘制"
+          "metrics": "8 行 × 6 列 · 公式计算 5 次 · 缓存 5 项 · 最近绘制 6.00 ms · 15 次绘制"
         },
         {
           "layout": "filter",
           "status": "已生成筛选合并区域 · 可直接编辑或导出",
-          "metrics": "11 行 × 5 列 · 公式计算 1 次 · 缓存 1 项 · 最近绘制 1.00 ms · 17 次绘制"
+          "metrics": "11 行 × 5 列 · 公式计算 1 次 · 缓存 1 项 · 最近绘制 2.00 ms · 16 次绘制"
         },
         {
           "layout": "sort",
           "status": "已生成多列排序 · 可直接编辑或导出",
-          "metrics": "8 行 × 6 列 · 公式计算 7 次 · 缓存 7 项 · 最近绘制 1.00 ms · 20 次绘制"
+          "metrics": "8 行 × 6 列 · 公式计算 7 次 · 缓存 7 项 · 最近绘制 1.00 ms · 19 次绘制"
         },
         {
           "layout": "paged",
           "status": "已生成百万行分页数据 · 当前表格只读",
-          "metrics": "1,000,000 行 × 12 列 · 缓存 1/6 页 · 请求 0 · 最近绘制 2.00 ms · 22 次绘制"
+          "metrics": "1,000,000 行 × 12 列 · 缓存 1/6 页 · 请求 0 · 最近绘制 2.00 ms · 21 次绘制"
         },
         {
           "layout": "snapshot",
           "status": "已生成分页生成完整报表 · 可直接编辑或导出",
-          "metrics": "200 行 × 4 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 1.00 ms · 24 次绘制"
+          "metrics": "200 行 × 4 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 1.00 ms · 22 次绘制"
         }
       ]
     },
     {
       "name": "report-downloads-roundtrip",
       "status": "passed",
-      "elapsedMs": 404,
+      "elapsedMs": 426,
       "details": {
         "downloads": [
           {
             "format": "json",
             "bytes": 23158,
-            "sha256": "6ac87a9ac8c3f19e4ecd1c11c09ac6b932c0e70c28644d7e0f23afdac9332cd8"
+            "sha256": "3e0f61968a5eb238fc7dc74aab52f1a5480d32ec36b32a324db7406c5a0a5fb8"
           },
           {
             "format": "csv",
@@ -127,8 +127,8 @@
           },
           {
             "format": "xlsx",
-            "bytes": 8269,
-            "sha256": "207bf0a60aa7dd8b201bedf8fc47cb84ab64cc5c93345063ba97f8f0ee98097f"
+            "bytes": 8274,
+            "sha256": "ace4d4ef596a57889ec011156c034cf2fa58b69ecab16a6cb2778f79db963d72"
           },
           {
             "format": "pdf",
@@ -142,20 +142,20 @@
     {
       "name": "report-idle",
       "status": "passed",
-      "elapsedMs": 1052,
+      "elapsedMs": 1045,
       "details": " 1 秒内额外绘制 0 次 · 空闲时停止绘制"
     },
     {
       "name": "packed-sdk-example",
       "status": "passed",
-      "elapsedMs": 184,
+      "elapsedMs": 173,
       "details": [
         {
-          "value": "086711cf-5962-499a-8ce3-7d0c7b070102",
+          "value": "e536a71f-b959-4cc2-9bbd-3819bed905c7",
           "name": "销售明细"
         },
         {
-          "value": "3509f9e2-0424-4fcb-894b-1b8e300f918a",
+          "value": "b9285d3e-2dd6-4799-9113-53c66fc4c4fc",
           "name": "经营汇总"
         }
       ]

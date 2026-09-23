@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-09-23T22:32:51.445Z",
+  "executedAt": "2026-09-23T23:24:04.316Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "a6f6b49f799a4d20cb8a473c1193a4f76c360a87b80f2ab4926800361e0c5c13",
-  "artifactSha256": "93f6975a3bd8053d76b26ed5040aebe1ee1c4d97be1155a9936a9fc625984975",
+  "siteSha256": "2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87",
+  "artifactSha256": "e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29",
   "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
   "checks": [
     {
       "name": "runtime-zoom-hit-draft-history",
       "status": "passed",
-      "elapsedMs": 396,
+      "elapsedMs": 372,
       "details": {
         "scales": [
           50,
@@ -32,17 +32,17 @@
     {
       "name": "hidden-axis-keyboard",
       "status": "passed",
-      "elapsedMs": 52
+      "elapsedMs": 62
     },
     {
       "name": "merge-hit-edit-navigation",
       "status": "passed",
-      "elapsedMs": 140
+      "elapsedMs": 151
     },
     {
       "name": "frozen-row-scroll-hit",
       "status": "passed",
-      "elapsedMs": 152,
+      "elapsedMs": 142,
       "details": {
         "scrollTop": 200
       }
@@ -50,7 +50,7 @@
     {
       "name": "sparse-million-row-locate-edit",
       "status": "passed",
-      "elapsedMs": 132,
+      "elapsedMs": 133,
       "details": {
         "selection": {
           "row": 999999,
@@ -68,7 +68,7 @@
     {
       "name": "row-height-column-width-hit-undo",
       "status": "passed",
-      "elapsedMs": 177,
+      "elapsedMs": 189,
       "details": {
         "columnWidths": {
           "0": 200
@@ -81,7 +81,7 @@
     {
       "name": "filtered-navigation-visible-clipboard",
       "status": "passed",
-      "elapsedMs": 333
+      "elapsedMs": 418
     }
   ],
   "pageErrors": [],

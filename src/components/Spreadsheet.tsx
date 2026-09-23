@@ -1587,7 +1587,7 @@ export default function Spreadsheet({
           y + h / 2,
           cell.style?.align ?? 'left',
           1,
-          '#39443d',
+          cell.style?.color ?? '#39443d',
           1 / scale,
         );
       else ctx.fillText(text, textX, y + h / 2);

@@ -224,6 +224,18 @@ describe('rich Canvas layout', () => {
     expect(ctx.save).toHaveBeenCalledOnce();
     expect(ctx.restore).toHaveBeenCalledOnce();
   });
+
+  it('uses the cell color as the default for runs without an inline color', () => {
+    const ctx = context(),
+      canvas = ctx as unknown as CanvasRenderingContext2D;
+    const line = layoutRichText(canvas, {
+      value: 'plain',
+      style: { color: '#123456' },
+      richText: [{ text: 'plain' }],
+    })[0];
+    drawRichTextLine(canvas, line, 0, 10, 'left', 1, '#123456');
+    expect(ctx.fillStyle).toBe('#123456');
+  });
   it('wraps by measured width, preserves newlines and Unicode, and refuses too-wide glyphs', () => {
     const ctx = context() as unknown as CanvasRenderingContext2D;
     const sample: Cell = {

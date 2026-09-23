@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "153.0.8010.54",
-  "executedAt": "2026-09-23T22:31:37.886Z",
+  "executedAt": "2026-09-23T23:22:52.453Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "a6f6b49f799a4d20cb8a473c1193a4f76c360a87b80f2ab4926800361e0c5c13",
-  "artifactSha256": "93f6975a3bd8053d76b26ed5040aebe1ee1c4d97be1155a9936a9fc625984975",
+  "siteSha256": "2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87",
+  "artifactSha256": "e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29",
   "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
   "checks": [
     {
       "name": "host-focus-enter",
       "status": "passed",
-      "elapsedMs": 62
+      "elapsedMs": 60
     },
     {
       "name": "host-focus-escape",
@@ -27,7 +27,7 @@
     {
       "name": "ordinary-focus-return",
       "status": "passed",
-      "elapsedMs": 33
+      "elapsedMs": 17
     },
     {
       "name": "synchronous-host-focus",
