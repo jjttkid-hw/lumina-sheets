@@ -92,6 +92,24 @@ Imports accept an AbortSignal. A newer import, successful workbook edit/replacem
 
 Additional APIs cover layout, static row sorting, row/column insertion and deletion, input validation, conditional styles, print settings, data retries, and streaming CSV exports. [API documentation](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/SDK.md) describes contracts and examples. Errors from direct API calls should be handled by the caller; `onError` reports asynchronous data, interaction, and callback failures.
 
+For a production paged view, expose the data state and keep retry explicit. A failed page stays out of the cache, while pages that already loaded remain usable:
+
+```js
+const grid = createSpreadsheet(host, {
+  onDataStateChange: (state) => {
+    status.textContent = state.status === 'error'
+      ? `加载失败：${state.error?.message ?? '请重试'}`
+      : `${state.cachedPages} 页已缓存`;
+    retryButton.disabled = state.status !== 'error';
+  },
+});
+
+retryButton.addEventListener('click', () => grid.retryData());
+refreshButton.addEventListener('click', () => grid.clearDataCache());
+```
+
+`retryData()` only retries the last requested viewport and does not loop automatically. `clearDataCache()` cancels active page requests, drops retained pages, and reloads that viewport. Treat `AbortError` as an intentional cancellation during navigation or teardown; surface other errors to the user and keep the current cached pages visible.
+
 ## Build identity
 
 For support diagnostics and release verification, the package exposes the identity embedded in the build:
