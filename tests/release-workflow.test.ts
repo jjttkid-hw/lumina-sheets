@@ -16,6 +16,9 @@ describe('release workflow artifact alignment', () => {
     expect(source).not.toMatch(/- run: npm run build:all/);
     expect(source.indexOf('npm run check:licenses')).toBeLessThan(source.indexOf('npm publish'));
     expect(source.indexOf('npm run check:stable')).toBeLessThan(source.indexOf('npm publish'));
+    expect(source).toMatch(/NPM_TOKEN_PRESENT: \$\{\{ secrets\.NPM_TOKEN !==? '' \}\}/);
+    expect(source).toMatch(/unset NODE_AUTH_TOKEN/);
+    expect(source).toMatch(/Trusted Publishing \(OIDC\)/);
   });
 
   it('keeps CI and Pages deployment on the same tested site artifact', async () => {

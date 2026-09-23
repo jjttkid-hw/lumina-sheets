@@ -72,11 +72,21 @@ jobs:
         run: gh release upload "$RELEASE_TAG" "$SDK_ARTIFACT" "$SDK_ARTIFACT.sha256" --clobber
       - name: Publish to npm with provenance
         env:
-          # Prefer npm Trusted Publishing (OIDC). A granular token is optional.
+          # Leave NODE_AUTH_TOKEN unset for Trusted Publishing. npm uses the
+          # GitHub OIDC exchange when no long-lived token is supplied.
+          NPM_TOKEN_PRESENT: ${{ secrets.NPM_TOKEN != '' }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           SDK_ARTIFACT: ${{ steps.release.outputs.artifact }}
           NPM_DIST_TAG: ${{ steps.release.outputs.dist-tag }}
-        run: npm publish "./$SDK_ARTIFACT" --tag "$NPM_DIST_TAG" --access public --provenance
+        run: |
+          if [ "$NPM_TOKEN_PRESENT" = "true" ]; then
+            echo "Publishing with the explicitly configured NPM_TOKEN fallback"
+            npm publish "./$SDK_ARTIFACT" --tag "$NPM_DIST_TAG" --access public --provenance
+          else
+            echo "Publishing with npm Trusted Publishing (OIDC)"
+            unset NODE_AUTH_TOKEN
+            npm publish "./$SDK_ARTIFACT" --tag "$NPM_DIST_TAG" --access public --provenance
+          fi
 
       - name: Verify the published registry tarball and isolated install
         env:
