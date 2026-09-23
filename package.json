@@ -27,6 +27,7 @@
     "check:sdk": "node scripts/check-sdk.mjs --pack-destination artifacts",
     "check:api": "node scripts/check-api.mjs",
     "check:site-runtime": "node scripts/check-site-runtime.mjs",
+    "check:browser-evidence": "node scripts/check-browser-evidence.mjs",
     "check:licenses": "node scripts/package-notices.mjs --strict",
     "check:stable": "node scripts/check-stable-release.mjs",
     "check:reproducibility": "node scripts/check-reproducibility.mjs"
