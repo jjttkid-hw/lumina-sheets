@@ -14,4 +14,6 @@
 
 三引擎另各通过 4 项中文输入事件链检查：合成期间失焦延迟提交、合成中的 Enter/229 不提前提交、切换工作表后迟到的 compositionend 不写回，以及报表示例公式栏在合成期间不提交。脚本向生产 UI 派发浏览器 CompositionEvent/InputEvent/KeyboardEvent；它验证应用的事件处理链，不等同于 macOS、Windows 或移动系统的原生输入法候选窗口验收。
 
+三引擎另各通过 4 项浏览器原生持久化检查：旧版 localStorage 正文/恢复点/批注迁移后编辑和刷新、两个页面同时迁移只提交一份记录、损坏工作簿行与有效内容隔离、损坏编辑日志闭锁且保留恢复材料。检查直接使用各浏览器的 IndexedDB；它验证同源单设备恢复边界，不代表跨设备同步或突然断电一致性认证。
+
 本候选由 check-browser-evidence --verify-build 同时核对报告、站点 dist 和 SDK tgz 的实际摘要。它不替代正式 macOS Safari、原生中文 IME、实体移动设备、屏幕阅读器、跨设备性能、完整 Excel/WPS 语料或商业许可证法律复核。

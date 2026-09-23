@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 1798,
-      "sha256": "36341850f53d58acbc0324bc9c30faa4826f9b1da01e79cd66109e0089855130"
+      "bytes": 2210,
+      "sha256": "27d0d3e37564d177e2974a341ea6c4c25c6bbd2fce401a42deb2826895bfac36"
     },
     {
       "path": "accessibility/chromium.json",
@@ -85,6 +85,21 @@
       "path": "ime/webkit.json",
       "bytes": 2782,
       "sha256": "2bf9bbf2c40135eb31811fa6189023bdd234561dddaf7edb57398e73a33c9cca"
+    },
+    {
+      "path": "persistence/chromium.json",
+      "bytes": 2608,
+      "sha256": "7dc76500056aa0f8fa70a70ae62b5c16d823e18d01013e69f6546b4a347a0700"
+    },
+    {
+      "path": "persistence/firefox.json",
+      "bytes": 2601,
+      "sha256": "d4c98840854d3cba7fea8ce7b2a16e42c460e55580b9eb0b25f3e63a6735a418"
+    },
+    {
+      "path": "persistence/webkit.json",
+      "bytes": 2597,
+      "sha256": "8c98a074cdc4e9eaba3eb201c68d70a53679a95aaa2b1b299aeb8d7faaea2b01"
     },
     {
       "path": "touch/result.json",
