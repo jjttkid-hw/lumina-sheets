@@ -66,6 +66,6 @@ SDK 的 `activeSheet`/`toJSON` 是显式全量快照，不能在热路径轮询�
 
 PDF、数据源和验收产物的具体限制记录在 [docs/PDF.md](PDF.md)、[docs/PERFORMANCE.md](PERFORMANCE.md) 和 [docs/VERIFICATION.md](VERIFICATION.md)。这些文档只记录已运行的测试和实际环境，不能替代商业 SLA 或完整兼容认证。
 
-构建已生成依赖许可清单与预打包组件证据，但 ExcelJS 内嵌组件版本及部分许可文本仍待人工核实，商业授权审计尚未通过，详见 [DEPENDENCIES.md](DEPENDENCIES.md)。当前没有完整 SpreadJS/Excel 兼容认证，也没有据此承诺商业 SLA。
+构建已生成依赖许可清单与预打包组件证据；当前技术清单为 `0 errors / 0 reviewItems / 0 unresolvedVendorComponents`。这只说明仓库材料与安装树通过了技术一致性门禁，仍需权利人/法务完成商业授权、专利和再分发义务复核。当前没有完整 SpreadJS/Excel 兼容认证，也没有据此承诺商业 SLA，详见 [DEPENDENCIES.md](DEPENDENCIES.md)。
 
 v0.27 工作空间工具栏增加“行列”入口，支持指定位置/数量插入或删除，跨表公式和支持的元数据一起调整；候选校验通过后一次保存并可撤销。批注保持坐标绑定，不随格移动。工作空间快照历史与 SDK 结构历史政策分别适用，浏览器验收待完成；详见 [WORKSPACE-EDIT.md](WORKSPACE-EDIT.md)。

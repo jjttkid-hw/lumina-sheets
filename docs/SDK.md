@@ -243,7 +243,7 @@ XLSX 归档预检限制压缩输入 20 MB、实际总解压 64 MB、单 XML/rels
 
 错误分类包括 `INVALID_ARGUMENT`、`READ_ONLY`、`DESTROYED`、`DATA_SOURCE`、`EXPORT_CANCELLED`、`IMPORT_CANCELLED`、`VALIDATION_FAILED`；文件格式层的错误详情保留原始原因。公式子集与参数限制见 [FORMULAS.md](FORMULAS.md)，PDF 限制见 [PDF.md](PDF.md)。本 SDK 不是 SpreadJS API 的逐接口替换，接入需要迁移数据与调用方式。
 
-依赖清单与许可材料由构建生成，详见 [DEPENDENCIES.md](DEPENDENCIES.md)。仍有预打包组件和许可文本缺口待核实，商业授权审计尚未通过；当前 XLSX 子集不等于完整 Excel 兼容认证。
+依赖清单与许可材料由构建生成，详见 [DEPENDENCIES.md](DEPENDENCIES.md)。当前技术清单为 `0 errors / 0 reviewItems / 0 unresolvedVendorComponents`；这不是权利人/法务商业授权结论。当前 XLSX 子集也不等于完整 Excel 兼容认证。
 
 ## v0.8 可见 PDF 与 Canvas 修复
 

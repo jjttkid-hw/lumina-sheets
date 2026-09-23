@@ -10,7 +10,7 @@
 
 - Verify Chrome, Firefox and WebKit with 30 browser groups each, plus three Chromium touch-emulation groups. Preserve artifact-bound reports and distinguish physical mobile, Safari, native IME and screen-reader work still pending.
 - Prevent delayed workspace address synchronization from replacing a newly typed destination and writing to the wrong cell.
-- Include exact-source evidence and upstream MIT text for embedded elliptic 6.5.4. Dependency license review still blocks npm publication: four review items and 67 embedded components remain unresolved.
+- Include exact-source evidence and upstream MIT text for embedded elliptic 6.5.4. The historical dependency review was later closed by replacing the unverifiable unzipper dependency and completing the bundled-source evidence; the current technical inventory is tracked in `docs/DEPENDENCIES.md`.
 
 - Always release the IndexedDB connection during `close()`, even when a pending snapshot or flush fails. The original save error is rethrown after cleanup so callers can retry without leaving another page blocked.
 
