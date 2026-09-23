@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "version": "0.29.0",
-  "executedAt": "2026-09-23T04:49:44.532Z",
+  "executedAt": "2026-09-23T10:47:49.412Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -15,7 +15,7 @@
     {
       "name": "business-report-roundtrip",
       "status": "passed",
-      "elapsedMs": 120,
+      "elapsedMs": 113,
       "details": {
         "input": "docs/artifacts/report-v05.xlsx",
         "inputBytes": 7579,
@@ -29,7 +29,7 @@
     {
       "name": "structure-report-roundtrip",
       "status": "passed",
-      "elapsedMs": 47,
+      "elapsedMs": 43,
       "details": {
         "input": "docs/artifacts/report-v06-structure.xlsx",
         "inputBytes": 7518,
@@ -43,10 +43,10 @@
     {
       "name": "synthetic-supported-subset",
       "status": "passed",
-      "elapsedMs": 39,
+      "elapsedMs": 33,
       "details": {
-        "generatedBytes": 8670,
-        "generatedSha256": "e21493c205b1d3b95c2b4cdfb3abe4a2159bd12443ed31ab08a8d4d6a8bd1cdf",
+        "generatedBytes": 8671,
+        "generatedSha256": "f3e657f4b03db82236ca1d905fc33e63b2176e44c05d76d6bbff48ae458f6a21",
         "semanticSha256": "702d2570454d76ed3b0a89083701b479587625b0efe248f2b0ccf2ecb0a618ba",
         "sheets": 2,
         "storedCells": 12,
@@ -68,7 +68,7 @@
     {
       "name": "independent-reader-contract",
       "status": "passed",
-      "elapsedMs": 16,
+      "elapsedMs": 14,
       "details": {
         "reader": "exceljs@4.4.0",
         "sheets": [
@@ -90,7 +90,7 @@
       "details": {
         "generator": "exceljs@4.4.0",
         "inputBytes": 8426,
-        "inputSha256": "acccc8cd5d7b49f864556abe21143928fbad66eb0f03ec04fc7cff1b54d1c3e9",
+        "inputSha256": "a5d7c6e103ecb21bfd1913bafb6a099fd9edf9c0e623f19ba62c0fd1cb5a785c",
         "rejected": true,
         "error": "XLSX：工作表「含图片对象」包含尚不能保留的图片或图形，已停止导入以避免内容丢失。请保留原文件，在副本中移除这些对象后再导入。"
       }
