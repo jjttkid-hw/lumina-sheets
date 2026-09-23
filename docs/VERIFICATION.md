@@ -10,6 +10,13 @@
 
 # 验证记录
 
+## 当前状态（2026-09-24）
+
+- r14 候选（提交 `f6a6e82d892b69849a3727feafddf904559a62db`）移除了生产 CSS 对 Google Fonts 的外部依赖，新增离线/CSP 回归；固定来源时间 `1790122493` 下站点 SHA-256 为 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`，SDK tgz SHA-256 为 `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。
+- GitHub CI [35894621105](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35894621105) 和 CD [35895236363](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35895236363) 均成功；线上 `build-info.json` 已核对同一提交、版本和站点摘要。
+- r14 归档 [浏览器候选](acceptance/browser-candidate-2026-09-24-r14/README.md) 通过 25 份核心报告、XLSX 5 项、WPS 2 项；恢复补充 [r14](acceptance/recovery-2026-09-24/README.md) 三引擎 9 项功能和截图证据通过。
+- `lumina-report-sdk` 仍未出现在 npm registry（公开查询 404），当前终端 `npm whoami` 仍为 E401；因此不创建稳定 `1.0.0` 或 `latest` 发布记录。原生操作系统 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 语料及商业法务复核仍未完成。
+
 ## 当前状态（2026-09-23）
 
 - 公式引擎新增 `IRR` 与 `RATE`：支持一维现金流范围/直接现金流、可选初始猜测、受保护的牛顿迭代与二分回退；定向财务与公式帮助测试 27 项通过，错误域和公式错误传播有回归覆盖。该增量扩大明确支持子集，不代表完整 Excel/SpreadJS 财务函数兼容。

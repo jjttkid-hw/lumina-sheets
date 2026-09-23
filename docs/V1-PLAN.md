@@ -1,3 +1,5 @@
+2026-09-24 r14 候选（无外部字体依赖）：生产 CSS 移除 Google Fonts 运行时 `@import`，改用系统中英文字体回退，新增离线/CSP 回归。固定来源时间 `1790122493` 下，站点 SHA-256 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`，SDK SHA-256 `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。Chromium、Firefox、WebKit 各重跑 smoke 8、交互 6、焦点 4、布局 7、性能 6、DOM/ARIA 5、合成输入 4、持久化 4，Chromium 另触控 3；25 份报告全部绑定摘要并通过。恢复三引擎 9 项功能与截图证据通过，XLSX 5 项和 WPS 2 项通过。GitHub CI `35894621105`、CD `35895236363` 均成功，线上 `build-info.json` 已核对同一提交和站点摘要。npm registry 仍返回 404，CLI 仍未授权；原生系统 IME、真实读屏器、实体移动设备、完整 Excel/SpreadJS 兼容、跨设备性能和商业法务复核仍未完成，不创建 v1.0.0。
+
 2026-09-23 r13 验证器修复：Firefox/本地候选浏览器脚本统一等待 `domcontentloaded`；无障碍夹具改为追加测试宿主，避免删除示例页面的 metrics 节点造成 page error。r13 的 25 份核心报告完整性检查已通过，摘要绑定 `e432797...` / `066fefc...`。
 
 2026-09-23 r13 候选重绑定：发布 README 变更后重新构建 SDK（`066fefc...`）和站点（`e432797...`），重新生成 25 份核心浏览器、触控、框架、恢复及 XLSX/WPS 证据；Firefox 本地导航等待 DOM 就绪，避免字体加载超时。CI 将使用 r13，不沿用旧摘要。npm 注册表仍为 404，尚未发布。
