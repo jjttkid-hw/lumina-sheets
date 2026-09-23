@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Rebuilt the 0.29.0 candidate with `SOURCE_DATE_EPOCH=1790122493`; the site digest is `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268` and the SDK archive digest is `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`. Both repeated builds are byte-identical. The npm package is still not present in the public registry, so this remains a development candidate.
 - Add IRR and RATE financial examples to the report demo so the shipped commercial finance formulas are visible and regression-tested alongside the SDK engine.
 - Expose `productBuildIdentity()` from the browser SDK so hosts can record the embedded version, source fingerprint and build timestamp when diagnosing a production report. The value is diagnostic metadata and may be `null` for unbundled development code.
 
