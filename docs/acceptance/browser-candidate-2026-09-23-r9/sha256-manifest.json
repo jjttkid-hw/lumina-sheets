@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 2210,
-      "sha256": "27d0d3e37564d177e2974a341ea6c4c25c6bbd2fce401a42deb2826895bfac36"
+      "bytes": 2657,
+      "sha256": "e1f2b6e96639ff0f8c7577b61affabacb764cec24450989b4985edebdaa10b15"
     },
     {
       "path": "accessibility/chromium.json",
@@ -130,6 +130,11 @@
       "path": "webkit/smoke.json",
       "bytes": 6359,
       "sha256": "b68cdc1007b2e7f0685f3aebe6dcc6c0c013b37bf6d04f2eef0e12092c8c191d"
+    },
+    {
+      "path": "xlsx-corpus.json",
+      "bytes": 3852,
+      "sha256": "c641a4b9f54d89183cbf13b9c7512befb8b37f4787231296329c2ac909782cdd"
     }
   ]
 }
