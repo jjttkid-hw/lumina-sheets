@@ -17,8 +17,9 @@ const engines = { chromium, firefox, webkit };
 assert(engines[engine], 'Unsupported BROWSER_ENGINE');
 const origin = new URL(process.env.BROWSER_TEST_URL ?? 'http://127.0.0.1:4273/lumina-sheets/');
 assert(
-  ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname),
-  'Use a local candidate server',
+  ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname) ||
+    origin.origin === 'https://jjttkid-hw.github.io',
+  'Use a local candidate server or the official Pages deployment',
 );
 const output = path.resolve(`artifacts/browser-interactions/${engine}`);
 await mkdir(output, { recursive: true });

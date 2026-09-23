@@ -15,8 +15,9 @@ const engines = { chromium, firefox, webkit };
 assert.equal(engine, 'chromium', 'This suite requires Chromium CDP native touch injection');
 const origin = new URL(process.env.BROWSER_TEST_URL ?? 'http://127.0.0.1:4273/lumina-sheets/');
 assert(
-  ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname),
-  'Use a local candidate server',
+  ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname) ||
+    origin.origin === 'https://jjttkid-hw.github.io',
+  'Use a local candidate server or the official Pages deployment',
 );
 const output = path.resolve(`artifacts/browser-touch/${engine}`);
 await mkdir(output, { recursive: true });
