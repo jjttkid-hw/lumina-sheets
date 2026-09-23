@@ -32,7 +32,8 @@ const browser = await engines[engine].launch({
   ...(engine === 'chromium' ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
   // Only local candidate traffic skips system proxies; remote runs keep normal routing.
   ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
-    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } } : {}),
+    ? { firefoxUserPrefs: { 'network.proxy.type': 0 } }
+    : {}),
 });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
@@ -303,6 +304,57 @@ try {
     assert.deepEqual(state, { outcome: 'AbortError', lateCallbacks: 0, value: 'new session' });
     return state;
   });
+  await check('sdk-prefetch-contract', async () => {
+    const state = await page.evaluate(async () => {
+      const { createSpreadsheet } = await import('./lumina.js');
+      const host = document.createElement('div');
+      host.style.cssText = 'height:280px;width:700px';
+      document.body.append(host);
+      const offsets = [];
+      let release;
+      const grid = createSpreadsheet(host);
+      await grid.bindData(
+        {
+          rowCount: 128,
+          columnCount: 1,
+          fetchPage: (offset, limit) => {
+            offsets.push(offset);
+            if (offset === 40)
+              return new Promise((resolve) => {
+                release = resolve;
+              });
+            return Promise.resolve({
+              rows: Array.from({ length: limit }, (_, index) => [offset + index]),
+              totalRows: 128,
+            });
+          },
+        },
+        { pageSize: 4, maxPages: 2 },
+      );
+      const before = grid.selectedRange;
+      await grid.prefetch({ firstRow: 20, lastRow: 23 });
+      const warmedValue = grid.getValue('A21');
+      const controller = new AbortController();
+      const pending = grid.prefetch({ firstRow: 40, lastRow: 43 }, { signal: controller.signal });
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      controller.abort();
+      const outcome = await pending.then(
+        () => 'resolved',
+        (error) => error.name,
+      );
+      const after = grid.selectedRange;
+      grid.destroy();
+      release?.({ rows: Array.from({ length: 4 }, () => [40]), totalRows: 128 });
+      host.remove();
+      return { before, after, warmedValue, outcome, offsets };
+    });
+    assert.deepEqual(state.before, state.after);
+    assert.equal(state.warmedValue, 20);
+    assert.equal(state.outcome, 'AbortError');
+    assert(state.offsets.includes(20));
+    assert(state.offsets.includes(40));
+    return state;
+  });
   await page.screenshot({ path: path.join(output, 'validation.png'), fullPage: true });
 } catch (error) {
   report.runErrors.push({
@@ -319,6 +371,7 @@ try {
     'native-copy-cut-paste',
     'sdk-mount-isolation-destroy',
     'sdk-pending-source-destroy',
+    'sdk-prefetch-contract',
   ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();

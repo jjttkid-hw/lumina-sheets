@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-09-23T21:26:13.023Z",
+  "executedAt": "2026-09-23T21:46:38.556Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,17 +17,17 @@
     {
       "name": "validation-editor-recovery",
       "status": "passed",
-      "elapsedMs": 262
+      "elapsedMs": 284
     },
     {
       "name": "validation-list-keyboard",
       "status": "passed",
-      "elapsedMs": 122
+      "elapsedMs": 117
     },
     {
       "name": "native-clipboard-atomic-validation",
       "status": "passed",
-      "elapsedMs": 361,
+      "elapsedMs": 400,
       "details": {
         "transport": "native keyboard copy/paste",
         "rejected": "B2:C2 unchanged",
@@ -37,12 +37,12 @@
     {
       "name": "native-copy-cut-paste",
       "status": "passed",
-      "elapsedMs": 120
+      "elapsedMs": 137
     },
     {
       "name": "sdk-mount-isolation-destroy",
       "status": "passed",
-      "elapsedMs": 14,
+      "elapsedMs": 17,
       "details": {
         "duplicate": "INVALID_ARGUMENT",
         "empty": 0,
@@ -54,11 +54,35 @@
     {
       "name": "sdk-pending-source-destroy",
       "status": "passed",
-      "elapsedMs": 158,
+      "elapsedMs": 157,
       "details": {
         "outcome": "AbortError",
         "lateCallbacks": 0,
         "value": "new session"
+      }
+    },
+    {
+      "name": "sdk-prefetch-contract",
+      "status": "passed",
+      "elapsedMs": 24,
+      "details": {
+        "before": {
+          "row": 0,
+          "col": 0
+        },
+        "after": {
+          "row": 0,
+          "col": 0
+        },
+        "warmedValue": 20,
+        "outcome": "AbortError",
+        "offsets": [
+          0,
+          4,
+          20,
+          40,
+          0
+        ]
       }
     }
   ],
@@ -72,7 +96,8 @@
       "native-clipboard-atomic-validation",
       "native-copy-cut-paste",
       "sdk-mount-isolation-destroy",
-      "sdk-pending-source-destroy"
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract"
     ],
     "actualChecks": [
       "validation-editor-recovery",
@@ -80,7 +105,8 @@
       "native-clipboard-atomic-validation",
       "native-copy-cut-paste",
       "sdk-mount-isolation-destroy",
-      "sdk-pending-source-destroy"
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract"
     ],
     "missingChecks": [],
     "unexpectedChecks": [],

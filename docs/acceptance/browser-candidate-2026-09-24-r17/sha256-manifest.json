@@ -28,8 +28,8 @@
     },
     {
       "path": "chromium/interactions.json",
-      "bytes": 2547,
-      "sha256": "9feff99ec3050bde495f0a8f8d09318e69f39d3c464115936d13edc12583686e"
+      "bytes": 3033,
+      "sha256": "2d82d98a48dd9963a0d6e0d0e92944473724b57c500574e60c85a1eb05fc1528"
     },
     {
       "path": "chromium/layout.json",
@@ -53,8 +53,8 @@
     },
     {
       "path": "firefox/interactions.json",
-      "bytes": 2540,
-      "sha256": "c6eab14a3696db0821c46919693daae3371693c64196de6e61023681ae2a698f"
+      "bytes": 3026,
+      "sha256": "c3d791e308fd52d3a6baa8217676c43c5ac423fd8fd0dc028fe43932c100b0a1"
     },
     {
       "path": "firefox/layout.json",
@@ -113,8 +113,8 @@
     },
     {
       "path": "webkit/interactions.json",
-      "bytes": 2536,
-      "sha256": "71511b8608798b174b7a48ede2a61418da025f8dc5fe49bba39a41dcf2aa4924"
+      "bytes": 3022,
+      "sha256": "5ca519fc36c79944d399cde07c7b7f2560ebffa9a12703b59bc32ca44ddc5d0f"
     },
     {
       "path": "webkit/layout.json",
