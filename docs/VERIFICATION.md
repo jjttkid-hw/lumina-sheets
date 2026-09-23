@@ -14,12 +14,12 @@
 
 - 修复 Canvas 富文本默认颜色：未指定局部颜色的文字片段现在继承单元格外层 `style.color`，新增回归测试。定向富文本测试、格式检查和完整站点/SDK 构建通过。
 - 固定来源时间候选重新绑定：站点 SHA-256 `2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87`，SDK tgz SHA-256 `e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29`。r18 三引擎 25 份报告、Chromium 触控、XLSX 5 项和 WPS 2 项均已用新摘要重新验证。
-- 上一轮远端 CI 因旧 XLSX 语料摘要仍绑定 `93f6975a…` 而失败，未归因于运行时代码；已重新生成语料与浏览器证据，等待提交后的 CI/CD 复核。npm registry 仍为 404/E401，不创建 `1.0.0` 或 `latest`。
+- 上一轮远端 CI 因旧 XLSX 语料摘要仍绑定 `93f6975a…` 而失败，未归因于运行时代码；语料与浏览器证据已重新生成并在当前 r18 提交中通过 CI/CD 复核。npm registry 仍为 404/E401，不创建 `1.0.0` 或 `latest`。
 
 ## 当前状态（2026-09-24，提交 `6a89721`）
 
 - 提交 `8289a27` 的 REST 重试策略已同步公共 API 基线；其 CI [35929525138](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35929525138) 与 CD [35930032182](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35930032182) 均成功。线上 `build-info.json` 已核对提交 `8289a273486763899903bd6eb457cc0efc92b884`、版本 `0.29.0`、站点 SHA-256 `a6f6b49f799a4d20cb8a473c1193a4f76c360a87b80f2ab4926800361e0c5c13`。
-- 文档提交 `6a89721` 只修正发布说明和验收账本绑定；其 CI 正在重新执行完整测试、三引擎框架/恢复浏览器检查与 r18 证据门禁。npm registry 仍返回 E401/404，不能宣称 npm 已发布或创建 `1.0.0`/`latest`。
+- 文档提交 `6a89721` 只修正发布说明和验收账本绑定；其 CI/CD 已完成完整测试、三引擎框架/恢复浏览器检查与 r18 证据门禁。npm registry 仍返回 E401/404，不能宣称 npm 已发布或创建 `1.0.0`/`latest`。
 - r18 候选 [浏览器证据](acceptance/browser-candidate-2026-09-24-r18/README.md) 通过 25 份核心报告、Chromium 触控、XLSX 5 项和 WPS 2 项；严格许可证技术门禁为 0 errors / 0 reviewItems / 0 unresolvedVendorComponents。原生操作系统 IME、真实 VoiceOver/NVDA/JAWS、实体移动触控、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍未完成。
 
 - r14 候选（提交 `f6a6e82d892b69849a3727feafddf904559a62db`）移除了生产 CSS 对 Google Fonts 的外部依赖，新增离线/CSP 回归；固定来源时间 `1790122493` 下站点 SHA-256 为 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c`，SDK tgz SHA-256 为 `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。
