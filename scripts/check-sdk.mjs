@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { copyFile, mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdtemp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,6 +9,7 @@ import ts from 'typescript';
 import { hasLicenseText, declaredLicenseCoverage } from './license-evidence.mjs';
 import { supplementalNotices } from './supplemental-notices.mjs';
 import { validateVendorEvidence, reviewedEmbeddedComponent } from './vendor-evidence.mjs';
+import { deterministicPack } from './deterministic-pack.mjs';
 
 // Run after build:sdk: node scripts/check-sdk.mjs. Nothing is published and all
 // installs happen outside the repository; no host React or ambient types leak in.
@@ -194,9 +195,7 @@ try {
   ])
     assert.equal(Object.keys(sourceManifest[field] ?? {}).length, 0, `${field} must be bundled`);
 
-  const [packed] = JSON.parse(
-    run(npm, ['pack', '--json', '--ignore-scripts', '--pack-destination', temporary], sdkDirectory),
-  );
+  const [packed] = JSON.parse(run(npm, ['pack', '--dry-run', '--json', '--ignore-scripts'], sdkDirectory));
   assert.equal(packed.name, packageName);
   assert.equal(packed.version, sourceManifest.version);
   assert.equal(path.basename(packed.filename), packed.filename);
@@ -234,6 +233,12 @@ try {
     'bundle-inputs.json',
   ])
     assert(packedPaths.has(required), `Package is missing ${required}`);
+
+  const packedArchive = path.join(temporary, packed.filename);
+  const sourceEpoch =
+    process.env.SOURCE_DATE_EPOCH ??
+    run('git', ['log', '-1', '--format=%ct'], root).trim();
+  await deterministicPack(sdkDirectory, packedPaths, packedArchive, sourceEpoch);
 
   const consumer = path.join(temporary, 'consumer');
   await mkdir(consumer);
@@ -605,7 +610,7 @@ console.log('SDK consumer: ESM import and non-DOM public API checks passed');
       name: packed.name,
       version: packed.version,
       files: packed.files.length,
-      packedBytes: packed.size,
+      packedBytes: (await stat(archive)).size,
       sha256,
       artifact: packDestination ? path.join(packDestination, packed.filename) : null,
     }),

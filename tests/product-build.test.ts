@@ -27,7 +27,9 @@ async function fixture() {
     'tsconfig.json',
     'tsconfig.sdk.json',
     'src/main.ts',
-    'scripts/build.mjs',
+    'scripts/build-time.mjs',
+    'scripts/product-build.mjs',
+    'scripts/bundle-evidence.mjs',
   ])
     await writeFile(path.join(root, file), 'fixture');
   await writeFile(path.join(root, 'package.json'), JSON.stringify({ version: '0.29.0' }));
@@ -50,7 +52,7 @@ it('records reproducible source identity independently of absolute root and evid
   expect(first.sourceSha256).toMatch(/^[a-f0-9]{64}$/);
   expect(JSON.stringify(first)).not.toContain(root);
 });
-it.each(['src/main.ts', 'package-lock.json', 'vite.config.ts', 'scripts/build.mjs'])(
+it.each(['src/main.ts', 'package-lock.json', 'vite.config.ts', 'scripts/product-build.mjs'])(
   'changes identity when input %s changes',
   async (file) => {
     const root = await fixture();
