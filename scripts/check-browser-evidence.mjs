@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 
-const root = path.resolve(process.argv[2] ?? 'docs/acceptance/browser-candidate-2026-09-23-r5');
+const root = path.resolve(process.argv[2] ?? 'docs/acceptance/browser-candidate-2026-09-23-r6');
 assert(process.argv.length <= 3, 'Usage: node scripts/check-browser-evidence.mjs [report-directory]');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const readJson = async (relative) => JSON.parse(await readFile(path.join(root, relative), 'utf8'));

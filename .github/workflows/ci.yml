@@ -26,6 +26,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run format:check
+      - run: npm run check:browser-evidence
       - name: Use accepted candidate source time when configured
         env:
           CANDIDATE_SOURCE_EPOCH: ${{ vars.RELEASE_SOURCE_DATE_EPOCH }}
