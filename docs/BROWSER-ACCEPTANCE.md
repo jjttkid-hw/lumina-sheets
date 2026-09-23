@@ -472,3 +472,5 @@ SDK 快捷键补充：独立示例和嵌入页面分别验证 Ctrl/Cmd+Z、Shift
 
 草稿生命周期补充：公式栏未提交时切换视图卸载，检查提示解除且旧事件不能提交；Enter 校验失败保留风险，失焦拒绝并恢复原值后不应残留提示。延迟 IME 失焦提交后同值 change 不重新标脏；Canvas compositionend 无 change 时仍保护最终草稿。真实浏览器与 React 提交时序待验，新增受控回归不充当浏览器证据。
 2026-09-23 当前候选与 Safari 补验：主线提交 `b268e95` 的 CI/CD 均成功，线上站点摘要 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`、SDK 摘要 `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`。r9 自动化报告覆盖 Chromium/Firefox/WebKit 的 smoke、交互、焦点、布局、性能、无障碍、IME 事件链和持久化；macOS Safari 27.0 / macOS 26.7 r4 另完成结构撤销、XLSX 下载、筛选和公式状态保持。上述证据不替代原生中文输入法候选窗口、VoiceOver、实体移动触控、跨设备性能或完整 Excel/WPS 对照。
+
+2026-09-24 Safari r14 实机补验：Safari 27.0 / macOS 26.7 在线公式示例完成 D5 定位、40→50 编辑重算、撤销恢复 40、重做恢复 50；AX 树持续显示 table/row/cell 语义，页面/控制台/运行错误均为 0。原始记录见 [browser-safari-2026-09-24-r14](acceptance/browser-safari-2026-09-24-r14/README.md)，绑定站点 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c` 与 SDK `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。该记录不替代原生 IME、VoiceOver/NVDA/JAWS、实体移动设备、跨设备性能、完整 Excel/WPS 或 npm registry 验证。

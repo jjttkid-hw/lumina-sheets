@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1441,
+      "sha256": "dee2469ba9379164ad308f3992a4c2658d776eb91c2a91d564b7eb7a2a9882d5"
+    },
+    {
+      "path": "result.json",
+      "bytes": 1484,
+      "sha256": "1c274fb7514d40bea18c6982e323811757cccee3d07e00967b07e335cd403ec6"
+    },
+    {
+      "path": "safari-ax.txt",
+      "bytes": 607,
+      "sha256": "48de0231febd2b13350188a876653a26b49241284255d2ca5c9a4aadee6785b2"
+    }
+  ]
+}

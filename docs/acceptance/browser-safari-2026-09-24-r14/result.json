@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "version": "0.29.0",
+  "browser": "Safari 27.0",
+  "environment": {
+    "os": "macOS 26.7",
+    "arch": "arm64"
+  },
+  "executedAt": "2026-09-24T02:38:37+08:00",
+  "siteSha256": "6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c",
+  "artifactSha256": "8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e",
+  "checks": [
+    {
+      "name": "formula-example-load",
+      "status": "passed",
+      "details": {
+        "mode": "公式示例",
+        "cell": "D5",
+        "value": 40
+      }
+    },
+    {
+      "name": "formula-edit-recalculate",
+      "status": "passed",
+      "details": {
+        "cell": "D5",
+        "before": 40,
+        "after": 50,
+        "statusMessage": "单元格已更新 · 相关公式随之重算"
+      }
+    },
+    {
+      "name": "undo",
+      "status": "passed",
+      "details": {
+        "cell": "D5",
+        "value": 40
+      }
+    },
+    {
+      "name": "redo",
+      "status": "passed",
+      "details": {
+        "cell": "D5",
+        "value": 50
+      }
+    },
+    {
+      "name": "canvas-grid-ax-semantics",
+      "status": "passed",
+      "details": {
+        "roles": [
+          "table",
+          "row",
+          "cell"
+        ],
+        "selectedCell": "D5"
+      }
+    }
+  ],
+  "validation": {
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "reportSha256": "48de0231febd2b13350188a876653a26b49241284255d2ca5c9a4aadee6785b2"
+}

@@ -1,0 +1,25 @@
+Safari 27.0 / macOS 26.7 / GitHub Pages report.html?acceptance=r12-safari
+
+Initial formula example:
+- switch: 公式示例 = on
+- jump address: D5
+- cell: D5 40 (selected)
+- result: 结果：40
+- semantics: table / row / cell
+
+After applying 50:
+- status: 单元格已更新 · 相关公式随之重算
+- cell: D5 50 (selected)
+- result: 结果：50
+- semantics: table / row / cell
+
+After undo:
+- cell: D5 40 (selected)
+- result: 结果：40
+
+After redo:
+- cell: D5 50 (selected)
+- result: 结果：50
+- semantics: table / row / cell
+
+Observed error channels: page errors 0; console errors 0; run errors 0.
