@@ -2,6 +2,8 @@
 
 2026-09-23 当前候选确定性重建：主线提交 `efc6e79006651f37c602411396c34a71ed433e69` 使用 `SOURCE_DATE_EPOCH=1790122493` 连续两次构建通过，站点摘要为 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`，SDK 摘要为 `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`（718,444 字节）；摘要与线上部署和 r9 浏览器记录一致。npm 注册表仍未出现 `lumina-report-sdk`，所以版本继续保持 `0.29.0`。
 
+2026-09-23 Safari r4 交互复验：Safari 27.0 / macOS 26.7 线上页面完成结构删除后撤销、XLSX 导出进度与下载提示、文本筛选应用/清除，以及公式栏和 B2 结果保持；记录见 [browser-safari-2026-09-23-r4](acceptance/browser-safari-2026-09-23-r4/README.md)。该记录绑定站点摘要 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268` 和提交 `12a2205`，不改变实体触控、原生 IME、VoiceOver、完整 Excel/WPS 语料及 npm 首发门槛。
+
 2026-09-23 Safari r2 复验：在 macOS Safari 线上构建实际完成报表初始化、公式示例切换、`=SUM(1,2,3)` 结果 6、撤销恢复，以及 `=SUM(4,5,6)` 结果 15 的刷新恢复；AX 树出现 table/row/cell 语义。记录见 [browser-safari-2026-09-23-r2](acceptance/browser-safari-2026-09-23-r2/README.md)，绑定当前站点摘要 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`。该记录不替代原生 IME、VoiceOver、实体触控、跨设备性能或完整文件语料验收。
 
 2026-09-23 当前远端状态更新：提交 `39484f4` 的 GitHub CI `35820942633` 与 CD `35821172170` 均成功。线上 `build-info.json` 已核对为版本 `0.29.0`、同一提交和站点 SHA-256 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`；当前候选 SDK tgz SHA-256 为 `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`。全量测试为 163 个文件、2,309 项通过；XLSX 语料 5 项、r9 浏览器证据 25 份及构建绑定门禁均通过。npm 注册表仍未发布，正式 Safari、原生中文 IME、实体设备、真实屏幕阅读器、跨设备性能、完整 Excel/WPS 语料和商业许可法律复核仍是 v1.0 门槛。
