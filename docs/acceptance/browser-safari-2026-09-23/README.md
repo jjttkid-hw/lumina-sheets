@@ -4,9 +4,9 @@
 - 浏览器：Safari 27.0
 - 操作系统：macOS 26.7 (25G227)
 - 站点：<https://jjttkid-hw.github.io/lumina-sheets/examples/report.html?accept=1>
-- 受测对象：GitHub Pages `build-info.json` 在本轮复验时标识为提交 `3b4c0c010a1952c7c1909643861f521aae7ac2de`；站点内容摘要 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534`
+- 受测对象：GitHub Pages 站点内容摘要 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534`；本轮浏览器操作在提交 `3b4c0c010a1952c7c1909643861f521aae7ac2de` 的构建上完成，来源时间为 `2026-09-23T08:14:53+08:00`。
 
-站点摘要只计算实际部署文件，明确排除仅用于追踪提交的 `build-info.json`。因此后续只更新验收文档时，CD 重新生成的提交字段可以变化，但只要内容摘要保持一致，本报告仍绑定同一份可执行站点内容；需要重新验证的是摘要变化，而不是文档提交本身。
+站点摘要只计算实际部署文件，明确排除仅用于追踪提交的 `build-info.json`。仓库变量 `RELEASE_SOURCE_DATE_EPOCH` 固定候选来源时间后，后续文档提交不会把 Git 时间写入 SDK 诊断元数据，因此只要内容摘要保持一致，本报告仍绑定同一份可执行站点内容。
 
 ## 已执行检查
 
