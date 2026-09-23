@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-21T02:41:29.441Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "8dd656afc3289e02241e9126bd1b7ac4fa3dda8944f1daffae993aa0f8b9da57",
+  "artifactSha256": "8371aab6f6db7e4aa6cf696c5c08f1b0c3b4d70c9bdc1a140fcd7a3eaf9bdabe",
+  "scope": "Measured real-browser performance on this machine, no pass/fail latency budget or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.",
+  "checks": [
+    {
+      "name": "fixture-100000",
+      "status": "failed",
+      "elapsedMs": 36005,
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('gridcell').filter({ hasText: 'A1 10' }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "fixture-1000000",
+      "status": "failed",
+      "elapsedMs": 40544,
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('gridcell').filter({ hasText: 'A1 50' }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "scroll-cancel-clear",
+      "status": "passed",
+      "elapsedMs": 185,
+      "details": {
+        "cancelled": {
+          "completed": 1,
+          "planned": 40,
+          "status": "cancelled",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        },
+        "reset": {
+          "completed": 0,
+          "planned": 40,
+          "status": "not-started",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        }
+      }
+    },
+    {
+      "name": "range-cancel",
+      "status": "passed",
+      "elapsedMs": 65
+    },
+    {
+      "name": "range-disjoint",
+      "status": "passed",
+      "elapsedMs": 7928,
+      "details": {
+        "invalidationP50Ms": 0,
+        "invalidationP95Ms": 0,
+        "incrementalReadP50Ms": 7,
+        "incrementalReadP95Ms": 9,
+        "fullRecalculationP50Ms": 223,
+        "fullRecalculationP95Ms": 289,
+        "meanRecomputedFormulas": 1,
+        "meanCandidateChecks": 13.033333333333333,
+        "meanIndexVisits": 26.733333333333334
+      }
+    },
+    {
+      "name": "range-overlapping",
+      "status": "passed",
+      "elapsedMs": 3885,
+      "details": {
+        "invalidationP50Ms": 21,
+        "invalidationP95Ms": 25,
+        "incrementalReadP50Ms": 44,
+        "incrementalReadP95Ms": 68,
+        "fullRecalculationP50Ms": 44,
+        "fullRecalculationP95Ms": 52,
+        "meanRecomputedFormulas": 10000,
+        "meanCandidateChecks": 10000,
+        "meanIndexVisits": 20000
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "status": "failed"
+}

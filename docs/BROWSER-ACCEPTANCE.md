@@ -16,6 +16,8 @@
 
 # 浏览器验收矩阵（候选构建已验证，平台级矩阵仍待执行）
 
+2026-09-24 r16 候选复验：新增首屏分包预算门禁后，Chromium、Firefox、WebKit 各通过 smoke 8、交互 6、焦点 4、布局 7、性能 6、DOM/ARIA 5、合成输入 4、持久化 4 项；Chromium 另通过 3 项触控模拟。25 份报告绑定站点 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c` 和 SDK `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`，详见 [r16](acceptance/browser-candidate-2026-09-24-r16/README.md)。这是桌面浏览器与触控模拟证据，仍不替代原生系统 IME、真实读屏器、实体移动设备、跨设备性能、完整 Excel/WPS、npm registry 或商业法务复核。
+
 2026-09-23 当前候选复验：提交 `f2a25a9` 使用固定来源时间重新运行 Chromium、Firefox、WebKit 的 smoke、交互、焦点、布局和性能套件，三引擎均通过；Chromium 另通过 3 项触控模拟。报告统一绑定站点 SHA-256 `8f506d211485b4df08bcce679b0d933c2a3a0c2fff19292f1c6fe271d8544534` 和 SDK SHA-256 `d51f9a8664aa77623a684049dbf026b8fa73cfa56b045e0d6f47f1a9f650ed17`，原始记录见 [browser-candidate-2026-09-23-r5](acceptance/browser-candidate-2026-09-23-r5/README.md)。这仍不替代正式 Safari、原生中文 IME、实体移动设备、屏幕阅读器、跨设备性能或商业许可证法律复核。
 
 2026-09-23 远端归档与部署核验：包含本轮原始浏览器报告的提交 `5517053` 已通过 GitHub CI `35790150657` 和 CD `35790481864`，线上 `build-info.json` 为提交 `55170538df26287f54826f7259951969d2008a03`、站点 SHA-256 `77f9d66e1fa8ec9cc7674c176d6c7cef7decc01b999ecab6343f089989b731c9`。CI/CD 证明报告已入库且部署链路通过；由于部署重新构建了站点，下面 `r4` 报告继续只对其记录的受测制品哈希负责，不能仅凭源码功能未变就视作线上制品已完成同一浏览器套件。

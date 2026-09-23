@@ -1,0 +1,1097 @@
+{
+  "id": "d2047591-9e76-4c72-81df-4bfdd2bdc7a5",
+  "name": "经营报表",
+  "description": "基于配置和结构化数据，在浏览器生成报表。",
+  "sheets": [
+    {
+      "id": "7fa48b33-4b41-4b94-ae82-490f3ae9704a",
+      "name": "报表",
+      "cells": {
+        "A1": {
+          "value": "月份",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "B1": {
+          "value": "产品",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "C1": {
+          "value": "营收",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "D1": {
+          "value": "成本",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "E1": {
+          "value": "利润",
+          "style": {
+            "bold": true,
+            "color": "#23644d",
+            "background": "#e8f2ec"
+          }
+        },
+        "A2": {
+          "value": "1月",
+          "style": {}
+        },
+        "B2": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C2": {
+          "value": 100000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D2": {
+          "value": 60000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E2": {
+          "value": "=C2-D2",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A3": {
+          "value": "1月",
+          "style": {}
+        },
+        "B3": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C3": {
+          "value": 107300,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D3": {
+          "value": 62900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E3": {
+          "value": "=C3-D3",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A4": {
+          "value": "1月",
+          "style": {}
+        },
+        "B4": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C4": {
+          "value": 114600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D4": {
+          "value": 65800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E4": {
+          "value": "=C4-D4",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A5": {
+          "value": "1月",
+          "style": {}
+        },
+        "B5": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C5": {
+          "value": 121900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D5": {
+          "value": 68700,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E5": {
+          "value": "=C5-D5",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A6": {
+          "value": "1月",
+          "style": {}
+        },
+        "B6": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C6": {
+          "value": 129200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D6": {
+          "value": 71600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E6": {
+          "value": "=C6-D6",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A7": {
+          "value": "1月",
+          "style": {}
+        },
+        "B7": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C7": {
+          "value": 136500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D7": {
+          "value": 74500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E7": {
+          "value": "=C7-D7",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A8": {
+          "value": "2月",
+          "style": {}
+        },
+        "B8": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C8": {
+          "value": 143800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D8": {
+          "value": 77400,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E8": {
+          "value": "=C8-D8",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A9": {
+          "value": "2月",
+          "style": {}
+        },
+        "B9": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C9": {
+          "value": 151100,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D9": {
+          "value": 80300,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E9": {
+          "value": "=C9-D9",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A10": {
+          "value": "2月",
+          "style": {}
+        },
+        "B10": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C10": {
+          "value": 158400,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D10": {
+          "value": 83200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E10": {
+          "value": "=C10-D10",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A11": {
+          "value": "2月",
+          "style": {}
+        },
+        "B11": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C11": {
+          "value": 165700,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D11": {
+          "value": 86100,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E11": {
+          "value": "=C11-D11",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A12": {
+          "value": "2月",
+          "style": {}
+        },
+        "B12": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C12": {
+          "value": 173000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D12": {
+          "value": 89000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E12": {
+          "value": "=C12-D12",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A13": {
+          "value": "2月",
+          "style": {}
+        },
+        "B13": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C13": {
+          "value": 180300,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D13": {
+          "value": 91900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E13": {
+          "value": "=C13-D13",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A14": {
+          "value": "3月",
+          "style": {}
+        },
+        "B14": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C14": {
+          "value": 187600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D14": {
+          "value": 94800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E14": {
+          "value": "=C14-D14",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A15": {
+          "value": "3月",
+          "style": {}
+        },
+        "B15": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C15": {
+          "value": 194900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D15": {
+          "value": 97700,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E15": {
+          "value": "=C15-D15",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A16": {
+          "value": "3月",
+          "style": {}
+        },
+        "B16": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C16": {
+          "value": 202200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D16": {
+          "value": 100600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E16": {
+          "value": "=C16-D16",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A17": {
+          "value": "3月",
+          "style": {}
+        },
+        "B17": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C17": {
+          "value": 209500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D17": {
+          "value": 103500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E17": {
+          "value": "=C17-D17",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A18": {
+          "value": "3月",
+          "style": {}
+        },
+        "B18": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C18": {
+          "value": 216800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D18": {
+          "value": 106400,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E18": {
+          "value": "=C18-D18",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A19": {
+          "value": "3月",
+          "style": {}
+        },
+        "B19": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C19": {
+          "value": 224100,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D19": {
+          "value": 109300,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E19": {
+          "value": "=C19-D19",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A20": {
+          "value": "4月",
+          "style": {}
+        },
+        "B20": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C20": {
+          "value": 231400,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D20": {
+          "value": 112200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E20": {
+          "value": "=C20-D20",
+          "style": {
+            "format": "currency"
+          }
+        },
+        "A21": {
+          "value": "4月",
+          "style": {}
+        },
+        "B21": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C21": {
+          "value": 238700,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D21": {
+          "value": 115100,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E21": {
+          "value": "=C21-D21",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A22": {
+          "value": "4月",
+          "style": {}
+        },
+        "B22": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C22": {
+          "value": 246000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D22": {
+          "value": 118000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E22": {
+          "value": "=C22-D22",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A23": {
+          "value": "4月",
+          "style": {}
+        },
+        "B23": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C23": {
+          "value": 253300,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D23": {
+          "value": 120900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E23": {
+          "value": "=C23-D23",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A24": {
+          "value": "4月",
+          "style": {}
+        },
+        "B24": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C24": {
+          "value": 260600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D24": {
+          "value": 123800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E24": {
+          "value": "=C24-D24",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A25": {
+          "value": "4月",
+          "style": {}
+        },
+        "B25": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C25": {
+          "value": 267900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D25": {
+          "value": 126700,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E25": {
+          "value": "=C25-D25",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A26": {
+          "value": "5月",
+          "style": {}
+        },
+        "B26": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C26": {
+          "value": 275200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D26": {
+          "value": 129600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E26": {
+          "value": "=C26-D26",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A27": {
+          "value": "5月",
+          "style": {}
+        },
+        "B27": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C27": {
+          "value": 282500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D27": {
+          "value": 132500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E27": {
+          "value": "=C27-D27",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A28": {
+          "value": "5月",
+          "style": {}
+        },
+        "B28": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C28": {
+          "value": 289800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D28": {
+          "value": 135400,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E28": {
+          "value": "=C28-D28",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A29": {
+          "value": "5月",
+          "style": {}
+        },
+        "B29": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C29": {
+          "value": 297100,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D29": {
+          "value": 138300,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E29": {
+          "value": "=C29-D29",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A30": {
+          "value": "5月",
+          "style": {}
+        },
+        "B30": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C30": {
+          "value": 304400,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D30": {
+          "value": 141200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E30": {
+          "value": "=C30-D30",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A31": {
+          "value": "5月",
+          "style": {}
+        },
+        "B31": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C31": {
+          "value": 311700,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D31": {
+          "value": 144100,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E31": {
+          "value": "=C31-D31",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A32": {
+          "value": "6月",
+          "style": {}
+        },
+        "B32": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C32": {
+          "value": 319000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D32": {
+          "value": 147000,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E32": {
+          "value": "=C32-D32",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A33": {
+          "value": "6月",
+          "style": {}
+        },
+        "B33": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C33": {
+          "value": 326300,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D33": {
+          "value": 149900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E33": {
+          "value": "=C33-D33",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A34": {
+          "value": "6月",
+          "style": {}
+        },
+        "B34": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C34": {
+          "value": 333600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D34": {
+          "value": 152800,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E34": {
+          "value": "=C34-D34",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A35": {
+          "value": "6月",
+          "style": {}
+        },
+        "B35": {
+          "value": "云端协作",
+          "style": {}
+        },
+        "C35": {
+          "value": 340900,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D35": {
+          "value": 155700,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E35": {
+          "value": "=C35-D35",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A36": {
+          "value": "6月",
+          "style": {}
+        },
+        "B36": {
+          "value": "企业服务",
+          "style": {}
+        },
+        "C36": {
+          "value": 348200,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D36": {
+          "value": 158600,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E36": {
+          "value": "=C36-D36",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A37": {
+          "value": "6月",
+          "style": {}
+        },
+        "B37": {
+          "value": "数据智能",
+          "style": {}
+        },
+        "C37": {
+          "value": 355500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "D37": {
+          "value": 161500,
+          "style": {
+            "format": "currency"
+          }
+        },
+        "E37": {
+          "value": "=C37-D37",
+          "style": {
+            "format": "currency",
+            "bold": true,
+            "color": "#146440",
+            "background": "#d8f1df"
+          }
+        },
+        "A38": {
+          "value": "合计",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "B38": {
+          "value": "",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "C38": {
+          "value": "=SUM(C2:C37)",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "D38": {
+          "value": "=SUM(D2:D37)",
+          "style": {
+            "bold": true,
+            "background": "#f0f5f1",
+            "format": "number"
+          }
+        },
+        "E38": {
+          "value": "=SUM(E2:E37)",
+          "style": {
+            "bold": true,
+            "background": "#d8f1df",
+            "format": "number",
+            "color": "#146440"
+          }
+        }
+      },
+      "rowCount": 38,
+      "colCount": 5,
+      "frozenRows": 1,
+      "columnWidths": {
+        "0": 90,
+        "1": 140,
+        "2": 140,
+        "3": 140,
+        "4": 140
+      },
+      "merges": []
+    }
+  ],
+  "activeSheetId": "7fa48b33-4b41-4b94-ae82-490f3ae9704a",
+  "createdAt": "2026-09-23T20:06:08.411Z",
+  "updatedAt": "2026-09-23T20:06:08.411Z",
+  "category": "前端报表",
+  "starred": false
+}
