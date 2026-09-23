@@ -4,7 +4,7 @@
 
 站点 SHA-256：209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45
 
-SDK SHA-256：b6d6705b28b726aab6700f3e0c7be882cdc247e6f851fff93029701a36bc1266
+SDK SHA-256：4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e
 
 Chromium 153.0.8010.54、Firefox 144.0.2、WebKit 26.0 各通过 smoke 8、interactions 6、focus 4、layout 7、performance 6、accessibility 5、IME 4、persistence 4 项；Chromium touch 模拟另通过 3 项。25 份报告均通过，错误通道为零。当前包另通过 XLSX 5 项语料及 WPS 保存夹具的导入/二次往返两项检查。
 

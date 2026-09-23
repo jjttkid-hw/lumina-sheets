@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-09-23T13:08:46.545Z",
+  "executedAt": "2026-09-23T13:14:14.749Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -11,13 +11,13 @@
     "headless": true
   },
   "siteSha256": "209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45",
-  "artifactSha256": "b6d6705b28b726aab6700f3e0c7be882cdc247e6f851fff93029701a36bc1266",
+  "artifactSha256": "4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e",
   "scope": "Browser DOM accessibility semantics for the Canvas grid. This is not a screen-reader announcement or assistive-technology certification.",
   "checks": [
     {
       "name": "grid-contract",
       "status": "passed",
-      "elapsedMs": 14,
+      "elapsedMs": 13,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -67,7 +67,7 @@
     {
       "name": "selection-announcement",
       "status": "passed",
-      "elapsedMs": 9,
+      "elapsedMs": 7,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -92,7 +92,7 @@
     {
       "name": "keyboard-focus-update",
       "status": "passed",
-      "elapsedMs": 17,
+      "elapsedMs": 10,
       "details": {
         "role": "grid",
         "tabIndex": 0,

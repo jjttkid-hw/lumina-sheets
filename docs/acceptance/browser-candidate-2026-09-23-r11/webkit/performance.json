@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-09-23T13:08:22.184Z",
+  "executedAt": "2026-09-23T13:13:49.695Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -11,85 +11,20 @@
     "headless": true
   },
   "siteSha256": "209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45",
-  "artifactSha256": "b6d6705b28b726aab6700f3e0c7be882cdc247e6f851fff93029701a36bc1266",
+  "artifactSha256": "4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e",
   "scope": "Measured real-browser performance on this machine, no pass/fail latency budget or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.",
   "checks": [
     {
       "name": "fixture-100000",
       "status": "passed",
-      "elapsedMs": 6911,
+      "elapsedMs": 6993,
       "details": {
         "fixture": {
           "storedCells": 100000,
           "formulaCount": 10000,
-          "dataReadyMs": 141,
-          "generatedMs": 118,
-          "firstDrawMs": 166,
-          "logicalRows": 1000000,
-          "logicalColumns": 256,
-          "populatedColumns": 10
-        },
-        "canvas": 2,
-        "edit": {
-          "frames": 5,
-          "observedFrames": 5,
-          "droppedFrames": 0,
-          "sampleLimit": 10000,
-          "averageMs": 9.2,
-          "p50Ms": 9,
-          "p95Ms": 16,
-          "p99Ms": 16,
-          "maxMs": 16,
-          "averagePaintedCells": 169,
-          "averageDomNodes": 4,
-          "samples": [
-            {
-              "durationMs": 6,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 5.9999999999990905,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 16,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 9,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 9.00000000000091,
-              "paintedCells": 169,
-              "domNodes": 4
-            }
-          ]
-        },
-        "worker": {
-          "targets": 10000,
-          "roundTripMs": 61,
-          "calculationMs": 59,
-          "firstValue": 5,
-          "lastValue": 50000
-        }
-      }
-    },
-    {
-      "name": "fixture-1000000",
-      "status": "passed",
-      "elapsedMs": 10308,
-      "details": {
-        "fixture": {
-          "storedCells": 1000000,
-          "formulaCount": 100000,
-          "dataReadyMs": 1609,
-          "generatedMs": 1600,
-          "firstDrawMs": 1620,
+          "dataReadyMs": 139,
+          "generatedMs": 117,
+          "firstDrawMs": 150,
           "logicalRows": 1000000,
           "logicalColumns": 256,
           "populatedColumns": 10
@@ -100,8 +35,8 @@
           "observedFrames": 5,
           "droppedFrames": 0,
           "sampleLimit": 10000,
-          "averageMs": 9.4,
-          "p50Ms": 11,
+          "averageMs": 10.800000000000182,
+          "p50Ms": 12,
           "p95Ms": 16,
           "p99Ms": 16,
           "maxMs": 16,
@@ -109,7 +44,12 @@
           "averageDomNodes": 4,
           "samples": [
             {
-              "durationMs": 13,
+              "durationMs": 12,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 9,
               "paintedCells": 169,
               "domNodes": 4
             },
@@ -119,17 +59,77 @@
               "domNodes": 4
             },
             {
+              "durationMs": 13,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.0000000000009095,
+              "paintedCells": 169,
+              "domNodes": 4
+            }
+          ]
+        },
+        "worker": {
+          "targets": 10000,
+          "roundTripMs": 81,
+          "calculationMs": 77.99999999999909,
+          "firstValue": 5,
+          "lastValue": 50000
+        }
+      }
+    },
+    {
+      "name": "fixture-1000000",
+      "status": "passed",
+      "elapsedMs": 10510,
+      "details": {
+        "fixture": {
+          "storedCells": 1000000,
+          "formulaCount": 100000,
+          "dataReadyMs": 1682,
+          "generatedMs": 1670,
+          "firstDrawMs": 1689,
+          "logicalRows": 1000000,
+          "logicalColumns": 256,
+          "populatedColumns": 10
+        },
+        "canvas": 3,
+        "edit": {
+          "frames": 5,
+          "observedFrames": 5,
+          "droppedFrames": 0,
+          "sampleLimit": 10000,
+          "averageMs": 11.599999999998545,
+          "p50Ms": 11,
+          "p95Ms": 17,
+          "p99Ms": 17,
+          "maxMs": 17,
+          "averagePaintedCells": 169,
+          "averageDomNodes": 4,
+          "samples": [
+            {
+              "durationMs": 7.999999999996362,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 9,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 17,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 12.999999999996362,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
               "durationMs": 11,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 4,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 3,
               "paintedCells": 169,
               "domNodes": 4
             }
@@ -137,8 +137,8 @@
         },
         "worker": {
           "targets": 100000,
-          "roundTripMs": 984.9999999999982,
-          "calculationMs": 975,
+          "roundTripMs": 1223.9999999999982,
+          "calculationMs": 1217,
           "firstValue": 5,
           "lastValue": 500000
         }
@@ -147,7 +147,7 @@
     {
       "name": "scroll-cancel-clear",
       "status": "passed",
-      "elapsedMs": 228,
+      "elapsedMs": 224,
       "details": {
         "cancelled": {
           "completed": 1,
@@ -166,19 +166,19 @@
     {
       "name": "range-cancel",
       "status": "passed",
-      "elapsedMs": 96
+      "elapsedMs": 98
     },
     {
       "name": "range-disjoint",
       "status": "passed",
-      "elapsedMs": 2420,
+      "elapsedMs": 2877,
       "details": {
         "invalidationP50Ms": 0,
-        "invalidationP95Ms": 1,
-        "incrementalReadP50Ms": 5,
-        "incrementalReadP95Ms": 8,
-        "fullRecalculationP50Ms": 61.999999999999886,
-        "fullRecalculationP95Ms": 76.99999999999994,
+        "invalidationP95Ms": 0,
+        "incrementalReadP50Ms": 6,
+        "incrementalReadP95Ms": 9,
+        "fullRecalculationP50Ms": 64.99999999999977,
+        "fullRecalculationP95Ms": 71,
         "meanRecomputedFormulas": 1,
         "meanCandidateChecks": 13.033333333333333,
         "meanIndexVisits": 26.733333333333334
@@ -187,14 +187,14 @@
     {
       "name": "range-overlapping",
       "status": "passed",
-      "elapsedMs": 2869,
+      "elapsedMs": 2892,
       "details": {
-        "invalidationP50Ms": 21.999999999999773,
-        "invalidationP95Ms": 25,
-        "incrementalReadP50Ms": 28.999999999999773,
-        "incrementalReadP95Ms": 35,
-        "fullRecalculationP50Ms": 28,
-        "fullRecalculationP95Ms": 34,
+        "invalidationP50Ms": 23,
+        "invalidationP95Ms": 35.999999999999986,
+        "incrementalReadP50Ms": 30.000000000000114,
+        "incrementalReadP95Ms": 49,
+        "fullRecalculationP50Ms": 30,
+        "fullRecalculationP95Ms": 51.000000000000114,
         "meanRecomputedFormulas": 10000,
         "meanCandidateChecks": 10000,
         "meanIndexVisits": 20000

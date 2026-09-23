@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-09-23T13:08:25.132Z",
+  "executedAt": "2026-09-23T13:13:48.122Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -11,28 +11,28 @@
     "headless": true
   },
   "siteSha256": "209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45",
-  "artifactSha256": "b6d6705b28b726aab6700f3e0c7be882cdc247e6f851fff93029701a36bc1266",
+  "artifactSha256": "4cdae46eeb77d8d13f985f5ff33126829376882095dde088276048aae8770e0e",
   "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
   "checks": [
     {
       "name": "host-focus-enter",
       "status": "passed",
-      "elapsedMs": 137
+      "elapsedMs": 138
     },
     {
       "name": "host-focus-escape",
       "status": "passed",
-      "elapsedMs": 55
+      "elapsedMs": 84
     },
     {
       "name": "ordinary-focus-return",
       "status": "passed",
-      "elapsedMs": 40
+      "elapsedMs": 42
     },
     {
       "name": "synchronous-host-focus",
       "status": "passed",
-      "elapsedMs": 30
+      "elapsedMs": 73
     }
   ],
   "pageErrors": [],
