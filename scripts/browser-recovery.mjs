@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { finalizeBrowserReport } from './browser-report.mjs';
@@ -56,6 +56,7 @@ const report = {
   artifactSha256: createHash('sha256').update(archive).digest('hex'),
   scope:
     'Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.',
+  screenshots: [],
   checks: [],
   pageErrors: [],
   consoleErrors: [],
@@ -71,6 +72,20 @@ function track(page, label) {
       });
   });
   return page;
+}
+// Screenshots supplement the functional assertions. A font-loading timeout must
+// remain visible in evidence, and must never leave a stale image from a prior run.
+async function capture(page, filename) {
+  const destination = path.join(output, filename);
+  await rm(destination, { force: true });
+  try {
+    await page.screenshot({ path: destination, timeout: 5_000 });
+    report.screenshots.push({ file: filename, status: 'captured' });
+  } catch (error) {
+    await rm(destination, { force: true });
+    report.screenshots.push({ file: filename, status: 'failed', error: error.message });
+    console.warn(`SCREENSHOT INCOMPLETE ${filename}: ${error.message}`);
+  }
 }
 async function check(name, action) {
   const started = Date.now();
@@ -264,6 +279,20 @@ try {
       });
       await page.goto(origin.href, { waitUntil: 'domcontentloaded', timeout: 60_000 });
       await page.getByText('本地工作空间读取失败', { exact: false }).waitFor();
+      await page.waitForFunction(
+        () => {
+          const card = document.querySelector('.workspace-startup-card');
+          const buttons = [...(card?.querySelectorAll('button') ?? [])];
+          return (
+            !!card &&
+            card.getBoundingClientRect().width <= 600 &&
+            buttons.length === 2 &&
+            buttons.every((button) => button.getBoundingClientRect().height >= 44)
+          );
+        },
+        undefined,
+        { timeout: 15_000 },
+      );
       const layoutChecks = [];
       for (const width of [1280, 390, 320]) {
         await page.setViewportSize({ width, height: 800 });
@@ -293,10 +322,14 @@ try {
         assert.equal(geometry.cardOverflow, false);
         assert(geometry.alertTop > geometry.headingBottom);
         assert(geometry.actionsTop > geometry.alertBottom);
-        for (const button of geometry.buttons) {
-          assert(button.left >= 0 && button.right <= width && button.height >= 44);
+        const invalidButtons = geometry.buttons.filter(
+          (button) => button.left < 0 || button.right > width || button.height < 44,
+        );
+        if (invalidButtons.length) {
+          layoutChecks.push({ width, ...geometry, invalidButtons });
+          throw new Error(JSON.stringify({ width, geometry, layoutChecks }));
         }
-        await page.screenshot({ path: path.join(output, `startup-${width}.png`) }).catch(() => {});
+        await capture(page, `startup-${width}.png`);
         layoutChecks.push({ width, ...geometry });
       }
       const backupButton = page.getByRole('button', { name: '下载恢复备份', exact: true });
@@ -335,7 +368,7 @@ try {
         'Downloading rescue must preserve source stores',
       );
       await page.getByText('已导出部分数据', { exact: false }).waitFor();
-      await page.screenshot({ path: path.join(output, 'startup-rescue.png') }).catch(() => {});
+      await capture(page, 'startup-rescue.png');
       const target = await workspace(targetContext);
       const targetBefore = await inspectDatabase(target);
       await importBackup(target, filename);
@@ -498,7 +531,7 @@ try {
         .filter({ hasText: '历史版本' })
         .getAttribute('value');
       await select.selectOption(value);
-      await page.screenshot({ path: path.join(output, 'history-selection.png') }).catch(() => {});
+      await capture(page, 'history-selection.png');
       await page.getByRole('button', { name: '恢复为新工作簿' }).click();
       const details = await expectCopy(page, snapshot, '历史版本正文');
       await selectCell(page, 'B1');
@@ -525,6 +558,10 @@ try {
 } catch (error) {
   report.runErrors.push({ message: error.message, stack: error.stack });
 } finally {
+  report.screenshotEvidence =
+    report.screenshots.length === 5 && report.screenshots.every((item) => item.status === 'captured')
+      ? 'complete'
+      : 'incomplete';
   finalizeBrowserReport(report, expected);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();

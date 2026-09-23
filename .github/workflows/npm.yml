@@ -83,4 +83,5 @@ jobs:
           NPM_VERSION: ${{ steps.release.outputs.version }}
           NPM_PACKAGE: lumina-report-sdk
           NPM_EXPECTED_ARCHIVE: ${{ steps.release.outputs.artifact }}
+          NPM_DIST_TAG: ${{ steps.release.outputs.dist-tag }}
         run: node scripts/check-npm-registry.mjs

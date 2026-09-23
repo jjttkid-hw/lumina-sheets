@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.54",
+  "executedAt": "2026-09-23T16:40:42.397Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "runnerSha256": "a7fb6fa94937c43cba7bebed22008b1ab5d7d46570d8bc3448836e2b1859fa91",
+  "siteSha256": "e432797f8db69cb4afc38ad69f7b6f8ad973fb99efcf3cf6ca9ab48cc655d7b0",
+  "artifactSha256": "066fefcbbf82ae7e49c44592b9769d282b567eb292e5af5197b9ab7c8c13eb25",
+  "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
+  "screenshots": [
+    {
+      "file": "startup-1280.png",
+      "status": "captured"
+    },
+    {
+      "file": "startup-390.png",
+      "status": "captured"
+    },
+    {
+      "file": "startup-320.png",
+      "status": "captured"
+    },
+    {
+      "file": "startup-rescue.png",
+      "status": "captured"
+    },
+    {
+      "file": "history-selection.png",
+      "status": "failed",
+      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+    }
+  ],
+  "checks": [
+    {
+      "name": "damaged-journal-download-and-raw-snapshot-restore",
+      "status": "passed",
+      "elapsedMs": 10817,
+      "details": {
+        "copyId": "32a18854-3ced-4def-a105-7c568168de91",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "backupSha256": "c47051bb78f5d9ede9d69df414b6ec70c6849358b1095ea96c90e2c94d151def",
+        "layoutChecks": [
+          {
+            "width": 1280,
+            "cardWidth": 580,
+            "viewportWidth": 1280,
+            "documentWidth": 1280,
+            "cardOverflow": false,
+            "headingBottom": 168.578125,
+            "alertTop": 228.375,
+            "alertBottom": 309.96875,
+            "actionsTop": 333.96875,
+            "buttons": [
+              {
+                "left": 387,
+                "right": 481,
+                "height": 44
+              },
+              {
+                "left": 493,
+                "right": 563,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 390,
+            "cardWidth": 358,
+            "viewportWidth": 390,
+            "documentWidth": 390,
+            "cardOverflow": false,
+            "headingBottom": 144.1875,
+            "alertTop": 227.78125,
+            "alertBottom": 333.171875,
+            "actionsTop": 357.171875,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 320,
+            "cardWidth": 288,
+            "viewportWidth": 320,
+            "documentWidth": 320,
+            "cardOverflow": false,
+            "headingBottom": 144.1875,
+            "alertTop": 227.78125,
+            "alertBottom": 356.96875,
+            "actionsTop": 380.96875,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              }
+            ]
+          }
+        ],
+        "keyboardRetry": true,
+        "navigationKey": "Tab",
+        "rawJournalRetained": true,
+        "sourceUnchanged": true
+      }
+    },
+    {
+      "name": "partial-backup-invalid-selection-search-and-cancel",
+      "status": "passed",
+      "elapsedMs": 6085,
+      "details": {
+        "copyId": "267ed104-6561-463b-b45f-697097d4b7ab",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "invalidRejected": true,
+        "searchEnterDidNotRestore": true,
+        "cancelDidNotWrite": true,
+        "damagedSourceRetained": true
+      }
+    },
+    {
+      "name": "historical-snapshot-restores-independent-copy",
+      "status": "passed",
+      "elapsedMs": 9089,
+      "details": {
+        "copyId": "ccc5c9a9-b780-41e6-acc7-c645bd61050c",
+        "name": "历史业务报表（恢复副本）",
+        "expectedValue": "历史版本正文",
+        "persistedAfterReload": true,
+        "formulaRetained": true,
+        "validationSheetRemapped": true,
+        "auxiliaryHistoryNotMerged": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "screenshotEvidence": "incomplete",
+  "validation": {
+    "expectedChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "actualChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

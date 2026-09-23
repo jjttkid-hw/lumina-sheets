@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-23T16:41:09.559Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "runnerSha256": "a7fb6fa94937c43cba7bebed22008b1ab5d7d46570d8bc3448836e2b1859fa91",
+  "siteSha256": "e432797f8db69cb4afc38ad69f7b6f8ad973fb99efcf3cf6ca9ab48cc655d7b0",
+  "artifactSha256": "066fefcbbf82ae7e49c44592b9769d282b567eb292e5af5197b9ab7c8c13eb25",
+  "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
+  "screenshots": [
+    {
+      "file": "startup-1280.png",
+      "status": "failed",
+      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+    },
+    {
+      "file": "startup-390.png",
+      "status": "failed",
+      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+    },
+    {
+      "file": "startup-320.png",
+      "status": "failed",
+      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+    },
+    {
+      "file": "startup-rescue.png",
+      "status": "captured"
+    },
+    {
+      "file": "history-selection.png",
+      "status": "failed",
+      "error": "page.screenshot: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n"
+    }
+  ],
+  "checks": [
+    {
+      "name": "damaged-journal-download-and-raw-snapshot-restore",
+      "status": "passed",
+      "elapsedMs": 28937,
+      "details": {
+        "copyId": "763ee1f3-2996-40e0-98e5-2f866e4c31d4",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "backupSha256": "f0690d374b2247364ca4214b9fc2a0f411ffecbdfa5b8c69ba160e4da5caf7a8",
+        "layoutChecks": [
+          {
+            "width": 1280,
+            "cardWidth": 580,
+            "viewportWidth": 1280,
+            "documentWidth": 1280,
+            "cardOverflow": false,
+            "headingBottom": 168.60000610351562,
+            "alertTop": 228.39999389648438,
+            "alertBottom": 310,
+            "actionsTop": 334,
+            "buttons": [
+              {
+                "left": 387,
+                "right": 481,
+                "height": 44
+              },
+              {
+                "left": 493,
+                "right": 563,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 390,
+            "cardWidth": 358,
+            "viewportWidth": 390,
+            "documentWidth": 390,
+            "cardOverflow": false,
+            "headingBottom": 144.1999969482422,
+            "alertTop": 227.8000030517578,
+            "alertBottom": 334.1999969482422,
+            "actionsTop": 358.20001220703125,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 320,
+            "cardWidth": 288,
+            "viewportWidth": 320,
+            "documentWidth": 320,
+            "cardOverflow": false,
+            "headingBottom": 144.1999969482422,
+            "alertTop": 227.8000030517578,
+            "alertBottom": 358,
+            "actionsTop": 382,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              }
+            ]
+          }
+        ],
+        "keyboardRetry": true,
+        "navigationKey": "Tab",
+        "rawJournalRetained": true,
+        "sourceUnchanged": true
+      }
+    },
+    {
+      "name": "partial-backup-invalid-selection-search-and-cancel",
+      "status": "passed",
+      "elapsedMs": 5783,
+      "details": {
+        "copyId": "c80deb43-4de5-4d5e-a583-23d3e07ac15a",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "invalidRejected": true,
+        "searchEnterDidNotRestore": true,
+        "cancelDidNotWrite": true,
+        "damagedSourceRetained": true
+      }
+    },
+    {
+      "name": "historical-snapshot-restores-independent-copy",
+      "status": "passed",
+      "elapsedMs": 8804,
+      "details": {
+        "copyId": "8768d591-f09d-44e7-a304-acec87580447",
+        "name": "历史业务报表（恢复副本）",
+        "expectedValue": "历史版本正文",
+        "persistedAfterReload": true,
+        "formulaRetained": true,
+        "validationSheetRemapped": true,
+        "auxiliaryHistoryNotMerged": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "screenshotEvidence": "incomplete",
+  "validation": {
+    "expectedChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "actualChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

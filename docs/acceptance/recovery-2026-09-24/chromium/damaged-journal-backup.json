@@ -1,0 +1,67 @@
+{
+  "format": "lumina-recovery",
+  "version": 1,
+  "createdAt": "2026-09-23T16:40:48.730Z",
+  "complete": false,
+  "warnings": [
+    "工作簿存储无法读取；本文件不包含完整工作簿备份",
+    "已保留原始快照和日志；原始快照未重放日志，可能缺少后续编辑。"
+  ],
+  "records": [],
+  "legacy": {},
+  "rawStorage": {
+    "stores": {
+      "workbooks": [
+        {
+          "id": "native-valid",
+          "workbook": {
+            "id": "native-valid",
+            "name": "有效工作簿",
+            "description": "浏览器原生持久化验收",
+            "sheets": [
+              {
+                "id": "native-valid-sheet",
+                "name": "工作表 1",
+                "cells": {
+                  "A1": {
+                    "value": "安全内容"
+                  }
+                },
+                "rowCount": 100,
+                "colCount": 16,
+                "columnWidths": {}
+              }
+            ],
+            "activeSheetId": "native-valid-sheet",
+            "createdAt": "2026-09-23T00:00:00.000Z",
+            "updatedAt": "2026-09-23T00:00:00.000Z",
+            "category": "验收",
+            "starred": false
+          }
+        }
+      ],
+      "patches": [
+        {
+          "key": "[\"native-valid\",\"broken\"]",
+          "operationId": "broken",
+          "workbookId": "native-valid",
+          "seq": "invalid",
+          "at": 0,
+          "patch": {
+            "kind": "cell",
+            "sheetId": "native-valid-sheet",
+            "key": "A1",
+            "cell": {
+              "value": "不可重放"
+            }
+          }
+        }
+      ],
+      "comments": [],
+      "revisions": []
+    },
+    "warnings": [],
+    "pending": [],
+    "backend": "indexeddb"
+  }
+}

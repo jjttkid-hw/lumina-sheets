@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
+import { registryVersion, verifyRegistryBytes } from './registry-artifact.mjs';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -15,42 +15,25 @@ assert(
 const registry = process.env.NPM_REGISTRY ?? 'https://registry.npmjs.org';
 const expectedArchive = process.env.NPM_EXPECTED_ARCHIVE;
 const request = async (url) => {
-  const response = await fetch(url, { headers: { accept: 'application/json' } });
+  const response = await fetch(url, {
+    headers: { accept: 'application/json' },
+    signal: AbortSignal.timeout(30_000),
+  });
   if (!response.ok) throw new Error(`Registry request failed ${response.status}: ${url}`);
   return response.json();
 };
 const metadata = await request(
   `${registry.replace(/\/$/, '')}/${encodeURIComponent(packageName).replace('%2F', '/')}`,
 );
-const entry = metadata.versions?.[version];
-assert(entry, `${packageName}@${version} is missing from the registry`);
-assert.equal(entry.name, packageName);
-assert.equal(entry.version, version);
-const dist = metadata.dist?.[version];
-assert(dist?.tarball, 'Registry metadata has no tarball URL');
-const response = await fetch(dist.tarball);
+const dist = registryVersion(metadata, packageName, version, process.env.NPM_DIST_TAG);
+const response = await fetch(dist.tarball, { signal: AbortSignal.timeout(30_000) });
 assert(response.ok, `Tarball request failed ${response.status}`);
 const bytes = Buffer.from(await response.arrayBuffer());
-const sha256 = createHash('sha256').update(bytes).digest('hex');
-if (expectedArchive) {
-  const expected = await readFile(expectedArchive);
-  assert.equal(
-    sha256,
-    createHash('sha256').update(expected).digest('hex'),
-    'Registry tarball differs from the release artifact uploaded by this workflow',
-  );
-}
-if (dist.shasum)
-  assert.equal(
-    createHash('sha1').update(bytes).digest('hex'),
-    dist.shasum,
-    'Registry tarball shasum mismatch',
-  );
-if (dist.integrity) {
-  const expected = dist.integrity.replace(/^sha512-/, '');
-  const actual = createHash('sha512').update(bytes).digest('base64');
-  assert.equal(actual, expected, 'Registry tarball integrity mismatch');
-}
+const sha256 = verifyRegistryBytes(
+  bytes,
+  dist,
+  expectedArchive ? await readFile(expectedArchive) : undefined,
+);
 const dir = await mkdtemp(path.join(os.tmpdir(), 'lumina-registry-'));
 try {
   const archive = path.join(dir, `${packageName.replace(/[\\/]/g, '-')}-${version}.tgz`);
@@ -66,7 +49,13 @@ try {
       'utf8',
     ),
   );
+  assert.equal(installed.name, packageName);
   assert.equal(installed.version, version);
+  await writeFile(
+    path.join(dir, 'consumer.mjs'),
+    `const sdk = await import(${JSON.stringify(packageName)}); if (!Object.keys(sdk).length) throw new Error('Empty package exports');`,
+  );
+  execFileSync(process.execPath, ['consumer.mjs'], { cwd: dir, timeout: 30_000, stdio: 'pipe' });
   console.log(
     JSON.stringify({
       status: 'passed',
@@ -74,7 +63,11 @@ try {
       version,
       tarballBytes: bytes.length,
       sha256,
-      integrity: dist.integrity ?? null,
+      integrity: dist.integrity,
+      releaseArtifactMatched: !!expectedArchive,
+      distTag: process.env.NPM_DIST_TAG ?? null,
+      esmImport: 'passed',
+      provenance: 'not-verified-by-this-check',
     }),
   );
 } finally {
