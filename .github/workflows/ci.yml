@@ -36,6 +36,7 @@ jobs:
             echo "SOURCE_DATE_EPOCH=$CANDIDATE_SOURCE_EPOCH" >> "$GITHUB_ENV"
           fi
       - run: npm run build:site
+      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-09-23-r8 --verify-build
       - run: npm run check:api
       - run: npm run check:sdk
       - name: Generate dependency-license inventory

@@ -2,9 +2,16 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
+import { siteDigest } from './site-evidence.mjs';
 
-const root = path.resolve(process.argv[2] ?? 'docs/acceptance/browser-candidate-2026-09-23-r6');
-assert(process.argv.length <= 3, 'Usage: node scripts/check-browser-evidence.mjs [report-directory]');
+const args = process.argv.slice(2);
+const verifyBuild = args.includes('--verify-build');
+const directories = args.filter((arg) => arg !== '--verify-build');
+assert(
+  directories.length <= 1,
+  'Usage: node scripts/check-browser-evidence.mjs [report-directory] [--verify-build]',
+);
+const root = path.resolve(directories[0] ?? 'docs/acceptance/browser-candidate-2026-09-23-r8');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const readJson = async (relative) => JSON.parse(await readFile(path.join(root, relative), 'utf8'));
 const expected = [
@@ -65,6 +72,20 @@ await walk();
 files.sort();
 assert.deepEqual([...listed].sort(), files, 'Manifest does not cover exactly the report files');
 assert.deepEqual([...new Set(reports.map(({ relative }) => relative))].sort(), expectedSet.size ? expected.sort() : []);
+let build;
+if (verifyBuild) {
+  const packageManifest = JSON.parse(await readFile('package.json', 'utf8'));
+  const site = await siteDigest('dist');
+  assert.equal(site.sha256, [...siteHashes][0], 'Built site differs from accepted browser evidence');
+  const artifactPath = path.join('artifacts', `lumina-report-sdk-${packageManifest.version}.tgz`);
+  const artifact = await readFile(artifactPath);
+  assert.equal(
+    hash(artifact),
+    [...artifactHashes][0],
+    'Built SDK archive differs from accepted browser evidence',
+  );
+  build = { siteSha256: site.sha256, artifactSha256: hash(artifact), artifact: artifactPath };
+}
 console.log(
   JSON.stringify(
     {
@@ -74,6 +95,7 @@ console.log(
       siteSha256: [...siteHashes][0],
       artifactSha256: [...artifactHashes][0],
       manifestFiles: manifest.files.length,
+      ...(build ? { build } : {}),
     },
     null,
     2,
