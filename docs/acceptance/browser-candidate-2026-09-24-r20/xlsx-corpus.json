@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "executedAt": "2026-09-24T02:39:38.215Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "exceljs": "4.4.0"
+  },
+  "artifact": "artifacts/lumina-report-sdk-0.29.0.tgz",
+  "artifactSha256": "e2af24d67fda8af3ed26e27a24a7f4b2e17249aa741ff0212357fa652ac2fa64",
+  "scope": "Installed lumina-report-sdk XLSX supported-subset corpus. Covers tracked business inputs, package export/import, an independent ExcelJS reader and explicit rejection of embedded images. It is not complete Excel/OOXML compatibility or a desktop Excel/WPS certification.",
+  "checks": [
+    {
+      "name": "business-report-roundtrip",
+      "status": "passed",
+      "elapsedMs": 111,
+      "details": {
+        "input": "docs/artifacts/report-v05.xlsx",
+        "inputBytes": 7579,
+        "inputSha256": "75cbfb28402a8a199484417f8463c7360bbb107b12ac3213d2791cb625a1ad6d",
+        "exportedBytes": 7588,
+        "semanticSha256": "1d11383e5def44bea4d5b7f7ead9b8ab291673fddf25d4b54e979059313f9cdf",
+        "sheets": 1,
+        "storedCells": 30
+      }
+    },
+    {
+      "name": "structure-report-roundtrip",
+      "status": "passed",
+      "elapsedMs": 45,
+      "details": {
+        "input": "docs/artifacts/report-v06-structure.xlsx",
+        "inputBytes": 7518,
+        "inputSha256": "d0549d7ebca354e3c1e613c117b609d893f98241ba036a1c6358ecc835690311",
+        "exportedBytes": 7521,
+        "semanticSha256": "18267bf663b510e33f79ac82cb4149bad0686fc2d2b93e14630d94b7f2620ce7",
+        "sheets": 1,
+        "storedCells": 30
+      }
+    },
+    {
+      "name": "synthetic-supported-subset",
+      "status": "passed",
+      "elapsedMs": 32,
+      "details": {
+        "generatedBytes": 8672,
+        "generatedSha256": "6b31a5c5cf9ce7debc91a330d723e78241692b16b3d75a19f168bfab5e4321bc",
+        "semanticSha256": "702d2570454d76ed3b0a89083701b479587625b0efe248f2b0ccf2ecb0a618ba",
+        "sheets": 2,
+        "storedCells": 12,
+        "features": [
+          "scalar-values",
+          "formulas-and-cached-results",
+          "styles",
+          "rich-text",
+          "hyperlinks",
+          "merges",
+          "validation",
+          "print-settings",
+          "hidden-axes",
+          "frozen-rows",
+          "cross-sheet-reference"
+        ]
+      }
+    },
+    {
+      "name": "independent-reader-contract",
+      "status": "passed",
+      "elapsedMs": 14,
+      "details": {
+        "reader": "exceljs@4.4.0",
+        "sheets": [
+          "业务 数据",
+          "汇总"
+        ],
+        "formulaCache": [
+          90,
+          180
+        ],
+        "mergedRange": "A4:B4",
+        "hyperlink": "https://example.com/lumina"
+      }
+    },
+    {
+      "name": "unsupported-image-rejection",
+      "status": "passed",
+      "elapsedMs": 14,
+      "details": {
+        "generator": "exceljs@4.4.0",
+        "inputBytes": 8426,
+        "inputSha256": "edf5c6ab354cf0ef6fa141bcbc3c8770dd3034ac5021018585ee9f9f16607993",
+        "rejected": true,
+        "error": "XLSX：工作表「含图片对象」包含尚不能保留的图片或图形，已停止导入以避免内容丢失。请保留原文件，在副本中移除这些对象后再导入。"
+      }
+    }
+  ],
+  "errors": [],
+  "validation": {
+    "expectedChecks": [
+      "business-report-roundtrip",
+      "structure-report-roundtrip",
+      "synthetic-supported-subset",
+      "independent-reader-contract",
+      "unsupported-image-rejection"
+    ],
+    "actualChecks": [
+      "business-report-roundtrip",
+      "structure-report-roundtrip",
+      "synthetic-supported-subset",
+      "independent-reader-contract",
+      "unsupported-image-rejection"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "errorCount": 0
+  },
+  "status": "passed"
+}

@@ -4,7 +4,7 @@
 
 ## 持续检查与演示部署
 
-- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-09-24-r19`，避免历史候选重复运行或掩盖当前制品绑定。
+- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-09-24-r20`，避免历史候选重复运行或掩盖当前制品绑定。
 - CI 和 npm 发布工作流都执行 `check:reproducibility`；站点和 SDK 包必须在同一候选构建中连续两次得到相同摘要/字节哈希，失败不会上传或发布。
 - 安装检查在全新临时目录运行，不借用工程的 React 类型。严格 NodeNext/Bundler、CSS 子路径、ES module 入口、公开类型/动态 JS 分包和示例引用均需通过。制品 `npm-package` 包含 `.tgz` 和 SHA-256，保留 14 天。
 - 主分支 CI 另保留 `lumina-site` 产物 7 天。`CD` 只在本仓库成功的主分支 CI 后触发，下载该次 CI 已验证的站点，不重新构建。PR 不能触发部署。
@@ -119,7 +119,7 @@ CD 下载 `lumina-site` 后，签出该 CI 运行的精确提交，运行 `scrip
 
 `check:xlsx-corpus` 与 `check:wps-corpus` 读取当前版本 `artifacts/` 内的真实安装包。先用同一个 `SOURCE_DATE_EPOCH` 执行构建和 `check:sdk`，再运行这两个命令；不能用遗留包验证刚修改的源码。npm 发布工作流在最后一次可重复构建之后、上传 Release 和发布之前执行语料检查，失败会阻止交付。WPS 检查使用保留的桌面保存文件，不会启动 WPS，也不代表全部桌面功能通过。
 
-候选 r19 使用来源时间 `1790122493`。本地需显式设置 `SOURCE_DATE_EPOCH`；`RELEASE_SOURCE_DATE_EPOCH` 是 GitHub 仓库变量名，由工作流转换成本地构建变量。仅给本地命令设置 `RELEASE_SOURCE_DATE_EPOCH` 不会固定构建时钟。`package.json` 也属于内嵌来源指纹，即使只增加 npm 脚本也会改变制品：应重建、重新运行浏览器与语料、归档新候选，再更新 CI 的证据目录。旧报告保持原摘要。
+候选 r20 使用来源时间 `1790122493`。本地需显式设置 `SOURCE_DATE_EPOCH`；`RELEASE_SOURCE_DATE_EPOCH` 是 GitHub 仓库变量名，由工作流转换成本地构建变量。仅给本地命令设置 `RELEASE_SOURCE_DATE_EPOCH` 不会固定构建时钟。`package.json` 也属于内嵌来源指纹，即使只增加 npm 脚本也会改变制品：应重建、重新运行浏览器与语料、归档新候选，再更新 CI 的证据目录。旧报告保持原摘要。
 
 ## 已发布版本的验证重试
 

@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-24T02:37:27.937Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "af75fb282b72a6a8498510b97ffae36f672577754e8a1e4048e914015977831c",
+  "artifactSha256": "e2af24d67fda8af3ed26e27a24a7f4b2e17249aa741ff0212357fa652ac2fa64",
+  "scope": "Isolated real-browser smoke. Not full browser/IME/accessibility/physical-touch acceptance.",
+  "checks": [
+    {
+      "name": "workspace-render",
+      "status": "passed",
+      "elapsedMs": 344,
+      "details": {
+        "width": 860,
+        "height": 471
+      }
+    },
+    {
+      "name": "create-edit-history",
+      "status": "passed",
+      "elapsedMs": 611
+    },
+    {
+      "name": "indexeddb-reload",
+      "status": "passed",
+      "elapsedMs": 296
+    },
+    {
+      "name": "zoom-narrow-layout",
+      "status": "passed",
+      "elapsedMs": 89,
+      "details": {
+        "client": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "name": "report-layouts",
+      "status": "passed",
+      "elapsedMs": 7481,
+      "details": [
+        {
+          "layout": "list",
+          "status": "已生成行式明细 · 可直接编辑或导出",
+          "metrics": "38 行 × 5 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 1.00 ms · 3 次绘制"
+        },
+        {
+          "layout": "group",
+          "status": "已生成分组汇总 · 可直接编辑或导出",
+          "metrics": "43 行 × 5 列 · 公式计算 15 次 · 缓存 15 项 · 最近绘制 3.00 ms · 5 次绘制"
+        },
+        {
+          "layout": "nested",
+          "status": "已生成多级分组 · 可直接编辑或导出",
+          "metrics": "53 行 × 5 列 · 公式计算 13 次 · 缓存 13 项 · 最近绘制 2.00 ms · 7 次绘制"
+        },
+        {
+          "layout": "cross",
+          "status": "已生成交叉统计 · 可直接编辑或导出",
+          "metrics": "5 行 × 8 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 0.00 ms · 9 次绘制"
+        },
+        {
+          "layout": "formulas",
+          "status": "已生成公式示例 · 可直接编辑或导出",
+          "metrics": "21 行 × 6 列 · 公式计算 14 次 · 缓存 14 项 · 最近绘制 4.00 ms · 10 次绘制"
+        },
+        {
+          "layout": "sheets",
+          "status": "已生成多工作表 · 可直接编辑或导出",
+          "metrics": "30 行 × 6 列 · 公式计算 38 次 · 缓存 38 项 · 最近绘制 2.00 ms · 12 次绘制"
+        },
+        {
+          "layout": "validation",
+          "status": "已生成订单填报 · 可直接编辑或导出",
+          "metrics": "5 行 × 6 列 · 公式计算 4 次 · 缓存 4 项 · 最近绘制 1.00 ms · 14 次绘制"
+        },
+        {
+          "layout": "print",
+          "status": "已生成打印版式 · 可直接编辑或导出",
+          "metrics": "8 行 × 6 列 · 公式计算 5 次 · 缓存 5 项 · 最近绘制 6.00 ms · 15 次绘制"
+        },
+        {
+          "layout": "filter",
+          "status": "已生成筛选合并区域 · 可直接编辑或导出",
+          "metrics": "11 行 × 5 列 · 公式计算 1 次 · 缓存 1 项 · 最近绘制 1.00 ms · 16 次绘制"
+        },
+        {
+          "layout": "sort",
+          "status": "已生成多列排序 · 可直接编辑或导出",
+          "metrics": "8 行 × 6 列 · 公式计算 7 次 · 缓存 7 项 · 最近绘制 2.00 ms · 19 次绘制"
+        },
+        {
+          "layout": "paged",
+          "status": "已生成百万行分页数据 · 当前表格只读",
+          "metrics": "1,000,000 行 × 12 列 · 缓存 1/6 页 · 请求 0 · 最近绘制 1.00 ms · 21 次绘制"
+        },
+        {
+          "layout": "snapshot",
+          "status": "已生成分页生成完整报表 · 可直接编辑或导出",
+          "metrics": "200 行 × 4 列 · 公式计算 0 次 · 缓存 0 项 · 最近绘制 2.00 ms · 23 次绘制"
+        }
+      ]
+    },
+    {
+      "name": "report-downloads-roundtrip",
+      "status": "passed",
+      "elapsedMs": 437,
+      "details": {
+        "downloads": [
+          {
+            "format": "json",
+            "bytes": 23158,
+            "sha256": "c1e96e25fc8e519d44b5a7791f82de40fb45e060a14a609e55e9a110f414d13f"
+          },
+          {
+            "format": "csv",
+            "bytes": 1484,
+            "sha256": "45bc3c55124ab193547e8a178b69674b1734f99f3f69ad7c6b1301c25a61b9ad"
+          },
+          {
+            "format": "xlsx",
+            "bytes": 8270,
+            "sha256": "9b8f16f33fdc56883e7d679826d5e0a08acc331c9c0dfe907f17e3b1edc5adcc"
+          },
+          {
+            "format": "pdf",
+            "bytes": 586115,
+            "sha256": "9a0c908c1c7e81bf4fb329b841afb3ea9ad95d6c7cd4c73a56455a56e73c2ce8"
+          }
+        ],
+        "importStatus": "报表已恢复 · 已加载支持的数据校验和打印设置"
+      }
+    },
+    {
+      "name": "report-idle",
+      "status": "passed",
+      "elapsedMs": 1044,
+      "details": " 1 秒内额外绘制 0 次 · 空闲时停止绘制"
+    },
+    {
+      "name": "packed-sdk-example",
+      "status": "passed",
+      "elapsedMs": 212,
+      "details": [
+        {
+          "value": "4e9042f8-8214-48d4-b209-b1073c70328a",
+          "name": "销售明细"
+        },
+        {
+          "value": "78268653-69f5-433b-9626-132965c1999f",
+          "name": "经营汇总"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "workspace-render",
+      "create-edit-history",
+      "indexeddb-reload",
+      "zoom-narrow-layout",
+      "report-layouts",
+      "report-downloads-roundtrip",
+      "report-idle",
+      "packed-sdk-example"
+    ],
+    "actualChecks": [
+      "workspace-render",
+      "create-edit-history",
+      "indexeddb-reload",
+      "zoom-narrow-layout",
+      "report-layouts",
+      "report-downloads-roundtrip",
+      "report-idle",
+      "packed-sdk-example"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}
