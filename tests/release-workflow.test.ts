@@ -28,6 +28,9 @@ describe('release workflow artifact alignment', () => {
     expect(ci).toMatch(/npm run check:site-runtime/);
     expect(ci).toMatch(/node scripts\/package-notices\.mjs/);
     expect(ci).toMatch(/npm run check:licenses -- --strict/);
+    expect(ci).toMatch(/npm run check:xlsx-corpus/);
+    expect(ci).toMatch(/npm run check:wps-corpus/);
+    expect(ci).toMatch(/npm run check:xlsx-corpus-evidence/);
     expect(ci).toMatch(/Block dependency integrity errors/);
     expect(ci).toMatch(/actions\/upload-artifact@v7/);
     expect(cd).toMatch(/actions\/download-artifact@v8/);

@@ -28,6 +28,9 @@
     "check:api": "node scripts/check-api.mjs",
     "check:site-runtime": "node scripts/check-site-runtime.mjs",
     "check:browser-evidence": "node scripts/check-browser-evidence.mjs",
+    "check:xlsx-corpus": "node scripts/check-xlsx-corpus.mjs",
+    "check:wps-corpus": "node scripts/check-wps-corpus.mjs",
+    "check:xlsx-corpus-evidence": "node scripts/check-xlsx-corpus-evidence.mjs",
     "check:licenses": "node scripts/package-notices.mjs --strict",
     "check:stable": "node scripts/check-stable-release.mjs",
     "check:reproducibility": "node scripts/check-reproducibility.mjs"
