@@ -32,7 +32,7 @@
 
 先生成与目标正式版同版本的候选包，记录该次构建使用的 `SOURCE_DATE_EPOCH`，完成真实验收并保留 tgz。填好验收记录后提交报告；仅新增证据的提交也会改变默认 Git 构建时间，因此正式发布必须显式沿用候选构建的来源时间。发布工作流读取仓库变量 `RELEASE_SOURCE_DATE_EPOCH`（若有），以便重建相同制品；未设置时沿用 Git 时间。若重建哈希不匹配，应排查输入差异并重新验收，而不是修改证据哈希来强行放行。
 
-当前依赖清单尚有待审项，真实浏览器也未验收；本目录不提供虚假的已通过清单。
+当前技术依赖门禁已通过（`0 errors / 0 reviewItems / 0 unresolvedVendorComponents`），并已有绑定同一站点与 SDK 摘要的 r18 Chromium、Firefox、WebKit 自动化候选及 macOS Safari 定向记录。它们仍不等于稳定版签署：原生中文 IME、真实 VoiceOver/NVDA/JAWS、实体移动触控、跨设备性能、完整 Excel/WPS 业务语料、npm registry 首发和商业法务复核仍未完成。本目录不提供虚假的已通过清单。
 
 ## 站点与安装包分别绑定
 

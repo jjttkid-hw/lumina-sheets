@@ -10,6 +10,12 @@
 
 # 验证记录
 
+## 当前状态（2026-09-24，提交 `e9dcfe5`）
+
+- 文档账本提交 `e9dcfe5` 的 GitHub CI [35938950018](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35938950018) 与 CD [35939395273](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35939395273) 均成功；线上 `build-info.json` 已核对为提交 `e9dcfe50e87cd579d9ecb6956786711b68971bb0`、版本 `0.29.0` 和站点 SHA-256 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`。
+- 使用 `SOURCE_DATE_EPOCH=1790122493` 在当前干净工作树连续两次重建通过：站点摘要 `eeccab1a…`、SDK tgz 摘要 `a1389058…`（721,730 字节）一致；167 个测试文件、2,345 项测试，API、隔离安装、HTTP 运行时和严格许可证门禁均通过。
+- 当前仍保持 `0.29.0` 开发线。npm registry 首发、原生系统 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核未完成，因此不创建 `1.0.0` 或 `latest` 稳定发布记录。
+
 ## 当前状态（2026-09-24，提交 `db3f5be`）
 
 - 修复 Canvas 富文本默认颜色：未指定局部颜色的文字片段现在继承单元格外层 `style.color`，新增回归测试。定向富文本测试、格式检查和完整站点/SDK 构建通过。
