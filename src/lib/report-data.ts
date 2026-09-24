@@ -245,7 +245,7 @@ export class ReportChunkCache {
   // Canvas reads many adjacent cells from the same page. Keep the last
   // touched entry so those reads do not repeatedly delete/reinsert the same
   // Map node on the rendering hot path.
-  private recentPage?: { index: number; page: ReportPage };
+  private recentPage?: number;
   private pending = new Map<number, PendingPage>();
   private activeRequests = 0;
   private queuedRequests = new Map<PendingPage, () => void>();
@@ -340,10 +340,10 @@ export class ReportChunkCache {
     const index = Math.floor(row / this.pageSize);
     const page = this.pages.get(index);
     if (!page) return undefined;
-    if (this.recentPage?.index !== index || this.recentPage.page !== page) {
+    if (this.recentPage !== index) {
       this.pages.delete(index);
       this.pages.set(index, page);
-      this.recentPage = { index, page };
+      this.recentPage = index;
     }
     return page.rows[row % this.pageSize];
   }
@@ -409,10 +409,10 @@ export class ReportChunkCache {
       return { rows: [], totalRows: this.totalRows };
     const cached = this.pages.get(page);
     if (cached) {
-      if (this.recentPage?.index !== page || this.recentPage.page !== cached) {
+      if (this.recentPage !== page) {
         this.pages.delete(page);
         this.pages.set(page, cached);
-        this.recentPage = { index: page, page: cached };
+        this.recentPage = page;
       }
       return cached;
     }
@@ -468,6 +468,7 @@ export class ReportChunkCache {
         if (result.totalRows !== undefined) {
           if (this.totalRows !== undefined && result.totalRows !== this.totalRows) {
             this.pages.clear();
+            this.recentPage = undefined;
             this.errors.clear();
             for (const [index, pending] of this.pending) {
               if (pending === request) continue;
@@ -489,9 +490,10 @@ export class ReportChunkCache {
         if (
           total === undefined ||
           (offset < total && result.rows.length === Math.min(this.pageSize, total - offset))
-        )
+        ) {
           this.pages.set(page, result);
-        this.recentPage = { index: page, page: result };
+          this.recentPage = page;
+        }
         while (this.pages.size > this.maxPages) this.pages.delete(this.pages.keys().next().value!);
         // Commit and detach old requests before abort listeners can reenter.
         for (const pending of cancelled) pending.controller.abort();
