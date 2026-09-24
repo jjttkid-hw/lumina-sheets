@@ -1,4 +1,4 @@
-历史 r14、r16、r17 候选记录保留在下方；当前候选以 r18 账本为准。
+当前候选以 [r19](acceptance/browser-candidate-2026-09-24-r19/README.md) 为准；下方 r18 及更早段落为历史记录。新增 npm 语料入口改变了来源指纹，已重新执行 25 份浏览器报告、触控模拟、XLSX/WPS 语料并归档新摘要。npm 发布流程在最后一次构建后增加两类安装包语料检查；版本仍为 0.29.0，平台、npm 首发及商业验收门槛保持开放。
 
 2026-09-24 r18 重绑定：REST 重试增强支持服务端 `Retry-After` 并受本地上限约束；全量测试 167 个文件、2,345 项通过，Chromium、Firefox、WebKit 的 25 份浏览器报告、Chromium 触控、XLSX 5 项和 WPS 2 项均以新制品重新验证。r18 绑定站点 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`、SDK `a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5`，证据见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。npm registry 首发、原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍未完成。
 

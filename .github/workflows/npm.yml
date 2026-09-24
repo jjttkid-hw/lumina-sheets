@@ -61,6 +61,10 @@ jobs:
         run: npm run check:licenses -- --strict
       - name: Verify reproducible release candidate
         run: npm run check:reproducibility
+      - name: Verify XLSX and WPS corpus against the final install package
+        run: |
+          npm run check:xlsx-corpus
+          npm run check:wps-corpus
       - name: Smoke-test the final Pages build over HTTP
         run: npm run check:site-runtime
       - name: Require artifact-bound acceptance for stable 1.x and later

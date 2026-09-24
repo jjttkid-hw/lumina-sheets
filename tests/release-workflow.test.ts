@@ -16,6 +16,12 @@ describe('release workflow artifact alignment', () => {
     expect(source).not.toMatch(/- run: npm run build:all/);
     expect(source.indexOf('npm run check:licenses')).toBeLessThan(source.indexOf('npm publish'));
     expect(source.indexOf('npm run check:stable')).toBeLessThan(source.indexOf('npm publish'));
+    for (const check of ['check:xlsx-corpus', 'check:wps-corpus']) {
+      const position = source.indexOf(`npm run ${check}`);
+      expect(position).toBeGreaterThan(source.indexOf('npm run check:reproducibility'));
+      expect(position).toBeLessThan(source.indexOf('gh release upload'));
+      expect(position).toBeLessThan(source.indexOf('npm publish'));
+    }
     expect(source).toMatch(/NPM_TOKEN_PRESENT: \$\{\{ secrets\.NPM_TOKEN !==? '' \}\}/);
     expect(source).toMatch(/unset NODE_AUTH_TOKEN/);
     expect(source).toMatch(/Trusted Publishing \(OIDC\)/);

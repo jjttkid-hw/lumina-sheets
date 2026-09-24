@@ -4,7 +4,7 @@
 
 ## 持续检查与演示部署
 
-- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-09-24-r18`，避免历史候选重复运行或掩盖当前制品绑定。
+- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-09-24-r19`，避免历史候选重复运行或掩盖当前制品绑定。
 - CI 和 npm 发布工作流都执行 `check:reproducibility`；站点和 SDK 包必须在同一候选构建中连续两次得到相同摘要/字节哈希，失败不会上传或发布。
 - 安装检查在全新临时目录运行，不借用工程的 React 类型。严格 NodeNext/Bundler、CSS 子路径、ES module 入口、公开类型/动态 JS 分包和示例引用均需通过。制品 `npm-package` 包含 `.tgz` 和 SHA-256，保留 14 天。
 - 主分支 CI 另保留 `lumina-site` 产物 7 天。`CD` 只在本仓库成功的主分支 CI 后触发，下载该次 CI 已验证的站点，不重新构建。PR 不能触发部署。
@@ -26,6 +26,8 @@ npm run format:check
 npm run build:all
 npm run check:api
 npm run check:sdk
+npm run check:xlsx-corpus
+npm run check:wps-corpus
 npm run check:licenses -- --strict
 npm run check:stable
 ```
@@ -39,8 +41,9 @@ GitHub 登录不能代替 npm 登录。首次创建包需要包维护者完成 n
 ```sh
 npm login --auth-type=web
 npm whoami
-npm publish ./artifacts/lumina-report-sdk-<版本>.tgz --access public
-npm view lumina-report-sdk version
+npm publish ./artifacts/lumina-report-sdk-0.29.0.tgz --access public --tag next
+npm view lumina-report-sdk@0.29.0 version
+npm view lumina-report-sdk dist-tags --json
 ```
 
 首次本地发布没有 GitHub Actions 来源证明。发布成功后，在 npm 的包设置中配置 **Trusted Publisher → GitHub Actions**：
@@ -97,7 +100,7 @@ CI 在最终构建完成后生成 build-info.json，记录实际检出 HEAD 的�
 
 检查逐个获取站点摘要中的文件（包括 SDK、延迟 XLSX 分包、Worker），比较响应字节 SHA-256、大小和 HTML/JS/CSS 类型；核验 HTML 入口引用与 SDK 示例内联模块路径，并检查首页和性能页查询参数。错误路径回退首页不能充当成功。可用 `SITE_RUNTIME_URL=http://127.0.0.1:端口` 指向自己启动的候选站点，值必须是无路径/查询/凭据的 HTTP(S) origin，内容必须与本地 dist 相同。
 
-此检查不执行页面 JavaScript，不证明 Canvas、Worker 执行、输入法、触控、剪贴板或实际下载通过。受限环境不允许监听端口时检查会失败，不跳过后报通过。本地运行当前因沙箱 EPERM 与自动审批服务 503 未完成，CI 配置也尚未在远端执行验证。
+此检查不执行页面 JavaScript，不证明 Canvas、Worker 执行、输入法、触控、剪贴板或实际下载通过。受限环境不允许监听端口时检查会失败，不跳过后报通过。当前本地及 GitHub CI 已执行通过；早期 EPERM/503 记录仅代表当时的环境限制。
 
 ## 发布回退与数据保护
 
@@ -111,3 +114,9 @@ CI 在最终构建完成后生成 build-info.json，记录实际检出 HEAD 的�
 
 
 CD 下载 `lumina-site` 后，签出该 CI 运行的精确提交，运行 `scripts/check-deploy-site.mjs`，核对 `build-info.json` 中的提交号、版本与实际站点文件摘要后才上传 Pages。缺失元数据、额外/修改文件或符号链接均拒绝。该检查依赖可信 CI 生成的元数据及运行编号，不是独立签名认证；真实远端运行仍需核验。
+
+## 文件语料与候选重验
+
+`check:xlsx-corpus` 与 `check:wps-corpus` 读取当前版本 `artifacts/` 内的真实安装包。先用同一个 `SOURCE_DATE_EPOCH` 执行构建和 `check:sdk`，再运行这两个命令；不能用遗留包验证刚修改的源码。npm 发布工作流在最后一次可重复构建之后、上传 Release 和发布之前执行语料检查，失败会阻止交付。WPS 检查使用保留的桌面保存文件，不会启动 WPS，也不代表全部桌面功能通过。
+
+候选 r19 使用来源时间 `1790122493`。本地需显式设置 `SOURCE_DATE_EPOCH`；`RELEASE_SOURCE_DATE_EPOCH` 是 GitHub 仓库变量名，由工作流转换成本地构建变量。仅给本地命令设置 `RELEASE_SOURCE_DATE_EPOCH` 不会固定构建时钟。`package.json` 也属于内嵌来源指纹，即使只增加 npm 脚本也会改变制品：应重建、重新运行浏览器与语料、归档新候选，再更新 CI 的证据目录。旧报告保持原摘要。
