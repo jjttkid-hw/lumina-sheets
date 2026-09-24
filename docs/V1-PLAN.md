@@ -1,6 +1,6 @@
 历史 r14、r16、r17 候选记录保留在下方；当前候选以 r18 账本为准。
 
-2026-09-24 r18 重绑定：富文本 Canvas 颜色继承修复后，重新生成固定来源时间站点与 SDK；全量测试 167 个文件、2,343 项通过，Chromium、Firefox、WebKit 的 25 份浏览器报告、Chromium 触控、XLSX 5 项和 WPS 2 项均以新制品重新验证。r18 绑定站点 `2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87`、SDK `e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29`，证据见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。npm registry 首发、原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍未完成。
+2026-09-24 r18 重绑定：REST 重试增强支持服务端 `Retry-After` 并受本地上限约束；全量测试 167 个文件、2,345 项通过，Chromium、Firefox、WebKit 的 25 份浏览器报告、Chromium 触控、XLSX 5 项和 WPS 2 项均以新制品重新验证。r18 绑定站点 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`、SDK `a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5`，证据见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。npm registry 首发、原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍未完成。
 
 2026-09-24 r17 生命周期补强及远端同步：提交 `1e23218` 为分页 `prefetch` 增加主动取消、重新绑定、替换工作簿、清空缓存、销毁和共享页请求消费者取消回归；上一提交 `077162d` 的 Chromium、Firefox、WebKit 真实浏览器预取验收继续绑定 r17 固定制品。最新 GitHub CI [35924791431](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35924791431) 与 CD [35925452441](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35925452441) 均成功；线上 `build-info.json` 已核对为提交 `1e2321802eb162f3563287b77b2723f1bfcb7a93`、版本 `0.29.0` 和站点摘要 `1c772954b1139a5ab377a00b40b72d3170060218128557904f7586cabee5ad8a`。npm registry 仍未出现 `lumina-report-sdk`，因此不创建 `1.0.0`；自动化预取和取消结果仍不替代原生 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料、npm 首发或商业法务复核。
 

@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "153.0.8010.54",
-  "executedAt": "2026-09-23T23:22:53.642Z",
+  "executedAt": "2026-09-23T23:52:13.338Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87",
-  "artifactSha256": "e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29",
+  "siteSha256": "eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673",
+  "artifactSha256": "a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5",
   "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
   "checks": [
     {
       "name": "runtime-zoom-hit-draft-history",
       "status": "passed",
-      "elapsedMs": 517,
+      "elapsedMs": 529,
       "details": {
         "scales": [
           50,
@@ -32,17 +32,17 @@
     {
       "name": "hidden-axis-keyboard",
       "status": "passed",
-      "elapsedMs": 70
+      "elapsedMs": 76
     },
     {
       "name": "merge-hit-edit-navigation",
       "status": "passed",
-      "elapsedMs": 222
+      "elapsedMs": 213
     },
     {
       "name": "frozen-row-scroll-hit",
       "status": "passed",
-      "elapsedMs": 260,
+      "elapsedMs": 265,
       "details": {
         "scrollTop": 200
       }
@@ -50,7 +50,7 @@
     {
       "name": "sparse-million-row-locate-edit",
       "status": "passed",
-      "elapsedMs": 200,
+      "elapsedMs": 198,
       "details": {
         "selection": {
           "row": 999999,
@@ -58,7 +58,7 @@
         },
         "value": "last row",
         "draw": {
-          "drawMs": 0.20000004768371582,
+          "drawMs": 0.30000007152557373,
           "paintedCells": 84,
           "domNodes": 4
         },
@@ -68,7 +68,7 @@
     {
       "name": "row-height-column-width-hit-undo",
       "status": "passed",
-      "elapsedMs": 261,
+      "elapsedMs": 267,
       "details": {
         "columnWidths": {
           "0": 200
@@ -81,7 +81,7 @@
     {
       "name": "filtered-navigation-visible-clipboard",
       "status": "passed",
-      "elapsedMs": 523
+      "elapsedMs": 519
     }
   ],
   "pageErrors": [],

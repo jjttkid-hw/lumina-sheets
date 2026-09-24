@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "153.0.8010.54",
-  "executedAt": "2026-09-23T23:25:30.603Z",
+  "executedAt": "2026-09-23T23:54:49.393Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -16,14 +16,14 @@
     "isMobile": true,
     "hasTouch": true
   },
-  "siteSha256": "2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87",
-  "artifactSha256": "e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29",
+  "siteSha256": "eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673",
+  "artifactSha256": "a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5",
   "scope": "Chromium browser-level CDP touch packets, native pan and explicitly host-disabled pan for resize. Not physical-device, mobile keyboard or cross-engine certification.",
   "checks": [
     {
       "name": "touch-tap-selection",
       "status": "passed",
-      "elapsedMs": 127,
+      "elapsedMs": 120,
       "details": {
         "pointerType": "touch",
         "selected": {
@@ -37,14 +37,14 @@
       "status": "passed",
       "elapsedMs": 155,
       "details": {
-        "scrollTop": 659,
+        "scrollTop": 653,
         "touchAction": "auto"
       }
     },
     {
       "name": "touch-resize-cancel-retry",
       "status": "passed",
-      "elapsedMs": 226,
+      "elapsedMs": 228,
       "details": {
         "cancelledWidth": "default 96",
         "retryWidth": 156,

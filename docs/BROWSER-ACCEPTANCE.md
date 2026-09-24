@@ -483,3 +483,8 @@ SDK 快捷键补充：独立示例和嵌入页面分别验证 Ctrl/Cmd+Z、Shift
 2026-09-24 r18 富文本颜色修复后的候选复验：提交 `f16add5`（`f16add55eabe4fd4236ddad54e5e803419a87d86`）重新生成固定来源时间站点与 SDK。Chromium、Firefox、WebKit 共 25 份核心报告全部通过，Chromium 另通过触控模拟；XLSX 语料 5 项、WPS 语料 2 项均通过，`check-browser-evidence` 与 `check-xlsx-corpus-evidence` 通过。报告绑定站点 SHA-256 `2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87`、SDK tgz SHA-256 `e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29`（40 个文件，721615 字节）。GitHub [CI 35933757055](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35933757055) 与 [CD 35934188332](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35934188332) 已成功，线上 `build-info.json` 已绑定同一提交、版本 `0.29.0` 与站点摘要。原始记录见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。
 
 上述证据覆盖桌面 Chromium/Firefox/WebKit、浏览器触控模拟以及列出的 XLSX/WPS 受支持子集；仍不等同于原生中文输入法候选窗口、真实 VoiceOver/NVDA/JAWS、实体移动设备触控、跨设备性能 SLA、完整 Excel/WPS/SpreadJS 兼容、npm 注册表首发或商业许可证/专利法律审查。当前版本保持 `0.29.0`，未创建 `1.0.0` 或 `latest`。
+## 当前候选（2026-09-24，r18）
+
+2026-09-24 REST 重试增强候选：`restDataSource` 现在在可重试 HTTP 响应中遵守有效 `Retry-After`，同时受本地 `maxDelayMs` 上限约束；无效提示回退指数退避。重新生成固定来源时间站点与 SDK 后，Chromium、Firefox、WebKit 共 25 份核心报告全部通过，Chromium 另通过触控模拟；XLSX 语料 5 项、WPS 语料 2 项均通过，`check-browser-evidence` 与 `check-xlsx-corpus-evidence` 通过。报告绑定站点 SHA-256 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`、SDK tgz SHA-256 `a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5`（40 个文件，721730 字节），原始记录见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。
+
+这些证据仍不等同于原生中文输入法候选窗口、真实 VoiceOver/NVDA/JAWS、实体移动设备触控、跨设备性能 SLA、完整 Excel/WPS/SpreadJS 兼容、npm 注册表首发或商业法律审查。当前版本保持 `0.29.0`，未创建 `1.0.0` 或 `latest`。

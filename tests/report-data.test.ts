@@ -376,6 +376,26 @@ describe('data source adapters', () => {
     vi.useRealTimers();
   });
 
+  it('honors a valid Retry-After hint while staying within the local retry cap', async () => {
+    vi.useFakeTimers();
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(new Response('busy', { status: 429, headers: { 'Retry-After': '2' } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ rows: [[8]], totalRows: 1 })));
+    const source = restDataSource('https://example.test/reports', {
+      columnCount: 1,
+      fetcher,
+      retry: { retries: 1, baseDelayMs: 10, maxDelayMs: 1500 },
+    });
+    const pending = source.fetchPage(0, 1);
+    await vi.advanceTimersByTimeAsync(1499);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(pending).resolves.toEqual({ rows: [[8]], totalRows: 1 });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
+  });
+
   it('does not retry malformed successful responses or non-transient statuses', async () => {
     const fetcher = vi
       .fn()

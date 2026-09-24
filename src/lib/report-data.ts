@@ -619,6 +619,28 @@ function retryDelay(policy: ReturnType<typeof retryPolicy>, attempt: number) {
   return Math.min(policy.maxDelayMs, policy.baseDelayMs * 2 ** attempt);
 }
 
+/** Honor a server-provided Retry-After hint without allowing it to bypass the
+ * caller's bounded retry policy. Invalid or stale values fall back to the
+ * local exponential backoff. */
+function retryAfterDelay(
+  response: Response,
+  policy: ReturnType<typeof retryPolicy>,
+  attempt: number,
+) {
+  const fallback = retryDelay(policy, attempt);
+  const value = response.headers.get('Retry-After')?.trim();
+  if (!value) return fallback;
+  let delay: number;
+  if (/^\d+$/.test(value)) {
+    delay = Number(value) * 1000;
+  } else {
+    const timestamp = Date.parse(value);
+    delay = Number.isFinite(timestamp) ? timestamp - Date.now() : Number.NaN;
+  }
+  if (!Number.isFinite(delay) || delay < 0) return fallback;
+  return Math.min(policy.maxDelayMs, Math.max(0, delay));
+}
+
 function waitForRetry(delay: number, signal?: AbortSignal) {
   if (signal?.aborted) return Promise.reject(abortError());
   if (!delay) return Promise.resolve();
@@ -755,7 +777,7 @@ export function restDataSource(url: string, options: RestDataSourceOptions): Rep
             const status = response.status;
             discard();
             if (retry.statuses.has(status) && attempt < retry.retries) {
-              await waitForRetry(retryDelay(retry, attempt++), signal);
+              await waitForRetry(retryAfterDelay(response, retry, attempt++), signal);
               continue;
             }
             throw new Error(`数据源请求失败（HTTP ${status}）。`);

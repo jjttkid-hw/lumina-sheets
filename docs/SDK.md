@@ -469,7 +469,7 @@ REST 响应取消：restDataSource 对忽略 AbortSignal 的迟到响应不再�
 
 REST 字节容量：`restDataSource(url, { columnCount, maxResponseBytes? })` 默认最多读取每个响应体 16 MiB，配置须为正整数且不超过 64 MiB。按 Fetch body 实际交付的字节累计（浏览器解压之后），不相信 Content-Length；超过预算后取消 reader 并拒绝，未截断为有效页面。连续读取每 256 KiB 或 256 次读取让出事件循环，支持取消；按流解码 UTF-8，跨块字符/BOM 保持标准解码语义。自定义 fetcher 必须提供标准 Response/body，只有 json() 的替身不再适用。源响应已在网络层缓存、单块分配、解码字符串、JSON 对象、后续页面复制均有额外内存，故不是总内存硬上限；同步 JSON.parse 无法中途取消。遇到容量错误可降低请求页长或重建源提高预算后重试。
 
-REST 瞬时故障可通过 `retry` 显式开启有限重试：`{ retries, baseDelayMs, maxDelayMs, statuses }`。默认不重试；默认临时状态为 408、425、429、500、502、503、504，等待采用指数退避并受 `maxDelayMs` 限制。网络异常和指定临时状态才会重试，成功响应的 JSON/容量/数据格式错误及未列出的 HTTP 状态不会重试。等待和请求都监听 `AbortSignal`，切换视区、清缓存或销毁会立即结束重试；重试次数最多 5 次，状态码列表必须是 100–599 的非空整数列表。
+REST 瞬时故障可通过 `retry` 显式开启有限重试：`{ retries, baseDelayMs, maxDelayMs, statuses }`。默认不重试；默认临时状态为 408、425、429、500、502、503、504，等待采用指数退避并受 `maxDelayMs` 限制。若服务端返回有效的 `Retry-After`（秒数或 HTTP 日期），适配器会采用该提示，但仍不会超过 `maxDelayMs`；无效或过期提示回退到本地退避。网络异常和指定临时状态才会重试，成功响应的 JSON/容量/数据格式错误及未列出的 HTTP 状态不会重试。等待和请求都监听 `AbortSignal`，切换视区、清缓存或销毁会立即结束重试；重试次数最多 5 次，状态码列表必须是 100–599 的非空整数列表。
 
 
 REST 编码完整性：JSON 响应体按严格 UTF-8 解码，非法字节、过长编码、代理区码点、超出 Unicode 范围或截断多字节序列明确拒绝，不静默替换为 U+FFFD。合法 UTF-8 编码的 U+FFFD、中文/Emoji 跨块及可选起始 BOM 保持。失败页不进入缓存，已成功页不变，可修复数据源后重试；此检查不能恢复上游在生成 JSON 前已经丢失的信息。

@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "153.0.8010.54",
-  "executedAt": "2026-09-23T23:23:44.800Z",
+  "executedAt": "2026-09-23T23:53:05.406Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87",
-  "artifactSha256": "e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29",
+  "siteSha256": "eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673",
+  "artifactSha256": "a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5",
   "scope": "Native browser IndexedDB/localStorage workspace migration, reload and damaged-storage containment. This is isolated single-device persistence, not cross-device sync or crash-consistency certification.",
   "checks": [
     {
       "name": "native-legacy-migration-reload",
       "status": "passed",
-      "elapsedMs": 507,
+      "elapsedMs": 522,
       "details": {
         "storedWorkbooks": 1,
         "journalEntries": 1,
@@ -31,7 +31,7 @@
     {
       "name": "native-concurrent-migration-single-commit",
       "status": "passed",
-      "elapsedMs": 323,
+      "elapsedMs": 369,
       "details": {
         "pages": 2,
         "storedWorkbooks": 1,
@@ -43,7 +43,7 @@
     {
       "name": "native-damaged-workbook-isolation",
       "status": "passed",
-      "elapsedMs": 326,
+      "elapsedMs": 391,
       "details": {
         "visibleWorkbook": "有效工作簿",
         "retainedRows": 2,
@@ -54,7 +54,7 @@
     {
       "name": "native-damaged-journal-fails-closed",
       "status": "passed",
-      "elapsedMs": 289,
+      "elapsedMs": 342,
       "details": {
         "workspaceOpened": false,
         "storedValue": "安全内容",
