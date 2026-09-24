@@ -478,12 +478,6 @@ SDK 快捷键补充：独立示例和嵌入页面分别验证 Ctrl/Cmd+Z、Shift
 2026-09-24 Safari r14 实机补验：Safari 27.0 / macOS 26.7 在线公式示例完成 D5 定位、40→50 编辑重算、撤销恢复 40、重做恢复 50；AX 树持续显示 table/row/cell 语义，页面/控制台/运行错误均为 0。原始记录见 [browser-safari-2026-09-24-r14](acceptance/browser-safari-2026-09-24-r14/README.md)，绑定站点 `6cfad7b747f837df98b68702cf6c9b1cd04785a80c7c26baea23fff8506ea18c` 与 SDK `8833fde167d56b59446110f34f54fbe1d186af18a4580a24819cefba2af68a3e`。该记录不替代原生 IME、VoiceOver/NVDA/JAWS、实体移动设备、跨设备性能、完整 Excel/WPS 或 npm registry 验证。
 
 2026-09-24 Safari r15 实机补验：Safari 27.0 / macOS 26.7 在线候选完成筛选、显示比例、XLSX 下载触发和刷新恢复：输入“华东”并应用后进入筛选状态，清除后恢复；显示比例从 100% 调整到 125%；导出播报“完整文件已生成并开始下载”；刷新后页面重新初始化且保留 125% 比例和表格语义，页面、控制台和运行错误均为 0。记录见 [browser-safari-2026-09-24-r15](acceptance/browser-safari-2026-09-24-r15/README.md)，绑定同一站点与 SDK 摘要。该记录仍不替代原生 IME、VoiceOver/NVDA/JAWS、实体移动设备、跨设备性能、完整 Excel/WPS 或 npm registry 验证。
-# 当前候选（2026-09-24，r18）
-
-2026-09-24 r18 富文本颜色修复后的候选复验：提交 `f16add5`（`f16add55eabe4fd4236ddad54e5e803419a87d86`）重新生成固定来源时间站点与 SDK。Chromium、Firefox、WebKit 共 25 份核心报告全部通过，Chromium 另通过触控模拟；XLSX 语料 5 项、WPS 语料 2 项均通过，`check-browser-evidence` 与 `check-xlsx-corpus-evidence` 通过。报告绑定站点 SHA-256 `2840ae6b66bd64a67f9ce69b76f5364be567c3b08201f67832cd5d0366146e87`、SDK tgz SHA-256 `e21eef8fbb3b9803d312ce619553828921a6f2b0a536acc1bb6a31bb0847fc29`（40 个文件，721615 字节）。GitHub [CI 35933757055](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35933757055) 与 [CD 35934188332](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35934188332) 已成功，线上 `build-info.json` 已绑定同一提交、版本 `0.29.0` 与站点摘要。原始记录见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。
-
-上述证据覆盖桌面 Chromium/Firefox/WebKit、浏览器触控模拟以及列出的 XLSX/WPS 受支持子集；仍不等同于原生中文输入法候选窗口、真实 VoiceOver/NVDA/JAWS、实体移动设备触控、跨设备性能 SLA、完整 Excel/WPS/SpreadJS 兼容、npm 注册表首发或商业许可证/专利法律审查。当前版本保持 `0.29.0`，未创建 `1.0.0` 或 `latest`。
-## 当前候选（2026-09-24，r18）
 
 2026-09-24 REST 重试增强候选：`restDataSource` 现在在可重试 HTTP 响应中遵守有效 `Retry-After`，同时受本地 `maxDelayMs` 上限约束；无效提示回退指数退避。重新生成固定来源时间站点与 SDK 后，Chromium、Firefox、WebKit 共 25 份核心报告全部通过，Chromium 另通过触控模拟；XLSX 语料 5 项、WPS 语料 2 项均通过，`check-browser-evidence` 与 `check-xlsx-corpus-evidence` 通过。报告绑定站点 SHA-256 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`、SDK tgz SHA-256 `a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5`（40 个文件，721730 字节），原始记录见 [r18](acceptance/browser-candidate-2026-09-24-r18/README.md)。
 
