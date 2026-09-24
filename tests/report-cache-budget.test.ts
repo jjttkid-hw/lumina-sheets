@@ -2,6 +2,29 @@ import { describe, expect, it, vi } from 'vitest';
 import { ReportChunkCache } from '../src/lib/report-data';
 
 describe('viewport page payload budgets', () => {
+  it('touches an adjacent row read once per page on the Canvas hot path', async () => {
+    const cache = new ReportChunkCache(
+      {
+        columnCount: 1,
+        rowCount: 4,
+        fetchPage: async (offset, limit) => ({
+          rows: Array.from({ length: limit }, (_, index) => [offset + index]),
+          totalRows: 4,
+        }),
+      },
+      { pageSize: 2, maxPages: 2 },
+    );
+    await cache.getPage(0);
+    await cache.getPage(1);
+    const pages = (cache as unknown as { pages: Map<number, unknown> }).pages;
+    const touch = vi.spyOn(pages, 'delete');
+    expect(cache.read(0, 0)).toBe(0);
+    expect(cache.read(1, 0)).toBe(1);
+    expect(touch).toHaveBeenCalledTimes(1);
+    touch.mockRestore();
+    cache.dispose();
+  });
+
   it('bounds default requests for very wide sources without dropping columns or rows', async () => {
     const fetchPage = vi.fn(async (offset: number, limit: number) => ({
       rows: Array.from({ length: limit }, (_, i) => [offset + i]),
