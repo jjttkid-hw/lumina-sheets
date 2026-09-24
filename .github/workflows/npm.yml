@@ -9,6 +9,11 @@ on:
         description: Existing release tag, matching package.json (for example v1.0.0-rc.1)
         required: true
         type: string
+      verify_only:
+        description: Verify an already published version without publishing or replacing release assets
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -70,11 +75,13 @@ jobs:
       - name: Require artifact-bound acceptance for stable 1.x and later
         run: npm run check:stable
       - name: Attach the verified install package to the GitHub release
+        if: ${{ !inputs.verify_only }}
         env:
           GH_TOKEN: ${{ github.token }}
           SDK_ARTIFACT: ${{ steps.release.outputs.artifact }}
         run: gh release upload "$RELEASE_TAG" "$SDK_ARTIFACT" "$SDK_ARTIFACT.sha256" --clobber
       - name: Publish to npm with provenance
+        if: ${{ !inputs.verify_only }}
         env:
           # Leave NODE_AUTH_TOKEN unset for Trusted Publishing. npm uses the
           # GitHub OIDC exchange when no long-lived token is supplied.

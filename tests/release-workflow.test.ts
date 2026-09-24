@@ -6,6 +6,23 @@ async function workflow(name: string): Promise<string> {
 }
 
 describe('release workflow artifact alignment', () => {
+  it('keeps verification retries read-only while requiring the exact registry artifact', async () => {
+    const source = await workflow('npm.yml');
+    expect(source).toMatch(/verify_only:\n(?:.*\n)*?        default: false\n        type: boolean/);
+    const steps = source.split(/\n      - /);
+    const guarded = steps.filter((step) => /npm publish|gh release upload/.test(step));
+    expect(guarded).toHaveLength(2);
+    for (const step of guarded) expect(step).toContain('if: ${{ !inputs.verify_only }}');
+    const verification = steps.find((step) =>
+      step.includes('node scripts/check-npm-registry.mjs'),
+    )!;
+    expect(verification).toBeDefined();
+    expect(verification).not.toMatch(/\n        if:/);
+    expect(verification).toContain('NPM_EXPECTED_ARCHIVE: ${{ steps.release.outputs.artifact }}');
+    expect(verification).toContain('NPM_VERSION: ${{ steps.release.outputs.version }}');
+    expect(verification).toContain('NPM_DIST_TAG: ${{ steps.release.outputs.dist-tag }}');
+  });
+
   it('builds and smoke-tests the Pages-base site before npm publication', async () => {
     const source = await workflow('npm.yml');
     expect(source).toMatch(/npm run build:site/);

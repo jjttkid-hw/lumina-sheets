@@ -70,7 +70,7 @@ Trusted Publisher 的逐字段配置和发布后核验步骤见 [npm Trusted Pub
 3. 工作流检出对应 tag，核对版本，重新完成测试、构建与安装验证，将 `.tgz` 和 SHA-256 上传到该 GitHub Release，然后以 `--provenance --access public` 发布同一个包。
 4. 确认 npm 页面版本、来源证明、安装结果和 `npm release` 状态，再更新对外发布说明。
 
-也可从 Actions 手动运行 `npm release`，输入已存在的 Release tag，用于修复账号设置后重试。npm 版本不可覆盖；若已发布该版本，不要重跑发布步骤，应递增版本。0.x 开发线和带预发布后缀的新版本自动发布到 npm `next`；首个 1.x 及以后无预发布后缀的正式版本发布到 `latest`。GitHub Release 的 prerelease 标志必须与版本后缀一致，否则发布前失败。手动触发也按版本号选择通道。上传和发布均使用精确版本制品路径，不使用匹配历史包的通配符。
+也可从 Actions 手动运行 `npm release`，输入已存在的 Release tag，用于修复账号设置后重试。npm 版本不可覆盖；若只是发布后的验证失败，选择下述“仅验证”模式；修改包内容则必须递增版本。0.x 开发线和带预发布后缀的新版本自动发布到 npm `next`；首个 1.x 及以后无预发布后缀的正式版本发布到 `latest`。GitHub Release 的 prerelease 标志必须与版本后缀一致，否则发布前失败。手动触发也按版本号选择通道。上传和发布均使用精确版本制品路径，不使用匹配历史包的通配符。
 
 没有 npm 账号授权、Trusted Publisher 或可用 `NPM_TOKEN` 时，工作流会在 npm 发布步骤失败，不能把配置完成等同于包已经上架。npm 版本/下载量徽章只在注册表确认包存在后启用。
 
@@ -120,3 +120,9 @@ CD 下载 `lumina-site` 后，签出该 CI 运行的精确提交，运行 `scrip
 `check:xlsx-corpus` 与 `check:wps-corpus` 读取当前版本 `artifacts/` 内的真实安装包。先用同一个 `SOURCE_DATE_EPOCH` 执行构建和 `check:sdk`，再运行这两个命令；不能用遗留包验证刚修改的源码。npm 发布工作流在最后一次可重复构建之后、上传 Release 和发布之前执行语料检查，失败会阻止交付。WPS 检查使用保留的桌面保存文件，不会启动 WPS，也不代表全部桌面功能通过。
 
 候选 r19 使用来源时间 `1790122493`。本地需显式设置 `SOURCE_DATE_EPOCH`；`RELEASE_SOURCE_DATE_EPOCH` 是 GitHub 仓库变量名，由工作流转换成本地构建变量。仅给本地命令设置 `RELEASE_SOURCE_DATE_EPOCH` 不会固定构建时钟。`package.json` 也属于内嵌来源指纹，即使只增加 npm 脚本也会改变制品：应重建、重新运行浏览器与语料、归档新候选，再更新 CI 的证据目录。旧报告保持原摘要。
+
+## 已发布版本的验证重试
+
+若发布命令成功但注册表读取或安装验证失败，在 Actions 手动运行 `npm release`，填写原 Release tag 并勾选 `verify_only`。此模式仍执行该 tag 的测试、构建、API/安装包、许可证、可重复构建、文件语料和稳定版门禁，但跳过 Release 附件上传与 npm publish。默认未勾选时继续正常发布。
+
+最后一步读取公开 npm 注册表，核对精确版本、预期 dist-tag、SHA-512 integrity，以及下载归档与重建候选的 SHA-256，随后在临时目录安装并导入。没有该版本、tag 已指向其他版本、字节不一致或安装失败都会失败；不会自动重发、修改 tag 或把不匹配当作成功。应保留原候选的来源时间和构建输入；不能调整哈希绕过差异。该模式不生成或验证 provenance，也不证明首次发布已经完成。工作流仍经过仓库的 npm 环境规则。
