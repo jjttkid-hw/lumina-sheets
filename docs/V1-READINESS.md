@@ -7,8 +7,8 @@ This page is the short, current release ledger. Historical candidate notes remai
 
 | Item | Evidence | Status |
 | --- | --- | --- |
-| Source and Pages deployment | Commit [`38f48d3`](https://github.com/jjttkid-hw/lumina-sheets/commit/38f48d3), [CI run 35948294862](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35948294862), [CD run 35948777963](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35948777963) | Passed |
-| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `38f48d3`, site SHA-256 `af75fb282b72a6a8498510b97ffae36f672577754e8a1e4048e914015977831c` | Passed |
+| Source and Pages deployment | Commit [`8ecfc7c`](https://github.com/jjttkid-hw/lumina-sheets/commit/8ecfc7c), [CI run 35950642882](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35950642882), [CD run 35951022424](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35951022424) | Passed |
+| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `8ecfc7c`, site SHA-256 `af75fb282b72a6a8498510b97ffae36f672577754e8a1e4048e914015977831c` | Passed |
 | SDK artifact | Candidate r20, SDK SHA-256 `e2af24d67fda8af3ed26e27a24a7f4b2e17249aa741ff0212357fa652ac2fa64` | Passed |
 | Automated regression | 167 test files, 2,347 tests; API, package isolation, strict license and reproducibility gates | Passed |
 | Real-browser automation | [Candidate r20](acceptance/browser-candidate-2026-09-24-r20/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed |
