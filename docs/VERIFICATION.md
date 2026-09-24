@@ -10,6 +10,13 @@
 
 # 验证记录
 
+## 当前状态（2026-09-24，提交 `140025c`）
+
+- 发布门禁新增正式 npm scripts：`check:xlsx-corpus`、`check:wps-corpus`、`check:xlsx-corpus-evidence`；npm 发布工作流会在上传 Release 和 `npm publish` 前对最终安装包执行 XLSX/WPS 语料检查。发布契约回归通过。
+- 新增候选 r19 [浏览器证据](acceptance/browser-candidate-2026-09-24-r19/README.md)：因 `package.json` 脚本变更使 SDK 制品摘要变化，未改签 r18，而是重新执行 Chromium、Firefox、WebKit 的 25 份报告、Chromium 触控模拟、XLSX 5 项和 WPS 2 项。当前站点 SHA-256 `5e5ddf98a039b854d5822a6765854c44b78ef2abe3d63c8684eeffae545fa8d2`，SDK SHA-256 `4a8f0ea731889fcd8e61dafe263d48294a29a40da3c78f9f4db94830a0f242a0`（721,747 字节）。
+- 使用 `SOURCE_DATE_EPOCH=1790122493` 连续两次重建通过，167 个测试文件、2,345 项测试，API、隔离安装、HTTP 运行时和严格许可证门禁通过。GitHub CI [35942310114](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35942310114) 与 CD [35942717488](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35942717488) 均成功；线上 `build-info.json` 已核对提交 `140025ce6c9a91e07ded59b25a2f4ba804ac3d17`、版本 `0.29.0` 和上述站点摘要。
+- 当前仍为 `0.29.0` 开发线。npm registry 首发/Trusted Publisher 实际绑定、原生系统 IME、真实屏幕阅读器、实体移动设备、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核未完成，因此不创建 `1.0.0` 或 `latest` 稳定发布记录。
+
 ## 当前状态（2026-09-24，提交 `e9dcfe5`）
 
 - 文档账本提交 `e9dcfe5` 的 GitHub CI [35938950018](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35938950018) 与 CD [35939395273](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35939395273) 均成功；线上 `build-info.json` 已核对为提交 `e9dcfe50e87cd579d9ecb6956786711b68971bb0`、版本 `0.29.0` 和站点 SHA-256 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`。
