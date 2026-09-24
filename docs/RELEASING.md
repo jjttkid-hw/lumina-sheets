@@ -76,6 +76,8 @@ Trusted Publisher 的逐字段配置和发布后核验步骤见 [npm Trusted Pub
 
 公开声明门禁和兼容政策见 [API-STABILITY.md](API-STABILITY.md)；v1.0 完成条件见 [V1-PLAN.md](V1-PLAN.md)。
 
+发布前先查看 [当前 v1.0 readiness 账本](V1-READINESS.md)。它是当前候选的简表；历史验收记录不会自动替代其中的开放门槛。
+
 所有 npm 发布候选在构建后先执行 `check:licenses` 严格依赖审计；任何 error/review 或预打包组件未核实都会阻止发布。正式 1.x 及以上版本还执行 `check:stable`。它要求 [稳定版验收记录](acceptance/README.md) 绑定实际 tgz 哈希，检查浏览器核心项目与独立门槛、报告文件及哈希，并从包内读取零未解决问题的依赖清单。缺失或旧证据不能发布。当前没有通过的稳定版记录，因此简单修改版本为 1.0.0 会失败。仓库变量 `RELEASE_SOURCE_DATE_EPOCH` 可固定候选与正式重建的来源时间，防止仅提交验收文档就改变包哈希；值必须与候选构建一致。
 
 

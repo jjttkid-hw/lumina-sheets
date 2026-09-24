@@ -15,6 +15,8 @@ Lumina 是一个可直接嵌入网页的 JavaScript 表格与报表组件，目�
 
 当前版本仍是 0.29 开发线；稳定版范围见 [支持矩阵](docs/SUPPORT-MATRIX.md)，从 0.x 迁移见 [迁移指南](docs/MIGRATION.md)。真实浏览器和第三方许可门槛完成前，不声明 v1.0 或完整 Excel/SpreadJS 兼容。
 
+当前候选的逐项状态见 [v1.0 readiness 账本](docs/V1-READINESS.md)。它区分已通过的制品验证和仍需外部证据的商业发布门槛。
+
 ## 运行与构建
 
 ```sh
