@@ -10,11 +10,12 @@
 
 # 验证记录
 
-## 当前状态（2026-09-24，提交 `be5b3a0`）
+## 当前状态（2026-09-24，提交 `f0371d1`）
 
 - 修复 Canvas 富文本默认颜色：未指定局部颜色的文字片段现在继承单元格外层 `style.color`，新增回归测试。定向富文本测试、格式检查和完整站点/SDK 构建通过。
 - REST 分页重试增强：可重试 HTTP 响应的有效 `Retry-After` 会在 `maxDelayMs` 上限内参与退避，无效提示回退指数退避；新增 429/上限裁剪回归。全量测试现为 167 个文件、2,345 项通过。
 - 固定来源时间候选重新绑定：REST 重试增强后站点 SHA-256 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`，SDK tgz SHA-256 `a138905857d0365f220e6cd7b8c7c3397cd17469442a3bd42134ebb2dec2fac5`。r18 三引擎 25 份报告、Chromium 触控、XLSX 5 项和 WPS 2 项均已用新摘要重新验证。
+- 文档提交 `f0371d1` 的 CI [35937493800](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35937493800) 已通过；线上 Pages 仍绑定相同提交、版本 `0.29.0` 和站点摘要 `eeccab1ac96c23e85ca5d6f031d678f0cc74c2fcc487fc7d778a2cb8d8df0673`。
 - 上一轮远端 CI 因旧 XLSX 语料摘要仍绑定 `93f6975a…` 而失败，未归因于运行时代码；语料与浏览器证据已重新生成并在当前 r18 提交中通过 CI/CD 复核。npm registry 仍为 404/E401，不创建 `1.0.0` 或 `latest`。
 
 ## 当前状态（2026-09-24，提交 `6a89721`）
