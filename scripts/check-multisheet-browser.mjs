@@ -23,6 +23,7 @@ const checks = [
   'json-roundtrip',
   'xlsx-roundtrip',
   'duplicate-row-rejection',
+  'edited-session-close-protection',
 ];
 let server;
 try {
@@ -254,6 +255,18 @@ try {
               undo: 200000,
               redo: 300000,
             };
+          });
+          await run('edited-session-close-protection', async () => {
+            assert.match(await page.locator('#session-note').textContent(), /本次会话/);
+            await page.locator('#formula').click();
+            const pending = page.waitForEvent('dialog');
+            await page.close({ runBeforeUnload: true });
+            const dialog = await pending;
+            assert.equal(dialog.type(), 'beforeunload');
+            await dialog.dismiss();
+            assert.equal(page.isClosed(), false);
+            await summary();
+            return { cancelledClose: true, revenue: 8299000 };
           });
           await page.screenshot({ path: path.join(output, 'result.png'), fullPage: true });
         } catch (error) {

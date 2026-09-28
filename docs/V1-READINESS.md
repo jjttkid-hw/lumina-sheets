@@ -7,6 +7,14 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
+adds the report example's persistent session notice and beforeunload protection for
+edits, drafts and structure changes. It remains an in-memory demo. The rebuilt
+site hash is `7eb51ec5a0190fbd66ad47bc7897722597362ae03070ba6bc784a5c7b096ec91`,
+SDK hash `c1c854b73bf519fb9346332c5f76734e70ba542f838f4d85561cd26f633cc231`.
+All 2,353 tests pass. Current evidence is archived with this candidate; r21 and
+native Safari observations below remain valid only for their recorded artifacts.
+
 2026-09-28 recovery addition: [r21 recovery reports](acceptance/recovery-2026-09-28-r21/README.md)
 now include actual IndexedDB transaction abort, subsequent queued edit, explicit retry
 and full page reload. All four recovery checks pass in Chrome, Firefox and WebKit

@@ -16,6 +16,13 @@ class Element {
   checked = false;
   options: Element[] = [];
   files: File[] = [];
+  listeners = new Map<string, (...args: any[]) => void>();
+  addEventListener(type: string, callback: (...args: any[]) => void) {
+    this.listeners.set(type, callback);
+  }
+  removeEventListener(type: string) {
+    this.listeners.delete(type);
+  }
   onclick?: () => unknown;
   onchange?: () => unknown;
   onkeydown?: (event: { key: string; isComposing?: boolean; keyCode?: number }) => unknown;
@@ -65,10 +72,13 @@ function mount() {
     createElement: () => new Element(),
     activeElement: null,
   };
+  const listeners = new Map<string, (...args: any[]) => void>();
   const window = {
-    addEventListener: (_: string, callback: () => void) => {
-      dispose = callback;
+    addEventListener: (type: string, callback: () => void) => {
+      listeners.set(type, callback);
+      if (type === 'pagehide') dispose = callback;
     },
+    removeEventListener: (type: string) => listeners.delete(type),
   };
   const run = new Function(
     'sdk',
@@ -85,8 +95,35 @@ function mount() {
     () => 0,
     () => {},
   ) as { grid: sdk.LuminaSpreadsheet; report: (mode: string) => Promise<void> };
-  return { ...result, $ };
+  return { ...result, $, listeners };
 }
+it('protects memory edits, rejected drafts and structure changes until successful replacement', async () => {
+  const { grid, report, $, listeners } = mount();
+  const prevented = () => {
+    const event = { preventDefault: vi.fn(), returnValue: undefined };
+    listeners.get('beforeunload')!(event);
+    return event.preventDefault.mock.calls.length > 0;
+  };
+  expect(prevented()).toBe(false);
+  grid.setCell('A1', 'unsaved');
+  expect(prevented()).toBe(true);
+  grid.undo();
+  expect(prevented()).toBe(true);
+  await report('validation');
+  expect(prevented()).toBe(false);
+  $('#formula').listeners.get('input')!();
+  expect(prevented()).toBe(true);
+  await report('list');
+  $('#report').listeners.get('input')!();
+  expect(prevented()).toBe(true);
+  await report('list');
+  grid.insertRows(2, 1);
+  expect(prevented()).toBe(true);
+  dispose!();
+  dispose = undefined;
+  expect(listeners.has('beforeunload')).toBe(false);
+  expect($('#report').listeners.size).toBe(0);
+});
 it('changes report zoom and retains the preference across report replacement', async () => {
   const { grid, report, $ } = mount();
   const before = grid.toJSON();
@@ -102,6 +139,20 @@ it('changes report zoom and retains the preference across report replacement', a
   expect($('#report-zoom').value).toBe('150');
   expect(grid.zoom).toBe(150);
   expect($('#status').dataset.error).toBe('true');
+});
+
+it('does not clear edited-session protection when an export finishes or fails', async () => {
+  const { grid, $, listeners } = mount();
+  grid.setCell('A1', 'keep');
+  const exported = vi.spyOn(grid, 'export').mockResolvedValue(undefined);
+  await $('#export').onclick!();
+  const event = { preventDefault: vi.fn(), returnValue: undefined };
+  listeners.get('beforeunload')!(event);
+  expect(event.preventDefault).toHaveBeenCalledOnce();
+  exported.mockRejectedValue(new Error('cancelled download'));
+  await $('#export').onclick!();
+  listeners.get('beforeunload')!(event);
+  expect(event.preventDefault).toHaveBeenCalledTimes(2);
 });
 
 it('exposes actual multi-sheet formula recalculation and workbook undo in the example', async () => {

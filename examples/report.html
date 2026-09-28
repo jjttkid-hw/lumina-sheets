@@ -216,6 +216,9 @@
       <a href="%BASE_URL%">返回工作空间</a>
     </header>
     <main>
+      <p id="session-note" role="status" aria-live="polite">
+        本页仅在本次会话保留报表，不会自动保存。刷新、关闭或切换报表前，请先导出文件。
+      </p>
       <div class="bar" role="group" aria-label="报表类型">
         <button data-layout="list">行式明细</button>
         <button data-layout="group">分组汇总</button>
@@ -467,6 +470,27 @@
         importing = null,
         selection = { row: 0, col: 0 },
         selectionDirty = true;
+      let sessionEdited = false;
+      function markSessionEdited() {
+        sessionEdited = true;
+        $('#session-note').textContent =
+          '报表有编辑或草稿，仅保留在本次会话。刷新、关闭或切换报表前，请先导出文件。';
+      }
+      function resetSessionNotice() {
+        sessionEdited = false;
+        $('#session-note').textContent =
+          '本页仅在本次会话保留报表，不会自动保存。刷新、关闭或切换报表前，请先导出文件。';
+      }
+      // Conservative protection includes cancelled/rejected drafts. Export may
+      // be partial or its download may be cancelled, so it cannot clear risk.
+      $('#formula').addEventListener('input', markSessionEdited);
+      $('#report').addEventListener('input', markSessionEdited);
+      const beforeUnload = (event) => {
+        if (!sessionEdited) return;
+        event.preventDefault();
+        event.returnValue = '';
+      };
+      window.addEventListener('beforeunload', beforeUnload);
       const showError = (error) => {
         status.dataset.error = 'true';
         status.textContent =
@@ -524,6 +548,7 @@
           syncLayout();
         },
         onChange: ({ changes }) => {
+          markSessionEdited();
           stopSnapshot();
           status.dataset.error = 'false';
           status.textContent = changes.length
@@ -534,6 +559,7 @@
           syncLayout();
         },
         onStructureChange: (event) => {
+          markSessionEdited();
           stopSnapshot();
           selection = grid.selectedRange;
           selectionDirty = true;
@@ -1151,6 +1177,7 @@
           syncLayout();
           status.dataset.error = 'false';
           status.textContent = `已生成${labels[mode]}${isPaged ? ' · 当前表格只读' : ' · 可直接编辑或导出'}`;
+          resetSessionNotice();
         } catch (error) {
           if (generation === reportGeneration) showError(error);
         }
@@ -1452,6 +1479,7 @@
             'await grid.import(file, { signal }); // 可主动取消；编辑、重载和新导入也会取消旧导入。\nconst rules = grid.getDataValidation();\nconst print = grid.getPrintSettings();';
           status.dataset.error = 'false';
           status.textContent = '报表已恢复 · 已加载支持的数据校验和打印设置';
+          resetSessionNotice();
           $('#layout-note').textContent = isPaged
             ? '已载入只读分页快照；完整数据需重新绑定原数据源。'
             : '已载入保存的报表；可切换工作表、继续编辑或导出。';
@@ -1548,6 +1576,9 @@
         syncSelection();
       }, 400);
       window.addEventListener('pagehide', () => {
+        window.removeEventListener('beforeunload', beforeUnload);
+        $('#formula').removeEventListener('input', markSessionEdited);
+        $('#report').removeEventListener('input', markSessionEdited);
         clearInterval(metricsTimer);
         stopImport();
         stopSnapshot();
