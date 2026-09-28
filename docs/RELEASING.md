@@ -70,7 +70,7 @@ Trusted Publisher 的逐字段配置和发布后核验步骤见 [npm Trusted Pub
 3. 工作流检出对应 tag，核对版本，重新完成测试、构建与安装验证，将 `.tgz` 和 SHA-256 上传到该 GitHub Release，然后以 `--provenance --access public` 发布同一个包。
 4. 确认 npm 页面版本、来源证明、安装结果和 `npm release` 状态，再更新对外发布说明。
 
-也可从 Actions 手动运行 `npm release`，输入已存在的 Release tag，用于修复账号设置后重试。npm 版本不可覆盖；若只是发布后的验证失败，选择下述“仅验证”模式；修改包内容则必须递增版本。0.x 开发线和带预发布后缀的新版本自动发布到 npm `next`；首个 1.x 及以后无预发布后缀的正式版本发布到 `latest`。GitHub Release 的 prerelease 标志必须与版本后缀一致，否则发布前失败。手动触发也按版本号选择通道。上传和发布均使用精确版本制品路径，不使用匹配历史包的通配符。
+也可从 Actions 手动运行 `npm release`，输入已存在的 Release tag，用于修复账号设置后重试。npm 版本不可覆盖；若只是发布后的验证失败，选择下述“仅验证”模式；修改包内容则必须递增版本。0.x 开发线和带预发布后缀的新版本自动发布到 npm `next`；首个 1.x 及以后无预发布后缀的正式版本发布到 `latest`。带预发布后缀的版本必须使用 GitHub prerelease 标志；无后缀的 1.x 及以后正式版必须关闭该标志。无后缀的 0.x 开发版推荐标记为 GitHub prerelease，也兼容历史普通 Release 标记，两种情况均只能进入 npm `next`。手动触发也按版本号选择通道。上传和发布均使用精确版本制品路径，不使用匹配历史包的通配符。
 
 没有 npm 账号授权、Trusted Publisher 或可用 `NPM_TOKEN` 时，工作流会在 npm 发布步骤失败，不能把配置完成等同于包已经上架。npm 版本/下载量徽章只在注册表确认包存在后启用。
 

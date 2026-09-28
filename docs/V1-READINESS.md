@@ -1,6 +1,8 @@
 # Lumina Sheets v1.0 readiness
 
-This page is the short, current release ledger. Historical candidate notes remain in
+This page records the candidate evidence observed on 2026-09-24; deployment commit IDs
+are dated observations, not a promise that they remain the newest main commit. Live
+deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
 
 ## Current candidate
@@ -39,15 +41,25 @@ The [support matrix](SUPPORT-MATRIX.md) is normative. It does not promise comple
 Excel or SpreadJS compatibility, a server, collaboration, CommonJS, SSR Canvas
 rendering, or a commercial SLA.
 
-## Release sequence after the open gates close
+## Publication and stable release sequence
 
-1. Rebuild from a clean tag with the configured `SOURCE_DATE_EPOCH`.
-2. Re-run the candidate browser and file evidence against that exact site and SDK
-   digest.
-3. Publish the first package version through the configured npm Trusted Publisher,
-   then verify the public tarball and isolated install.
-4. Prepare `docs/acceptance/stable-release.json` from the reviewed evidence and run
-   `npm run check:stable` before creating the matching `v1.0.0` tag.
+1. Bootstrap the still-unpublished package with an authenticated maintainer account:
+   publish a verified 0.x archive explicitly to `next`, then verify the public
+   tarball and isolated install. GitHub login alone cannot authorize npm.
+2. Once the package exists, configure its npm Settings → Trusted Publishers with
+   `jjttkid-hw / lumina-sheets / npm.yml / npm`. Subsequent versions may use OIDC.
+   This repository contains the workflow; it does not prove the npm-side binding.
+3. After the remaining platform and review gates close, prepare the intended 1.0.0
+   version in a clean committed checkout, before creating its release tag. Build
+   with a fixed `SOURCE_DATE_EPOCH` and run acceptance against the exact site and
+   SDK archive. A 0.29.0 report cannot certify a new 1.0.0 artifact.
+4. Record reviewed evidence in `docs/acceptance/stable-release.json`, commit it,
+   rebuild with the same source epoch, and require the identical artifact hashes
+   and `npm run check:stable` to pass. Then create the matching `v1.0.0` tag and
+   Release; the publishing workflow must repeat its gates before publication.
+5. Verify the published 1.0.0 tarball, `latest` tag and isolated install before
+   announcing delivery. Do not move existing tags to pick up workflow fixes:
+   the workflow checks out the release tag, not the current main source.
 
 Trusted Publisher fields are recorded in
 [NPM-TRUSTED-PUBLISHER.md](NPM-TRUSTED-PUBLISHER.md); no password, OTP or long-lived

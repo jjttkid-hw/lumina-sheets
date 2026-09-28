@@ -11,14 +11,20 @@ export function releasePolicy(version, tag, prerelease) {
   if (prerelease !== undefined && typeof prerelease !== 'boolean')
     throw new Error('Release prerelease flag must be boolean');
   const candidate = !!match[4];
-  if (prerelease !== undefined && prerelease !== candidate)
+  const development = Number(match[1]) === 0;
+  // GitHub's prerelease marker is an editorial release classification, not a
+  // SemVer suffix. Unsuffixed 0.x releases may be marked as previews; retain
+  // compatibility with older 0.x releases that were marked as ordinary releases.
+  // Explicit SemVer candidates must always be marked as prereleases, and stable
+  // 1.x+ releases must never be mislabeled as candidates.
+  if (prerelease !== undefined && (candidate || !development) && prerelease !== candidate)
     throw new Error('GitHub prerelease flag must match the SemVer prerelease suffix');
   return {
     version,
     tag,
     // Keep the entire 0.x development line off `latest`; a stable-looking
     // 0.x tag is still an opt-in preview until the first 1.x release.
-    distTag: candidate || Number(match[1]) === 0 ? 'next' : 'latest',
+    distTag: candidate || development ? 'next' : 'latest',
     artifact: `artifacts/lumina-report-sdk-${version}.tgz`,
   };
 }

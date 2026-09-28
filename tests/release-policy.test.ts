@@ -1,4 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 // Node release tooling is plain ESM and ships outside the browser SDK.
 // @ts-expect-error release tooling has no public TypeScript declaration
 import { releasePolicy } from '../scripts/release-policy.mjs';
@@ -15,7 +19,8 @@ describe('npm release routing', () => {
       });
     },
   );
-  it('keeps stable 0.x releases on the preview dist-tag', () => {
+  it('keeps both GitHub classifications of unsuffixed 0.x releases on next', () => {
+    expect(releasePolicy('0.29.0', 'v0.29.0', true).distTag).toBe('next');
     expect(releasePolicy('0.29.0', 'v0.29.0', false).distTag).toBe('next');
     expect(releasePolicy('0.29.0', 'v0.29.0').distTag).toBe('next');
   });
@@ -43,7 +48,36 @@ describe('npm release routing', () => {
   it('rejects tag mismatch and GitHub flags that mislabel a release', () => {
     expect(() => releasePolicy('1.0.0', 'v0.23.0')).toThrow('Release tag');
     expect(() => releasePolicy('1.0.0-rc.1', 'v1.0.0-rc.1', false)).toThrow('prerelease flag');
+    expect(() => releasePolicy('0.29.0-rc.1', 'v0.29.0-rc.1', false)).toThrow('prerelease flag');
     expect(() => releasePolicy('1.0.0', 'v1.0.0', true)).toThrow('prerelease flag');
     expect(() => releasePolicy('1.0.0', 'v1.0.0', 'false')).toThrow('boolean');
   });
+});
+
+// Exercise the actual Actions entry point with the current GitHub release shape.
+it('accepts a GitHub 0.x prerelease event and emits exact next-channel outputs', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'lumina-release-event-'));
+  try {
+    writeFileSync(path.join(root, 'package.json'), JSON.stringify({ version: '0.29.0' }));
+    const event = path.join(root, 'event.json');
+    const output = path.join(root, 'output');
+    writeFileSync(event, JSON.stringify({ release: { prerelease: true } }));
+    const run = spawnSync(process.execPath, [path.resolve('scripts/check-release.mjs')], {
+      cwd: root,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        GITHUB_EVENT_NAME: 'release',
+        GITHUB_EVENT_PATH: event,
+        GITHUB_OUTPUT: output,
+        RELEASE_TAG: 'v0.29.0',
+      },
+    });
+    expect(run.status, run.stderr).toBe(0);
+    expect(readFileSync(output, 'utf8')).toBe(
+      'dist-tag=next\nartifact=artifacts/lumina-report-sdk-0.29.0.tgz\nversion=0.29.0\n',
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
