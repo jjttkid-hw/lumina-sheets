@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "executedAt": "2026-09-28T02:43:03.071Z",
+  "artifactSha256": "8e150872f59d69b336ce5728d0f2835956e5ebdf43778a1fae3691f91fbc1885",
+  "siteSha256": "340a6a3426458159583bb7faa34edd82e796aa0fffceb13c27c63db32716d1a3",
+  "file": "safari-download.xlsx",
+  "bytes": 9342,
+  "sha256": "11c8a2c643412ef8927b919f60945fc8c0fe04fed64cc30a7720d6ed9d552301",
+  "checks": [
+    "two-sheet-names",
+    "edited-C2-200000",
+    "raw-cross-sheet-formula",
+    "sdk-recalculation-8299000",
+    "independent-ExcelJS-cached-result-8299000"
+  ],
+  "scope": "Byte-level verification of the file actually downloaded via native Safari UI. SDK imported from the checked tarball. ExcelJS is an independent reader here, not desktop Excel/WPS execution."
+}
