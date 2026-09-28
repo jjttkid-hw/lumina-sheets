@@ -15,6 +15,7 @@ const expectedChecks = [
   'damaged-journal-download-and-raw-snapshot-restore',
   'partial-backup-invalid-selection-search-and-cancel',
   'historical-snapshot-restores-independent-copy',
+  'aborted-save-retry-and-reload',
 ];
 const reports = [];
 for (const engine of engines) {
@@ -26,13 +27,13 @@ for (const engine of engines) {
   assert.equal(report.siteSha256, site.sha256, `${relative}: site hash mismatch`);
   assert.equal(report.artifactSha256, hash(artifact), `${relative}: artifact hash mismatch`);
   assert.equal(report.screenshotEvidence, 'complete', `${relative}: screenshot evidence incomplete`);
-  assert.deepEqual(report.screenshots, expectedChecks.length === 3 ? [
+  assert.deepEqual(report.screenshots, [
     { file: 'startup-1280.png', status: 'captured' },
     { file: 'startup-390.png', status: 'captured' },
     { file: 'startup-320.png', status: 'captured' },
     { file: 'startup-rescue.png', status: 'captured' },
     { file: 'history-selection.png', status: 'captured' },
-  ] : [], `${relative}: screenshot ledger mismatch`);
+  ], `${relative}: screenshot ledger mismatch`);
   assert.deepEqual(report.validation?.expectedChecks, expectedChecks, `${relative}: expected checks mismatch`);
   assert.deepEqual(report.validation?.actualChecks, expectedChecks, `${relative}: actual checks mismatch`);
   assert.deepEqual(report.validation?.missingChecks, [], `${relative}: missing checks`);

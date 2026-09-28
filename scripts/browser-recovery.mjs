@@ -246,6 +246,7 @@ const expected = [
   'damaged-journal-download-and-raw-snapshot-restore',
   'partial-backup-invalid-selection-search-and-cancel',
   'historical-snapshot-restores-independent-copy',
+  'aborted-save-retry-and-reload',
 ];
 try {
   await check(expected[0], async () => {
@@ -551,6 +552,64 @@ try {
         validationSheetRemapped: true,
         auxiliaryHistoryNotMerged: true,
       };
+    } finally {
+      await context.close();
+    }
+  });
+  await check(expected[3], async () => {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    try {
+      const page = await workspace(context);
+      await selectCell(page, 'A1');
+      await page.getByText('已保存到本地', { exact: true }).waitFor();
+      const before = await inspectDatabase(page);
+      // Abort real native readwrite transactions; do not replace the persistence
+      // adapter, request objects, or stored bytes with a mock implementation.
+      await page.evaluate(() => {
+        const native = IDBDatabase.prototype.transaction;
+        window.saveFault = { enabled: true, aborted: 0 };
+        IDBDatabase.prototype.transaction = function (...args) {
+          const tx = Reflect.apply(native, this, args);
+          if (window.saveFault.enabled && args[1] === 'readwrite') {
+            queueMicrotask(() => {
+              tx.abort();
+              window.saveFault.aborted++;
+            });
+          }
+          return tx;
+        };
+      });
+      const formula = page.getByRole('textbox', { name: '公式编辑栏', exact: true });
+      await formula.fill('失败后保留的编辑');
+      await formula.press('Enter');
+      await page.getByText('保存失败', { exact: true }).waitFor();
+      assert.equal(await formula.inputValue(), '失败后保留的编辑');
+      assert.deepEqual(await inspectDatabase(page), before, 'Aborted save must not modify stores');
+      assert(await page.evaluate(() => window.saveFault.aborted) > 0);
+      // A subsequent edit must remain queued behind the failed save. Recovery
+      // must include both edits, not just the cell selected when Retry is used.
+      await selectCell(page, 'B1');
+      await formula.fill('=6*7');
+      await formula.press('Enter');
+      await page.getByText('保存失败', { exact: true }).waitFor();
+      assert.deepEqual(await inspectDatabase(page), before);
+      await page.evaluate(() => { window.saveFault.enabled = false; });
+      await page.getByRole('button', { name: '重试保存', exact: true }).click();
+      await page.getByText('已保存到本地', { exact: true }).waitFor();
+      const saved = await inspectDatabase(page);
+      assert.equal(saved.workbooks[0].workbook.sheets[0].cells.A1.value, '失败后保留的编辑');
+      assert.equal(saved.workbooks[0].workbook.sheets[0].cells.B1.value, '=6*7');
+      await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
+      await page.getByRole('heading', { name: validBook.name, exact: true }).waitFor();
+      await selectCell(page, 'A1');
+      assert.equal(await formula.inputValue(), '失败后保留的编辑');
+      await selectCell(page, 'B1');
+      assert.equal(await formula.inputValue(), '=6*7');
+      assert.equal(await page.getByRole('gridcell').textContent(), 'B1 42');
+      await page.getByText('已保存到本地', { exact: true }).waitFor();
+      return { nativeTransactionAborted: true, originalStoresUnchanged: true,
+        laterEditRetained: true, explicitRetry: true, persistedAfterReload: true,
+        formulaResult: 42 };
     } finally {
       await context.close();
     }

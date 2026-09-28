@@ -21,7 +21,7 @@ try {
         env: {
           ...process.env,
           PLAYWRIGHT_MODULE: path.join(runtime, 'playwright/index.mjs'),
-          BROWSER_CHANNEL: 'bundled',
+          BROWSER_CHANNEL: process.env.BROWSER_CHANNEL ?? 'bundled',
           BROWSER_ENGINE: engine,
           BROWSER_TEST_URL: `http://127.0.0.1:${address.port}/lumina-sheets/`,
         },

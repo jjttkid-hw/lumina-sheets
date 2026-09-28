@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "chromium/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "7283dbe94f4b74cf0300b7f4c8d042449b0f5cb55164c69b43fc9e7e526d7758"
+    },
+    {
+      "path": "chromium/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "chromium/history-selection.png",
+      "bytes": 190372,
+      "sha256": "f7359acfeca877a3b1c5482cd1bc6695ab09accc97dc3cabe2c94f38e21f84a6"
+    },
+    {
+      "path": "chromium/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "020d5368be9eb7cbbd8075ce8cdf209a6697595a2443e3f34fab8291f635e211"
+    },
+    {
+      "path": "chromium/result.json",
+      "bytes": 5723,
+      "sha256": "ef1fb2902c3a741ac20e158462e7b1b6dba2eb11657ed78df83cd66faaf6dba5"
+    },
+    {
+      "path": "chromium/startup-1280.png",
+      "bytes": 38667,
+      "sha256": "3b06d45404ffb4a51e825b8d9bc5f292d7cc909a3d1f27db8b063ae5016ab4af"
+    },
+    {
+      "path": "chromium/startup-320.png",
+      "bytes": 32858,
+      "sha256": "561bdc64cd9c38d8ee902e0c85b2bdf2a2a79841f5d4dc6892e8ede87e1fd2b7"
+    },
+    {
+      "path": "chromium/startup-390.png",
+      "bytes": 33271,
+      "sha256": "ed9c21172103d520d11a233f33a437029efab08f2b082555f3a00fdfd923629c"
+    },
+    {
+      "path": "chromium/startup-rescue.png",
+      "bytes": 47518,
+      "sha256": "69205fc799640d2a1eecb54d61148881d2cb694d1dee96ef9e3077898b1dc200"
+    },
+    {
+      "path": "firefox/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "9ba58779056c250ae09e8872c3db2b2683715bd4e4dafc90bc05c1630e4ad06c"
+    },
+    {
+      "path": "firefox/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "firefox/history-selection.png",
+      "bytes": 221784,
+      "sha256": "e44878deffd818f24c3299e0da4bd11068ef7adcc4d34bcd398e058073ada593"
+    },
+    {
+      "path": "firefox/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "8412d0682b89de8dd0467a2c9cfb36157fbc74dd695c8b2289a81f914031a258"
+    },
+    {
+      "path": "firefox/result.json",
+      "bytes": 5759,
+      "sha256": "246f7b8d64911e67580a556c8ba9985b591e106c754fabd73e11c00266918960"
+    },
+    {
+      "path": "firefox/startup-1280.png",
+      "bytes": 62870,
+      "sha256": "1c33535063d0b50236557054635939bc5a33d50504a3d7505ec1d0e254470fbd"
+    },
+    {
+      "path": "firefox/startup-320.png",
+      "bytes": 41707,
+      "sha256": "fb6be264656f09a017dfbe9ef652fd16ead8a4d21df8f626435301b5d2ad0ab8"
+    },
+    {
+      "path": "firefox/startup-390.png",
+      "bytes": 45882,
+      "sha256": "b5fdce44253b0f2f308cbb1726e18227846123fdcf2e8740e8bf0345a4c6b842"
+    },
+    {
+      "path": "firefox/startup-rescue.png",
+      "bytes": 74070,
+      "sha256": "f2859bebc6514c5432e279b84c8cdc7b28188de13027c6f525075b0dd30d71a2"
+    },
+    {
+      "path": "webkit/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "063eb5fc32fa702670c06be3ef6486604a5241013d731d3e4a2f5478634b3f5d"
+    },
+    {
+      "path": "webkit/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "webkit/history-selection.png",
+      "bytes": 187273,
+      "sha256": "1bc15de981f82fb7cfe50b47d62e63fb2bf5ddc529b59933fa2365384a2b7abf"
+    },
+    {
+      "path": "webkit/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "603b7456f4e3e72be0eb0ee32277f40f59aeb00eccbd5ff550cb83fed72387c0"
+    },
+    {
+      "path": "webkit/result.json",
+      "bytes": 5655,
+      "sha256": "d6fd85e4a5efc845554660f4d05c631c3becabc696e0a0a919c64f13e4331250"
+    },
+    {
+      "path": "webkit/startup-1280.png",
+      "bytes": 60266,
+      "sha256": "a78dd8054a2c31d4cc40d0aaa054e1c1f29d7191df063a5ffec7f4d04796676b"
+    },
+    {
+      "path": "webkit/startup-320.png",
+      "bytes": 41763,
+      "sha256": "2a47437a9072db27e3dd22a896e90766512adbfaa2335fda4f867a050d03e35b"
+    },
+    {
+      "path": "webkit/startup-390.png",
+      "bytes": 44551,
+      "sha256": "f639757b267ca3ddeed424f52272f3ee94964effbdda9b1105bcf4e90e1cc871"
+    },
+    {
+      "path": "webkit/startup-rescue.png",
+      "bytes": 70558,
+      "sha256": "5697bc57afdb76d68a6052affe98e4aa411080aaa432db46ea972db04b58275b"
+    }
+  ]
+}
