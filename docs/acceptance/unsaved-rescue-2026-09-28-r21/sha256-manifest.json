@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "chromium/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "d7c5185403ecc8b26fbf50ea997ebd2a25f5952af81011ada2d5daab27e55bd4"
+    },
+    {
+      "path": "chromium/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "chromium/history-selection.png",
+      "bytes": 190372,
+      "sha256": "f7359acfeca877a3b1c5482cd1bc6695ab09accc97dc3cabe2c94f38e21f84a6"
+    },
+    {
+      "path": "chromium/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "7c1da9f674459d0e121a8ae05e42c338d2b48e5f6917e8abc1079966682f8c53"
+    },
+    {
+      "path": "chromium/result.json",
+      "bytes": 5908,
+      "sha256": "d55e4d9e7b33b1f1714d73453512748885650eb57ea84dd26d5c5210ae6aa4a4"
+    },
+    {
+      "path": "chromium/startup-1280.png",
+      "bytes": 38667,
+      "sha256": "3b06d45404ffb4a51e825b8d9bc5f292d7cc909a3d1f27db8b063ae5016ab4af"
+    },
+    {
+      "path": "chromium/startup-320.png",
+      "bytes": 32858,
+      "sha256": "561bdc64cd9c38d8ee902e0c85b2bdf2a2a79841f5d4dc6892e8ede87e1fd2b7"
+    },
+    {
+      "path": "chromium/startup-390.png",
+      "bytes": 33271,
+      "sha256": "ed9c21172103d520d11a233f33a437029efab08f2b082555f3a00fdfd923629c"
+    },
+    {
+      "path": "chromium/startup-rescue.png",
+      "bytes": 47319,
+      "sha256": "70f7a42f142e7561dd0d134618fcfd4e204e81b3b80c256d4875c922db8ea6de"
+    },
+    {
+      "path": "chromium/unsaved-workbook.json",
+      "bytes": 592,
+      "sha256": "880ac3f9136ff021ecf6d092bb52d4ff59be514b003632a1fa16ae604643b667"
+    },
+    {
+      "path": "firefox/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "5456e6ff878a309b6e0db3155747e336ea1c203c413e5d4e7a0d892064365bdc"
+    },
+    {
+      "path": "firefox/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "firefox/history-selection.png",
+      "bytes": 200773,
+      "sha256": "b7f235cb359c8d7b98e8098efe98cfb04f1bd835081406b17533fd39bb4d328b"
+    },
+    {
+      "path": "firefox/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "2508e1a90a0f6fd836731a7e271f52d16fcc68a3d0b92bc33200add14325f8c9"
+    },
+    {
+      "path": "firefox/result.json",
+      "bytes": 5945,
+      "sha256": "f87f32aa26b12b500b195b0042ecd0325e78ab1cbba9dc2dcd385e75916a9523"
+    },
+    {
+      "path": "firefox/startup-1280.png",
+      "bytes": 62870,
+      "sha256": "1c33535063d0b50236557054635939bc5a33d50504a3d7505ec1d0e254470fbd"
+    },
+    {
+      "path": "firefox/startup-320.png",
+      "bytes": 41707,
+      "sha256": "fb6be264656f09a017dfbe9ef652fd16ead8a4d21df8f626435301b5d2ad0ab8"
+    },
+    {
+      "path": "firefox/startup-390.png",
+      "bytes": 45882,
+      "sha256": "b5fdce44253b0f2f308cbb1726e18227846123fdcf2e8740e8bf0345a4c6b842"
+    },
+    {
+      "path": "firefox/startup-rescue.png",
+      "bytes": 73710,
+      "sha256": "9c4b7eab2000ee8f20fe95687867afebe6d1cf7a6aced924cbc1eb9b801b2b46"
+    },
+    {
+      "path": "firefox/unsaved-workbook.json",
+      "bytes": 592,
+      "sha256": "192d9dd702108d3f934e908c091df6b2d091d57f663c1e20361fb202e1c1a2a2"
+    },
+    {
+      "path": "webkit/damaged-journal-backup.json",
+      "bytes": 1784,
+      "sha256": "1a86ada6300b8216ff393690b92f8459330200f7f36d499c825dce4f8926a9b7"
+    },
+    {
+      "path": "webkit/history-backup.json",
+      "bytes": 878,
+      "sha256": "e546b94daab3846df62d822a3efb3bac7d36e7ce77d9f6978e0fa5863bd33cbe"
+    },
+    {
+      "path": "webkit/history-selection.png",
+      "bytes": 203631,
+      "sha256": "7476c804708b3199941b4627b6560e9262179d129b3865894f036950dd99fdfe"
+    },
+    {
+      "path": "webkit/partial-backup.json",
+      "bytes": 1111,
+      "sha256": "0e6663bafaf9fa57eee279afc9e981eeaaa748b1a30502b600d886c6b1513d26"
+    },
+    {
+      "path": "webkit/result.json",
+      "bytes": 5840,
+      "sha256": "f6b268d927d459d0c1fc777a7bc9d1ca60088c5071a429a41d72e696a16e8926"
+    },
+    {
+      "path": "webkit/startup-1280.png",
+      "bytes": 60266,
+      "sha256": "a78dd8054a2c31d4cc40d0aaa054e1c1f29d7191df063a5ffec7f4d04796676b"
+    },
+    {
+      "path": "webkit/startup-320.png",
+      "bytes": 41763,
+      "sha256": "2a47437a9072db27e3dd22a896e90766512adbfaa2335fda4f867a050d03e35b"
+    },
+    {
+      "path": "webkit/startup-390.png",
+      "bytes": 44551,
+      "sha256": "f639757b267ca3ddeed424f52272f3ee94964effbdda9b1105bcf4e90e1cc871"
+    },
+    {
+      "path": "webkit/startup-rescue.png",
+      "bytes": 70558,
+      "sha256": "5697bc57afdb76d68a6052affe98e4aa411080aaa432db46ea972db04b58275b"
+    },
+    {
+      "path": "webkit/unsaved-workbook.json",
+      "bytes": 592,
+      "sha256": "19e41d7f390289944ba8b591a6d567bce70e3c276b5d2cba635b008c56224483"
+    }
+  ]
+}

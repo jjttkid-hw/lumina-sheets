@@ -593,6 +593,50 @@ try {
       await formula.press('Enter');
       await page.getByText('保存失败', { exact: true }).waitFor();
       assert.deepEqual(await inspectDatabase(page), before);
+      // Exercise the user-facing rescue route while writes are still failing:
+      // the export must contain memory edits, not the older persisted snapshot.
+      await page.getByRole('button', { name: '导出', exact: true }).click();
+      const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.getByRole('button', { name: /完整数据与样式/ }).click(),
+      ]);
+      const rescueFile = path.join(output, 'unsaved-workbook.json');
+      await download.saveAs(rescueFile);
+      assert.equal(await download.failure(), null);
+      const rescueBytes = await readFile(rescueFile);
+      const rescued = JSON.parse(rescueBytes);
+      assert.equal(rescued.sheets[0].cells.A1.value, '失败后保留的编辑');
+      assert.equal(rescued.sheets[0].cells.B1.value, '=6*7');
+      assert.deepEqual(await inspectDatabase(page), before);
+      await page.getByText('保存失败', { exact: true }).waitFor();
+      const targetContext = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+      try {
+        const target = await workspace(targetContext);
+        await target.locator('input[type=file]').setInputFiles(rescueFile);
+        await target.getByText(`已导入 ${rescued.name}`, { exact: true }).waitFor();
+        await target.getByText('已保存到本地', { exact: true }).waitFor();
+        await selectCell(target, 'A1');
+        assert.equal(await target.getByRole('textbox', { name: '公式编辑栏', exact: true }).inputValue(),
+          '失败后保留的编辑');
+        await selectCell(target, 'B1');
+        assert.equal(await target.getByRole('gridcell').textContent(), 'B1 42');
+      } finally {
+        await targetContext.close();
+      }
+      // Wait for the real browser dialog and cancel navigation, rather than
+      // dispatching a synthetic beforeunload event that cannot prove protection.
+      await page.bringToFront();
+      await formula.click();
+      const dialogReady = page.waitForEvent('dialog', { timeout: 10_000 });
+      // Explicit runBeforeUnload avoids automation reload commands that may
+      // bypass the browser's normal close-confirmation path.
+      await page.close({ runBeforeUnload: true });
+      const dialog = await dialogReady;
+      assert.equal(dialog.type(), 'beforeunload');
+      await dialog.dismiss();
+      assert.equal(page.isClosed(), false);
+      assert.equal(await formula.inputValue(), '=6*7');
+      assert.deepEqual(await inspectDatabase(page), before);
       await page.evaluate(() => { window.saveFault.enabled = false; });
       await page.getByRole('button', { name: '重试保存', exact: true }).click();
       await page.getByText('已保存到本地', { exact: true }).waitFor();
@@ -609,7 +653,9 @@ try {
       await page.getByText('已保存到本地', { exact: true }).waitFor();
       return { nativeTransactionAborted: true, originalStoresUnchanged: true,
         laterEditRetained: true, explicitRetry: true, persistedAfterReload: true,
-        formulaResult: 42 };
+        formulaResult: 42, failedSaveNavigationCancelled: true,
+        unsavedExportImported: true,
+        unsavedExportSha256: createHash('sha256').update(rescueBytes).digest('hex') };
     } finally {
       await context.close();
     }

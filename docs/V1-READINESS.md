@@ -12,6 +12,12 @@ now include actual IndexedDB transaction abort, subsequent queued edit, explicit
 and full page reload. All four recovery checks pass in Chrome, Firefox and WebKit
 (12 checks total). This fault injection does not certify physical crash consistency.
 
+The [unsaved-edit rescue follow-up](acceptance/unsaved-rescue-2026-09-28-r21/README.md)
+also verifies actual JSON export while saving fails, import into an independent
+browser context, and cancellation of a real beforeunload close dialog in all three
+engines. Exported bytes contain both unsaved edits. Firefox automated reload did not
+show a dialog; the passing check explicitly exercises close with beforeunload enabled.
+
 2026-09-28: [Candidate r21](acceptance/browser-candidate-2026-09-28-r21/README.md) fixes duplicate XLSX rows overwriting earlier data. All 2,351 tests, 25 browser reports and 30 multi-sheet checks pass locally. Site SHA-256: `340a6a3426458159583bb7faa34edd82e796aa0fffceb13c27c63db32716d1a3`; SDK SHA-256: `8e150872f59d69b336ce5728d0f2835956e5ebdf43778a1fae3691f91fbc1885`. This supersedes r20 for the current source; the deployment observations below remain historical.
 
 ## Previous deployment observation

@@ -1,0 +1,199 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "webkit",
+  "browserVersion": "26.0",
+  "executedAt": "2026-09-28T03:42:03.675Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "runnerSha256": "f0dd26e08f75d70267edaeb37060844ec5fb7114082534404d563dbf88b9d3c9",
+  "siteSha256": "340a6a3426458159583bb7faa34edd82e796aa0fffceb13c27c63db32716d1a3",
+  "artifactSha256": "8e150872f59d69b336ce5728d0f2835956e5ebdf43778a1fae3691f91fbc1885",
+  "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
+  "screenshots": [
+    {
+      "file": "startup-1280.png",
+      "status": "captured"
+    },
+    {
+      "file": "startup-390.png",
+      "status": "captured"
+    },
+    {
+      "file": "startup-320.png",
+      "status": "captured"
+    },
+    {
+      "file": "startup-rescue.png",
+      "status": "captured"
+    },
+    {
+      "file": "history-selection.png",
+      "status": "captured"
+    }
+  ],
+  "checks": [
+    {
+      "name": "damaged-journal-download-and-raw-snapshot-restore",
+      "status": "passed",
+      "elapsedMs": 1274,
+      "details": {
+        "copyId": "3277cc7d-55fd-4c3c-bd4a-ca5c58b0679a",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "backupSha256": "1a86ada6300b8216ff393690b92f8459330200f7f36d499c825dce4f8926a9b7",
+        "layoutChecks": [
+          {
+            "width": 1280,
+            "cardWidth": 580,
+            "viewportWidth": 1280,
+            "documentWidth": 1280,
+            "cardOverflow": false,
+            "headingBottom": 168,
+            "alertTop": 227,
+            "alertBottom": 307,
+            "actionsTop": 331,
+            "buttons": [
+              {
+                "left": 387,
+                "right": 480.625,
+                "height": 44
+              },
+              {
+                "left": 492.625,
+                "right": 562.375,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 390,
+            "cardWidth": 358,
+            "viewportWidth": 390,
+            "documentWidth": 390,
+            "cardOverflow": false,
+            "headingBottom": 143,
+            "alertTop": 225,
+            "alertBottom": 328,
+            "actionsTop": 352,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 353,
+                "height": 44
+              }
+            ]
+          },
+          {
+            "width": 320,
+            "cardWidth": 288,
+            "viewportWidth": 320,
+            "documentWidth": 320,
+            "cardOverflow": false,
+            "headingBottom": 143,
+            "alertTop": 225,
+            "alertBottom": 351,
+            "actionsTop": 375,
+            "buttons": [
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              },
+              {
+                "left": 37,
+                "right": 283,
+                "height": 44
+              }
+            ]
+          }
+        ],
+        "keyboardRetry": true,
+        "navigationKey": "Alt+Tab",
+        "rawJournalRetained": true,
+        "sourceUnchanged": true
+      }
+    },
+    {
+      "name": "partial-backup-invalid-selection-search-and-cancel",
+      "status": "passed",
+      "elapsedMs": 621,
+      "details": {
+        "copyId": "91c8c995-3e54-4111-9d99-1657e225f9fd",
+        "name": "有效工作簿（恢复副本）",
+        "expectedValue": "安全内容",
+        "persistedAfterReload": true,
+        "invalidRejected": true,
+        "searchEnterDidNotRestore": true,
+        "cancelDidNotWrite": true,
+        "damagedSourceRetained": true
+      }
+    },
+    {
+      "name": "historical-snapshot-restores-independent-copy",
+      "status": "passed",
+      "elapsedMs": 514,
+      "details": {
+        "copyId": "ec59e536-503a-4786-a1cb-d5f4eaf0785e",
+        "name": "历史业务报表（恢复副本）",
+        "expectedValue": "历史版本正文",
+        "persistedAfterReload": true,
+        "formulaRetained": true,
+        "validationSheetRemapped": true,
+        "auxiliaryHistoryNotMerged": true
+      }
+    },
+    {
+      "name": "aborted-save-retry-and-reload",
+      "status": "passed",
+      "elapsedMs": 957,
+      "details": {
+        "nativeTransactionAborted": true,
+        "originalStoresUnchanged": true,
+        "laterEditRetained": true,
+        "explicitRetry": true,
+        "persistedAfterReload": true,
+        "formulaResult": 42,
+        "failedSaveNavigationCancelled": true,
+        "unsavedExportImported": true,
+        "unsavedExportSha256": "19e41d7f390289944ba8b591a6d567bce70e3c276b5d2cba635b008c56224483"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "screenshotEvidence": "complete",
+  "validation": {
+    "expectedChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy",
+      "aborted-save-retry-and-reload"
+    ],
+    "actualChecks": [
+      "damaged-journal-download-and-raw-snapshot-restore",
+      "partial-backup-invalid-selection-search-and-cancel",
+      "historical-snapshot-restores-independent-copy",
+      "aborted-save-retry-and-reload"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

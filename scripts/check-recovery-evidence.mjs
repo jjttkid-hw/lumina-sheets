@@ -43,6 +43,19 @@ for (const engine of engines) {
   assert.equal(report.validation?.pageErrorCount, 0, `${relative}: page errors`);
   assert.equal(report.validation?.consoleErrorCount, 0, `${relative}: console errors`);
   assert.equal(report.validation?.runErrorCount, 0, `${relative}: run errors`);
+  const recovery = report.checks.find((check) => check.name === 'aborted-save-retry-and-reload');
+  assert.equal(recovery?.status, 'passed', `${relative}: failed-save check missing`);
+  for (const field of ['nativeTransactionAborted', 'originalStoresUnchanged',
+    'laterEditRetained', 'explicitRetry', 'persistedAfterReload',
+    'failedSaveNavigationCancelled', 'unsavedExportImported']) {
+    assert.equal(recovery.details?.[field], true, `${relative}: missing ${field} evidence`);
+  }
+  const rescuedBytes = await readFile(path.join(root, engine, 'unsaved-workbook.json'));
+  assert.equal(hash(rescuedBytes), recovery.details.unsavedExportSha256,
+    `${relative}: unsaved export hash mismatch`);
+  const rescued = JSON.parse(rescuedBytes);
+  assert.equal(rescued.sheets[0].cells.A1.value, '失败后保留的编辑');
+  assert.equal(rescued.sheets[0].cells.B1.value, '=6*7');
   for (const screenshot of report.screenshots) {
     const filename = path.join(root, engine, screenshot.file);
     const info = await stat(filename);
