@@ -6,11 +6,11 @@ import { pathToFileURL } from 'node:url';
 import { siteDigest } from './site-evidence.mjs';
 import { verifySiteHttp } from './site-runtime.mjs';
 import { finalizeBrowserReport } from './browser-report.mjs';
-import JSZip from 'jszip';
 
 // Drive the shipped controls, downloads and file inputs. Never mutate the grid
 // through page.evaluate; the only page reads below wait for visible UI state.
 const runtime = path.resolve('scripts/fixtures/frameworks/node_modules');
+const { default: JSZip } = await import(pathToFileURL(path.join(runtime, 'jszip/lib/index.js')));
 const { preview } = await import(pathToFileURL(path.join(runtime, 'vite/dist/node/index.js')));
 const engines = await import(pathToFileURL(path.join(runtime, 'playwright/index.mjs')));
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
