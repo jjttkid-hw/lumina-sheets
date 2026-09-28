@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "entry": "site",
+  "browserVersion": "153.0.8010.54",
+  "executedAt": "2026-09-28T01:56:42.022Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "af75fb282b72a6a8498510b97ffae36f672577754e8a1e4048e914015977831c",
+  "artifactSha256": "e2af24d67fda8af3ed26e27a24a7f4b2e17249aa741ff0212357fa652ac2fa64",
+  "scope": "Shipped multi-sheet example controls, cross-sheet formula/history and downloaded CSV/JSON/XLSX reimport. Not desktop Excel, native IME, screen reader or physical touch certification.",
+  "checks": [
+    {
+      "name": "cross-sheet-edit-history",
+      "status": "passed",
+      "elapsedMs": 154,
+      "details": {
+        "before": 8199000,
+        "edited": 8299000,
+        "undo": 8199000,
+        "redo": 8299000,
+        "formula": "=SUM('销售明细'!C2:C37)"
+      }
+    },
+    {
+      "name": "active-sheet-csv",
+      "status": "passed",
+      "elapsedMs": 60,
+      "details": {
+        "file": "summary.csv",
+        "bytes": 197,
+        "sha256": "1a5fc65ca445cb684f1d178e87db8b3fd7f6926b09c25224c43cf2ce8c4096e1"
+      }
+    },
+    {
+      "name": "json-roundtrip",
+      "status": "passed",
+      "elapsedMs": 136,
+      "details": {
+        "file": "workbook-json.json",
+        "bytes": 21118,
+        "sha256": "82f05dcc1d82eeee439e60b6b7c5d161548f49477b495ffaa2ec6c2b1343338a",
+        "sheets": 2,
+        "revenue": 8299000
+      }
+    },
+    {
+      "name": "xlsx-roundtrip",
+      "status": "passed",
+      "elapsedMs": 254,
+      "details": {
+        "file": "workbook-xlsx.xlsx",
+        "bytes": 9335,
+        "sha256": "b8589b37d7746c7c0c2885b01e81757a3703ac88e7f40e81c3941744a068ea19",
+        "sheets": 2,
+        "revenue": 8299000
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "cross-sheet-edit-history",
+      "active-sheet-csv",
+      "json-roundtrip",
+      "xlsx-roundtrip"
+    ],
+    "actualChecks": [
+      "cross-sheet-edit-history",
+      "active-sheet-csv",
+      "json-roundtrip",
+      "xlsx-roundtrip"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

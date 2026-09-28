@@ -108,6 +108,8 @@ jobs:
         run: node scripts/fixtures/frameworks/node_modules/playwright/cli.js install --with-deps chromium firefox webkit
       - name: Verify installed SDK in React and Vue development and production hosts
         run: node scripts/browser-frameworks.mjs
+      - name: Verify multi-sheet editing, history and actual file round trips
+        run: node scripts/check-multisheet-browser.mjs
       - name: Verify real recovery downloads, imports and persistent copies
         run: node scripts/check-recovery-browser.mjs
       - name: Verify recovery evidence and screenshots
@@ -119,5 +121,6 @@ jobs:
           path: |
             artifacts/browser-frameworks/
             artifacts/browser-recovery/
+            artifacts/browser-multisheet/
           if-no-files-found: error
           retention-days: 14

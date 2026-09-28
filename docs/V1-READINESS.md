@@ -17,6 +17,8 @@ deployment identity is available in `build-info.json`. Historical candidate note
 | File corpus | Candidate r20 XLSX and WPS reports | Passed for the documented subset |
 | npm package | Public registry lookup for `lumina-report-sdk` currently returns 404; local `npm whoami` currently returns E401 | **Open** |
 
+Supplemental evidence dated 2026-09-28: [multi-sheet acceptance](acceptance/multisheet-2026-09-28/README.md) adds 24 passing browser checks for cross-sheet editing/history and actual CSV/JSON/XLSX downloads and reimports, across both the site and SDK example. These reports bind the same r20 hashes above; CI now repeats the suite.
+
 ## v1.0 gates that are still open
 
 These are release gates, not claims that the implementation is broken:
