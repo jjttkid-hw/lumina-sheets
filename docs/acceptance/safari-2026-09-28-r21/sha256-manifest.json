@@ -2,6 +2,11 @@
   "schema": 1,
   "files": [
     {
+      "path": "FOLLOWUP.md",
+      "bytes": 2235,
+      "sha256": "fc9f6b5a1b734b930c984db061d954b024aa5dadff8e5c6c902e838856195d0d"
+    },
+    {
       "path": "README.md",
       "bytes": 3093,
       "sha256": "3e1941093f6f00e75dce3c0ea857aafab0e75680138d667d50d9c9e21b84de21"
@@ -15,6 +20,21 @@
       "path": "safari-download.xlsx",
       "bytes": 9342,
       "sha256": "11c8a2c643412ef8927b919f60945fc8c0fe04fed64cc30a7720d6ed9d552301"
+    },
+    {
+      "path": "wps-corpus.json",
+      "bytes": 1449,
+      "sha256": "35dbb41c07d44fd6b8f2f4bae006fecbd3c5b640bda7262e1dd875e5799301fe"
+    },
+    {
+      "path": "wps-edited.xlsx",
+      "bytes": 12207,
+      "sha256": "11705898739b0aa227cf5752105ee3c93efd175d5b92e6b0c755dddd2d2aa663"
+    },
+    {
+      "path": "wps-verification.json",
+      "bytes": 1011,
+      "sha256": "6391961c3e350dbde0c862b20f0f7be7d087dd7f241e760e568d61a24ebf867a"
     }
   ]
 }

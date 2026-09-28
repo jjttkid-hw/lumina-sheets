@@ -9,7 +9,7 @@ const {version}=JSON.parse(await readFile('package.json','utf8'));
 const artifact=`artifacts/lumina-report-sdk-${version}.tgz`;
 const fixture='tests/fixtures/wps/edited-report.xlsx';
 const hash=b=>createHash('sha256').update(b).digest('hex');
-const report={schema:1,status:'running',version,executedAt:new Date().toISOString(),artifactSha256:hash(await readFile(artifact)),fixture,fixtureSha256:hash(await readFile(fixture)),environment:{platform:process.platform,arch:process.arch,node:process.version},scope:'Installed SDK import/export of a retained WPS 12.1.26055 desktop-saved synthetic fixture. This run does not drive WPS or certify all desktop features.',checks:[],errors:[]};
+const report={schema:1,status:'running',version,executedAt:new Date().toISOString(),artifactSha256:hash(await readFile(artifact)),fixture,fixtureSha256:hash(await readFile(fixture)),environment:{platform:process.platform,arch:process.arch,node:process.version},scope:'Installed SDK import/export of retained WPS 12.1.26055 desktop-saved synthetic fixtures. This run does not drive WPS or certify all desktop features.',checks:[],errors:[]};
 const dir=await mkdtemp(path.join(os.tmpdir(),'lumina-wps-corpus-'));
 try {
  execFileSync('tar',['-xzf',path.resolve(artifact),'-C',dir]);
@@ -40,6 +40,17 @@ try {
   report.checks.push({name:stage,status:'passed',text:sheet.cells.B5.value,formulaValue:340});
  }
  report.status='passed';
+ const multisheetFixture='docs/acceptance/safari-2026-09-28-r21/wps-edited.xlsx';
+ const multisheetBytes=await readFile(multisheetFixture);
+ const multisheet=await sdk.workbookFromXlsx(multisheetBytes.buffer.slice(multisheetBytes.byteOffset,multisheetBytes.byteOffset+multisheetBytes.length));
+ const multisheetRestored=await sdk.workbookFromXlsx(await sdk.workbookToXlsx(multisheet));
+ for(const [stage,book] of [['wps-multisheet-import',multisheet],['wps-multisheet-roundtrip',multisheetRestored]]) {
+  assert.deepEqual(book.sheets.map(sheet=>sheet.name),['销售明细','经营汇总']);
+  assert.equal(book.sheets[0].cells.C2.value,300000);
+  assert.equal(book.sheets[1].cells.B2.value,'=SUM(销售明细!C2:C37)');
+  assert.equal(sdk.createEvaluator(book)(book.sheets[1],'B2'),8399000);
+  report.checks.push({name:stage,status:'passed',fixture:multisheetFixture,fixtureSha256:hash(multisheetBytes),formulaValue:8399000});
+ }
 } catch(error) {report.status='failed';report.errors.push(error.message);process.exitCode=1;}
 finally {
  await mkdir('artifacts/wps-corpus',{recursive:true});
