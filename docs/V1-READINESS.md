@@ -20,6 +20,15 @@ also exercises formulas and XLSX from the installed r21 archive through a local
 HTTP registry fixture; public npm publication remains open (HTTP 404, local E401).
 These observations do not close the native IME, screen-reader or other gates below.
 
+2026-09-28 Safari evidence correction: the earlier r2/r15 notes that treated the
+report example's refresh as persistence are withdrawn. After waiting for a complete
+Safari navigation, the example returned to its default in-memory report, as its
+implementation specifies. The new [native validation record](acceptance/safari-validation-2026-09-28/README.md)
+confirms input-rule rejection, list validation, atomic invalid paste, valid batch
+paste and undo/redo. The main workspace's local persistence remains a separate
+verified path; SDK hosts and the report example must explicitly save `toJSON()` if
+they need refresh recovery.
+
 | Item | Evidence | Status |
 | --- | --- | --- |
 | Source and Pages deployment | Commit [`8ecfc7c`](https://github.com/jjttkid-hw/lumina-sheets/commit/8ecfc7c), [CI run 35950642882](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35950642882), [CD run 35951022424](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35951022424) | Passed |
