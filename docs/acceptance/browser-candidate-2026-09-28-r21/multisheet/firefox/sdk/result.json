@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "entry": "sdk",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-09-28T02:11:07.986Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "340a6a3426458159583bb7faa34edd82e796aa0fffceb13c27c63db32716d1a3",
+  "artifactSha256": "8e150872f59d69b336ce5728d0f2835956e5ebdf43778a1fae3691f91fbc1885",
+  "scope": "Shipped multi-sheet example controls, cross-sheet formula/history and downloaded CSV/JSON/XLSX reimport. Not desktop Excel, native IME, screen reader or physical touch certification.",
+  "checks": [
+    {
+      "name": "cross-sheet-edit-history",
+      "status": "passed",
+      "elapsedMs": 145,
+      "details": {
+        "before": 8199000,
+        "edited": 8299000,
+        "undo": 8199000,
+        "redo": 8299000,
+        "formula": "=SUM('销售明细'!C2:C37)"
+      }
+    },
+    {
+      "name": "active-sheet-csv",
+      "status": "passed",
+      "elapsedMs": 33,
+      "details": {
+        "file": "summary.csv",
+        "bytes": 197,
+        "sha256": "1a5fc65ca445cb684f1d178e87db8b3fd7f6926b09c25224c43cf2ce8c4096e1"
+      }
+    },
+    {
+      "name": "json-roundtrip",
+      "status": "passed",
+      "elapsedMs": 91,
+      "details": {
+        "file": "workbook-json.json",
+        "bytes": 21118,
+        "sha256": "158f0d2ebdfdc44b6d2344fc770ddf9908ac76dba39f0a38431de810dff9a032",
+        "sheets": 2,
+        "revenue": 8299000
+      }
+    },
+    {
+      "name": "xlsx-roundtrip",
+      "status": "passed",
+      "elapsedMs": 254,
+      "details": {
+        "file": "workbook-xlsx.xlsx",
+        "bytes": 9334,
+        "sha256": "26f1e8476bac7e02a99437711a4400847d453efcd849161ce9fa3b6a0193b4a1",
+        "sheets": 2,
+        "revenue": 8299000
+      }
+    },
+    {
+      "name": "duplicate-row-rejection",
+      "status": "passed",
+      "elapsedMs": 124,
+      "details": {
+        "file": "duplicate-row.xlsx",
+        "bytes": 29371,
+        "sha256": "ce36e3a9a5f650f5c154e6dcc7782385785571bad953756b7ef4bf006a196c10",
+        "retained": 300000,
+        "undo": 200000,
+        "redo": 300000
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "cross-sheet-edit-history",
+      "active-sheet-csv",
+      "json-roundtrip",
+      "xlsx-roundtrip",
+      "duplicate-row-rejection"
+    ],
+    "actualChecks": [
+      "cross-sheet-edit-history",
+      "active-sheet-csv",
+      "json-roundtrip",
+      "xlsx-roundtrip",
+      "duplicate-row-rejection"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

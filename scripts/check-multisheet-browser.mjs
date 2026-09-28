@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 import { siteDigest } from './site-evidence.mjs';
 import { verifySiteHttp } from './site-runtime.mjs';
 import { finalizeBrowserReport } from './browser-report.mjs';
+import JSZip from 'jszip';
 
 // Drive the shipped controls, downloads and file inputs. Never mutate the grid
 // through page.evaluate; the only page reads below wait for visible UI state.
@@ -16,7 +17,13 @@ const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const site = await siteDigest('dist');
 const artifactSha256 = hash(await readFile(`artifacts/lumina-report-sdk-${version}.tgz`));
-const checks = ['cross-sheet-edit-history', 'active-sheet-csv', 'json-roundtrip', 'xlsx-roundtrip'];
+const checks = [
+  'cross-sheet-edit-history',
+  'active-sheet-csv',
+  'json-roundtrip',
+  'xlsx-roundtrip',
+  'duplicate-row-rejection',
+];
 let server;
 try {
   server = await preview({
@@ -201,6 +208,53 @@ try {
               };
             });
           }
+          await run('duplicate-row-rejection', async () => {
+            const zip = await JSZip.loadAsync(
+              await readFile(path.join(output, 'workbook-xlsx.xlsx')),
+            );
+            const file = zip.file('xl/worksheets/sheet1.xml');
+            assert(file, 'Export must contain the detail worksheet');
+            const xml = await file.async('string');
+            const firstRow = /<row\b[^>]*\br="([1-9]\d*)"/.exec(xml);
+            assert(firstRow, 'Export must contain a stored row');
+            zip.file(
+              'xl/worksheets/sheet1.xml',
+              xml.replace(
+                '</sheetData>',
+                `<row r="${firstRow[1]}" ht="30" customHeight="1"/></sheetData>`,
+              ),
+            );
+            const bytes = await zip.generateAsync({ type: 'nodebuffer' });
+            const filename = 'duplicate-row.xlsx';
+            await writeFile(path.join(output, filename), bytes);
+            await sheet('销售明细');
+            await select('C2');
+            await page.locator('#formula').fill('300000');
+            await page.locator('#formula').press('Enter');
+            await value(300000);
+            await page.locator('#json-file').setInputFiles(path.join(output, filename));
+            await page.waitForFunction(
+              () =>
+                document.querySelector('#status')?.dataset.error === 'true' &&
+                /行坐标重复/.test(document.querySelector('#status')?.textContent ?? ''),
+            );
+            await value(300000);
+            assert.equal(await page.locator('#sheet-select option').count(), 2);
+            await page.locator('#undo').click();
+            await value(200000);
+            await page.locator('#redo').click();
+            await value(300000);
+            await page.locator('#undo').click();
+            await summary();
+            return {
+              file: filename,
+              bytes: bytes.length,
+              sha256: hash(bytes),
+              retained: 300000,
+              undo: 200000,
+              redo: 300000,
+            };
+          });
           await page.screenshot({ path: path.join(output, 'result.png'), fullPage: true });
         } catch (error) {
           report.runErrors.push({ name: error.name, message: error.message, stack: error.stack });

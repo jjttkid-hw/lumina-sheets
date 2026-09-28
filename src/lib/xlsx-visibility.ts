@@ -47,12 +47,18 @@ export function readXlsxVisibility(
       rowCount: 1,
       colCount: 1,
     };
+    const seenRows = new Set<number>();
     for (const row of xmlChildren(
       xmlChild(sheet.xml, 'sheetData') ?? xmlElement('sheetData'),
       'row',
     )) {
       if (row.uri !== MAIN) throw new Error('XLSX 行布局命名空间无效。');
       const number = integer(row.attributes.r, limits.rows, '行');
+      // ExcelJS replaces a row when its coordinate appears again, even when
+      // the two rows contain different cells or the later row is only styled.
+      if (seenRows.has(number))
+        throw new Error(`XLSX 行坐标重复：${sheet.name}!${number}，已停止导入以避免数据丢失。`);
+      seenRows.add(number);
       const isHidden = hidden(row.attributes.hidden);
       if (isHidden) value.hiddenRows.push(number - 1);
       if (row.attributes.ht !== undefined) {

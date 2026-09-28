@@ -69,6 +69,25 @@ describe('sparse XLSX stored cells', () => {
     await expect(workbookFromXlsx(await writeXlsxArchive(archive))).rejects.toThrow('重复');
   });
 
+  it.each(['distinct-cells', 'blank-layout'])(
+    'rejects duplicate worksheet rows before a later row can replace earlier data: %s',
+    async (kind) => {
+      const archive = await readXlsxArchive(await template());
+      const data = xmlChild(archive.sheets[0].xml, 'sheetData')!;
+      const first = xmlChildren(data, 'row')[0];
+      const duplicate = structuredClone(first);
+      if (kind === 'distinct-cells') {
+        xmlChildren(duplicate, 'c')[0].attributes.r = 'B1';
+      } else {
+        duplicate.children = [];
+        duplicate.attributes.ht = '30';
+        duplicate.attributes.customHeight = '1';
+      }
+      data.children.push(duplicate);
+      await expect(workbookFromXlsx(await writeXlsxArchive(archive))).rejects.toThrow('行坐标重复');
+    },
+  );
+
   it('rejects an out-of-range styled blank even when its row reference agrees', async () => {
     const archive = await readXlsxArchive(await template());
     const rows = xmlChildren(xmlChild(archive.sheets[0].xml, 'sheetData')!, 'row');

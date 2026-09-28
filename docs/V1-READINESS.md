@@ -5,7 +5,11 @@ are dated observations, not a promise that they remain the newest main commit. L
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
 
-## Current candidate
+## Latest candidate verification
+
+2026-09-28: [Candidate r21](acceptance/browser-candidate-2026-09-28-r21/README.md) fixes duplicate XLSX rows overwriting earlier data. All 2,351 tests, 25 browser reports and 30 multi-sheet checks pass locally. Site SHA-256: `340a6a3426458159583bb7faa34edd82e796aa0fffceb13c27c63db32716d1a3`; SDK SHA-256: `8e150872f59d69b336ce5728d0f2835956e5ebdf43778a1fae3691f91fbc1885`. This supersedes r20 for the current source; the deployment observations below remain historical.
+
+## Previous deployment observation
 
 | Item | Evidence | Status |
 | --- | --- | --- |

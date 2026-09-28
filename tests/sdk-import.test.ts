@@ -55,7 +55,7 @@ afterEach(() => {
 });
 
 describe('SDK asynchronous import ownership', () => {
-  it.each(['conflicting payloads', 'unknown type'])(
+  it.each(['conflicting payloads', 'unknown type', 'duplicate row'])(
     'preserves the workbook and history when an XLSX cell has %s',
     async (kind) => {
       const actual = await vi.importActual<typeof import('../src/lib/io')>('../src/lib/io');
@@ -66,7 +66,11 @@ describe('SDK asynchronous import ownership', () => {
       const cell = xmlChildren(row, 'c')[0];
       if (kind === 'conflicting payloads')
         cell.children.push(xmlElement('is', {}, [xmlElement('t', {}, ['conflicting text'])]));
-      else cell.attributes.t = 'custom';
+      else if (kind === 'duplicate row') {
+        const duplicate = structuredClone(row);
+        xmlChildren(duplicate, 'c')[0].attributes.r = 'B1';
+        xmlChild(archive.sheets[0].xml, 'sheetData')!.children.push(duplicate);
+      } else cell.attributes.t = 'custom';
       const grid = make();
       grid.setCell('B1', 42);
       const before = grid.toJSON();

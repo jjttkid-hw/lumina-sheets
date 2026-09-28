@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject duplicate XLSX row definitions before decoding can overwrite earlier cells, including a later blank styled row. Failed imports preserve the current workbook and undo/redo; browser coverage exercises both the site and packaged SDK example.
+
 - 修复 WPS 保存的普通共享字符串含小写 OOXML 转义时文字损坏，以及普通 inlineStr 转义未解码；新增真实 WPS 保存夹具和单次解码回归。
 - 将当前 0.29.0 r16 候选的 CI/CD、Pages `build-info.json`、站点与 SDK 摘要及 25 份浏览器报告绑定记录补入发布账本；npm 首发和平台级 v1.0 门槛仍保持开放。
 - SDK 新增 `prefetch({ firstRow, lastRow }, { signal? })`，可在分页报表导航前预热有限缓存，不改变选区、活动表或只读状态；绑定替换、销毁和取消信号会以 `AbortError` 终止迟到预取。
