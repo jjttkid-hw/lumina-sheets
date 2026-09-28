@@ -104,10 +104,39 @@ it('downloads a version from a local registry fixture, installs and imports it; 
       NPM_VERSION: '1.0.0',
       NPM_EXPECTED_ARCHIVE: archive,
       NPM_DIST_TAG: 'next',
+      // A broken user cache must not prevent verification of downloaded bytes.
+      npm_config_cache: archive,
     };
     const result = await run(process.execPath, [script], { env, timeout: 30_000 });
     expect(result.stdout).toContain('"esmImport":"passed"');
     expect(result.stdout).toContain('"releaseArtifactMatched":true');
+    expect(result.stdout).toContain('"sdkFormulaAndXlsx":"not-applicable"');
+    // An importable but incomplete SDK must not receive a passing release check.
+    await writeFile(
+      path.join(dir, 'package/package.json'),
+      JSON.stringify({
+        name: 'lumina-report-sdk',
+        version: '1.0.0',
+        type: 'module',
+        exports: './index.js',
+      }),
+    );
+    await run('tar', ['-czf', archive, '-C', dir, 'package']);
+    body = await readFile(archive);
+    entry = {
+      versions: {
+        '1.0.0': {
+          name: 'lumina-report-sdk',
+          version: '1.0.0',
+          dist: { tarball: `${origin}/fixture.tgz`, ...digest(body) },
+        },
+      },
+      'dist-tags': { next: '1.0.0' },
+    };
+    env.NPM_PACKAGE = 'lumina-report-sdk';
+    await expect(run(process.execPath, [script], { env, timeout: 30_000 })).rejects.toMatchObject({
+      stderr: expect.stringContaining('Missing SDK API: createEvaluator'),
+    });
     body = Buffer.from('tampered');
     await expect(run(process.execPath, [script], { env, timeout: 10_000 })).rejects.toMatchObject({
       stderr: expect.stringContaining('integrity mismatch'),

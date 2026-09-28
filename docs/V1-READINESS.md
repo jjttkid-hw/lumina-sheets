@@ -1,6 +1,6 @@
 # Lumina Sheets v1.0 readiness
 
-This page records the candidate evidence observed on 2026-09-24; deployment commit IDs
+This page records the candidate evidence observed through 2026-09-28; deployment commit IDs
 are dated observations, not a promise that they remain the newest main commit. Live
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
@@ -10,6 +10,15 @@ deployment identity is available in `build-info.json`. Historical candidate note
 2026-09-28: [Candidate r21](acceptance/browser-candidate-2026-09-28-r21/README.md) fixes duplicate XLSX rows overwriting earlier data. All 2,351 tests, 25 browser reports and 30 multi-sheet checks pass locally. Site SHA-256: `340a6a3426458159583bb7faa34edd82e796aa0fffceb13c27c63db32716d1a3`; SDK SHA-256: `8e150872f59d69b336ce5728d0f2835956e5ebdf43778a1fae3691f91fbc1885`. This supersedes r20 for the current source; the deployment observations below remain historical.
 
 ## Previous deployment observation
+
+2026-09-28 update: commit `86d4510` passed [CI 36371934070](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36371934070)
+and [CD 36372262019](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36372262019).
+The retained [native Safari/WPS evidence](acceptance/safari-2026-09-28-r21/FOLLOWUP.md)
+covers desktop editing and a two-sheet workbook roundtrip. The expanded WPS corpus
+now has four passing checks. [Registry consumer verification](acceptance/registry-consumer-2026-09-28/README.md)
+also exercises formulas and XLSX from the installed r21 archive through a local
+HTTP registry fixture; public npm publication remains open (HTTP 404, local E401).
+These observations do not close the native IME, screen-reader or other gates below.
 
 | Item | Evidence | Status |
 | --- | --- | --- |

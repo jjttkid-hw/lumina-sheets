@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "package": "lumina-report-sdk",
+  "version": "0.29.0",
+  "tarballBytes": 721954,
+  "sha256": "8e150872f59d69b336ce5728d0f2835956e5ebdf43778a1fae3691f91fbc1885",
+  "integrity": "sha512-sQzS4LBnCpp7p2PPw7rUJDqKZ0HMev/uR4UEAeMGIWK7eCCWrXKuKNENb9Ms/MVKVCAcJE5QtgeojXk4BzYKIA==",
+  "releaseArtifactMatched": true,
+  "distTag": "next",
+  "esmImport": "passed",
+  "sdkFormulaAndXlsx": "passed",
+  "provenance": "not-verified-by-this-check",
+  "scope": "Local HTTP registry fixture using the accepted r21 archive; does not prove public npm publication.",
+  "executedAt": "2026-09-28T03:05:51.613Z"
+}

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { registryVersion, verifyRegistryBytes } from './registry-artifact.mjs';
+import { registryConsumerSource } from './registry-consumer.mjs';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -38,10 +39,16 @@ const dir = await mkdtemp(path.join(os.tmpdir(), 'lumina-registry-'));
 try {
   const archive = path.join(dir, `${packageName.replace(/[\\/]/g, '-')}-${version}.tgz`);
   await writeFile(archive, bytes);
-  execFileSync('npm', ['init', '-y'], { cwd: dir, stdio: 'ignore' });
+  await writeFile(path.join(dir, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
   execFileSync('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', archive], {
     cwd: dir,
     stdio: 'inherit',
+    timeout: 120_000,
+    env: {
+      ...process.env,
+      npm_config_cache: path.join(dir, 'npm-cache'),
+      npm_config_offline: 'true',
+    },
   });
   const installed = JSON.parse(
     await readFile(
@@ -53,7 +60,7 @@ try {
   assert.equal(installed.version, version);
   await writeFile(
     path.join(dir, 'consumer.mjs'),
-    `const sdk = await import(${JSON.stringify(packageName)}); if (!Object.keys(sdk).length) throw new Error('Empty package exports');`,
+    registryConsumerSource(packageName),
   );
   execFileSync(process.execPath, ['consumer.mjs'], { cwd: dir, timeout: 30_000, stdio: 'pipe' });
   console.log(
@@ -67,6 +74,7 @@ try {
       releaseArtifactMatched: !!expectedArchive,
       distTag: process.env.NPM_DIST_TAG ?? null,
       esmImport: 'passed',
+      sdkFormulaAndXlsx: packageName === 'lumina-report-sdk' ? 'passed' : 'not-applicable',
       provenance: 'not-verified-by-this-check',
     }),
   );
