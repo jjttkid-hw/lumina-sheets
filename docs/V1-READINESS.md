@@ -12,8 +12,8 @@ adds explicit confirmation before edited report replacement, repeated-header
 regeneration and selected-file import. The Safari lifecycle fix uses `unload` teardown
 and an empty legacy `beforeunload` return value. Cancellation preserves workbook, drafts and
 history. All 2,356 unit tests and the full three-engine browser matrix pass locally.
-The refreshed candidate is bound to site hash `51edb300eb7bb6b168b9fc2cd7c35a9fa2c287a763ad0449f29abc5eefb370af` and
-SDK hash `172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d` (722809 bytes).
+The refreshed candidate is bound to site hash `aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0` and
+SDK hash `56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac` (723078 bytes).
 [The r22 follow-up](acceptance/r22-deployment-followup-2026-10-01/README.md)
 retains successful CI/CD evidence and a native Safari reload attempt where no
 cancellable prompt was observed and the draft was lost. Native Safari reload

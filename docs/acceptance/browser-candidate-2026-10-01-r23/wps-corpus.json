@@ -3,7 +3,7 @@
   "status": "passed",
   "version": "0.29.0",
   "executedAt": "2026-10-01T03:13:15.418Z",
-  "artifactSha256": "172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d",
+  "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
   "fixture": "tests/fixtures/wps/edited-report.xlsx",
   "fixtureSha256": "1e3eec7e59d716fc5a164f641e7bb331bb716db072771c6c2a02864f8404087c",
   "environment": {

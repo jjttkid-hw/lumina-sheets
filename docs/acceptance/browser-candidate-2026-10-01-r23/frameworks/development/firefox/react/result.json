@@ -6,7 +6,7 @@
   "engine": "firefox",
   "browserVersion": "144.0.2",
   "executedAt": "2026-10-01T02:22:05.549Z",
-  "artifactSha256": "172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d",
+  "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
   "fixtureHashes": {
     "index.html": "193ae1bdf669dd866e3f996beeae1e1bd5b30f150e0281fa621caacde3f983b2",
     "main.js": "d70a401f9b23d73a52523feb843a44134560571be42c390d409db42063b9e8ae",
