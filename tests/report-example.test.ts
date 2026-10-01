@@ -68,12 +68,18 @@ function mount() {
   );
   const document = {
     querySelector: $,
-    querySelectorAll: () => [],
+    querySelectorAll: (selector: string) => {
+      if (selector !== '[data-layout]') return [];
+      const button = $('[data-layout="list"]');
+      button.dataset.layout = 'list';
+      return [button];
+    },
     createElement: () => new Element(),
     activeElement: null,
   };
   const listeners = new Map<string, (...args: any[]) => void>();
   const window = {
+    confirm: vi.fn(() => true),
     addEventListener: (type: string, callback: () => void) => {
       listeners.set(type, callback);
       if (type === 'pagehide') dispose = callback;
@@ -95,13 +101,58 @@ function mount() {
     () => 0,
     () => {},
   ) as { grid: sdk.LuminaSpreadsheet; report: (mode: string) => Promise<void> };
-  return { ...result, $, listeners };
+  return { ...result, $, listeners, confirm: window.confirm };
 }
+it('preserves edits, drafts and history when replacement or import confirmation is cancelled', async () => {
+  const { grid, $, confirm, report } = mount();
+  await report('sheets');
+  grid.setCell('A1', 'keep edited workbook');
+  const before = grid.toJSON();
+  $('#formula').value = 'uncommitted draft';
+  $('#formula').listeners.get('input')!();
+  confirm.mockReturnValue(false);
+  await $('[data-layout="list"]').click();
+  expect(grid.toJSON()).toEqual(before);
+  expect($('#formula').value).toBe('uncommitted draft');
+  $('#page-size').value = '10';
+  await $('#page-size').onchange!();
+  expect($('#page-size').value).toBe('0');
+  expect(grid.toJSON()).toEqual(before);
+  const file = new File(['{}'], 'incoming.json');
+  const read = vi.spyOn(file, 'arrayBuffer');
+  const importing = vi.spyOn(grid, 'import');
+  $('#json-file').value = 'incoming.json';
+  $('#json-file').files = [file];
+  await $('#json-file').onchange!();
+  expect($('#json-file').value).toBe('');
+  expect(importing).not.toHaveBeenCalled();
+  expect(read).not.toHaveBeenCalled();
+  expect(grid.toJSON()).toEqual(before);
+  expect($('#formula').value).toBe('uncommitted draft');
+  expect(confirm).toHaveBeenCalledTimes(3);
+  grid.undo();
+  expect(grid.getCell('A1')?.value).toBe('指标');
+  grid.redo();
+  expect(grid.toJSON()).toEqual({ ...before, updatedAt: grid.toJSON().updatedAt });
+  confirm.mockReturnValue(true);
+  await $('[data-layout="list"]').click();
+  expect(grid.sheetInfos).toHaveLength(1);
+  expect(grid.getCell('A1')?.value).toBe('月份');
+});
+
+it('does not request replacement confirmation in an unedited session', async () => {
+  const { $, confirm } = mount();
+  await $('[data-layout="list"]').click();
+  $('#page-size').value = '10';
+  await $('#page-size').onchange!();
+  expect(confirm).not.toHaveBeenCalled();
+});
 it('protects memory edits, rejected drafts and structure changes until successful replacement', async () => {
   const { grid, report, $, listeners } = mount();
   const prevented = () => {
     const event = { preventDefault: vi.fn(), returnValue: undefined };
     listeners.get('beforeunload')!(event);
+    if (event.preventDefault.mock.calls.length) expect(event.returnValue).toBeTruthy();
     return event.preventDefault.mock.calls.length > 0;
   };
   expect(prevented()).toBe(false);

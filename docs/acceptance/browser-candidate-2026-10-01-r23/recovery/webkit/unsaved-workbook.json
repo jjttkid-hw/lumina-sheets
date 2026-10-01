@@ -1,0 +1,27 @@
+{
+  "id": "native-valid",
+  "name": "有效工作簿",
+  "description": "浏览器原生持久化验收",
+  "sheets": [
+    {
+      "id": "native-valid-sheet",
+      "name": "工作表 1",
+      "cells": {
+        "A1": {
+          "value": "失败后保留的编辑"
+        },
+        "B1": {
+          "value": "=6*7"
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {}
+    }
+  ],
+  "activeSheetId": "native-valid-sheet",
+  "createdAt": "2026-09-23T00:00:00.000Z",
+  "updatedAt": "2026-10-01T02:22:38.838Z",
+  "starred": false,
+  "category": "验收"
+}

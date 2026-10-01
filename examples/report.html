@@ -387,7 +387,8 @@
         <p>使用上方行高值和这里的列宽、冻结行数，一次保存；撤销一次即可恢复。</p>
       </details>
       <div class="bar" role="group" aria-label="报表筛选">
-        <label>显示比例
+        <label
+          >显示比例
           <select id="report-zoom" aria-label="显示比例">
             <option value="50">50%</option>
             <option value="75">75%</option>
@@ -488,7 +489,9 @@
       const beforeUnload = (event) => {
         if (!sessionEdited) return;
         event.preventDefault();
-        event.returnValue = '';
+        // Non-empty legacy return value also supports browsers that do not
+        // trigger a prompt from preventDefault alone. Text is browser-controlled.
+        event.returnValue = '报表有未保存的编辑。';
       };
       window.addEventListener('beforeunload', beforeUnload);
       const showError = (error) => {
@@ -1182,9 +1185,27 @@
           if (generation === reportGeneration) showError(error);
         }
       }
+      function allowReplacement() {
+        return (
+          !sessionEdited ||
+          window.confirm(
+            '当前报表有编辑或草稿，仅保留在本次会话。继续将放弃这些内容；保留内容请先取消并导出文件。是否继续？',
+          )
+        );
+      }
       for (const button of document.querySelectorAll('[data-layout]'))
-        button.onclick = () => report(button.dataset.layout);
-      $('#page-size').onchange = () => report(currentLayout);
+        button.onclick = () => {
+          if (allowReplacement()) return report(button.dataset.layout);
+        };
+      let pageSizeValue = $('#page-size').value;
+      $('#page-size').onchange = () => {
+        if (!allowReplacement()) {
+          $('#page-size').value = pageSizeValue;
+          return;
+        }
+        pageSizeValue = $('#page-size').value;
+        return report(currentLayout);
+      };
       $('#sheet-select').onchange = () => {
         try {
           grid.setActiveSheet($('#sheet-select').value);
@@ -1455,10 +1476,11 @@
       $('#json-file').onchange = async () => {
         const file = $('#json-file').files[0];
         if (!file) return;
+        $('#json-file').value = '';
+        if (!allowReplacement()) return;
         stopImport();
         stopSnapshot();
         const generation = ++reportGeneration;
-        $('#json-file').value = '';
         stopExport();
         const controller = new AbortController();
         importing = controller;

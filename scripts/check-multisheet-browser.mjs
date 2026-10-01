@@ -24,6 +24,7 @@ const checks = [
   'xlsx-roundtrip',
   'duplicate-row-rejection',
   'edited-session-close-protection',
+  'cancelled-session-replacement',
 ];
 let server;
 try {
@@ -128,6 +129,16 @@ try {
             throw error;
           }
         };
+        const confirmReplacement = async (action, accept) => {
+          const pending = page.waitForEvent('dialog');
+          const acting = action();
+          const dialog = await pending;
+          assert.equal(dialog.type(), 'confirm');
+          assert.match(dialog.message(), /放弃/);
+          if (accept) await dialog.accept();
+          else await dialog.dismiss();
+          await acting;
+        };
         try {
           await page.goto(`${origin}/lumina-sheets/${relative}`, { waitUntil: 'domcontentloaded' });
           await page.getByRole('grid').waitFor();
@@ -184,7 +195,10 @@ try {
                 assert.equal(book.sheets[1].cells.B2.value, "=SUM('销售明细'!C2:C37)");
               } else assert.equal(result.bytes.subarray(0, 2).toString(), 'PK');
               // Replace first so success cannot come from unchanged prior data.
-              await page.locator('[data-layout="list"]').click();
+              // JSON import reset risk; the first replacement still contains edits.
+              if (format === 'json')
+                await confirmReplacement(() => page.locator('[data-layout="list"]').click(), true);
+              else await page.locator('[data-layout="list"]').click();
               await page.waitForFunction(
                 () => document.querySelector('#sheet-select')?.options.length === 1,
               );
@@ -233,7 +247,10 @@ try {
             await page.locator('#formula').fill('300000');
             await page.locator('#formula').press('Enter');
             await value(300000);
-            await page.locator('#json-file').setInputFiles(path.join(output, filename));
+            await confirmReplacement(
+              () => page.locator('#json-file').setInputFiles(path.join(output, filename)),
+              true,
+            );
             await page.waitForFunction(
               () =>
                 document.querySelector('#status')?.dataset.error === 'true' &&
@@ -267,6 +284,52 @@ try {
             assert.equal(page.isClosed(), false);
             await summary();
             return { cancelledClose: true, revenue: 8299000 };
+          });
+          await run('cancelled-session-replacement', async () => {
+            await sheet('销售明细');
+            await select('C2');
+            await page.locator('#formula').fill('250000');
+            await page.locator('#formula').press('Enter');
+            await value(250000);
+            await sheet('经营汇总');
+            await select('B2');
+            await value(8349000);
+            await page.locator('#formula').fill('=12345');
+            await confirmReplacement(() => page.locator('[data-layout="list"]').click(), false);
+            assert.equal(await page.locator('#formula').inputValue(), '=12345');
+            await value(8349000);
+            assert.equal(await page.locator('#sheet-select option').count(), 2);
+            await confirmReplacement(
+              () =>
+                page.locator('#json-file').setInputFiles(path.join(output, 'workbook-json.json')),
+              false,
+            );
+            assert.equal(await page.locator('#formula').inputValue(), '=12345');
+            await value(8349000);
+            assert.equal(await page.locator('#json-file').inputValue(), '');
+            await page.locator('#undo').click();
+            await value(8299000);
+            await page.locator('#redo').click();
+            await value(8349000);
+            await confirmReplacement(() => page.locator('[data-layout="list"]').click(), true);
+            await page.waitForFunction(
+              () => document.querySelector('#sheet-select')?.options.length === 1,
+            );
+            await select('A1');
+            await value('月份');
+            await page.locator('#formula').fill('draft');
+            await confirmReplacement(() => page.locator('#page-size').selectOption('12'), false);
+            assert.equal(await page.locator('#page-size').inputValue(), '0');
+            assert.equal(await page.locator('#formula').inputValue(), 'draft');
+            await value('月份');
+            return {
+              cancelledSwitch: true,
+              cancelledImport: true,
+              retainedDraft: true,
+              retainedHistory: true,
+              confirmedReplacement: true,
+              cancelledLayoutRegeneration: true,
+            };
           });
           await page.screenshot({ path: path.join(output, 'result.png'), fullPage: true });
         } catch (error) {

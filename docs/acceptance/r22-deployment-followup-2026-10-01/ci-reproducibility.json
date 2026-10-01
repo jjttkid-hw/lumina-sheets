@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "version": "0.29.0",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "linux",
+    "arch": "x64",
+    "npm": "11.19.0"
+  },
+  "commit": "9ee852f6a14136f6182bcc3696fb9b6911797d7e",
+  "dirty": false,
+  "sourceDateEpoch": "1790122493",
+  "sourceTimestamp": "2026-09-23T00:14:53.000Z",
+  "inputSha256": "b216d202f35372e8efb82ff3348c3771ab14cd561939a9811d6bcd6fce6cee6d",
+  "scope": "Two builds in one local checkout with the same installed dependencies. Not clean-install, cross-machine, browser or commercial acceptance.",
+  "runs": [
+    {
+      "siteSha256": "7eb51ec5a0190fbd66ad47bc7897722597362ae03070ba6bc784a5c7b096ec91",
+      "siteFiles": 64,
+      "artifactSha256": "c1c854b73bf519fb9346332c5f76734e70ba542f838f4d85561cd26f633cc231",
+      "artifactBytes": 722409
+    },
+    {
+      "siteSha256": "7eb51ec5a0190fbd66ad47bc7897722597362ae03070ba6bc784a5c7b096ec91",
+      "siteFiles": 64,
+      "artifactSha256": "c1c854b73bf519fb9346332c5f76734e70ba542f838f4d85561cd26f633cc231",
+      "artifactBytes": 722409
+    }
+  ]
+}

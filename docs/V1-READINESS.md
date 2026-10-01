@@ -7,6 +7,17 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-01: [Candidate r23](acceptance/browser-candidate-2026-10-01-r23/README.md)
+adds explicit confirmation before edited report replacement, repeated-header
+regeneration and selected-file import. Cancellation preserves workbook, drafts and
+history. All 2,355 unit tests and 42 multi-sheet browser checks pass locally.
+Site hash `a1079cf0390664f68b413e4923c3daa0d33585eaac828bd25bf08d130d825d0c`,
+SDK hash `6be2438b27dd8ce790f8be0126fbff5c58440494a2ac6440e0e38572bd7470c4`.
+[The r22 follow-up](acceptance/r22-deployment-followup-2026-10-01/README.md)
+retains successful CI/CD evidence and a native Safari reload attempt where no
+cancellable prompt was observed and the draft was lost. Native Safari reload
+protection remains open; headless close tests do not close it.
+
 2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
 adds the report example's persistent session notice and beforeunload protection for
 edits, drafts and structure changes. It remains an in-memory demo. The rebuilt

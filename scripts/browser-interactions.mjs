@@ -156,7 +156,13 @@ try {
     await result('待审核');
   });
   await check('native-clipboard-atomic-validation', async () => {
-    await page.locator('[data-layout="validation"]').click();
+    const pending = page.waitForEvent('dialog');
+    const resetting = page.locator('[data-layout="validation"]').click();
+    const dialog = await pending;
+    assert.equal(dialog.type(), 'confirm');
+    assert.match(dialog.message(), /放弃/);
+    await dialog.accept();
+    await resetting;
     await copyText('8\t-1');
     await jump('B2');
     await page.getByRole('grid').focus();
