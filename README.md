@@ -25,11 +25,14 @@ npm run dev
 npm test
 npm run build:all
 npm run check:sdk
+npm run check:bundle-performance
 ```
 
 开发页：`http://127.0.0.1:5173/examples/report.html`。其中“行列编辑”工具可直接插入、删除当前选区所在行列并撤销。性能实验室：`http://127.0.0.1:5173/?view=performance`。
 
 `npm run check:sdk` 将真实安装包安装到隔离目录，验证严格 TypeScript、ES module、声明与分包完整性，并将已验证的 `.tgz` 与 SHA-256 留在 `artifacts/`。可以将该包直接安装到业务项目；npm 首发前也可从通过的 [CI 运行](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml) 下载 `npm-package` 产物。SDK 安装与使用见 [npm 接入文档](docs/NPM-README.md)。
+
+`npm run check:bundle-performance` 检查首页和报表示例的首屏 JavaScript 预算，并确认 ExcelJS 只在 XLSX 操作时按需加载；这项检查与 CI 使用同一份门禁脚本。
 
 `npm run build:all` 会生成 `dist/sdk/`：
 

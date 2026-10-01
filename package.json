@@ -26,6 +26,7 @@
     "build:site": "npm run build -- --base=/lumina-sheets/ && npm run build:sdk",
     "check:sdk": "node scripts/check-sdk.mjs --pack-destination artifacts",
     "check:api": "node scripts/check-api.mjs",
+    "check:bundle-performance": "node scripts/check-bundle-performance.mjs",
     "check:site-runtime": "node scripts/check-site-runtime.mjs",
     "check:browser-evidence": "node scripts/check-browser-evidence.mjs",
     "check:xlsx-corpus": "node scripts/check-xlsx-corpus.mjs",
