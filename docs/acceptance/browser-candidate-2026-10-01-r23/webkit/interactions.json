@@ -3,31 +3,31 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-10-01T05:09:42.195Z",
+  "executedAt": "2026-10-01T06:04:31.245Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0",
-  "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
+  "siteSha256": "a78d4012e8d98b5988ec9e9159d48510079611a2f0592fcb6b4740b20f330854",
+  "artifactSha256": "99c365d3eb312617776e8ee558633aeabffb0856c81c3bf32e738c59f2a3f2fe",
   "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
   "checks": [
     {
       "name": "validation-editor-recovery",
       "status": "passed",
-      "elapsedMs": 1036
+      "elapsedMs": 227
     },
     {
       "name": "validation-list-keyboard",
       "status": "passed",
-      "elapsedMs": 577
+      "elapsedMs": 100
     },
     {
       "name": "native-clipboard-atomic-validation",
       "status": "passed",
-      "elapsedMs": 3690,
+      "elapsedMs": 350,
       "details": {
         "transport": "native keyboard copy/paste",
         "rejected": "B2:C2 unchanged",
@@ -37,12 +37,12 @@
     {
       "name": "native-copy-cut-paste",
       "status": "passed",
-      "elapsedMs": 1064
+      "elapsedMs": 120
     },
     {
       "name": "sdk-mount-isolation-destroy",
       "status": "passed",
-      "elapsedMs": 360,
+      "elapsedMs": 13,
       "details": {
         "duplicate": "INVALID_ARGUMENT",
         "empty": 0,
@@ -54,7 +54,7 @@
     {
       "name": "sdk-pending-source-destroy",
       "status": "passed",
-      "elapsedMs": 164,
+      "elapsedMs": 157,
       "details": {
         "outcome": "AbortError",
         "lateCallbacks": 0,
@@ -64,7 +64,7 @@
     {
       "name": "sdk-prefetch-contract",
       "status": "passed",
-      "elapsedMs": 30,
+      "elapsedMs": 23,
       "details": {
         "before": {
           "row": 0,

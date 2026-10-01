@@ -4,9 +4,9 @@
   "framework": "react",
   "mode": "development",
   "engine": "chromium",
-  "browserVersion": "154.0.8037.58",
-  "executedAt": "2026-10-01T05:13:14.756Z",
-  "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
+  "browserVersion": "143.0.7499.4",
+  "executedAt": "2026-10-01T06:05:32.934Z",
+  "artifactSha256": "99c365d3eb312617776e8ee558633aeabffb0856c81c3bf32e738c59f2a3f2fe",
   "fixtureHashes": {
     "index.html": "193ae1bdf669dd866e3f996beeae1e1bd5b30f150e0281fa621caacde3f983b2",
     "main.js": "d70a401f9b23d73a52523feb843a44134560571be42c390d409db42063b9e8ae",
@@ -33,7 +33,7 @@
     {
       "name": "mount-and-strict-effects",
       "status": "passed",
-      "elapsedMs": 73,
+      "elapsedMs": 57,
       "details": {
         "created": 2,
         "destroyed": 1,
@@ -46,7 +46,7 @@
     {
       "name": "canvas-edit-and-callback-update",
       "status": "passed",
-      "elapsedMs": 321,
+      "elapsedMs": 112,
       "details": {
         "userEditPreserved": true,
         "callbackRevision": 9,
@@ -56,22 +56,22 @@
     {
       "name": "document-switch-and-duplicate-guard",
       "status": "passed",
-      "elapsedMs": 37
+      "elapsedMs": 15
     },
     {
       "name": "cancel-import-after-switch",
       "status": "passed",
-      "elapsedMs": 66
+      "elapsedMs": 34
     },
     {
       "name": "cancel-source-after-unmount",
       "status": "passed",
-      "elapsedMs": 34
+      "elapsedMs": 16
     },
     {
       "name": "repeated-mount-cleanup",
       "status": "passed",
-      "elapsedMs": 700,
+      "elapsedMs": 351,
       "details": {
         "created": 26,
         "destroyed": 26,

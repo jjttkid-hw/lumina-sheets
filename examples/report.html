@@ -472,6 +472,10 @@
         selection = { row: 0, col: 0 },
         selectionDirty = true;
       let sessionEdited = false;
+      // A browser confirmation can move focus away from the formula editor
+      // while a render callback is still queued. Keep that draft attached to
+      // its cell so a deferred selection sync cannot overwrite it.
+      let formulaDraft = null;
       function markSessionEdited() {
         sessionEdited = true;
         $('#session-note').textContent =
@@ -484,7 +488,11 @@
       }
       // Conservative protection includes cancelled/rejected drafts. Export may
       // be partial or its download may be cancelled, so it cannot clear risk.
-      $('#formula').addEventListener('input', markSessionEdited);
+      const markFormulaDraft = () => {
+        formulaDraft = { key: cellKey(selection.row, selection.col), value: $('#formula').value };
+        markSessionEdited();
+      };
+      $('#formula').addEventListener('input', markFormulaDraft);
       $('#report').addEventListener('input', markSessionEdited);
       const beforeUnload = (event) => {
         if (!sessionEdited) return;
@@ -530,6 +538,7 @@
       const grid = createSpreadsheet($('#report'), {
         onError: showError,
         onActiveSheetChange: () => {
+          formulaDraft = null;
           stopSnapshot();
           stopExport();
           updateControls();
@@ -551,6 +560,7 @@
           syncLayout();
         },
         onChange: ({ changes }) => {
+          formulaDraft = null;
           markSessionEdited();
           stopSnapshot();
           status.dataset.error = 'false';
@@ -562,6 +572,7 @@
           syncLayout();
         },
         onStructureChange: (event) => {
+          formulaDraft = null;
           markSessionEdited();
           stopSnapshot();
           selection = grid.selectedRange;
@@ -766,6 +777,7 @@
       async function report(mode) {
         stopImport();
         stopSnapshot();
+        formulaDraft = null;
         const generation = ++reportGeneration;
         try {
           stopExport();
@@ -1231,6 +1243,7 @@
       $('#apply').onclick = () => {
         try {
           const raw = $('#formula').value;
+          formulaDraft = null;
           const value = parseCellInput(raw);
           grid.setCell(cellKey(selection.row, selection.col), value);
           // Refresh the formula bar synchronously as well as through the SDK
@@ -1239,6 +1252,7 @@
           selectionDirty = true;
           syncSelection(true);
         } catch (error) {
+          formulaDraft = { key: cellKey(selection.row, selection.col), value: $('#formula').value };
           showError(error);
         }
       };
@@ -1491,6 +1505,7 @@
           await grid.import(file, { signal: controller.signal });
           if (generation !== reportGeneration) return;
           grid.setConditionalRules([]);
+          formulaDraft = null;
           currentLayout = 'imported';
           updateControls();
           syncPrint();
@@ -1554,9 +1569,10 @@
         const key = cellKey(selection.row, selection.col);
         $('#selected').textContent = key;
         $('#value').textContent = `结果：${grid.getValue(key)}`;
-        $('#formula').value = isPaged
-          ? String(grid.getValue(key))
-          : String(grid.getCell(key)?.value ?? '');
+        if (formulaDraft && formulaDraft.key !== key) formulaDraft = null;
+        $('#formula').value =
+          formulaDraft?.value ??
+          (isPaged ? String(grid.getValue(key)) : String(grid.getCell(key)?.value ?? ''));
         const rules = isPaged
           ? []
           : grid
@@ -1599,7 +1615,7 @@
       }, 400);
       const teardown = () => {
         window.removeEventListener('beforeunload', beforeUnload);
-        $('#formula').removeEventListener('input', markSessionEdited);
+        $('#formula').removeEventListener('input', markFormulaDraft);
         $('#report').removeEventListener('input', markSessionEdited);
         clearInterval(metricsTimer);
         stopImport();

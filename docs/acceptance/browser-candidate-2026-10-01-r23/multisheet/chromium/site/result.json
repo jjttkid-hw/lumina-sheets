@@ -3,22 +3,22 @@
   "version": "0.29.0",
   "engine": "chromium",
   "entry": "site",
-  "browserVersion": "154.0.8037.58",
-  "executedAt": "2026-10-01T05:13:13.364Z",
+  "browserVersion": "143.0.7499.4",
+  "executedAt": "2026-10-01T06:05:04.758Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0",
-  "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
+  "siteSha256": "a78d4012e8d98b5988ec9e9159d48510079611a2f0592fcb6b4740b20f330854",
+  "artifactSha256": "99c365d3eb312617776e8ee558633aeabffb0856c81c3bf32e738c59f2a3f2fe",
   "scope": "Shipped multi-sheet example controls, cross-sheet formula/history and downloaded CSV/JSON/XLSX reimport. Not desktop Excel, native IME, screen reader or physical touch certification.",
   "checks": [
     {
       "name": "cross-sheet-edit-history",
       "status": "passed",
-      "elapsedMs": 141,
+      "elapsedMs": 98,
       "details": {
         "before": 8199000,
         "edited": 8299000,
@@ -30,7 +30,7 @@
     {
       "name": "active-sheet-csv",
       "status": "passed",
-      "elapsedMs": 125,
+      "elapsedMs": 31,
       "details": {
         "file": "summary.csv",
         "bytes": 197,
@@ -40,11 +40,11 @@
     {
       "name": "json-roundtrip",
       "status": "passed",
-      "elapsedMs": 484,
+      "elapsedMs": 76,
       "details": {
         "file": "workbook-json.json",
         "bytes": 21118,
-        "sha256": "d6935b64ef2e8486940a8fb95174a52cb336f86113bd93426837a004c722dcf6",
+        "sha256": "db41e42114fac04be315de9ee38f9605808e15740f938963c49f6717c67238d1",
         "sheets": 2,
         "revenue": 8299000
       }
@@ -52,11 +52,11 @@
     {
       "name": "xlsx-roundtrip",
       "status": "passed",
-      "elapsedMs": 418,
+      "elapsedMs": 221,
       "details": {
         "file": "workbook-xlsx.xlsx",
-        "bytes": 9339,
-        "sha256": "bfce9e891ea4e4916fbfb8058e6c15b85aaaafe7a08bcaf171a140b695ff4326",
+        "bytes": 9338,
+        "sha256": "3b5c7ead8c65d5daea74bd7a1d13fe6a2c4c529f31f679b651b9d9a5cc9a0f61",
         "sheets": 2,
         "revenue": 8299000
       }
@@ -64,11 +64,11 @@
     {
       "name": "duplicate-row-rejection",
       "status": "passed",
-      "elapsedMs": 221,
+      "elapsedMs": 95,
       "details": {
         "file": "duplicate-row.xlsx",
         "bytes": 29371,
-        "sha256": "6227f28e9a987167e028cd4fd617a34841db8663a4911468e770e6f540c8452e",
+        "sha256": "87090a09e7fd564198e2f7c67c51062ca7bf9826196fbcd7f29faf1d5d67bba0",
         "retained": 300000,
         "undo": 200000,
         "redo": 300000
@@ -77,7 +77,7 @@
     {
       "name": "edited-session-close-protection",
       "status": "passed",
-      "elapsedMs": 443,
+      "elapsedMs": 31,
       "details": {
         "cancelledClose": true,
         "revenue": 8299000
@@ -86,11 +86,12 @@
     {
       "name": "cancelled-session-replacement",
       "status": "passed",
-      "elapsedMs": 362,
+      "elapsedMs": 241,
       "details": {
         "cancelledSwitch": true,
         "cancelledImport": true,
         "retainedDraft": true,
+        "backgroundRenderRetainedDraft": true,
         "retainedHistory": true,
         "confirmedReplacement": true,
         "cancelledLayoutRegeneration": true

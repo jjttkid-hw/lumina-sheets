@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "154.0.8037.58",
-  "executedAt": "2026-10-01T05:09:51.011Z",
+  "executedAt": "2026-10-01T06:03:18.963Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0",
-  "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
+  "siteSha256": "a78d4012e8d98b5988ec9e9159d48510079611a2f0592fcb6b4740b20f330854",
+  "artifactSha256": "99c365d3eb312617776e8ee558633aeabffb0856c81c3bf32e738c59f2a3f2fe",
   "scope": "Browser DOM accessibility semantics for the Canvas grid. This is not a screen-reader announcement or assistive-technology certification.",
   "checks": [
     {
       "name": "grid-contract",
       "status": "passed",
-      "elapsedMs": 1045,
+      "elapsedMs": 8,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -42,7 +42,7 @@
     {
       "name": "active-cell-value",
       "status": "passed",
-      "elapsedMs": 201,
+      "elapsedMs": 3,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -67,7 +67,7 @@
     {
       "name": "selection-announcement",
       "status": "passed",
-      "elapsedMs": 710,
+      "elapsedMs": 11,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -92,7 +92,7 @@
     {
       "name": "keyboard-focus-update",
       "status": "passed",
-      "elapsedMs": 331,
+      "elapsedMs": 18,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -117,7 +117,7 @@
     {
       "name": "read-only-contract",
       "status": "passed",
-      "elapsedMs": 322,
+      "elapsedMs": 9,
       "details": {
         "role": "grid",
         "tabIndex": 0,

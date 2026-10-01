@@ -295,6 +295,20 @@ try {
             await select('B2');
             await value(8349000);
             await page.locator('#formula').fill('=12345');
+            await page.waitForFunction(
+              () => document.querySelector('#formula')?.value === '=12345',
+            );
+            // A resize queues a real Canvas render. Move focus to another
+            // toolbar control and wait until the metrics timer observes it;
+            // the uncommitted draft must survive that background UI sync.
+            const metrics = await page.locator('#metrics').textContent();
+            await page.locator('#format').focus();
+            await page.setViewportSize({ width: 1400, height: 1000 });
+            await page.waitForFunction(
+              (previous) => document.querySelector('#metrics')?.textContent !== previous,
+              metrics,
+            );
+            assert.equal(await page.locator('#formula').inputValue(), '=12345');
             await confirmReplacement(() => page.locator('[data-layout="list"]').click(), false);
             assert.equal(await page.locator('#formula').inputValue(), '=12345');
             await value(8349000);
@@ -326,6 +340,7 @@ try {
               cancelledSwitch: true,
               cancelledImport: true,
               retainedDraft: true,
+              backgroundRenderRetainedDraft: true,
               retainedHistory: true,
               confirmedReplacement: true,
               cancelledLayoutRegeneration: true,

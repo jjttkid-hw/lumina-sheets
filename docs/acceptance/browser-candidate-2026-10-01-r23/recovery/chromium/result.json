@@ -2,8 +2,8 @@
   "schema": 1,
   "version": "0.29.0",
   "engine": "chromium",
-  "browserVersion": "154.0.8037.58",
-  "executedAt": "2026-10-01T05:13:13.000Z",
+  "browserVersion": "143.0.7499.4",
+  "executedAt": "2026-10-01T06:05:50.759Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -11,8 +11,8 @@
     "headless": true
   },
   "runnerSha256": "f0dd26e08f75d70267edaeb37060844ec5fb7114082534404d563dbf88b9d3c9",
-  "siteSha256": "aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0",
-  "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
+  "siteSha256": "a78d4012e8d98b5988ec9e9159d48510079611a2f0592fcb6b4740b20f330854",
+  "artifactSha256": "99c365d3eb312617776e8ee558633aeabffb0856c81c3bf32e738c59f2a3f2fe",
   "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
   "screenshots": [
     {
@@ -40,13 +40,13 @@
     {
       "name": "damaged-journal-download-and-raw-snapshot-restore",
       "status": "passed",
-      "elapsedMs": 2022,
+      "elapsedMs": 976,
       "details": {
-        "copyId": "3736506d-b58e-47fd-a147-a2b48bc6d677",
+        "copyId": "ee1968ec-5698-4127-a5c1-d7b774ac046b",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
-        "backupSha256": "9d01b2718182b61fcaa9a22413be1dfca490dbc1f6b2dc49904501f02d8fb9d9",
+        "backupSha256": "a4b66e12a324f7e72583f20ad481549fcc214af6a087fd708c5136feebee3c71",
         "layoutChecks": [
           {
             "width": 1280,
@@ -127,9 +127,9 @@
     {
       "name": "partial-backup-invalid-selection-search-and-cancel",
       "status": "passed",
-      "elapsedMs": 1208,
+      "elapsedMs": 973,
       "details": {
-        "copyId": "2e9f5503-0f4c-4726-ab5b-7e5022973b7a",
+        "copyId": "a0394da6-8538-4feb-8292-8c2146b24fb3",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
@@ -142,9 +142,9 @@
     {
       "name": "historical-snapshot-restores-independent-copy",
       "status": "passed",
-      "elapsedMs": 875,
+      "elapsedMs": 544,
       "details": {
-        "copyId": "05bc886c-f663-467e-bb72-e70218eb5357",
+        "copyId": "526cd829-5546-496a-9d49-392b59f938c3",
         "name": "历史业务报表（恢复副本）",
         "expectedValue": "历史版本正文",
         "persistedAfterReload": true,
@@ -156,7 +156,7 @@
     {
       "name": "aborted-save-retry-and-reload",
       "status": "passed",
-      "elapsedMs": 1277,
+      "elapsedMs": 666,
       "details": {
         "nativeTransactionAborted": true,
         "originalStoresUnchanged": true,
@@ -166,7 +166,7 @@
         "formulaResult": 42,
         "failedSaveNavigationCancelled": true,
         "unsavedExportImported": true,
-        "unsavedExportSha256": "8a72bdf1e15f8a4b57ea7353f6969dc4f6a90a73012e10fb860084b5fcbb5b70"
+        "unsavedExportSha256": "de3748e50d4720a045a9c57ca779b1a726af30777b61def7404c0a5f01fcf3f8"
       }
     }
   ],
