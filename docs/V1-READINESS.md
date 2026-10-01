@@ -23,7 +23,7 @@ verified cancellation of an edited-example switch retaining the formula draft.
 A native reload warning was also observed, but external app changes prevented
 verification of cancellation/retention. The reload gate remains open.
 
-The r23 candidate was originally pushed as commit [`ee6d7f2`](https://github.com/jjttkid-hw/lumina-sheets/commit/ee6d7f2159b5f4b6bad4561034cacda2d24bcdae), with GitHub [CI run 36830251153](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830251153) and [CD run 36830831858](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830831858) passing. The current Pages deployment is tracked in the table below and its live `build-info.json`; the historical candidate remains useful evidence but does not identify the current deployment.
+The r23 candidate was originally pushed as commit [`ee6d7f2`](https://github.com/jjttkid-hw/lumina-sheets/commit/ee6d7f2159b5f4b6bad4561034cacda2d24bcdae), with GitHub [CI run 36830251153](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830251153) and [CD run 36830831858](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830831858) passing. The accepted r23 Pages deployment is recorded in the table below; documentation-only commits may advance the live `build-info.json` without changing the tested site bytes. The historical candidate remains useful evidence but does not by itself identify the current deployment.
 
 The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md)
 also exercises the deployed multi-sheet example: editing `销售明细!C2` changes
