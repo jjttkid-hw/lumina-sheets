@@ -217,7 +217,7 @@
     </header>
     <main>
       <p id="session-note" role="status" aria-live="polite">
-        本页仅在本次会话保留报表，不会自动保存。刷新、关闭或切换报表前，请先导出文件。
+        报表会自动保存到本机浏览器。跨设备或清除浏览器数据前，请先导出文件。
       </p>
       <div class="bar" role="group" aria-label="报表类型">
         <button data-layout="list">行式明细</button>
@@ -472,19 +472,91 @@
         selection = { row: 0, col: 0 },
         selectionDirty = true;
       let sessionEdited = false;
+      let leaveRisk = false;
+      let restoringStartupSession = false;
+      const REPORT_SESSION_KEY = 'lumina.report.example.v1';
       // A browser confirmation can move focus away from the formula editor
       // while a render callback is still queued. Keep that draft attached to
       // its cell so a deferred selection sync cannot overwrite it.
       let formulaDraft = null;
       function markSessionEdited() {
         sessionEdited = true;
+        leaveRisk = true;
         $('#session-note').textContent =
-          '报表有编辑或草稿，仅保留在本次会话。刷新、关闭或切换报表前，请先导出文件。';
+          '报表有编辑或草稿，正在保存到本机浏览器；刷新后可在本机恢复。跨设备前请导出文件。';
+        persistSession();
       }
       function resetSessionNotice() {
         sessionEdited = false;
+        leaveRisk = false;
         $('#session-note').textContent =
-          '本页仅在本次会话保留报表，不会自动保存。刷新、关闭或切换报表前，请先导出文件。';
+          '报表会自动保存到本机浏览器。跨设备或清除浏览器数据前，请先导出文件。';
+      }
+      function discardSavedSession() {
+        try {
+          localStorage.removeItem(REPORT_SESSION_KEY);
+        } catch {
+          // Storage can be unavailable in private or embedded contexts.
+        }
+      }
+      function persistSession() {
+        if (!grid || !sessionEdited) return;
+        try {
+          localStorage.setItem(
+            REPORT_SESSION_KEY,
+            JSON.stringify({
+              version: 1,
+              workbook: grid.toJSON(),
+              selection,
+              formulaDraft,
+              layout: currentLayout,
+              savedAt: new Date().toISOString(),
+            }),
+          );
+        } catch {
+          leaveRisk = true;
+        }
+      }
+      function readSavedSession() {
+        try {
+          const raw = localStorage.getItem(REPORT_SESSION_KEY);
+          if (!raw || raw.length > 5_000_000) return null;
+          const value = JSON.parse(raw);
+          if (!value || value.version !== 1 || !value.workbook) return null;
+          return value;
+        } catch {
+          return null;
+        }
+      }
+      async function restoreSavedSession() {
+        const saved = readSavedSession();
+        if (!saved) {
+          restoringStartupSession = false;
+          return;
+        }
+        try {
+          grid.load(saved.workbook);
+          if (saved.selection && Number.isInteger(saved.selection.row) && Number.isInteger(saved.selection.col))
+            grid.select(saved.selection);
+          currentLayout = typeof saved.layout === 'string' ? saved.layout : 'list';
+          formulaDraft = saved.formulaDraft ?? null;
+          sessionEdited = true;
+          leaveRisk = true;
+          updateControls();
+          syncPrint();
+          selection = grid.selectedRange;
+          selectionDirty = true;
+          syncSelection(true);
+          syncLayout();
+          status.dataset.error = 'false';
+          status.textContent = '已从本机浏览器恢复上次报表 · 可继续编辑或导出';
+          $('#session-note').textContent =
+            '已恢复本机浏览器中的报表草稿。跨设备或清除浏览器数据前，请先导出文件。';
+        } catch {
+          discardSavedSession();
+        } finally {
+          restoringStartupSession = false;
+        }
       }
       // Conservative protection includes cancelled/rejected drafts. Export may
       // be partial or its download may be cancelled, so it cannot clear risk.
@@ -495,7 +567,7 @@
       $('#formula').addEventListener('input', markFormulaDraft);
       $('#report').addEventListener('input', markSessionEdited);
       const beforeUnload = (event) => {
-        if (!sessionEdited) return;
+        if (!leaveRisk) return;
         event.preventDefault();
         // Safari and older browsers require the legacy property to be set to
         // an empty string. The browser supplies the actual prompt text.
@@ -535,7 +607,8 @@
         syncCancel();
         $('#progress').hidden = true;
       }
-      const grid = createSpreadsheet($('#report'), {
+      let grid;
+      grid = createSpreadsheet($('#report'), {
         onError: showError,
         onActiveSheetChange: () => {
           formulaDraft = null;
@@ -1192,6 +1265,7 @@
           syncLayout();
           status.dataset.error = 'false';
           status.textContent = `已生成${labels[mode]}${isPaged ? ' · 当前表格只读' : ' · 可直接编辑或导出'}`;
+          if (!restoringStartupSession) discardSavedSession();
           resetSessionNotice();
         } catch (error) {
           if (generation === reportGeneration) showError(error);
@@ -1516,6 +1590,7 @@
             'await grid.import(file, { signal }); // 可主动取消；编辑、重载和新导入也会取消旧导入。\nconst rules = grid.getDataValidation();\nconst print = grid.getPrintSettings();';
           status.dataset.error = 'false';
           status.textContent = '报表已恢复 · 已加载支持的数据校验和打印设置';
+          discardSavedSession();
           resetSessionNotice();
           $('#layout-note').textContent = isPaged
             ? '已载入只读分页快照；完整数据需重新绑定原数据源。'
@@ -1628,7 +1703,8 @@
       // pagehide while a beforeunload prompt is still cancellable, so using
       // pagehide here would destroy the session after “Stay on Page”.
       window.addEventListener('unload', teardown);
-      report('list');
+      restoringStartupSession = !!readSavedSession();
+      report('list').then(restoreSavedSession);
     </script>
   </body>
 </html>

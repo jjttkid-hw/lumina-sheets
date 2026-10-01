@@ -39,12 +39,19 @@ class Element {
   }
 }
 let dispose: (() => void) | undefined;
+const storage = new Map<string, string>();
 beforeEach(() => {
   vi.stubGlobal('HTMLElement', Element);
+  vi.stubGlobal('localStorage', {
+    getItem: (key: string) => storage.get(key) ?? null,
+    setItem: (key: string, value: string) => storage.set(key, value),
+    removeItem: (key: string) => storage.delete(key),
+  });
 });
 afterEach(() => {
   dispose?.();
   dispose = undefined;
+  storage.clear();
   vi.unstubAllGlobals();
 });
 function mount() {
@@ -146,6 +153,31 @@ it('does not request replacement confirmation in an unedited session', async () 
   $('#page-size').value = '10';
   await $('#page-size').onchange!();
   expect(confirm).not.toHaveBeenCalled();
+});
+it('persists an edited report and restores it on the next mount', async () => {
+  const first = mount();
+  await first.report('sheets');
+  first.$('#sheet-select').value = first.grid.sheetInfos[0].id;
+  first.$('#sheet-select').onchange!();
+  first.grid.setCell('C2', 245000);
+  first.$('#sheet-select').value = first.grid.sheetInfos[1].id;
+  first.$('#sheet-select').onchange!();
+  first.$('#formula').value = '本机草稿';
+  first.$('#formula').listeners.get('input')!();
+  const saved = JSON.parse(storage.get('lumina.report.example.v1')!);
+  expect(saved.version).toBe(1);
+  expect(saved.workbook.sheets).toHaveLength(2);
+  expect(saved.workbook.sheets[0].cells.C2.value).toBe(245000);
+  expect(saved.formulaDraft.value).toBe('本机草稿');
+  dispose!();
+  dispose = undefined;
+
+  const second = mount();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  expect(second.grid.sheetInfos).toHaveLength(2);
+  expect(second.grid.getValue('B2')).toBe(8344000);
+  expect(second.$('#formula').value).toBe('本机草稿');
+  expect(second.$('#session-note').textContent).toContain('已恢复本机浏览器');
 });
 it('protects memory edits, rejected drafts and structure changes until successful replacement', async () => {
   const { grid, report, $, listeners } = mount();

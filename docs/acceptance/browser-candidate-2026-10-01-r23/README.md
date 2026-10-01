@@ -12,7 +12,9 @@ Cancellation keeps the workbook, formula draft and undo/redo history. Cancelling
 repeated-header regeneration restores the prior selector. A cancelled file selection
 is cleared so the same file can be selected again. Confirming replacement starts the
 existing generation/import operation; successful replacement resets session risk.
-The example remains in memory and requires exports for retention.
+This historical candidate kept the report workbook in memory for the current page
+session and required an export before leaving the page. Reload recovery was added
+and verified only in candidate r25; the SDK itself remains host-persisted.
 
 The report's beforeunload handler now provides a non-empty legacy return value in
 addition to preventDefault. Native Safari reload protection still requires successful

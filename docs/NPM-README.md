@@ -127,6 +127,8 @@ The value contains the package version, a SHA-256 fingerprint of the tracked sou
 
 The SDK does not automatically save workbooks to a server or provide accounts, permissions, collaboration, or cloud storage. Use `toJSON()` and `load()` for explicit snapshots, and integrate the change callbacks with your own persistence. Structural changes have a separate `onStructureChange` callback. Worksheet renames use `onSheetRename`; include both callbacks when saving snapshots. `readOnly` controls editor behavior; enforce access permissions in your service.
 
+The standalone `examples/report.html` page additionally stores its edited demo snapshot and formula draft in that browser's local storage so a refresh can recover the session. This is a demonstration convenience, scoped to the same browser profile and origin; it is not SDK persistence, cross-device sync, a server backup, or an access-control boundary. The page removes that local draft after a successful replacement or file import. Export a JSON/XLSX file before clearing browser data or moving the workbook to another device.
+
 For large remote datasets, implement the `ReportDataSource` interface or use `restDataSource`. Paging is read-only and cached cells are not a complete workbook. Provide a stable source snapshot when exporting. See [data-source and export documentation](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/SDK.md).
 
 For a paged source, `await grid.prefetch({ firstRow: 10_000, lastRow: 10_127 })` loads the required cache pages ahead of a planned navigation. It does not move the selection, change the active sheet, or make the instance writable. Pass an `AbortSignal` when navigation is superseded; cancellation rejects with `AbortError` and never changes the workbook.
@@ -179,6 +181,6 @@ XLSX text export preserves CR/CRLF, XML control characters and literal escape-sh
 
 Formula string caches also use OOXML encoding; numeric, boolean and error caches keep their types. Export requests full recalculation on load in Excel. Lumina imports formulas and recomputes them with its supported engine subset. ExcelJS 4.4 does not itself decode ST_Xstring formula caches, so direct cache reads may expose escape strings; this is not Excel application certification.
 
-多工作表宿主可使用 `grid.sheetInfos` 创建目录，通过 `grid.setActiveSheet(id)` 切换，并监听 `onActiveSheetChange` 保存活动表偏好。切表保留工作簿撤销/重做与计算缓存，重置选区/筛选；只读也可切换。分页绑定期间整个实例保持只读；CSV 按当前表选择数据源，含分页表的完整工作簿导出需先生成静态报表。r23 的三引擎浏览器候选、框架宿主、下载与导入证据已覆盖当前 SDK 制品，详见 [r23 验收记录](acceptance/browser-candidate-2026-10-01-r23/README.md) 和 SDK.md。证据范围仍不等同于完整 Excel/SpreadJS 兼容或稳定版批准。
+多工作表宿主可使用 `grid.sheetInfos` 创建目录，通过 `grid.setActiveSheet(id)` 切换，并监听 `onActiveSheetChange` 保存活动表偏好。切表保留工作簿撤销/重做与计算缓存，重置选区/筛选；只读也可切换。分页绑定期间整个实例保持只读；CSV 按当前表选择数据源，含分页表的完整工作簿导出需先生成静态报表。r25 的三引擎浏览器候选、框架宿主、下载与导入证据已覆盖当前 SDK 制品，详见 [r25 验收记录](acceptance/browser-candidate-2026-10-01-r25/README.md) 和 SDK.md。证据范围仍不等同于完整 Excel/SpreadJS 兼容或稳定版批准。
 
-安装包的 `example.html` 新增“多工作表”示例：销售明细与经营汇总通过跨表公式关联，可切表编辑、撤销及导出当前表 CSV。打开多工作表 Excel/JSON 后通过“当前工作表”选择器浏览其他表；导入期间若继续编辑，旧导入会取消以保留新编辑。需以 HTTP 服务打开示例。r23 已在 Chromium、Firefox、WebKit 以及 React/Vue 宿主中覆盖切表、键盘、导出、导入取消和历史保留；这些检查绑定当前制品，仍不替代实体设备和原生读屏/IME 验收。
+安装包的 `example.html` 新增“多工作表”示例：销售明细与经营汇总通过跨表公式关联，可切表编辑、撤销及导出当前表 CSV。打开多工作表 Excel/JSON 后通过“当前工作表”选择器浏览其他表；导入期间若继续编辑，旧导入会取消以保留新编辑。需以 HTTP 服务打开示例。r25 已在 Chromium、Firefox、WebKit 以及 React/Vue 宿主中覆盖切表、键盘、导出、导入取消和历史保留；这些检查绑定当前制品，仍不替代实体设备和原生读屏/IME 验收。

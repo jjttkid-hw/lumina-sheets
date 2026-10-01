@@ -4,14 +4,14 @@
 
 ## 持续检查与演示部署
 
-- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-10-01-r23`，避免历史候选重复运行或掩盖当前制品绑定。
+- `CI` 在主分支推送、Pull Request 和手动触发时执行：锁定依赖安装、全部测试、格式检查、TypeScript 与生产构建、真实 npm 包隔离安装检查及严格第三方许可证证据检查。浏览器证据门禁只读取当前候选目录 `docs/acceptance/browser-candidate-2026-10-01-r25`，避免历史候选重复运行或掩盖当前制品绑定。
 - CI 和 npm 发布工作流都执行 `check:reproducibility`；站点和 SDK 包必须在同一候选构建中连续两次得到相同摘要/字节哈希，失败不会上传或发布。
 - 安装检查在全新临时目录运行，不借用工程的 React 类型。严格 NodeNext/Bundler、CSS 子路径、ES module 入口、公开类型/动态 JS 分包和示例引用均需通过。制品 `npm-package` 包含 `.tgz` 和 SHA-256，保留 14 天。
 - 主分支 CI 另保留 `lumina-site` 产物 7 天。`CD` 只在本仓库成功的主分支 CI 后触发，下载该次 CI 已验证的站点，不重新构建。PR 不能触发部署。
 - 正式 1.x 及以后在 CI 上传前执行 `check-stable-release.mjs --site`，同时绑定实际包哈希与站点 `siteSha256`；站点内容变化必须重新验收。npm 发布工作流用 `build:site` 生成 `/lumina-sheets/` 基路径，再执行 HTTP 冒烟检查，避免根路径开发构建与 Pages 制品混用。0.x/预发布继续作为开发演示，不声明稳定验收。
 - 部署前检查被验证的提交仍是当前主分支，跳过旧版本。Pages 部署串行执行，站点使用 `/lumina-sheets/` 路径。`build-info.json` 提供版本与提交 ID，便于确认部署内容。
 
-演示入口：[工作空间](https://jjttkid-hw.github.io/lumina-sheets/)、[报表](https://jjttkid-hw.github.io/lumina-sheets/examples/report.html)、[性能实验室](https://jjttkid-hw.github.io/lumina-sheets/?view=performance)。性能页使用查询参数，在静态站刷新仍可加载。主工作空间在浏览器本地保存；报表接入示例只保存在内存，刷新后重新生成默认报表，保留编辑需先导出文件。两者均不提供服务器账号或云端同步。
+演示入口：[工作空间](https://jjttkid-hw.github.io/lumina-sheets/)、[报表](https://jjttkid-hw.github.io/lumina-sheets/examples/report.html)、[性能实验室](https://jjttkid-hw.github.io/lumina-sheets/?view=performance)。性能页使用查询参数，在静态站刷新仍可加载。主工作空间和报表接入示例都可在当前浏览器本机恢复；报表示例的副本仅覆盖同源浏览器，跨设备前请导出文件。两者均不提供服务器账号或云端同步。
 
 GitHub 仓库的 Pages 来源需要设置为 **GitHub Actions**。`github-pages` 环境使用 `pages: write` 与短期 OIDC 部署身份；无需把访问令牌写入源码。
 

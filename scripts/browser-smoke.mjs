@@ -229,6 +229,25 @@ try {
     await page.screenshot({ path: path.join(output, 'report-roundtrip.png'), fullPage: true });
     return { downloads, importStatus: await page.locator('#status').innerText() };
   });
+  await check('report-local-session-reload', async () => {
+    await page.locator('[data-layout="list"]').click();
+    const reportAddress = page.locator('#address');
+    await reportAddress.fill('A1');
+    await reportAddress.press('Enter');
+    const reportFormula = page.getByRole('textbox', { name: '单元格内容或公式', exact: true });
+    await reportFormula.fill('browser reload recovery');
+    await reportFormula.press('Enter');
+    await page.getByRole('gridcell').filter({ hasText: 'browser reload recovery' }).waitFor();
+    await page.getByText('正在保存到本机浏览器', { exact: false }).waitFor();
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.getByRole('grid').waitFor();
+    await page.getByText('已从本机浏览器恢复上次报表', { exact: false }).waitFor();
+    await reportAddress.fill('A1');
+    await reportAddress.press('Enter');
+    await page.getByRole('textbox', { name: '单元格内容或公式', exact: true }).waitFor();
+    await valueEquals(page.getByRole('textbox', { name: '单元格内容或公式', exact: true }), 'browser reload recovery');
+    return { restored: true, notice: await page.locator('#session-note').innerText() };
+  });
   await check('report-idle', async () => {
     await page.locator('#check-idle').click();
     await page.waitForFunction(() =>
@@ -239,6 +258,7 @@ try {
     return text;
   });
   await check('packed-sdk-example', async () => {
+    await page.evaluate(() => localStorage.removeItem('lumina.report.example.v1'));
     await page.goto(new URL('sdk/example.html', origin).href, {
       waitUntil: 'domcontentloaded',
       timeout: 60_000,
@@ -276,6 +296,7 @@ try {
     'zoom-narrow-layout',
     'report-layouts',
     'report-downloads-roundtrip',
+    'report-local-session-reload',
     'report-idle',
     'packed-sdk-example',
   ]);

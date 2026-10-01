@@ -7,13 +7,14 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
-2026-10-01: [Candidate r23](acceptance/browser-candidate-2026-10-01-r23/README.md)
-adds explicit confirmation before edited report replacement, repeated-header
-regeneration and selected-file import. The Safari lifecycle fix uses `unload` teardown
-and an empty legacy `beforeunload` return value. Cancellation preserves workbook, drafts and
-history. All 2,356 unit tests and the full three-engine browser matrix pass locally.
-The refreshed candidate is bound to site hash `a78d4012e8d98b5988ec9e9159d48510079611a2f0592c6b4740b20f330854` and
-SDK hash `99c365d3eb312617776e8ee558633aeabffb0856c81c3bf32e738c59f2a3f2fe` (723347 bytes).
+2026-10-01: [Candidate r25](acceptance/browser-candidate-2026-10-01-r25/README.md)
+adds same-origin localStorage recovery for edited report snapshots and formula drafts,
+with a real reload check in Chromium, Firefox and WebKit. The candidate is bound to
+site hash `a599c6a998af42932e09468f46e062b4eee00d801e7e380cfb31ec38068acedc` and
+SDK hash `271807ecb8624ea5da87c95bb4d04ec6a7423f8190a41a0d851de07b2d524b9f`
+(724232 bytes). All 2,357 tests and the documented three-engine matrix pass locally.
+This browser-local copy is not SDK persistence, server backup or cross-device sync.
+The preceding r23/r24 notes remain historical records.
 [The r22 follow-up](acceptance/r22-deployment-followup-2026-10-01/README.md)
 retains successful CI/CD evidence and a native Safari reload attempt where no
 cancellable prompt was observed and the draft was lost. Native Safari reload
@@ -32,7 +33,9 @@ value. This is a narrow manual path and does not close the native-platform gates
 
 2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
 adds the report example's persistent session notice and beforeunload protection for
-edits, drafts and structure changes. It remains an in-memory demo. The rebuilt
+edits, drafts and structure changes. The example now restores its edited snapshot
+and formula draft from same-origin browser storage after reload; this remains a
+demo-level local copy rather than SDK or server persistence. The rebuilt
 site hash is `7eb51ec5a0190fbd66ad47bc7897722597362ae03070ba6bc784a5c7b096ec91`,
 SDK hash `c1c854b73bf519fb9346332c5f76734e70ba542f838f4d85561cd26f633cc231`.
 All 2,353 tests pass. Current evidence is archived with this candidate; r21 and
@@ -75,10 +78,10 @@ they need refresh recovery.
 | --- | --- | --- |
 | Source and Pages deployment | Commit [`9e3d95f`](https://github.com/jjttkid-hw/lumina-sheets/commit/9e3d95f1d1bd49c121bc05a34678cf100ac6b845), [CI run 36834339273](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36834339273), [CD run 36834966678](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36834966678) | Passed |
 | Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `9e3d95f`, site SHA-256 `a78d4012e8d98b5988ec9e9159d48510079611a2f0592c6b4740b20f330854` | Passed |
-| SDK artifact | Candidate r23, SDK SHA-256 `99c365d3eb312617776e8ee558633aeabffb0856c81c3bf32e738c59f2a3f2fe` (723347 bytes) | Passed |
-| Automated regression | 167 test files, 2,356 tests; API, package isolation, strict license and reproducibility gates | Passed |
-| Real-browser automation | [Candidate r23](acceptance/browser-candidate-2026-10-01-r23/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
-| File corpus | Candidate r23 XLSX and WPS reports, plus native Safari/WPS retained files | Passed for the documented subset |
+| SDK artifact | Candidate r25, SDK SHA-256 `271807ecb8624ea5da87c95bb4d04ec6a7423f8190a41a0d851de07b2d524b9f` (724232 bytes) | Passed |
+| Automated regression | 167 test files, 2,357 tests; API, package isolation, strict license and reproducibility gates | Passed |
+| Real-browser automation | [Candidate r25](acceptance/browser-candidate-2026-10-01-r25/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
+| File corpus | Candidate r25 XLSX and WPS reports, plus native Safari/WPS retained files | Passed for the documented subset |
 | npm package | Public registry lookup for `lumina-report-sdk` currently returns 404; local `npm whoami` currently returns E401 | **Open** |
 
 Supplemental evidence: [multi-sheet acceptance](acceptance/multisheet-2026-09-28/README.md) adds 24 passing browser checks for cross-sheet editing/history and actual CSV/JSON/XLSX downloads and reimports, across both the site and SDK example. The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md) independently verifies the deployed cross-sheet edit, recalculation and undo path on the current Pages commit.
