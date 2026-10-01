@@ -3,8 +3,8 @@
 Executed 2026-10-01 on macOS arm64 / Node 24.14.0 with source epoch 1790122493.
 Local evidence was collected before commit; it is not stable release approval.
 
-- Site SHA-256: `a1079cf0390664f68b413e4923c3daa0d33585eaac828bd25bf08d130d825d0c`.
-- SDK SHA-256: `6be2438b27dd8ce790f8be0126fbff5c58440494a2ac6440e0e38572bd7470c4`, 722676 bytes.
+- Site SHA-256: `770f3b700876b83091250dc157e8d951bb11c21400b85a8ebc007fbb190d7a57`.
+- SDK SHA-256: `52af040ec32570db5b244201c5679827da63a447dd09107c254f13463ae8532b`, 722805 bytes.
 
 Report example replacement now asks for confirmation after edits or drafts before
 switching examples, regenerating repeated headers or reading a selected import.
@@ -19,7 +19,7 @@ addition to preventDefault. Native Safari reload protection still requires succe
 reverification; [the r22 observation](../r22-deployment-followup-2026-10-01/README.md)
 records a reload that lost a draft without an observed cancellable prompt.
 
-All 167 files / 2355 unit tests pass. Three browser engines run seven multi-sheet
+All 167 files / 2356 unit tests pass. Three browser engines run seven multi-sheet
 checks for each site/SDK entry (42 total), including actual confirm dismissal for
 replacement/import/layout and retained undo history. React/Vue development and
 production hosts provide 72 checks; recovery provides 12 checks and real downloads.

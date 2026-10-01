@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-10-01T02:24:54.765Z",
+  "executedAt": "2026-10-01T03:20:02.881Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "a1079cf0390664f68b413e4923c3daa0d33585eaac828bd25bf08d130d825d0c",
-  "artifactSha256": "6be2438b27dd8ce790f8be0126fbff5c58440494a2ac6440e0e38572bd7470c4",
+  "siteSha256": "770f3b700876b83091250dc157e8d951bb11c21400b85a8ebc007fbb190d7a57",
+  "artifactSha256": "52af040ec32570db5b244201c5679827da63a447dd09107c254f13463ae8532b",
   "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
   "checks": [
     {
       "name": "runtime-zoom-hit-draft-history",
       "status": "passed",
-      "elapsedMs": 367,
+      "elapsedMs": 390,
       "details": {
         "scales": [
           50,
@@ -32,17 +32,17 @@
     {
       "name": "hidden-axis-keyboard",
       "status": "passed",
-      "elapsedMs": 51
+      "elapsedMs": 56
     },
     {
       "name": "merge-hit-edit-navigation",
       "status": "passed",
-      "elapsedMs": 137
+      "elapsedMs": 166
     },
     {
       "name": "frozen-row-scroll-hit",
       "status": "passed",
-      "elapsedMs": 137,
+      "elapsedMs": 143,
       "details": {
         "scrollTop": 200
       }
@@ -50,7 +50,7 @@
     {
       "name": "sparse-million-row-locate-edit",
       "status": "passed",
-      "elapsedMs": 132,
+      "elapsedMs": 140,
       "details": {
         "selection": {
           "row": 999999,
@@ -58,7 +58,7 @@
         },
         "value": "last row",
         "draw": {
-          "drawMs": 1,
+          "drawMs": 0,
           "paintedCells": 84,
           "domNodes": 4
         },
@@ -68,7 +68,7 @@
     {
       "name": "row-height-column-width-hit-undo",
       "status": "passed",
-      "elapsedMs": 175,
+      "elapsedMs": 172,
       "details": {
         "columnWidths": {
           "0": 200
@@ -81,7 +81,7 @@
     {
       "name": "filtered-navigation-visible-clipboard",
       "status": "passed",
-      "elapsedMs": 331
+      "elapsedMs": 422
     }
   ],
   "pageErrors": [],

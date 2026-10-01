@@ -9,10 +9,11 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 2026-10-01: [Candidate r23](acceptance/browser-candidate-2026-10-01-r23/README.md)
 adds explicit confirmation before edited report replacement, repeated-header
-regeneration and selected-file import. Cancellation preserves workbook, drafts and
-history. All 2,355 unit tests and 42 multi-sheet browser checks pass locally.
-Site hash `a1079cf0390664f68b413e4923c3daa0d33585eaac828bd25bf08d130d825d0c`,
-SDK hash `6be2438b27dd8ce790f8be0126fbff5c58440494a2ac6440e0e38572bd7470c4`.
+regeneration and selected-file import. The Safari lifecycle fix uses `unload` teardown
+and an empty legacy `beforeunload` return value. Cancellation preserves workbook, drafts and
+history. All 2,356 unit tests and the full three-engine browser matrix pass locally.
+The refreshed candidate is bound to site hash `770f3b700876b83091250dc157e8d951bb11c21400b85a8ebc007fbb190d7a57` and
+SDK hash `52af040ec32570db5b244201c5679827da63a447dd09107c254f13463ae8532b`.
 [The r22 follow-up](acceptance/r22-deployment-followup-2026-10-01/README.md)
 retains successful CI/CD evidence and a native Safari reload attempt where no
 cancellable prompt was observed and the draft was lost. Native Safari reload
