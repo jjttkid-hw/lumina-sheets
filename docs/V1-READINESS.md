@@ -23,7 +23,12 @@ verified cancellation of an edited-example switch retaining the formula draft.
 A native reload warning was also observed, but external app changes prevented
 verification of cancellation/retention. The reload gate remains open.
 
-The candidate was pushed as commit [`a3b0ccd`](https://github.com/jjttkid-hw/lumina-sheets/commit/a3b0ccd4fbd7a61560de39cd664e26b4b6de048c). GitHub [CI run 36829309029](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36829309029) and [CD run 36829877258](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36829877258) passed. Pages `build-info.json` reports version `0.29.0`, the same commit, and the site hash above.
+The candidate was pushed as commit [`ee6d7f2`](https://github.com/jjttkid-hw/lumina-sheets/commit/ee6d7f2159b5f4b6bad4561034cacda2d24bcdae). GitHub [CI run 36830251153](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830251153) and [CD run 36830831858](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830831858) passed. Pages `build-info.json` reports version `0.29.0`, the same commit, and the site hash above.
+
+The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md)
+also exercises the deployed multi-sheet example: editing `销售明细!C2` changes
+`经营汇总!B2` from `8,199,000` to `8,299,000`, and undo restores the original
+value. This is a narrow manual path and does not close the native-platform gates.
 
 2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
 adds the report example's persistent session notice and beforeunload protection for
