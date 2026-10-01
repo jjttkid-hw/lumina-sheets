@@ -1,3 +1,5 @@
+2026-10-01 r27 线上与原生 Safari 补验：提交 `92670db` 的 [CI 36858240934](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36858240934) 和 [CD 36858835989](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36858835989) 均通过，线上站点摘要与 r27 一致。Safari 27.0 / macOS 26.7 实际验证离页提示、取消后草稿保留、完整刷新恢复已提交值、恢复未提交草稿与已提交值分离。取消提示后首次“应用”点击未提交的现象在 AX 和坐标点击共三次复现，第二次点击或键盘提交正常；归因仍开放。原始记录与截图见 [Safari r27](acceptance/safari-session-2026-10-01-r27/README.md)。不据此宣布 Safari 全验收或 v1.0。
+
 ## 当前本地候选（2026-10-01，r27）
 
 报表示例新增最新活动表和选区恢复，草稿输入/视图导航复用序列化工作簿，数据和结构编辑使快照失效重建；超过本机恢复容量时保留页面编辑并提示导出。167 个文件 / 2362 项测试、API、安装包隔离、XLSX/WPS 语料、严格许可证、HTTP 运行时和首屏分包门禁通过。候选绑定站点 `939ce1eb3268e6a623ed126367fe4ac17040319a5a1385fd1dca989d62dcd110`、SDK `7586704641638f54423083490cb588ba9ae8b2684c295ba9e2f12f09ea68be74`（724638 字节）。浏览器完整复验结果见 [r27](acceptance/browser-candidate-2026-10-01-r27/README.md)；推送后的 CI/CD 必须另行核对。以下为已部署和历史记录。

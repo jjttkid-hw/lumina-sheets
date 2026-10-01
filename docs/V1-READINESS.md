@@ -23,7 +23,13 @@ protection remains open; headless close tests do not close it.
 [Native Safari r23 follow-up](acceptance/safari-session-2026-10-01-r23/README.md)
 verified cancellation of an edited-example switch retaining the formula draft.
 A native reload warning was also observed, but external app changes prevented
-verification of cancellation/retention. The reload gate remains open.
+verification of cancellation/retention. The r23 reload gate remained open at that time.
+[Native Safari r27 session follow-up](acceptance/safari-session-2026-10-01-r27/README.md)
+now confirms actual native warnings, Stay retaining drafts, accepted full reload
+restoring committed cells, and separate recovery of uncommitted formula drafts.
+However, the first Apply click after Stay was consumed in three runs (two AX clicks
+and a screenshot-grounded coordinate click); a second click or Return committed the
+retained draft. This unresolved interaction keeps the broader Safari gate open.
 
 The r23 candidate was originally pushed as commit [`ee6d7f2`](https://github.com/jjttkid-hw/lumina-sheets/commit/ee6d7f2159b5f4b6bad4561034cacda2d24bcdae), with GitHub [CI run 36830251153](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830251153) and [CD run 36830831858](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36830831858) passing. The accepted r23 Pages deployment is recorded in the table below; documentation-only commits may advance the live `build-info.json` without changing the tested site bytes. The historical candidate remains useful evidence but does not by itself identify the current deployment.
 
@@ -77,8 +83,8 @@ they need refresh recovery.
 
 | Item | Evidence | Status |
 | --- | --- | --- |
-| Source and Pages deployment | Commit [`b0b5b9d`](https://github.com/jjttkid-hw/lumina-sheets/commit/b0b5b9dd41ac156d8f73687ac8baca62b5661da3), [CI run 36854557448](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36854557448), [CD run 36855267207](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36855267207) | Passed |
-| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `b0b5b9d`, site SHA-256 `2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7` | Passed |
+| Source and Pages deployment | Commit [`92670db`](https://github.com/jjttkid-hw/lumina-sheets/commit/92670db334ff499ea4900dfaaeccae8073dbcd68), [CI run 36858240934](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36858240934), [CD run 36858835989](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36858835989) | Passed |
+| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `92670db`, site SHA-256 `939ce1eb3268e6a623ed126367fe4ac17040319a5a1385fd1dca989d62dcd110` | Passed |
 | SDK artifact | Candidate r27, SDK SHA-256 `7586704641638f54423083490cb588ba9ae8b2684c295ba9e2f12f09ea68be74` (724638 bytes) | Passed |
 | Automated regression | 167 test files, 2,362 tests; API, package isolation, strict license and reproducibility gates | Passed |
 | Real-browser automation | [Candidate r27](acceptance/browser-candidate-2026-10-01-r27/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |

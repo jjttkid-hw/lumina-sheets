@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3512,
+      "sha256": "27ffb9091abfa11515540fa399c25f8156d54af5d4e641398a0a102ee727190c"
+    },
+    {
+      "path": "ax-observations.json",
+      "bytes": 52019,
+      "sha256": "28c76222d33488f7e42e309b9d6c7612fe8f241b5a016a52bf8a1f4a3ed8472f"
+    },
+    {
+      "path": "cancel-retained-and-applied.png",
+      "bytes": 431633,
+      "sha256": "10b8c110e4701e5be77793bf1fb404925fc2b47767a7e0cbc1e2fb248b603199"
+    },
+    {
+      "path": "cd.json",
+      "bytes": 201,
+      "sha256": "2d73c049666f9f74f28d6a0e72a182e6ce53b514405951800832033754225be3"
+    },
+    {
+      "path": "ci.json",
+      "bytes": 14985,
+      "sha256": "01479b2302da841f1ab07331fb77842305b88a9d8b672e7bcb152e3723590311"
+    },
+    {
+      "path": "deployed-build-info.json",
+      "bytes": 166,
+      "sha256": "300b0a92a20042101d315e88f9839dc33f24a43c5b5d4dead344b39247dde613"
+    },
+    {
+      "path": "pointer-recheck.png",
+      "bytes": 430125,
+      "sha256": "0d860752a8a5cd06cc887be9f4b23828c93ab7c167140868539cac2cee8211c2"
+    },
+    {
+      "path": "restored-and-applied.png",
+      "bytes": 431181,
+      "sha256": "d720f628d8bb0b74091e10341932e72efd4d2f9281677dea9962185bb8c9e236"
+    }
+  ]
+}
