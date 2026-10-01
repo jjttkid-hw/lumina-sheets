@@ -515,6 +515,8 @@
           );
         } catch {
           leaveRisk = true;
+          $('#session-note').textContent =
+            '当前浏览器拒绝本机保存；报表仍在页面中，请先导出文件再刷新或关闭。';
         }
       }
       function readSavedSession() {

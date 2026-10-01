@@ -40,11 +40,15 @@ class Element {
 }
 let dispose: (() => void) | undefined;
 const storage = new Map<string, string>();
+let failStorageWrites = false;
 beforeEach(() => {
   vi.stubGlobal('HTMLElement', Element);
   vi.stubGlobal('localStorage', {
     getItem: (key: string) => storage.get(key) ?? null,
-    setItem: (key: string, value: string) => storage.set(key, value),
+    setItem: (key: string, value: string) => {
+      if (failStorageWrites) throw new Error('storage quota exceeded');
+      storage.set(key, value);
+    },
     removeItem: (key: string) => storage.delete(key),
   });
 });
@@ -52,6 +56,7 @@ afterEach(() => {
   dispose?.();
   dispose = undefined;
   storage.clear();
+  failStorageWrites = false;
   vi.unstubAllGlobals();
 });
 function mount() {
@@ -178,6 +183,14 @@ it('persists an edited report and restores it on the next mount', async () => {
   expect(second.grid.getValue('B2')).toBe(8344000);
   expect(second.$('#formula').value).toBe('本机草稿');
   expect(second.$('#session-note').textContent).toContain('已恢复本机浏览器');
+});
+it('warns before reload when browser storage rejects the local draft', async () => {
+  const { grid, report, $ } = mount();
+  await report('list');
+  failStorageWrites = true;
+  grid.setCell('A1', 'memory only');
+  expect($('#session-note').textContent).toContain('拒绝本机保存');
+  expect(storage.has('lumina.report.example.v1')).toBe(false);
 });
 it('protects memory edits, rejected drafts and structure changes until successful replacement', async () => {
   const { grid, report, $, listeners } = mount();
