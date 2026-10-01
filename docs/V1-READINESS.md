@@ -1,6 +1,6 @@
 # Lumina Sheets v1.0 readiness
 
-This page records the candidate evidence observed through 2026-09-28; deployment commit IDs
+This page records the candidate evidence observed through 2026-10-01; deployment commit IDs
 are dated observations, not a promise that they remain the newest main commit. Live
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
@@ -23,7 +23,7 @@ verified cancellation of an edited-example switch retaining the formula draft.
 A native reload warning was also observed, but external app changes prevented
 verification of cancellation/retention. The reload gate remains open.
 
-The candidate was pushed as commit [`27c6607`](https://github.com/jjttkid-hw/lumina-sheets/commit/27c66078fbee87ca9c4b527d37a4ec8b94f07110). GitHub [CI run 36817535027](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36817535027) and [CD run 36817952787](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36817952787) passed. Pages `build-info.json` reports version `0.29.0`, the same commit, and the site hash above.
+The candidate was pushed as commit [`4cb6e4e`](https://github.com/jjttkid-hw/lumina-sheets/commit/4cb6e4e5f27b75df3037ed19d399bb889e5550cd). GitHub [CI run 36823690384](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36823690384) and [CD run 36824249665](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36824249665) passed. Pages `build-info.json` reports version `0.29.0`, the same commit, and the site hash above.
 
 2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
 adds the report example's persistent session notice and beforeunload protection for
