@@ -1,4 +1,4 @@
-2026-10-01 当前候选为 [r23](acceptance/browser-candidate-2026-10-01-r23/README.md)，版本保持 0.29.0。当前制品绑定站点 SHA-256 `aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0` 与 SDK SHA-256 `56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac`（723078 字节）；167 个文件、2356 项测试和三引擎浏览器矩阵通过。本候选已通过 GitHub CI `36815316058` 与 CD `36815749896`，Pages 已核对同一提交和摘要。npm 首次发布、原生 Safari 刷新取消保留、原生系统 IME、真实读屏器、实体触控、跨设备性能、更广 Excel/WPS 语料和商业许可证复核仍未完成。下文为历史记录。
+2026-10-01 当前候选为 [r23](acceptance/browser-candidate-2026-10-01-r23/README.md)，版本保持 0.29.0。当前制品绑定站点 SHA-256 `aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0` 与 SDK SHA-256 `56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac`（723078 字节）；167 个文件、2356 项测试和三引擎浏览器矩阵通过。本候选已通过 GitHub CI `36817535027` 与 CD `36817952787`，Pages 已核对同一提交和摘要。npm 首次发布、原生 Safari 刷新取消保留、原生系统 IME、真实读屏器、实体触控、跨设备性能、更广 Excel/WPS 语料和商业许可证复核仍未完成。下文为历史记录。
 
 当前候选以 [r19](acceptance/browser-candidate-2026-09-24-r19/README.md) 为准；下方 r18 及更早段落为历史记录。新增 npm 语料入口改变了来源指纹，已重新执行 25 份浏览器报告、触控模拟、XLSX/WPS 语料并归档新摘要。npm 发布流程在最后一次构建后增加两类安装包语料检查；版本仍为 0.29.0，平台、npm 首发及商业验收门槛保持开放。
 

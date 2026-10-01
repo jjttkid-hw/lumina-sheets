@@ -23,7 +23,7 @@ verified cancellation of an edited-example switch retaining the formula draft.
 A native reload warning was also observed, but external app changes prevented
 verification of cancellation/retention. The reload gate remains open.
 
-The candidate was pushed as commit [`1b957ee`](https://github.com/jjttkid-hw/lumina-sheets/commit/1b957ee3c2d1246766f508d88a92381506336698). GitHub [CI run 36815316058](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36815316058) and [CD run 36815749896](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36815749896) passed. Pages `build-info.json` reports version `0.29.0`, the same commit, and the site hash above.
+The candidate was pushed as commit [`27c6607`](https://github.com/jjttkid-hw/lumina-sheets/commit/27c66078fbee87ca9c4b527d37a4ec8b94f07110). GitHub [CI run 36817535027](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36817535027) and [CD run 36817952787](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36817952787) passed. Pages `build-info.json` reports version `0.29.0`, the same commit, and the site hash above.
 
 2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
 adds the report example's persistent session notice and beforeunload protection for
