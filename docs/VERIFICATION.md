@@ -12,6 +12,12 @@
 
 # 验证记录
 
+## 当前候选（2026-10-01，提交 `3992f57`）
+
+- 报表示例编辑后的工作簿快照和公式草稿现在保存到同源浏览器本地存储；Chromium、Firefox、WebKit smoke 均实际执行刷新后恢复检查。SDK 仍由宿主通过 `toJSON()`/`load()` 明确保存。
+- 167 个测试文件、2,357 项测试通过；格式、API、SDK 隔离安装、XLSX/WPS 语料、严格许可证、可重复构建和构建绑定浏览器门禁均通过。最新候选为 [r25](acceptance/browser-candidate-2026-10-01-r25/README.md)，站点 SHA-256 `a599c6a998af42932e09468f46e062b4eee00d801e7e380cfb31ec38068acedc`，SDK tgz SHA-256 `271807ecb8624ea5da87c95bb4d04ec6a7423f8190a41a0d851de07b2d524b9f`（724,232 字节）。
+- GitHub CI [36850512637](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36850512637) 与 CD [36851122316](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36851122316) 均成功；线上 `build-info.json` 已核对提交 `3992f576c7f1eb65952fb06e7e72de545976f435` 和同一站点摘要。公开 npm 注册表仍返回 404，当前终端 `npm whoami` 返回 E401，因此没有把 npm 或 v1.0.0 标记为已完成。
+
 ## 发布恢复增量（2026-09-24）
 
 新增 npm 工作流 `verify_only` 手动输入。该模式跳过 Release 附件上传和 npm 发布，保留构建/验收门禁及注册表精确制品安装检查，用于发布成功后验证步骤失败的恢复。25 项发布/注册表定向回归通过；注册表夹具覆盖真实下载、临时安装、篡改与 404 拒绝，不等于公开 npm 首发。运行时代码和制品输入未变，r19 摘要绑定检查仍通过。使用方式见 [发布说明](RELEASING.md#已发布版本的验证重试)。
