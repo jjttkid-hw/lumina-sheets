@@ -5,7 +5,7 @@
   "mode": "production",
   "engine": "chromium",
   "browserVersion": "154.0.8037.58",
-  "executedAt": "2026-10-01T02:22:14.825Z",
+  "executedAt": "2026-10-01T05:13:28.918Z",
   "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
   "fixtureHashes": {
     "index.html": "193ae1bdf669dd866e3f996beeae1e1bd5b30f150e0281fa621caacde3f983b2",
@@ -33,7 +33,7 @@
     {
       "name": "mount-and-strict-effects",
       "status": "passed",
-      "elapsedMs": 60,
+      "elapsedMs": 59,
       "details": {
         "created": 1,
         "destroyed": 0,
@@ -46,7 +46,7 @@
     {
       "name": "canvas-edit-and-callback-update",
       "status": "passed",
-      "elapsedMs": 128,
+      "elapsedMs": 154,
       "details": {
         "userEditPreserved": true,
         "callbackRevision": 9,
@@ -56,22 +56,22 @@
     {
       "name": "document-switch-and-duplicate-guard",
       "status": "passed",
-      "elapsedMs": 35
+      "elapsedMs": 24
     },
     {
       "name": "cancel-import-after-switch",
       "status": "passed",
-      "elapsedMs": 65
+      "elapsedMs": 66
     },
     {
       "name": "cancel-source-after-unmount",
       "status": "passed",
-      "elapsedMs": 34
+      "elapsedMs": 33
     },
     {
       "name": "repeated-mount-cleanup",
       "status": "passed",
-      "elapsedMs": 700,
+      "elapsedMs": 701,
       "details": {
         "created": 14,
         "destroyed": 14,

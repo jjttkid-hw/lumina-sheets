@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-10-01T03:21:41.694Z",
+  "executedAt": "2026-10-01T05:09:42.177Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,7 +17,7 @@
     {
       "name": "grid-contract",
       "status": "passed",
-      "elapsedMs": 12,
+      "elapsedMs": 59,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -42,7 +42,7 @@
     {
       "name": "active-cell-value",
       "status": "passed",
-      "elapsedMs": 4,
+      "elapsedMs": 11,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -67,7 +67,7 @@
     {
       "name": "selection-announcement",
       "status": "passed",
-      "elapsedMs": 8,
+      "elapsedMs": 21,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -92,7 +92,7 @@
     {
       "name": "keyboard-focus-update",
       "status": "passed",
-      "elapsedMs": 12,
+      "elapsedMs": 110,
       "details": {
         "role": "grid",
         "tabIndex": 0,
@@ -117,7 +117,7 @@
     {
       "name": "read-only-contract",
       "status": "passed",
-      "elapsedMs": 9,
+      "elapsedMs": 26,
       "details": {
         "role": "grid",
         "tabIndex": 0,

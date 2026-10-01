@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-10-01T02:22:29.594Z",
+  "executedAt": "2026-10-01T05:13:19.378Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -11,7 +11,7 @@
     "headless": true
   },
   "runnerSha256": "f0dd26e08f75d70267edaeb37060844ec5fb7114082534404d563dbf88b9d3c9",
-  "siteSha256": "a1079cf0390664f68b413e4923c3daa0d33585eaac828bd25bf08d130d825d0c",
+  "siteSha256": "aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0",
   "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
   "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
   "screenshots": [
@@ -40,13 +40,13 @@
     {
       "name": "damaged-journal-download-and-raw-snapshot-restore",
       "status": "passed",
-      "elapsedMs": 1786,
+      "elapsedMs": 2144,
       "details": {
-        "copyId": "abd5f058-3017-464e-a411-0590a41e7303",
+        "copyId": "c802a4c4-a28e-433c-aae0-6c209bbfc059",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
-        "backupSha256": "5771a71d37320c36b62f8915feb9fa5c0889f3859b193e3984c8cf33830d5284",
+        "backupSha256": "e1ed72237451bcbe64d90f7288998a01f449d0bbc68cb8c17c9482a2d081575a",
         "layoutChecks": [
           {
             "width": 1280,
@@ -127,9 +127,9 @@
     {
       "name": "partial-backup-invalid-selection-search-and-cancel",
       "status": "passed",
-      "elapsedMs": 1459,
+      "elapsedMs": 1409,
       "details": {
-        "copyId": "73045a61-2127-46cc-b0d2-2bd0484ccc2d",
+        "copyId": "f8213ab6-84a5-4745-8707-e29ca760513c",
         "name": "有效工作簿（恢复副本）",
         "expectedValue": "安全内容",
         "persistedAfterReload": true,
@@ -142,9 +142,9 @@
     {
       "name": "historical-snapshot-restores-independent-copy",
       "status": "passed",
-      "elapsedMs": 951,
+      "elapsedMs": 1064,
       "details": {
-        "copyId": "b9aba1b7-4a3e-4e3e-93fc-e01f7640ba20",
+        "copyId": "b9793d50-cd0d-435d-8014-234ebcdac20a",
         "name": "历史业务报表（恢复副本）",
         "expectedValue": "历史版本正文",
         "persistedAfterReload": true,
@@ -156,7 +156,7 @@
     {
       "name": "aborted-save-retry-and-reload",
       "status": "passed",
-      "elapsedMs": 1342,
+      "elapsedMs": 1679,
       "details": {
         "nativeTransactionAborted": true,
         "originalStoresUnchanged": true,
@@ -166,7 +166,7 @@
         "formulaResult": 42,
         "failedSaveNavigationCancelled": true,
         "unsavedExportImported": true,
-        "unsavedExportSha256": "b76b1996fb2cf8975ff159be778aadbf893be016d7d0fe7665bc0c170ca89138"
+        "unsavedExportSha256": "5c3737eb25adaa2bd2de321f6f62a52b1e98ca8942f4db9fe959708cd0f833f0"
       }
     }
   ],

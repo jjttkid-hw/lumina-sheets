@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-10-01T03:20:49.037Z",
+  "executedAt": "2026-10-01T05:10:07.008Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,7 +17,7 @@
     {
       "name": "canvas-blur-defers-final-composition",
       "status": "passed",
-      "elapsedMs": 87,
+      "elapsedMs": 1384,
       "details": {
         "value": "中文输入",
         "changes": [
@@ -37,7 +37,7 @@
     {
       "name": "canvas-composing-enter-does-not-commit",
       "status": "passed",
-      "elapsedMs": 59,
+      "elapsedMs": 2290,
       "details": {
         "composing": {
           "value": "基线",
@@ -54,7 +54,7 @@
     {
       "name": "canvas-stale-composition-cannot-write-after-sheet-switch",
       "status": "passed",
-      "elapsedMs": 38,
+      "elapsedMs": 1476,
       "details": {
         "source": "保留值",
         "target": "目标值",
@@ -66,7 +66,7 @@
     {
       "name": "report-formula-composing-enter-guard",
       "status": "passed",
-      "elapsedMs": 132,
+      "elapsedMs": 3138,
       "details": {
         "before": "结果：月份",
         "during": "结果：月份",

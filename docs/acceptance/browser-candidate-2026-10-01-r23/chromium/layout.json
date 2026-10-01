@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "154.0.8037.58",
-  "executedAt": "2026-10-01T03:18:47.042Z",
+  "executedAt": "2026-10-01T05:09:50.887Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,7 +17,7 @@
     {
       "name": "runtime-zoom-hit-draft-history",
       "status": "passed",
-      "elapsedMs": 528,
+      "elapsedMs": 5772,
       "details": {
         "scales": [
           50,
@@ -32,17 +32,17 @@
     {
       "name": "hidden-axis-keyboard",
       "status": "passed",
-      "elapsedMs": 68
+      "elapsedMs": 627
     },
     {
       "name": "merge-hit-edit-navigation",
       "status": "passed",
-      "elapsedMs": 235
+      "elapsedMs": 1240
     },
     {
       "name": "frozen-row-scroll-hit",
       "status": "passed",
-      "elapsedMs": 265,
+      "elapsedMs": 1167,
       "details": {
         "scrollTop": 200
       }
@@ -50,7 +50,7 @@
     {
       "name": "sparse-million-row-locate-edit",
       "status": "passed",
-      "elapsedMs": 208,
+      "elapsedMs": 1276,
       "details": {
         "selection": {
           "row": 999999,
@@ -58,7 +58,7 @@
         },
         "value": "last row",
         "draw": {
-          "drawMs": 0.20000004768371582,
+          "drawMs": 0.7000000476837158,
           "paintedCells": 84,
           "domNodes": 4
         },
@@ -68,7 +68,7 @@
     {
       "name": "row-height-column-width-hit-undo",
       "status": "passed",
-      "elapsedMs": 266,
+      "elapsedMs": 860,
       "details": {
         "columnWidths": {
           "0": 200
@@ -81,7 +81,7 @@
     {
       "name": "filtered-navigation-visible-clipboard",
       "status": "passed",
-      "elapsedMs": 540
+      "elapsedMs": 1377
     }
   ],
   "pageErrors": [],

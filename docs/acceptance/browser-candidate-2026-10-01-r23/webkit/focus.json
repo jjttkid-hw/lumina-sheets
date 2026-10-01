@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-10-01T03:21:11.249Z",
+  "executedAt": "2026-10-01T05:09:42.164Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,22 +17,22 @@
     {
       "name": "host-focus-enter",
       "status": "passed",
-      "elapsedMs": 95
+      "elapsedMs": 344
     },
     {
       "name": "host-focus-escape",
       "status": "passed",
-      "elapsedMs": 45
+      "elapsedMs": 280
     },
     {
       "name": "ordinary-focus-return",
       "status": "passed",
-      "elapsedMs": 18
+      "elapsedMs": 77
     },
     {
       "name": "synchronous-host-focus",
       "status": "passed",
-      "elapsedMs": 46
+      "elapsedMs": 143
     }
   ],
   "pageErrors": [],

@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-10-01T03:21:12.715Z",
+  "executedAt": "2026-10-01T05:09:42.160Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,7 +17,7 @@
     {
       "name": "runtime-zoom-hit-draft-history",
       "status": "passed",
-      "elapsedMs": 650,
+      "elapsedMs": 1640,
       "details": {
         "scales": [
           50,
@@ -32,17 +32,17 @@
     {
       "name": "hidden-axis-keyboard",
       "status": "passed",
-      "elapsedMs": 91
+      "elapsedMs": 378
     },
     {
       "name": "merge-hit-edit-navigation",
       "status": "passed",
-      "elapsedMs": 215
+      "elapsedMs": 1813
     },
     {
       "name": "frozen-row-scroll-hit",
       "status": "passed",
-      "elapsedMs": 222,
+      "elapsedMs": 1134,
       "details": {
         "scrollTop": 199
       }
@@ -50,7 +50,7 @@
     {
       "name": "sparse-million-row-locate-edit",
       "status": "passed",
-      "elapsedMs": 194,
+      "elapsedMs": 828,
       "details": {
         "selection": {
           "row": 999999,
@@ -58,7 +58,7 @@
         },
         "value": "last row",
         "draw": {
-          "drawMs": 0,
+          "drawMs": 1.0000000000009095,
           "paintedCells": 84,
           "domNodes": 4
         },
@@ -68,7 +68,7 @@
     {
       "name": "row-height-column-width-hit-undo",
       "status": "passed",
-      "elapsedMs": 294,
+      "elapsedMs": 1267,
       "details": {
         "columnWidths": {
           "0": 200
@@ -81,7 +81,7 @@
     {
       "name": "filtered-navigation-visible-clipboard",
       "status": "passed",
-      "elapsedMs": 507
+      "elapsedMs": 4575
     }
   ],
   "pageErrors": [],

@@ -10,7 +10,7 @@
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "209e8f6485f146cc41ed15b352f7760a5a3a47b35ac9dcd273980d66ac79bb45",
+  "siteSha256": "aed5cedc658526f8dd63b9f36f74aa58debae83d379d0d78236552bff1580dd0",
   "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
   "scope": "Native IndexedDB recovery download, file import, explicit snapshot selection and persisted independent copies. Synthetic damaged stores; not physical crash recovery or cross-device sync certification.",
   "checks": [

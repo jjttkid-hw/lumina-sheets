@@ -5,7 +5,7 @@
   "mode": "development",
   "engine": "chromium",
   "browserVersion": "154.0.8037.58",
-  "executedAt": "2026-10-01T02:22:03.141Z",
+  "executedAt": "2026-10-01T05:13:16.443Z",
   "artifactSha256": "56b7e447a2058115d1ff43977ee91ff1f408a7f9430f0638aecfc6caf806ccac",
   "fixtureHashes": {
     "index.html": "193ae1bdf669dd866e3f996beeae1e1bd5b30f150e0281fa621caacde3f983b2",
@@ -33,7 +33,7 @@
     {
       "name": "mount-and-strict-effects",
       "status": "passed",
-      "elapsedMs": 70,
+      "elapsedMs": 51,
       "details": {
         "created": 1,
         "destroyed": 0,
@@ -46,7 +46,7 @@
     {
       "name": "canvas-edit-and-callback-update",
       "status": "passed",
-      "elapsedMs": 156,
+      "elapsedMs": 158,
       "details": {
         "userEditPreserved": true,
         "callbackRevision": 9,
@@ -56,12 +56,12 @@
     {
       "name": "document-switch-and-duplicate-guard",
       "status": "passed",
-      "elapsedMs": 25
+      "elapsedMs": 37
     },
     {
       "name": "cancel-import-after-switch",
       "status": "passed",
-      "elapsedMs": 66
+      "elapsedMs": 65
     },
     {
       "name": "cancel-source-after-unmount",

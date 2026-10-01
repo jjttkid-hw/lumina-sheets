@@ -1,10 +1,10 @@
 {
-  "id": "7d2922d8-f208-4e11-a1f8-0b4d507e5270",
+  "id": "f066c149-116f-485a-8352-e450d6accb6d",
   "name": "多工作表经营分析",
   "description": "基于配置和结构化数据，在浏览器生成报表。",
   "sheets": [
     {
-      "id": "bbd3ad98-1bf8-49af-85cd-fcb84c8e8e13",
+      "id": "f24b547d-304f-49c9-92fc-ff237d59f0e6",
       "name": "销售明细",
       "cells": {
         "A1": {
@@ -965,7 +965,7 @@
       "merges": []
     },
     {
-      "id": "23344bc6-77ef-4280-b242-a0dc19e5bb11",
+      "id": "b8f01e2d-2cc2-4298-a476-855fb1313341",
       "name": "经营汇总",
       "rowCount": 30,
       "colCount": 6,
@@ -1021,9 +1021,9 @@
       }
     }
   ],
-  "activeSheetId": "23344bc6-77ef-4280-b242-a0dc19e5bb11",
-  "createdAt": "2026-10-01T02:21:08.199Z",
-  "updatedAt": "2026-10-01T02:21:08.439Z",
+  "activeSheetId": "b8f01e2d-2cc2-4298-a476-855fb1313341",
+  "createdAt": "2026-10-01T05:13:19.799Z",
+  "updatedAt": "2026-10-01T05:13:20.108Z",
   "category": "前端报表",
   "starred": false
 }
