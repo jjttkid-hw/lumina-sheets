@@ -6,7 +6,7 @@
   "engine": "chromium",
   "browserVersion": "154.0.8037.58",
   "executedAt": "2026-10-01T02:22:03.141Z",
-  "artifactSha256": "6be2438b27dd8ce790f8be0126fbff5c58440494a2ac6440e0e38572bd7470c4",
+  "artifactSha256": "172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d",
   "fixtureHashes": {
     "index.html": "193ae1bdf669dd866e3f996beeae1e1bd5b30f150e0281fa621caacde3f983b2",
     "main.js": "d70a401f9b23d73a52523feb843a44134560571be42c390d409db42063b9e8ae",

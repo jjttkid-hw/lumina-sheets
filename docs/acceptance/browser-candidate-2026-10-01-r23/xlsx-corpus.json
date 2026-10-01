@@ -9,7 +9,7 @@
     "exceljs": "4.4.0"
   },
   "artifact": "artifacts/lumina-report-sdk-0.29.0.tgz",
-  "artifactSha256": "52af040ec32570db5b244201c5679827da63a447dd09107c254f13463ae8532b",
+  "artifactSha256": "172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d",
   "scope": "Installed lumina-report-sdk XLSX supported-subset corpus. Covers tracked business inputs, package export/import, an independent ExcelJS reader and explicit rejection of embedded images. It is not complete Excel/OOXML compatibility or a desktop Excel/WPS certification.",
   "checks": [
     {

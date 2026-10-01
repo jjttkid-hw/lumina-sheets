@@ -10,8 +10,8 @@
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "770f3b700876b83091250dc157e8d951bb11c21400b85a8ebc007fbb190d7a57",
-  "artifactSha256": "52af040ec32570db5b244201c5679827da63a447dd09107c254f13463ae8532b",
+  "siteSha256": "51edb300eb7bb6b168b9fc2cd7c35a9fa2c287a763ad0449f29abc5eefb370af",
+  "artifactSha256": "172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d",
   "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
   "checks": [
     {

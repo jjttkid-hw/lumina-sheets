@@ -12,7 +12,7 @@
     "headless": true
   },
   "siteSha256": "a1079cf0390664f68b413e4923c3daa0d33585eaac828bd25bf08d130d825d0c",
-  "artifactSha256": "6be2438b27dd8ce790f8be0126fbff5c58440494a2ac6440e0e38572bd7470c4",
+  "artifactSha256": "172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d",
   "scope": "Shipped multi-sheet example controls, cross-sheet formula/history and downloaded CSV/JSON/XLSX reimport. Not desktop Excel, native IME, screen reader or physical touch certification.",
   "checks": [
     {

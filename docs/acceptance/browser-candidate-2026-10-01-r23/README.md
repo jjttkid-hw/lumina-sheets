@@ -3,8 +3,8 @@
 Executed 2026-10-01 on macOS arm64 / Node 24.14.0 with source epoch 1790122493.
 Local evidence was collected before commit; it is not stable release approval.
 
-- Site SHA-256: `770f3b700876b83091250dc157e8d951bb11c21400b85a8ebc007fbb190d7a57`.
-- SDK SHA-256: `52af040ec32570db5b244201c5679827da63a447dd09107c254f13463ae8532b`, 722805 bytes.
+- Site SHA-256: `51edb300eb7bb6b168b9fc2cd7c35a9fa2c287a763ad0449f29abc5eefb370af`.
+- SDK SHA-256: `172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d`, 722805 bytes.
 
 Report example replacement now asks for confirmation after edits or drafts before
 switching examples, regenerating repeated headers or reading a selected import.
