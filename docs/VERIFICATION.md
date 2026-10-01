@@ -12,11 +12,11 @@
 
 # 验证记录
 
-## 当前候选（2026-10-01，提交 `3992f57`）
+## 当前候选（2026-10-01，提交 `1e206f5`）
 
-- 报表示例编辑后的工作簿快照和公式草稿现在保存到同源浏览器本地存储；Chromium、Firefox、WebKit smoke 均实际执行刷新后恢复检查。SDK 仍由宿主通过 `toJSON()`/`load()` 明确保存。
-- 167 个测试文件、2,357 项测试通过；格式、API、SDK 隔离安装、XLSX/WPS 语料、严格许可证、可重复构建和构建绑定浏览器门禁均通过。最新候选为 [r25](acceptance/browser-candidate-2026-10-01-r25/README.md)，站点 SHA-256 `a599c6a998af42932e09468f46e062b4eee00d801e7e380cfb31ec38068acedc`，SDK tgz SHA-256 `271807ecb8624ea5da87c95bb4d04ec6a7423f8190a41a0d851de07b2d524b9f`（724,232 字节）。
-- GitHub CI [36850512637](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36850512637) 与 CD [36851122316](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36851122316) 均成功；线上 `build-info.json` 已核对提交 `3992f576c7f1eb65952fb06e7e72de545976f435` 和同一站点摘要。公开 npm 注册表仍返回 404，当前终端 `npm whoami` 返回 E401，因此没有把 npm 或 v1.0.0 标记为已完成。
+- 报表示例编辑后的工作簿快照和公式草稿现在保存到同源浏览器本地存储；浏览器拒绝写入时会提示导出且保留页面编辑。Chromium、Firefox、WebKit smoke 均实际执行刷新恢复和存储拒绝检查。SDK 仍由宿主通过 `toJSON()`/`load()` 明确保存。
+- 167 个测试文件、2,358 项测试通过；格式、API、SDK 隔离安装、XLSX/WPS 语料、严格许可证、可重复构建和构建绑定浏览器门禁均通过。最新候选为 [r26](acceptance/browser-candidate-2026-10-01-r26/README.md)，站点 SHA-256 `2e861361002a2d8b188cfae116b9257bc5320abd5bac83aa7ed44c9f6db03e17`，SDK tgz SHA-256 `cfa3a54d6ecd6dd5c86da2094788af964d2623c78438695d3d0c822b7bd909b3`（724,273 字节）。
+- 该提交将触发新的 CI/CD；公开 npm 注册表仍返回 404，当前终端 `npm whoami` 返回 E401，因此没有把 npm 或 v1.0.0 标记为已完成。
 
 ## 发布恢复增量（2026-09-24）
 

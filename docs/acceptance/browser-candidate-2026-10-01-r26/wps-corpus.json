@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "version": "0.29.0",
+  "executedAt": "2026-10-01T10:58:07.844Z",
+  "artifactSha256": "cfa3a54d6ecd6dd5c86da2094788af964d2623c78438695d3d0c822b7bd909b3",
+  "fixture": "tests/fixtures/wps/edited-report.xlsx",
+  "fixtureSha256": "1e3eec7e59d716fc5a164f641e7bb331bb716db072771c6c2a02864f8404087c",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0"
+  },
+  "scope": "Installed SDK import/export of retained WPS 12.1.26055 desktop-saved synthetic fixtures. This run does not drive WPS or certify all desktop features.",
+  "checks": [
+    {
+      "name": "desktop-import",
+      "status": "passed",
+      "text": "_x0041_\r\n中文😀",
+      "formulaValue": 340
+    },
+    {
+      "name": "sdk-roundtrip",
+      "status": "passed",
+      "text": "_x0041_\r\n中文😀",
+      "formulaValue": 340
+    },
+    {
+      "name": "wps-multisheet-import",
+      "status": "passed",
+      "fixture": "docs/acceptance/safari-2026-09-28-r21/wps-edited.xlsx",
+      "fixtureSha256": "11705898739b0aa227cf5752105ee3c93efd175d5b92e6b0c755dddd2d2aa663",
+      "formulaValue": 8399000
+    },
+    {
+      "name": "wps-multisheet-roundtrip",
+      "status": "passed",
+      "fixture": "docs/acceptance/safari-2026-09-28-r21/wps-edited.xlsx",
+      "fixtureSha256": "11705898739b0aa227cf5752105ee3c93efd175d5b92e6b0c755dddd2d2aa663",
+      "formulaValue": 8399000
+    }
+  ],
+  "errors": []
+}

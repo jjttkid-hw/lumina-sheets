@@ -257,6 +257,29 @@ try {
     assert(text.includes('额外绘制 0 次'), text);
     return text;
   });
+  await check('report-local-storage-failure', async () => {
+    await page.evaluate(() => {
+      window.originalStorageSetItem = Storage.prototype.setItem;
+      Storage.prototype.setItem = function (key, value) {
+        if (key === 'lumina.report.example.v1')
+          throw new DOMException('Injected quota failure', 'QuotaExceededError');
+        return window.originalStorageSetItem.call(this, key, value);
+      };
+    });
+    try {
+      const formula = page.getByRole('textbox', { name: '单元格内容或公式', exact: true });
+      await formula.fill('retained after storage rejection');
+      await formula.press('Enter');
+      await page.getByText('当前浏览器拒绝本机保存', { exact: false }).waitFor();
+      await valueEquals(formula, 'retained after storage rejection');
+      return { notice: await page.locator('#session-note').innerText(), editRetained: true };
+    } finally {
+      await page.evaluate(() => {
+        Storage.prototype.setItem = window.originalStorageSetItem;
+        delete window.originalStorageSetItem;
+      });
+    }
+  });
   await check('packed-sdk-example', async () => {
     await page.evaluate(() => localStorage.removeItem('lumina.report.example.v1'));
     await page.goto(new URL('sdk/example.html', origin).href, {
@@ -298,6 +321,7 @@ try {
     'report-downloads-roundtrip',
     'report-local-session-reload',
     'report-idle',
+    'report-local-storage-failure',
     'packed-sdk-example',
   ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
