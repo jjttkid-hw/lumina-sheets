@@ -82,7 +82,7 @@ function mount() {
     confirm: vi.fn(() => true),
     addEventListener: (type: string, callback: () => void) => {
       listeners.set(type, callback);
-      if (type === 'pagehide') dispose = callback;
+      if (type === 'unload') dispose = callback;
     },
     removeEventListener: (type: string) => listeners.delete(type),
   };
@@ -152,7 +152,7 @@ it('protects memory edits, rejected drafts and structure changes until successfu
   const prevented = () => {
     const event = { preventDefault: vi.fn(), returnValue: undefined };
     listeners.get('beforeunload')!(event);
-    if (event.preventDefault.mock.calls.length) expect(event.returnValue).toBeTruthy();
+    if (event.preventDefault.mock.calls.length) expect(event.returnValue).toBe('');
     return event.preventDefault.mock.calls.length > 0;
   };
   expect(prevented()).toBe(false);
@@ -170,6 +170,7 @@ it('protects memory edits, rejected drafts and structure changes until successfu
   await report('list');
   grid.insertRows(2, 1);
   expect(prevented()).toBe(true);
+  await report('list');
   dispose!();
   dispose = undefined;
   expect(listeners.has('beforeunload')).toBe(false);
@@ -204,6 +205,22 @@ it('does not clear edited-session protection when an export finishes or fails', 
   await $('#export').onclick!();
   listeners.get('beforeunload')!(event);
   expect(event.preventDefault).toHaveBeenCalledTimes(2);
+});
+
+it('keeps an edited session alive when pagehide is cancelled by the browser', async () => {
+  const { grid, $, listeners } = mount();
+  grid.setCell('A1', 'keep through cancelled navigation');
+  $('#formula').value = 'draft through cancelled navigation';
+  $('#formula').listeners.get('input')!();
+  expect(listeners.has('unload')).toBe(true);
+  expect(listeners.has('pagehide')).toBe(false);
+  expect(listeners.has('beforeunload')).toBe(true);
+  expect(grid.getCell('A1')?.value).toBe('keep through cancelled navigation');
+  expect($('#formula').value).toBe('draft through cancelled navigation');
+  const event = { preventDefault: vi.fn(), returnValue: undefined };
+  listeners.get('beforeunload')!(event);
+  expect(event.preventDefault).toHaveBeenCalledOnce();
+  expect(event.returnValue).toBe('');
 });
 
 it('exposes actual multi-sheet formula recalculation and workbook undo in the example', async () => {

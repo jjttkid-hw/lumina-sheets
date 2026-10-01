@@ -489,9 +489,9 @@
       const beforeUnload = (event) => {
         if (!sessionEdited) return;
         event.preventDefault();
-        // Non-empty legacy return value also supports browsers that do not
-        // trigger a prompt from preventDefault alone. Text is browser-controlled.
-        event.returnValue = '报表有未保存的编辑。';
+        // Safari and older browsers require the legacy property to be set to
+        // an empty string. The browser supplies the actual prompt text.
+        event.returnValue = '';
       };
       window.addEventListener('beforeunload', beforeUnload);
       const showError = (error) => {
@@ -1597,7 +1597,7 @@
           `${info.rowCount.toLocaleString()} 行 × ${info.colCount} 列${isPaged ? ` · 缓存 ${state.cachedPages}/6 页 · 请求 ${state.loading}` : ` · 公式计算 ${grid.calculationStats.formulaEvaluations} 次 · 缓存 ${grid.calculationStats.cacheEntries} 项`} · 最近绘制 ${lastMs.toFixed(2)} ms · ${paints} 次绘制`;
         syncSelection();
       }, 400);
-      window.addEventListener('pagehide', () => {
+      const teardown = () => {
         window.removeEventListener('beforeunload', beforeUnload);
         $('#formula').removeEventListener('input', markSessionEdited);
         $('#report').removeEventListener('input', markSessionEdited);
@@ -1607,7 +1607,11 @@
         reportGeneration++;
         stopExport();
         grid.destroy();
-      });
+      };
+      // `unload` only fires once navigation is committed. Safari may emit
+      // pagehide while a beforeunload prompt is still cancellable, so using
+      // pagehide here would destroy the session after “Stay on Page”.
+      window.addEventListener('unload', teardown);
       report('list');
     </script>
   </body>
