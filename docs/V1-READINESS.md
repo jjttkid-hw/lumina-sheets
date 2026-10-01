@@ -17,6 +17,10 @@ SDK hash `6be2438b27dd8ce790f8be0126fbff5c58440494a2ac6440e0e38572bd7470c4`.
 retains successful CI/CD evidence and a native Safari reload attempt where no
 cancellable prompt was observed and the draft was lost. Native Safari reload
 protection remains open; headless close tests do not close it.
+[Native Safari r23 follow-up](acceptance/safari-session-2026-10-01-r23/README.md)
+verified cancellation of an edited-example switch retaining the formula draft.
+A native reload warning was also observed, but external app changes prevented
+verification of cancellation/retention. The reload gate remains open.
 
 2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
 adds the report example's persistent session notice and beforeunload protection for
