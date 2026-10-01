@@ -399,7 +399,7 @@
     {
       "path": "README.md",
       "bytes": 2495,
-      "sha256": "9d25bcd480cabfe03967300ee1928ee0c041c45ee0eca6ddc69388c0b140c0c7"
+      "sha256": "3cb4ee595351bad7c1d8b3b844d770b0f9ce6c590e1e34a305b53949ebac16b9"
     },
     {
       "path": "recovery/chromium-first-run/damaged-journal-backup.json",

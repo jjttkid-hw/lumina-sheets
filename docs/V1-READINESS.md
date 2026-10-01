@@ -12,8 +12,8 @@ adds explicit confirmation before edited report replacement, repeated-header
 regeneration and selected-file import. The Safari lifecycle fix uses `unload` teardown
 and an empty legacy `beforeunload` return value. Cancellation preserves workbook, drafts and
 history. All 2,356 unit tests and the full three-engine browser matrix pass locally.
-The refreshed candidate is bound to site hash `770f3b700876b83091250dc157e8d951bb11c21400b85a8ebc007fbb190d7a57` and
-SDK hash `52af040ec32570db5b244201c5679827da63a447dd09107c254f13463ae8532b`.
+The refreshed candidate is bound to site hash `51edb300eb7bb6b168b9fc2cd7c35a9fa2c287a763ad0449f29abc5eefb370af` and
+SDK hash `172d5c298c0a4e89d5f5058cf03613f8160d109884f33bc7615373053a0b468d` (722809 bytes).
 [The r22 follow-up](acceptance/r22-deployment-followup-2026-10-01/README.md)
 retains successful CI/CD evidence and a native Safari reload attempt where no
 cancellable prompt was observed and the draft was lost. Native Safari reload
@@ -22,6 +22,8 @@ protection remains open; headless close tests do not close it.
 verified cancellation of an edited-example switch retaining the formula draft.
 A native reload warning was also observed, but external app changes prevented
 verification of cancellation/retention. The reload gate remains open.
+
+The candidate was pushed as commit [`1b957ee`](https://github.com/jjttkid-hw/lumina-sheets/commit/1b957ee3c2d1246766f508d88a92381506336698). GitHub [CI run 36815316058](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36815316058) and [CD run 36815749896](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36815749896) passed. Pages `build-info.json` reports version `0.29.0`, the same commit, and the site hash above.
 
 2026-09-28: [Candidate r22](acceptance/browser-candidate-2026-09-28-r22/README.md)
 adds the report example's persistent session notice and beforeunload protection for
