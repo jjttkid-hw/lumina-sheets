@@ -274,7 +274,7 @@ try {
             };
           });
           await run('edited-session-close-protection', async () => {
-            assert.match(await page.locator('#session-note').textContent(), /本次会话/);
+            assert.match(await page.locator('#session-note').textContent(), /本机浏览器/);
             await page.locator('#formula').click();
             const pending = page.waitForEvent('dialog');
             await page.close({ runBeforeUnload: true });
