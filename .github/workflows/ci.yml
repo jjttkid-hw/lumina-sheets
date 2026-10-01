@@ -114,7 +114,10 @@ jobs:
         env:
           BROWSER_ENGINE: ${{ matrix.engine }}
           BROWSER_CHANNEL: bundled
-        run: node scripts/check-browser-core.mjs
+          # Linux WebKit needs a display session for the native OS clipboard.
+          # Keep actual copy/paste assertions enabled instead of synthesizing events.
+          BROWSER_HEADED: ${{ matrix.engine == 'webkit' && '1' || '0' }}
+        run: xvfb-run --auto-servernum node scripts/check-browser-core.mjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:

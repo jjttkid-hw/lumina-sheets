@@ -76,6 +76,8 @@ describe('release workflow artifact alignment', () => {
     expect(job).toContain('name: lumina-site');
     expect(job).toContain('BROWSER_CHANNEL: bundled');
     expect(job).toContain('node scripts/check-browser-core.mjs');
+    expect(job).toContain('xvfb-run --auto-servernum');
+    expect(job).toContain("BROWSER_HEADED: ${{ matrix.engine == 'webkit' && '1' || '0' }}");
     expect(job).not.toMatch(/continue-on-error|npm run build/);
     expect(job).toContain('if: always()');
     expect(job).toContain('name: core-browser-reports-${{ matrix.engine }}');
