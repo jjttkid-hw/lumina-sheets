@@ -63,4 +63,22 @@ describe('release workflow artifact alignment', () => {
       ci.indexOf('actions/upload-artifact@v7'),
     );
   });
+
+  it('requires a fresh three-engine core browser run on the validated artifacts before deployment', async () => {
+    const ci = await workflow('ci.yml');
+    const cd = await workflow('cd.yml');
+    const job = ci.split('\n  browser-core:')[1]?.split('\n  frameworks:')[0];
+    expect(job).toBeDefined();
+    expect(job).toContain('needs: validate');
+    expect(job).toContain('fail-fast: false');
+    expect(job).toContain('engine: [chromium, firefox, webkit]');
+    expect(job).toContain('name: npm-package');
+    expect(job).toContain('name: lumina-site');
+    expect(job).toContain('BROWSER_CHANNEL: bundled');
+    expect(job).toContain('node scripts/check-browser-core.mjs');
+    expect(job).not.toMatch(/continue-on-error|npm run build/);
+    expect(job).toContain('if: always()');
+    expect(job).toContain('name: core-browser-reports-${{ matrix.engine }}');
+    expect(cd).toContain("github.event.workflow_run.conclusion == 'success'");
+  });
 });

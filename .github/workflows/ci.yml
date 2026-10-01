@@ -83,6 +83,56 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  browser-core:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: scripts/fixtures/frameworks/package-lock.json
+      - uses: actions/download-artifact@v8
+        with:
+          name: npm-package
+          path: artifacts
+      - uses: actions/download-artifact@v8
+        with:
+          name: lumina-site
+          path: dist
+      - name: Install pinned browser acceptance tools
+        run: npm ci --ignore-scripts --prefix scripts/fixtures/frameworks
+      - name: Install the matrix browser
+        run: node scripts/fixtures/frameworks/node_modules/playwright/cli.js install --with-deps ${{ matrix.engine }}
+      - name: Run core suites against the tested site and SDK
+        env:
+          BROWSER_ENGINE: ${{ matrix.engine }}
+          BROWSER_CHANNEL: bundled
+        run: node scripts/check-browser-core.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: core-browser-reports-${{ matrix.engine }}
+          path: |
+            artifacts/browser-core/
+            artifacts/browser-acceptance/
+            artifacts/browser-accessibility/
+            artifacts/browser-focus/
+            artifacts/browser-interactions/
+            artifacts/browser-layout/
+            artifacts/browser-performance/
+            artifacts/browser-persistence/
+            artifacts/browser-ime/
+            artifacts/browser-touch/
+          if-no-files-found: error
+          retention-days: 14
+
   frameworks:
     needs: validate
     runs-on: ubuntu-latest

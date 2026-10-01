@@ -29,7 +29,8 @@ const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const archive = await readFile(`artifacts/lumina-report-sdk-${version}.tgz`);
 const browser = await engines[engine].launch({
   headless: process.env.BROWSER_HEADED !== '1',
-  ...(engine === 'chromium' ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
+  ...(engine === 'chromium' && process.env.BROWSER_CHANNEL !== 'bundled'
+    ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
   // Only local candidate traffic skips system proxies; remote runs keep normal routing.
   ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
     ? { firefoxUserPrefs: { 'network.proxy.type': 0 } }

@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "143.0.7499.4",
+  "executedAt": "2026-10-01T11:25:13.891Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7",
+  "artifactSha256": "15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b",
+  "scope": "Native browser IndexedDB/localStorage workspace migration, reload and damaged-storage containment. This is isolated single-device persistence, not cross-device sync or crash-consistency certification.",
+  "checks": [
+    {
+      "name": "native-legacy-migration-reload",
+      "status": "passed",
+      "elapsedMs": 341,
+      "details": {
+        "storedWorkbooks": 1,
+        "journalEntries": 1,
+        "revisions": 1,
+        "comments": 1,
+        "marker": true,
+        "reloadedValue": "迁移后编辑",
+        "legacySourceRetained": true
+      }
+    },
+    {
+      "name": "native-concurrent-migration-single-commit",
+      "status": "passed",
+      "elapsedMs": 211,
+      "details": {
+        "pages": 2,
+        "storedWorkbooks": 1,
+        "revisions": 1,
+        "comments": 1,
+        "migrationMarkers": 1
+      }
+    },
+    {
+      "name": "native-damaged-workbook-isolation",
+      "status": "passed",
+      "elapsedMs": 230,
+      "details": {
+        "visibleWorkbook": "有效工作簿",
+        "retainedRows": 2,
+        "damagedRowRetained": true,
+        "recoveryActionVisible": true
+      }
+    },
+    {
+      "name": "native-damaged-journal-fails-closed",
+      "status": "passed",
+      "elapsedMs": 158,
+      "details": {
+        "workspaceOpened": false,
+        "storedValue": "安全内容",
+        "damagedJournalRetained": true,
+        "retryVisible": true,
+        "recoveryActionVisible": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "native-legacy-migration-reload",
+      "native-concurrent-migration-single-commit",
+      "native-damaged-workbook-isolation",
+      "native-damaged-journal-fails-closed"
+    ],
+    "actualChecks": [
+      "native-legacy-migration-reload",
+      "native-concurrent-migration-single-commit",
+      "native-damaged-workbook-isolation",
+      "native-damaged-journal-fails-closed"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "webkit",
+  "executedAt": "2026-10-01T11:26:21.466Z",
+  "siteSha256": "2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7",
+  "artifactSha256": "15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b",
+  "scope": "Automated core browser regression; not native IME, Safari, screen reader or physical touch acceptance.",
+  "status": "passed",
+  "suites": [
+    {
+      "suite": "smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 10
+    },
+    {
+      "suite": "accessibility",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 5
+    },
+    {
+      "suite": "focus",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 4
+    },
+    {
+      "suite": "interactions",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 7
+    },
+    {
+      "suite": "layout",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 7
+    },
+    {
+      "suite": "performance",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 6
+    },
+    {
+      "suite": "persistence",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 4
+    },
+    {
+      "suite": "ime",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 4
+    }
+  ]
+}
