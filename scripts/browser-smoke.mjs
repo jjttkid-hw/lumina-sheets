@@ -258,6 +258,28 @@ try {
     assert(text.includes('额外绘制 0 次'), text);
     return text;
   });
+  await check('report-local-view-reload', async () => {
+    const pending = page.waitForEvent('dialog');
+    const switching = page.locator('[data-layout="sheets"]').click();
+    await (await pending).accept();
+    await switching;
+    await page.locator('#sheet-select').selectOption({ label: '销售明细' });
+    await page.locator('#address').fill('C2');
+    await page.locator('#address').press('Enter');
+    await page.locator('#formula').fill('245000');
+    await page.locator('#formula').press('Enter');
+    await page.locator('#sheet-select').selectOption({ label: '经营汇总' });
+    await page.locator('#address').fill('B2');
+    await page.locator('#address').press('Enter');
+    await page.waitForFunction(() => document.querySelector('#value')?.textContent === '结果：8344000');
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.getByText('已从本机浏览器恢复上次报表', { exact: false }).waitFor();
+    assert.equal(await page.locator('#sheet-select option:checked').innerText(), '经营汇总');
+    assert.equal(await page.locator('#selected').innerText(), 'B2');
+    assert.equal(await page.locator('#value').innerText(), '结果：8344000');
+    assert.equal(await page.locator('#formula').inputValue(), "=SUM('销售明细'!C2:C37)");
+    return { activeSheet: '经营汇总', selected: 'B2', value: 8344000 };
+  });
   await check('report-local-storage-failure', async () => {
     await page.evaluate(() => {
       window.originalStorageSetItem = Storage.prototype.setItem;
@@ -322,6 +344,7 @@ try {
     'report-downloads-roundtrip',
     'report-local-session-reload',
     'report-idle',
+    'report-local-view-reload',
     'report-local-storage-failure',
     'packed-sdk-example',
   ]);

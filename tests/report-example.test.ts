@@ -192,6 +192,58 @@ it('warns before reload when browser storage rejects the local draft', async () 
   expect($('#session-note').textContent).toContain('拒绝本机保存');
   expect(storage.has('lumina.report.example.v1')).toBe(false);
 });
+it('restores the latest sheet and selection after navigation without another edit', async () => {
+  const first = mount();
+  await first.report('sheets');
+  first.grid.setActiveSheet(first.grid.sheetInfos[0].id);
+  first.grid.setCell('C2', 245000);
+  first.grid.setActiveSheet(first.grid.sheetInfos[1].id);
+  first.grid.select({ row: 1, col: 1 });
+  const saved = JSON.parse(storage.get('lumina.report.example.v1')!);
+  expect(saved.activeSheetId).toBe(first.grid.activeSheetInfo.id);
+  expect(saved.selection).toEqual({ row: 1, col: 1 });
+  dispose!();
+  dispose = undefined;
+  const second = mount();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  expect(second.grid.activeSheetInfo.name).toBe('经营汇总');
+  expect(second.grid.selectedRange).toEqual({ row: 1, col: 1 });
+  expect(second.$('#formula').value).toBe("=SUM('销售明细'!C2:C37)");
+  expect(second.grid.getValue('B2')).toBe(8344000);
+});
+it('reuses the workbook snapshot during typing and navigation and refreshes it after edits', async () => {
+  const { grid, report, $ } = mount();
+  await report('sheets');
+  grid.setActiveSheet(grid.sheetInfos[0].id);
+  const snapshot = vi.spyOn(grid, 'toJSON');
+  grid.setCell('C2', 245000);
+  expect(snapshot).toHaveBeenCalledTimes(1);
+  for (const value of ['d', 'dr', 'draft']) {
+    $('#formula').value = value;
+    $('#formula').listeners.get('input')!();
+  }
+  grid.setActiveSheet(grid.sheetInfos[1].id);
+  grid.select({ row: 1, col: 1 });
+  expect(snapshot).toHaveBeenCalledTimes(1);
+  expect(JSON.parse(storage.get('lumina.report.example.v1')!).formulaDraft).toBeNull();
+  grid.undo();
+  expect(snapshot).toHaveBeenCalledTimes(2);
+  const saved = JSON.parse(storage.get('lumina.report.example.v1')!);
+  expect(saved.workbook.sheets[0].cells.C2.value).toBe(100000);
+  expect(saved.activeSheetId).toBe(grid.activeSheetInfo.id);
+});
+it('warns and retains the previous recoverable copy when a new report exceeds the restore limit', async () => {
+  const { grid, $ } = mount();
+  grid.setCell('A1', 'recoverable');
+  const previous = storage.get('lumina.report.example.v1');
+  const workbook = grid.toJSON();
+  workbook.name = 'x'.repeat(5_000_000);
+  vi.spyOn(grid, 'toJSON').mockReturnValue(workbook);
+  grid.setCell('A1', 'still in memory');
+  expect($('#session-note').textContent).toContain('超过本机恢复容量');
+  expect(storage.get('lumina.report.example.v1')).toBe(previous);
+  expect(grid.getValue('A1')).toBe('still in memory');
+});
 it('protects memory edits, rejected drafts and structure changes until successful replacement', async () => {
   const { grid, report, $, listeners } = mount();
   const prevented = () => {

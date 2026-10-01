@@ -7,12 +7,13 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
-2026-10-01: [Candidate r26](acceptance/browser-candidate-2026-10-01-r26/README.md)
-adds an explicit warning and edit-retention path when browser localStorage rejects
-a report draft. The candidate is bound to site hash
-`2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7` and SDK hash
-`15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b`
-(724278 bytes). All 2,358 tests and the documented three-engine matrix pass locally.
+2026-10-01: [Candidate r27](acceptance/browser-candidate-2026-10-01-r27/README.md)
+adds latest-sheet/selection recovery and cached workbook serialization during
+draft typing and view navigation. Storage rejection and the local recovery size
+limit produce explicit export warnings. The candidate is bound to site hash
+`939ce1eb3268e6a623ed126367fe4ac17040319a5a1385fd1dca989d62dcd110` and SDK hash
+`7586704641638f54423083490cb588ba9ae8b2684c295ba9e2f12f09ea68be74`
+(724638 bytes). All 2,362 tests and the documented three-engine matrix pass locally.
 This browser-local copy is not SDK persistence, server backup or cross-device sync.
 The preceding r23/r24 notes remain historical records.
 [The r22 follow-up](acceptance/r22-deployment-followup-2026-10-01/README.md)
@@ -78,10 +79,10 @@ they need refresh recovery.
 | --- | --- | --- |
 | Source and Pages deployment | Commit [`b0b5b9d`](https://github.com/jjttkid-hw/lumina-sheets/commit/b0b5b9dd41ac156d8f73687ac8baca62b5661da3), [CI run 36854557448](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36854557448), [CD run 36855267207](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36855267207) | Passed |
 | Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `b0b5b9d`, site SHA-256 `2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7` | Passed |
-| SDK artifact | Candidate r26, SDK SHA-256 `15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b` (724278 bytes) | Passed |
-| Automated regression | 167 test files, 2,358 tests; API, package isolation, strict license and reproducibility gates | Passed |
-| Real-browser automation | [Candidate r26](acceptance/browser-candidate-2026-10-01-r26/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
-| File corpus | Candidate r26 XLSX and WPS reports, plus native Safari/WPS retained files | Passed for the documented subset |
+| SDK artifact | Candidate r27, SDK SHA-256 `7586704641638f54423083490cb588ba9ae8b2684c295ba9e2f12f09ea68be74` (724638 bytes) | Passed |
+| Automated regression | 167 test files, 2,362 tests; API, package isolation, strict license and reproducibility gates | Passed |
+| Real-browser automation | [Candidate r27](acceptance/browser-candidate-2026-10-01-r27/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
+| File corpus | Candidate r27 XLSX and WPS reports, plus native Safari/WPS retained files | Passed for the documented subset |
 | npm package | Public registry lookup for `lumina-report-sdk` currently returns 404; local `npm whoami` currently returns E401 | **Open** |
 
 Supplemental evidence: [multi-sheet acceptance](acceptance/multisheet-2026-09-28/README.md) adds 24 passing browser checks for cross-sheet editing/history and actual CSV/JSON/XLSX downloads and reimports, across both the site and SDK example. The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md) independently verifies the deployed cross-sheet edit, recalculation and undo path on the current Pages commit.

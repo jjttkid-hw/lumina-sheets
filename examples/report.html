@@ -479,6 +479,7 @@
       // while a render callback is still queued. Keep that draft attached to
       // its cell so a deferred selection sync cannot overwrite it.
       let formulaDraft = null;
+      let savedWorkbookJson = null;
       function markSessionEdited() {
         sessionEdited = true;
         leaveRisk = true;
@@ -487,6 +488,7 @@
         persistSession();
       }
       function resetSessionNotice() {
+        savedWorkbookJson = null;
         sessionEdited = false;
         leaveRisk = false;
         $('#session-note').textContent =
@@ -500,18 +502,28 @@
         }
       }
       function persistSession() {
-        if (!grid || !sessionEdited) return;
+        if (!grid || !sessionEdited || restoringStartupSession) return;
         try {
+          // Workbook edits invalidate this snapshot. Draft typing and view
+          // changes reuse it instead of cloning every stored cell per keypress.
+          savedWorkbookJson ??= JSON.stringify(grid.toJSON());
+          const metadata = JSON.stringify({
+            version: 1,
+            activeSheetId: grid.activeSheetInfo.id,
+            selection,
+            formulaDraft,
+            layout: currentLayout,
+            savedAt: new Date().toISOString(),
+          });
+          const serialized = metadata.slice(0, -1) + ',"workbook":' + savedWorkbookJson + '}';
+          if (serialized.length > 5_000_000) {
+            $('#session-note').textContent =
+              '报表超过本机恢复容量；页面编辑仍保留，请先导出文件再刷新或关闭。';
+            return;
+          }
           localStorage.setItem(
             REPORT_SESSION_KEY,
-            JSON.stringify({
-              version: 1,
-              workbook: grid.toJSON(),
-              selection,
-              formulaDraft,
-              layout: currentLayout,
-              savedAt: new Date().toISOString(),
-            }),
+            serialized,
           );
         } catch {
           leaveRisk = true;
@@ -538,6 +550,9 @@
         }
         try {
           grid.load(saved.workbook);
+          if (typeof saved.activeSheetId === 'string' &&
+              grid.sheetInfos.some((sheet) => sheet.id === saved.activeSheetId))
+            grid.setActiveSheet(saved.activeSheetId);
           if (saved.selection && Number.isInteger(saved.selection.row) && Number.isInteger(saved.selection.col))
             grid.select(saved.selection);
           currentLayout = typeof saved.layout === 'string' ? saved.layout : 'list';
@@ -620,6 +635,7 @@
           syncPrint();
           syncSelection(true);
           syncLayout();
+          persistSession();
           status.dataset.error = 'false';
           status.textContent = `已切换到 ${grid.activeSheetInfo.name} · 编辑历史保留`;
         },
@@ -633,9 +649,11 @@
           selectionDirty = true;
           syncSelection(true);
           syncLayout();
+          persistSession();
         },
         onChange: ({ changes }) => {
           formulaDraft = null;
+          savedWorkbookJson = null;
           markSessionEdited();
           stopSnapshot();
           status.dataset.error = 'false';
@@ -648,9 +666,10 @@
         },
         onStructureChange: (event) => {
           formulaDraft = null;
+          savedWorkbookJson = null;
+          selection = grid.selectedRange;
           markSessionEdited();
           stopSnapshot();
-          selection = grid.selectedRange;
           selectionDirty = true;
           syncPrint();
           syncSelection(true);
@@ -1329,6 +1348,7 @@
           syncSelection(true);
         } catch (error) {
           formulaDraft = { key: cellKey(selection.row, selection.col), value: $('#formula').value };
+          markSessionEdited();
           showError(error);
         }
       };

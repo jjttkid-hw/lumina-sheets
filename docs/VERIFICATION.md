@@ -1,3 +1,7 @@
+## 当前本地候选（2026-10-01，r27）
+
+报表示例新增最新活动表和选区恢复，草稿输入/视图导航复用序列化工作簿，数据和结构编辑使快照失效重建；超过本机恢复容量时保留页面编辑并提示导出。167 个文件 / 2362 项测试、API、安装包隔离、XLSX/WPS 语料、严格许可证、HTTP 运行时和首屏分包门禁通过。候选绑定站点 `939ce1eb3268e6a623ed126367fe4ac17040319a5a1385fd1dca989d62dcd110`、SDK `7586704641638f54423083490cb588ba9ae8b2684c295ba9e2f12f09ea68be74`（724638 字节）。浏览器完整复验结果见 [r27](acceptance/browser-candidate-2026-10-01-r27/README.md)；推送后的 CI/CD 必须另行核对。以下为已部署和历史记录。
+
 2026-09-24 r20：缓存最近访问页修正通过 167 个文件 / 2,347 项测试，API、SDK 隔离安装、严格许可证、两次可重复构建、25 份真实浏览器报告及 XLSX/WPS 语料均通过。证据见 [r20](acceptance/browser-candidate-2026-09-24-r20/README.md)。此处为本地验证，远端 CI/CD 结果待核对；npm CLI 仍返回 E401。下文为历史记录。
 
 - 2026-09-23 当前主线提交 `efc6e79006651f37c602411396c34a71ed433e69` 已用 `SOURCE_DATE_EPOCH=1790122493` 重新构建。连续两次 `build:site` / `check:sdk` 结果一致：站点 SHA-256 `791a5888cb5672e3a597062cfc4441a689db8597e26d6dfd32ecf3f1f6a07268`，SDK tgz SHA-256 `619a3196bd784e082833bdc8e14383896410fb0e698dde781b2161adb55a26fb`，SDK 718,444 字节。该摘要与线上 `build-info.json`、r9 浏览器证据一致；CI [35847269534](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35847269534) 与 CD [35847592144](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/35847592144) 均成功。npm CLI 当前仍为 E401，`lumina-report-sdk` 尚未出现在注册表，因此不能宣布 v1.0.0。
@@ -12,7 +16,7 @@
 
 # 验证记录
 
-## 当前候选（2026-10-01，提交 `b0b5b9d`）
+## r26 已部署候选（2026-10-01，提交 `b0b5b9d`）
 
 - 报表示例编辑后的工作簿快照和公式草稿现在保存到同源浏览器本地存储；浏览器拒绝写入时会提示导出且保留页面编辑。Chromium、Firefox、WebKit smoke 均实际执行刷新恢复和存储拒绝检查。SDK 仍由宿主通过 `toJSON()`/`load()` 明确保存。
 - 167 个测试文件、2,358 项测试通过；格式、API、SDK 隔离安装、XLSX/WPS 语料、严格许可证、可重复构建和构建绑定浏览器门禁均通过。最新候选为 [r26](acceptance/browser-candidate-2026-10-01-r26/README.md)，站点 SHA-256 `2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7`，SDK tgz SHA-256 `15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b`（724,278 字节）。
