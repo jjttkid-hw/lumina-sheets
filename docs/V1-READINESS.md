@@ -87,7 +87,9 @@ These are release gates, not claims that the implementation is broken:
   NVDA or JAWS), and physical mobile touch testing;
 - cross-device performance measurements using the target customer hardware matrix;
 - a materially broader Excel/WPS business corpus and application-level comparison;
-- human commercial redistribution and third-party license review.
+- human commercial redistribution and third-party license review. The automated
+  dependency evidence gate currently passes with 0 errors, 0 review items and 0
+  unresolved bundled components; this does not replace the human legal review.
 
 The product therefore remains on the `0.29.0` development line. Creating a `1.0.0`
 tag before every gate has evidence would make the version misleading and is blocked by
