@@ -15,7 +15,7 @@
 ## 当前候选（2026-10-01，提交 `1e206f5`）
 
 - 报表示例编辑后的工作簿快照和公式草稿现在保存到同源浏览器本地存储；浏览器拒绝写入时会提示导出且保留页面编辑。Chromium、Firefox、WebKit smoke 均实际执行刷新恢复和存储拒绝检查。SDK 仍由宿主通过 `toJSON()`/`load()` 明确保存。
-- 167 个测试文件、2,358 项测试通过；格式、API、SDK 隔离安装、XLSX/WPS 语料、严格许可证、可重复构建和构建绑定浏览器门禁均通过。最新候选为 [r26](acceptance/browser-candidate-2026-10-01-r26/README.md)，站点 SHA-256 `2e861361002a2d8b188cfae116b9257bc5320abd5bac83aa7ed44c9f6db03e17`，SDK tgz SHA-256 `cfa3a54d6ecd6dd5c86da2094788af964d2623c78438695d3d0c822b7bd909b3`（724,273 字节）。
+- 167 个测试文件、2,358 项测试通过；格式、API、SDK 隔离安装、XLSX/WPS 语料、严格许可证、可重复构建和构建绑定浏览器门禁均通过。最新候选为 [r26](acceptance/browser-candidate-2026-10-01-r26/README.md)，站点 SHA-256 `2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7`，SDK tgz SHA-256 `15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b`（724,278 字节）。
 - 该提交将触发新的 CI/CD；公开 npm 注册表仍返回 404，当前终端 `npm whoami` 返回 E401，因此没有把 npm 或 v1.0.0 标记为已完成。
 
 ## 发布恢复增量（2026-09-24）

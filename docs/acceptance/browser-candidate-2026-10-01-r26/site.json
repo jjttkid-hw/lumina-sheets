@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "sha256": "2e861361002a2d8b188cfae116b9257bc5320abd5bac83aa7ed44c9f6db03e17",
+  "sha256": "2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7",
   "files": [
     {
       "path": "assets/_commonjs-dynamic-modules-TDtrdbi3.js",
@@ -135,7 +135,7 @@
     {
       "path": "sdk/README.md",
       "bytes": 17271,
-      "sha256": "2816c7abbbcd88c6b3b7ebeea8021f3bb16fa7535e0c860f2160e8fb9fe7b645"
+      "sha256": "5fcea3ca7d66d758c66a243fcaa985728af84e9e0d3c2d3b4fce153740f3f771"
     },
     {
       "path": "sdk/THIRD_PARTY_NOTICES.txt",

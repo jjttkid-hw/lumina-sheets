@@ -3,28 +3,28 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-10-01T11:06:32.856Z",
+  "executedAt": "2026-10-01T11:16:40.603Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "2e861361002a2d8b188cfae116b9257bc5320abd5bac83aa7ed44c9f6db03e17",
-  "artifactSha256": "cfa3a54d6ecd6dd5c86da2094788af964d2623c78438695d3d0c822b7bd909b3",
+  "siteSha256": "2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7",
+  "artifactSha256": "15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b",
   "scope": "Measured real-browser performance on this machine, no pass/fail latency budget or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.",
   "checks": [
     {
       "name": "fixture-100000",
       "status": "passed",
-      "elapsedMs": 7028,
+      "elapsedMs": 6569,
       "details": {
         "fixture": {
           "storedCells": 100000,
           "formulaCount": 10000,
-          "dataReadyMs": 130,
-          "generatedMs": 115,
-          "firstDrawMs": 145,
+          "dataReadyMs": 131,
+          "generatedMs": 116,
+          "firstDrawMs": 149,
           "logicalRows": 1000000,
           "logicalColumns": 256,
           "populatedColumns": 10
@@ -35,16 +35,26 @@
           "observedFrames": 5,
           "droppedFrames": 0,
           "sampleLimit": 10000,
-          "averageMs": 2.6,
-          "p50Ms": 2,
-          "p95Ms": 4,
-          "p99Ms": 4,
-          "maxMs": 4,
+          "averageMs": 8.8,
+          "p50Ms": 8,
+          "p95Ms": 21,
+          "p99Ms": 21,
+          "maxMs": 21,
           "averagePaintedCells": 169,
           "averageDomNodes": 4,
           "samples": [
             {
-              "durationMs": 3,
+              "durationMs": 21,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 9,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 8,
               "paintedCells": 169,
               "domNodes": 4
             },
@@ -57,23 +67,13 @@
               "durationMs": 4,
               "paintedCells": 169,
               "domNodes": 4
-            },
-            {
-              "durationMs": 2,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 2,
-              "paintedCells": 169,
-              "domNodes": 4
             }
           ]
         },
         "worker": {
           "targets": 10000,
-          "roundTripMs": 84,
-          "calculationMs": 83,
+          "roundTripMs": 126,
+          "calculationMs": 123,
           "firstValue": 5,
           "lastValue": 50000
         }
@@ -82,32 +82,37 @@
     {
       "name": "fixture-1000000",
       "status": "passed",
-      "elapsedMs": 13391,
+      "elapsedMs": 12828,
       "details": {
         "fixture": {
           "storedCells": 1000000,
           "formulaCount": 100000,
-          "dataReadyMs": 1526,
-          "generatedMs": 1513,
-          "firstDrawMs": 1535,
+          "dataReadyMs": 1574,
+          "generatedMs": 1558,
+          "firstDrawMs": 1582,
           "logicalRows": 1000000,
           "logicalColumns": 256,
           "populatedColumns": 10
         },
-        "canvas": 7,
+        "canvas": 4,
         "edit": {
           "frames": 5,
           "observedFrames": 5,
           "droppedFrames": 0,
           "sampleLimit": 10000,
-          "averageMs": 3.8,
-          "p50Ms": 2,
-          "p95Ms": 9,
-          "p99Ms": 9,
-          "maxMs": 9,
+          "averageMs": 4.2,
+          "p50Ms": 4,
+          "p95Ms": 6,
+          "p99Ms": 6,
+          "maxMs": 6,
           "averagePaintedCells": 169,
           "averageDomNodes": 4,
           "samples": [
+            {
+              "durationMs": 4,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
             {
               "durationMs": 5,
               "paintedCells": 169,
@@ -119,17 +124,12 @@
               "domNodes": 4
             },
             {
-              "durationMs": 1,
+              "durationMs": 6,
               "paintedCells": 169,
               "domNodes": 4
             },
             {
-              "durationMs": 2,
-              "paintedCells": 169,
-              "domNodes": 4
-            },
-            {
-              "durationMs": 9,
+              "durationMs": 4,
               "paintedCells": 169,
               "domNodes": 4
             }
@@ -137,8 +137,8 @@
         },
         "worker": {
           "targets": 100000,
-          "roundTripMs": 2365,
-          "calculationMs": 2352,
+          "roundTripMs": 2210,
+          "calculationMs": 2202,
           "firstValue": 5,
           "lastValue": 500000
         }
@@ -147,7 +147,7 @@
     {
       "name": "scroll-cancel-clear",
       "status": "passed",
-      "elapsedMs": 187,
+      "elapsedMs": 176,
       "details": {
         "cancelled": {
           "completed": 1,
@@ -166,19 +166,19 @@
     {
       "name": "range-cancel",
       "status": "passed",
-      "elapsedMs": 66
+      "elapsedMs": 84
     },
     {
       "name": "range-disjoint",
       "status": "passed",
-      "elapsedMs": 7977,
+      "elapsedMs": 6917,
       "details": {
         "invalidationP50Ms": 0,
-        "invalidationP95Ms": 0,
-        "incrementalReadP50Ms": 7,
-        "incrementalReadP95Ms": 13,
-        "fullRecalculationP50Ms": 201,
-        "fullRecalculationP95Ms": 393,
+        "invalidationP95Ms": 1,
+        "incrementalReadP50Ms": 6,
+        "incrementalReadP95Ms": 9,
+        "fullRecalculationP50Ms": 188,
+        "fullRecalculationP95Ms": 289,
         "meanRecomputedFormulas": 1,
         "meanCandidateChecks": 13.033333333333333,
         "meanIndexVisits": 26.733333333333334
@@ -187,14 +187,14 @@
     {
       "name": "range-overlapping",
       "status": "passed",
-      "elapsedMs": 3388,
+      "elapsedMs": 3373,
       "details": {
-        "invalidationP50Ms": 19,
-        "invalidationP95Ms": 24,
-        "incrementalReadP50Ms": 36,
-        "incrementalReadP95Ms": 50,
-        "fullRecalculationP50Ms": 37,
-        "fullRecalculationP95Ms": 45,
+        "invalidationP50Ms": 18,
+        "invalidationP95Ms": 22,
+        "incrementalReadP50Ms": 35,
+        "incrementalReadP95Ms": 43,
+        "fullRecalculationP50Ms": 36,
+        "fullRecalculationP95Ms": 41,
         "meanRecomputedFormulas": 10000,
         "meanCandidateChecks": 10000,
         "meanIndexVisits": 20000

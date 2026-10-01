@@ -10,9 +10,9 @@ deployment identity is available in `build-info.json`. Historical candidate note
 2026-10-01: [Candidate r26](acceptance/browser-candidate-2026-10-01-r26/README.md)
 adds an explicit warning and edit-retention path when browser localStorage rejects
 a report draft. The candidate is bound to site hash
-`2e861361002a2d8b188cfae116b9257bc5320abd5bac83aa7ed44c9f6db03e17` and SDK hash
-`cfa3a54d6ecd6dd5c86da2094788af964d2623c78438695d3d0c822b7bd909b3`
-(724273 bytes). All 2,358 tests and the documented three-engine matrix pass locally.
+`2d645c1031fc1e130a12ddb7ec3f3a4f8ae979adc3e311f79869ff5e3408beb7` and SDK hash
+`15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b`
+(724278 bytes). All 2,358 tests and the documented three-engine matrix pass locally.
 This browser-local copy is not SDK persistence, server backup or cross-device sync.
 The preceding r23/r24 notes remain historical records.
 [The r22 follow-up](acceptance/r22-deployment-followup-2026-10-01/README.md)
@@ -78,7 +78,7 @@ they need refresh recovery.
 | --- | --- | --- |
 | Source and Pages deployment | Commit [`3992f57`](https://github.com/jjttkid-hw/lumina-sheets/commit/3992f576c7f1eb65952fb06e7e72de545976f435), [CI run 36850512637](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36850512637), [CD run 36851122316](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36851122316) | Passed |
 | Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `3992f57`, site SHA-256 `a599c6a998af42932e09468f46e062b4eee00d801e7e380cfb31ec38068acedc` | Passed |
-| SDK artifact | Candidate r26, SDK SHA-256 `cfa3a54d6ecd6dd5c86da2094788af964d2623c78438695d3d0c822b7bd909b3` (724273 bytes) | Passed |
+| SDK artifact | Candidate r26, SDK SHA-256 `15c13ac9cc8bb5996eed561375ba55616a6059760e74baebf1dfddb80b38218b` (724278 bytes) | Passed |
 | Automated regression | 167 test files, 2,358 tests; API, package isolation, strict license and reproducibility gates | Passed |
 | Real-browser automation | [Candidate r26](acceptance/browser-candidate-2026-10-01-r26/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
 | File corpus | Candidate r26 XLSX and WPS reports, plus native Safari/WPS retained files | Passed for the documented subset |
