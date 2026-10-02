@@ -2,7 +2,7 @@
 
 Executed 2026-10-01 on Safari 27.0 / macOS 26.7 (25G227), using native
 application controls against the deployed Pages report. No page scripts or
-synthetic composition events were injected. The new test tabs was closed after
+synthetic composition events were injected. The new test tabs were closed after
 the observations were saved; unrelated pre-existing tabs were left open.
 
 - URL: `https://jjttkid-hw.github.io/lumina-sheets/examples/report.html?r27-native`

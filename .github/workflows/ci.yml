@@ -40,8 +40,8 @@ jobs:
       - run: node scripts/check-bundle-performance.mjs
       - run: npm run check:xlsx-corpus
       - run: npm run check:wps-corpus
-      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-01-r27/xlsx-corpus.json
-      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-01-r27 --verify-build --require-accessibility --require-ime --require-persistence
+      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-02-r28/xlsx-corpus.json
+      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-02-r28 --verify-build --require-accessibility --require-ime --require-persistence
       - name: Generate dependency-license inventory
         run: node scripts/package-notices.mjs
       - name: Require complete dependency-license evidence

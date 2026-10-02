@@ -479,6 +479,9 @@
       // while a render callback is still queued. Keep that draft attached to
       // its cell so a deferred selection sync cannot overwrite it.
       let formulaDraft = null;
+      let pointerApplyTimer = null;
+      let pointerApplyRevision = 0;
+      let pointerAppliedDraft = null;
       let savedWorkbookJson = null;
       function markSessionEdited() {
         sessionEdited = true;
@@ -521,10 +524,7 @@
               '报表超过本机恢复容量；页面编辑仍保留，请先导出文件再刷新或关闭。';
             return;
           }
-          localStorage.setItem(
-            REPORT_SESSION_KEY,
-            serialized,
-          );
+          localStorage.setItem(REPORT_SESSION_KEY, serialized);
         } catch {
           leaveRisk = true;
           $('#session-note').textContent =
@@ -550,10 +550,16 @@
         }
         try {
           grid.load(saved.workbook);
-          if (typeof saved.activeSheetId === 'string' &&
-              grid.sheetInfos.some((sheet) => sheet.id === saved.activeSheetId))
+          if (
+            typeof saved.activeSheetId === 'string' &&
+            grid.sheetInfos.some((sheet) => sheet.id === saved.activeSheetId)
+          )
             grid.setActiveSheet(saved.activeSheetId);
-          if (saved.selection && Number.isInteger(saved.selection.row) && Number.isInteger(saved.selection.col))
+          if (
+            saved.selection &&
+            Number.isInteger(saved.selection.row) &&
+            Number.isInteger(saved.selection.col)
+          )
             grid.select(saved.selection);
           currentLayout = typeof saved.layout === 'string' ? saved.layout : 'list';
           formulaDraft = saved.formulaDraft ?? null;
@@ -591,6 +597,48 @@
         event.returnValue = '';
       };
       window.addEventListener('beforeunload', beforeUnload);
+      function applyFormulaDraft() {
+        const raw = $('#formula').value;
+        formulaDraft = null;
+        const value = parseCellInput(raw);
+        grid.setCell(cellKey(selection.row, selection.col), value);
+        selectionDirty = true;
+        syncSelection(true);
+      }
+      function captureApplyDraft() {
+        return {
+          generation: reportGeneration,
+          sheet: grid.activeSheetInfo.id,
+          key: cellKey(selection.row, selection.col),
+          value: $('#formula').value,
+        };
+      }
+      function matchesApplyDraft(draft) {
+        const current = captureApplyDraft();
+        return draft && Object.keys(current).every((key) => draft[key] === current[key]);
+      }
+      function schedulePointerApply() {
+        if ($('#apply').disabled) return;
+        const draft = captureApplyDraft();
+        pointerAppliedDraft = null;
+        const revision = ++pointerApplyRevision;
+        clearTimeout(pointerApplyTimer);
+        pointerApplyTimer = setTimeout(() => {
+          pointerApplyTimer = null;
+          if (revision !== pointerApplyRevision || $('#apply').disabled || !matchesApplyDraft(draft)) return;
+          try {
+            applyFormulaDraft();
+            pointerAppliedDraft = draft;
+          } catch (error) {
+            formulaDraft = {
+              key: cellKey(selection.row, selection.col),
+              value: $('#formula').value,
+            };
+            markSessionEdited();
+            showError(error);
+          }
+        }, 80);
+      }
       const showError = (error) => {
         status.dataset.error = 'true';
         status.textContent =
@@ -1335,23 +1383,32 @@
         if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229)
           $('#jump').click();
       };
-      $('#apply').onclick = () => {
+      $('#apply').onclick = (event) => {
         try {
-          const raw = $('#formula').value;
-          formulaDraft = null;
-          const value = parseCellInput(raw);
-          grid.setCell(cellKey(selection.row, selection.col), value);
-          // Refresh the formula bar synchronously as well as through the SDK
-          // change callback. This keeps the browser UI responsive when a
-          // canvas render or callback is deferred by the host browser.
-          selectionDirty = true;
-          syncSelection(true);
+          const handledByPointerFallback =
+            event?.detail !== 0 && matchesApplyDraft(pointerAppliedDraft);
+          ++pointerApplyRevision;
+          pointerAppliedDraft = null;
+          clearTimeout(pointerApplyTimer);
+          pointerApplyTimer = null;
+          if (handledByPointerFallback) return;
+          applyFormulaDraft();
         } catch (error) {
           formulaDraft = { key: cellKey(selection.row, selection.col), value: $('#formula').value };
           markSessionEdited();
           showError(error);
         }
       };
+      // Safari can return focus from a cancelled beforeunload sheet with the
+      // pointer release but consume the first click. A short pointer fallback
+      // preserves the normal click path while committing exactly once when the
+      // click event never arrives. Keyboard Enter remains synchronous.
+      $('#apply').addEventListener('pointerup', (event) => {
+        if (event.isPrimary && event.button === 0 && event.pointerType !== 'mouse') schedulePointerApply();
+      });
+      $('#apply').addEventListener('mouseup', (event) => {
+        if (event.button === 0) schedulePointerApply();
+      });
       $('#formula').onkeydown = (event) => {
         if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229)
           $('#apply').click();
@@ -1715,6 +1772,7 @@
         $('#formula').removeEventListener('input', markFormulaDraft);
         $('#report').removeEventListener('input', markSessionEdited);
         clearInterval(metricsTimer);
+        clearTimeout(pointerApplyTimer);
         stopImport();
         stopSnapshot();
         reportGeneration++;

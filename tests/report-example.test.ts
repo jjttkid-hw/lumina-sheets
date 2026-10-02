@@ -23,7 +23,7 @@ class Element {
   removeEventListener(type: string) {
     this.listeners.delete(type);
   }
-  onclick?: () => unknown;
+  onclick?: (event?: { detail: number }) => unknown;
   onchange?: () => unknown;
   onkeydown?: (event: { key: string; isComposing?: boolean; keyCode?: number }) => unknown;
   replaceChildren(...children: Element[]) {
@@ -35,7 +35,7 @@ class Element {
   setAttribute() {}
   removeAttribute() {}
   click() {
-    return this.onclick?.();
+    return this.onclick?.({ detail: 0 });
   }
 }
 let dispose: (() => void) | undefined;
@@ -384,6 +384,56 @@ it('refreshes the formula bar immediately after applying a formula', async () =>
   expect($('#selected').textContent).toBe('B1');
   expect($('#value').textContent).toBe('结果：6');
   expect($('#formula').value).toBe('=SUM(1,2,3)');
+});
+it('keeps pointer fallback single-shot when Safari loses or delays a click', async () => {
+  const first = mount();
+  await first.report('list');
+  first.$('#formula').value = 'pointer value';
+  first.$('#formula').listeners.get('input')!();
+  const firstApply = first.$('#apply');
+  const firstSet = vi.spyOn(first.grid, 'setCell');
+  firstApply.listeners.get('mouseup')!({ button: 0 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(firstSet).toHaveBeenCalledTimes(1);
+  await firstApply.onclick!({ detail: 1 });
+  expect(firstSet).toHaveBeenCalledTimes(1);
+  first.$('#formula').value = 'keyboard after fallback';
+  first.$('#formula').onkeydown!({ key: 'Enter' });
+  expect(firstSet).toHaveBeenCalledTimes(2);
+  expect(first.grid.getValue('A1')).toBe('keyboard after fallback');
+  dispose!();
+  dispose = undefined;
+
+  const second = mount();
+  await second.report('list');
+  second.$('#formula').value = 'normal pointer click';
+  second.$('#formula').listeners.get('input')!();
+  const secondSet = vi.spyOn(second.grid, 'setCell');
+  second.$('#apply').listeners.get('mouseup')!({ button: 0 });
+  await second.$('#apply').click();
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(secondSet).toHaveBeenCalledTimes(1);
+  expect(second.grid.getValue('A1')).toBe('normal pointer click');
+});
+
+it('does not apply a pointer release to a different cell, a disabled button or a secondary button', async () => {
+  const { grid, $, report } = mount();
+  await report('list');
+  $('#formula').value = 'keep as draft';
+  $('#formula').listeners.get('input')!();
+  const set = vi.spyOn(grid, 'setCell');
+  $('#apply').listeners.get('mouseup')!({ button: 2 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  $('#apply').disabled = true;
+  $('#apply').listeners.get('mouseup')!({ button: 0 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  $('#apply').disabled = false;
+  $('#apply').listeners.get('mouseup')!({ button: 0 });
+  grid.select({ row: 0, col: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
 });
 
 it('exposes the financial formula examples shipped by the engine', async () => {

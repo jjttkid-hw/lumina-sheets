@@ -1,11 +1,21 @@
 # Lumina Sheets v1.0 readiness
 
-This page records the candidate evidence observed through 2026-10-01; deployment commit IDs
+This page records the candidate evidence observed through 2026-10-02; deployment commit IDs
 are dated observations, not a promise that they remain the newest main commit. Live
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
 
 ## Latest candidate verification
+
+2026-10-02: [Candidate r28](acceptance/browser-candidate-2026-10-02-r28/README.md)
+adds a guarded pointer-release fallback for report Apply. The missing/delayed-click
+path passes substituted-handler regressions; uninterrupted native Safari verification
+is still required. All 2364 tests, 147 three-engine browser checks and two identical
+builds pass locally. Site hash is
+`a4e2023983b5692201b46607daee64e568178bde968fff604d077b2674d9e26d`; SDK hash is
+`3e7b7b65a1d6a2ef7449ebcf01f2544dfb0b0919fe9e853b35e0af6baf5d3e35`
+(725191 bytes). npm authentication still returns E401. Version remains 0.29.0.
+The following r27 details are historical context.
 
 2026-10-01: [Candidate r27](acceptance/browser-candidate-2026-10-01-r27/README.md)
 adds latest-sheet/selection recovery and cached workbook serialization during
