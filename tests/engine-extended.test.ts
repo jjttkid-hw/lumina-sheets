@@ -279,6 +279,29 @@ describe('formula compatibility boundaries', () => {
     expect(evaluate('=XLOOKUP(35,A1:A4,B1:B4,"missing",1)', values)).toBe('missing');
   });
 
+  it('keeps the last equal threshold for sorted MATCH modes', () => {
+    const ascending = {
+      A1: 10,
+      A2: 10,
+      A3: 20,
+      A4: 20,
+      A5: 30,
+      A6: 30,
+    };
+    expect(evaluate('=MATCH(20,A1:A6,1)', ascending)).toBe(4);
+    expect(evaluate('=MATCH(25,A1:A6,1)', ascending)).toBe(4);
+    const descending = {
+      A1: 30,
+      A2: 30,
+      A3: 20,
+      A4: 20,
+      A5: 10,
+      A6: 10,
+    };
+    expect(evaluate('=MATCH(20,A1:A6,-1)', descending)).toBe(4);
+    expect(evaluate('=MATCH(25,A1:A6,-1)', descending)).toBe(2);
+  });
+
   it('evaluates XLOOKUP fallback lazily and rejects unsupported modes and shapes', () => {
     const values = { A1: 1, A2: 2, B1: 'a', B2: 'b', C1: 'c', D1: 'd' };
     expect(evaluate('=XLOOKUP(1,A1:A2,B1:B2,1/0)', values)).toBe('a');
