@@ -24,7 +24,26 @@
     {
       "name": "prompt-preserves-literal-markup-and-escape-text",
       "status": "passed"
+    },
+    {
+      "name": "save-and-sdk-reimport",
+      "status": "passed",
+      "details": {
+        "promptTitle": "审批说明😀",
+        "prompt": "请选择审批状态\n请先核对金额 <b>原文</b> _x0041_",
+        "showInputMessage": true,
+        "cellValue": "通过"
+      }
+    },
+    {
+      "name": "saved-ooxml-metadata",
+      "status": "passed",
+      "details": {
+        "showInputMessage": "1",
+        "sqref": "D2",
+        "attributeEncoding": "OOXML entities retained"
+      }
     }
   ],
-  "scope": "Native WPS visual observation of the shipped XLSX. No save/reimport was performed in this prompt-specific observation; this does not certify Excel or all WPS versions."
+  "scope": "Native WPS visual display plus save and SDK reimport of the prompt workbook. This does not certify Excel or all WPS versions."
 }

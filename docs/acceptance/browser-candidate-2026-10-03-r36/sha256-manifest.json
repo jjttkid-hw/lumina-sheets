@@ -258,8 +258,8 @@
     },
     {
       "path": "native-wps-input-prompt/result.json",
-      "bytes": 930,
-      "sha256": "1a80100889a453574c1543591b2ea36faf1a63a2954a17572d9f7f890552c82d"
+      "bytes": 1400,
+      "sha256": "1a8c4861324a167e323630c156b2fa81baea65b91833385ebc39efcae9139c6e"
     },
     {
       "path": "performance-raw/chromium/budget.json",
