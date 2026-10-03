@@ -92,6 +92,8 @@ const expectedChecks = [
   'custom-title-roundtrip',
   'native-input-prompt-roundtrip',
   'native-active-sheet-roundtrip',
+  'native-lookup-roundtrip',
+  'native-lookup-reedited-roundtrip',
 ];
 const report = {
   schema: 1,
@@ -290,6 +292,112 @@ try {
     await writeFile(`artifacts/business-corpus/${output}`, exported);
     return { ...details, file, fixtureSha256: hash(bytes), output, exportedSha256: hash(exported) };
   });
+  for (const [name, file, digest, quantity, total, units] of [
+    [
+      'native-lookup-roundtrip',
+      'wps-saved.xlsx',
+      '9f7962b4e118890f02bf3f8b86bcbb2b87d1d42a4b73393a959137c41aa202e1',
+      10,
+      1297.38,
+      161,
+    ],
+    [
+      'native-lookup-reedited-roundtrip',
+      'wps-reedited.xlsx',
+      'fc45cd1e5acb4da24835b94211753e974241849f365d8cea50a5d3ce58568c5b',
+      100,
+      1920.25,
+      251,
+    ],
+  ])
+    await check(name, async () => {
+      const source = `docs/acceptance/wps-lookup-2026-10-03-r37/${file}`;
+      const bytes = await readFile(source);
+      assert.equal(hash(bytes), digest, 'Retained native lookup file changed');
+      const desktop = new ExcelJS.Workbook();
+      await desktop.xlsx.load(data(bytes));
+      const imported = await sdk.workbookFromXlsx(data(bytes));
+      const expectedRows = [
+        ['组件甲', 12.5, 0, 12.5, 1],
+        ['组件乙', 8.25, quantity === 10 ? 0.05 : 0.15, quantity === 10 ? 78.38 : 701.25, 2],
+        ['组件丙', 3.2, 0.1, 144, 3],
+        ['组件甲', 12.5, 0.15, 1062.5, 1],
+        ['缺货', 0, 0, 0, '#N/A'],
+      ];
+      const expected = Object.fromEntries(
+        expectedRows.flatMap((row, r) => row.map((value, c) => [`${'CDEFG'[c]}${r + 2}`, value])),
+      );
+      Object.assign(expected, { F7: total, F9: 3, F10: units });
+      const compare = (book) => {
+        assert.deepEqual(
+          book.sheets.map((s) => s.name),
+          ['价目表', '折扣档位', '报价单'],
+        );
+        assert.equal(book.activeSheetId, book.sheets[2].id);
+        const evaluate = sdk.createEvaluator(book);
+        let formulas = 0;
+        let cells = 0;
+        for (const sheet of book.sheets) {
+          assert.equal(sheet.frozenRows, 1);
+          const external = desktop.getWorksheet(sheet.name);
+          const desktopKeys = [];
+          external.eachRow((row) =>
+            row.eachCell((cell) => {
+              if (cell.value !== null) desktopKeys.push(cell.address);
+            }),
+          );
+          // Compare complete nonempty key sets: iterating imported cells alone misses data loss.
+          assert.deepEqual(
+            Object.keys(sheet.cells)
+              .filter((key) => sheet.cells[key].value !== '')
+              .sort(),
+            desktopKeys.sort(),
+          );
+          for (const key of desktopKeys) {
+            const other = external.getCell(key);
+            const cell = sheet.cells[key];
+            if (other.formula) {
+              assert.equal(cell.value, `=${other.formula}`, `${sheet.name}!${key} formula`);
+              assert.notEqual(other.result, undefined, `${key} missing native formula cache`);
+              const cached = typeof other.result === 'object' ? other.result.error : other.result;
+              equal(cached, expected[key], `${key} independently expected native result`);
+              equal(evaluate(sheet, key), cached, `${key} SDK versus native WPS`);
+              formulas++;
+            } else equal(cell.value, other.value, `${sheet.name}!${key} literal`);
+            cells++;
+          }
+        }
+        assert.equal(formulas, 28);
+        assert.equal(book.sheets[2].cells.B3.value, quantity);
+        return { formulas, cells, quantity, total, units, nativeError: '#N/A' };
+      };
+      compare(imported);
+      const exported = new Uint8Array(await sdk.workbookToXlsx(imported));
+      const details = compare(await sdk.workbookFromXlsx(data(exported)));
+      // Independently inspect the exported cache/type, not only SDK re-import.
+      const roundtrip = new ExcelJS.Workbook();
+      await roundtrip.xlsx.load(data(exported));
+      for (const [key, value] of Object.entries(expected)) {
+        const cache = roundtrip.getWorksheet('报价单').getCell(key).result;
+        equal(typeof cache === 'object' ? cache.error : cache, value, `${key} exported cache`);
+      }
+      const output = `lumina-${file}`;
+      await writeFile(`artifacts/business-corpus/${output}`, exported);
+      if (quantity === 10) {
+        imported.sheets[2].cells.B3.value = 50;
+        const edited = await sdk.workbookFromXlsx(await sdk.workbookToXlsx(imported));
+        const evaluate = sdk.createEvaluator(edited);
+        equal(evaluate(edited.sheets[2], 'E3'), 0.1, 'Quantity crosses discount threshold');
+        equal(evaluate(edited.sheets[2], 'F7'), 1590.25, 'Edited quote total');
+      }
+      return {
+        ...details,
+        file: source,
+        fixtureSha256: hash(bytes),
+        output,
+        exportedSha256: hash(exported),
+      };
+    });
   for (const [name, file, pattern] of [
     ['nonblocking-validation-rejected', 'wps-nonblocking-validation.xlsx', /Stop/],
   ])

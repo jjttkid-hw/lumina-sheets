@@ -7,6 +7,12 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Native WPS quotation lookup corpus](acceptance/wps-lookup-2026-10-03-r37/README.md)
+adds a second synthetic business workflow: three sheets, 70 cells and 28 formulas
+with exact/approximate lookup, INDEX/MATCH, missing SKU, #N/A, discounts and wildcard
+aggregation. Desktop edits and installed-SDK roundtrips agree; the shared CI/npm
+corpus now runs 11 checks. Runtime hashes are unchanged and external gates remain open.
+
 2026-10-03: The stable gate now requires an independent human commercial-review
 report bound to the candidate archive and its original packed inventory/notices.
 A clean automated license inventory cannot substitute for that review. A [regression run](acceptance/commercial-gate-2026-10-03/README.md)

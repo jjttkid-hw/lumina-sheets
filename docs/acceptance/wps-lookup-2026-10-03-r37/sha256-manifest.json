@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2774,
+      "sha256": "ec06452e917b7db5d34b2a1787ac77e14df3edb10ee4816afc6f384319ab3dd6"
+    },
+    {
+      "path": "installed-corpus.json",
+      "bytes": 8774,
+      "sha256": "3f63917496b67cd12b2cfdde15d45fd7b3c921e064ddcabd7705fa1dbe0d5519"
+    },
+    {
+      "path": "lumina-wps-reedited.xlsx",
+      "bytes": 9063,
+      "sha256": "41faecf526316801b00d2984d49534b7815978b7e3e7b49031160f7ac07a1d71"
+    },
+    {
+      "path": "lumina-wps-saved.xlsx",
+      "bytes": 9065,
+      "sha256": "d6ec1d2bc5c0e8b521e4e19578fe20742ee7b70e61633b474a39b2a13110e9f3"
+    },
+    {
+      "path": "source.xlsx",
+      "bytes": 9067,
+      "sha256": "a473e21429a83510d596628a41f560ca7c5d643ee9b68c46c3ddb933f6eecdd6"
+    },
+    {
+      "path": "wps-opened.png",
+      "bytes": 233372,
+      "sha256": "bb1d3551d7252d3c23f572625791ae7e542a2265d17cd2398c31b83ff5876b7a"
+    },
+    {
+      "path": "wps-reedited.png",
+      "bytes": 251738,
+      "sha256": "746f268a533041bbe430bf1d3a5435454c19a59a9d8a061fa7942fa7db28702e"
+    },
+    {
+      "path": "wps-reedited.xlsx",
+      "bytes": 11959,
+      "sha256": "fc45cd1e5acb4da24835b94211753e974241849f365d8cea50a5d3ce58568c5b"
+    },
+    {
+      "path": "wps-saved.xlsx",
+      "bytes": 11963,
+      "sha256": "9f7962b4e118890f02bf3f8b86bcbb2b87d1d42a4b73393a959137c41aa202e1"
+    }
+  ]
+}
