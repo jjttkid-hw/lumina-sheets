@@ -372,6 +372,43 @@ try {
     await context.close();
     return details;
   });
+  await check('native-conflicting-journal-identity-fails-closed', async () => {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, acceptDownloads: true });
+    const page = track(await context.newPage(), 'native-conflicting-journal-identity-fails-closed');
+    await page.goto(new URL('sdk/example.html', origin).href, { waitUntil: 'domcontentloaded' });
+    await seedDatabase(page, {
+      workbooks: [{ id: validBook.id, workbook: validBook }],
+      patches: ['conflicting-first', 'conflicting-second'].map((value, index) => ({
+        key: `conflicting-storage-row-${index}`,
+        operationId: 'conflicting-operation',
+        workbookId: validBook.id,
+        seq: 7,
+        at: 0,
+        patch: { kind: 'cell', sheetId: validBook.sheets[0].id, key: 'A1', cell: { value } },
+      })),
+    });
+    await page.goto(origin.href, { waitUntil: 'domcontentloaded' });
+    await page.getByText('本地工作空间读取失败', { exact: false }).waitFor();
+    assert.equal(await page.getByRole('grid').count(), 0);
+    const state = await inspectDatabase(page);
+    assert.equal(state.workbooks[0].workbook.sheets[0].cells.A1.value, '安全内容');
+    assert.equal(state.patches.length, 2);
+    assert.deepEqual(state.patches.map(row => row.patch.cell.value).sort(), ['conflicting-first', 'conflicting-second']);
+    const downloadPending = page.waitForEvent('download');
+    await page.getByRole('button', { name: '下载恢复备份', exact: true }).click();
+    const download = await downloadPending;
+    const filename = path.join(output, 'conflicting-journal-backup.json');
+    await download.saveAs(filename);
+    assert.equal(await download.failure(), null);
+    const backup = JSON.parse(await readFile(filename, 'utf8'));
+    assert.equal(backup.rawStorage.backend, 'indexeddb');
+    assert.deepEqual(backup.rawStorage.stores.workbooks, state.workbooks);
+    assert.deepEqual(backup.rawStorage.stores.patches, state.patches);
+    const afterDownload = await inspectDatabase(page);
+    assert.deepEqual(afterDownload, state, 'Recovery download must not alter conflicting storage');
+    await context.close();
+    return { workspaceOpened: false, unchangedBase: true, rawConflictsRetained: 2, recoveryDownloadContainsBoth: true, backupSha256: createHash('sha256').update(await readFile(filename)).digest('hex') };
+  });
 } catch (error) {
   report.runErrors.push({
     name: error?.name ?? 'Error',
@@ -385,6 +422,7 @@ try {
     'native-concurrent-migration-single-commit',
     'native-damaged-workbook-isolation',
     'native-damaged-journal-fails-closed',
+    'native-conflicting-journal-identity-fails-closed',
   ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();

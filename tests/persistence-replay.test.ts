@@ -98,6 +98,78 @@ describe('batched journal replay', () => {
     expect(new Set([...rows.values()].map((row) => row.operationId)).size).toBe(2);
     await Promise.all(instances.map((p) => p.close()));
   });
+  it.each([undefined, 'same-operation'])(
+    'rejects conflicting retry identity without choosing a winning edit: %s',
+    async (operationId) => {
+      const p = memory(),
+        book = createBlankWorkbook();
+      await p.putWorkbook(book);
+      const records = [1, 2].map((value) => ({
+        operationId,
+        workbookId: book.id,
+        seq: 7,
+        at: 0,
+        patch: cell(book.sheets[0].id, 'A1', value),
+      }));
+      (p as any).memory.patches.set(book.id, records);
+      await expect(p.loadWorkbook(book.id)).rejects.toThrow(
+        'Conflicting persisted journal identity',
+      );
+      await expect(p.loadWorkbooks()).rejects.toThrow('Conflicting persisted journal identity');
+      const rescued = await p.readRecoveryStorage();
+      expect((rescued.stores.patches as any[])[0].value).toHaveLength(2);
+      expect((rescued.stores.workbooks as any[])[0].value.sheets[0].cells.A1).toBeUndefined();
+      expect((p as any).memory.patches.get(book.id)).toEqual(records);
+      await p.close();
+    },
+  );
+  it('deduplicates equivalent retry payloads with reordered properties and storage fields', async () => {
+    const p = memory(),
+      book = createBlankWorkbook();
+    await p.putWorkbook(book);
+    const id = book.sheets[0].id;
+    const first = {
+      operationId: 'same',
+      workbookId: book.id,
+      seq: 7,
+      at: 0,
+      patch: {
+        kind: 'cell',
+        sheetId: id,
+        key: 'A1',
+        cell: { value: 5, style: { bold: true, color: '#123456' } },
+      },
+    };
+    const second = {
+      ...first,
+      id: 123,
+      key: 'transport-key',
+      patch: {
+        cell: { style: { color: '#123456', bold: true }, value: 5 },
+        key: 'A1',
+        sheetId: id,
+        kind: 'cell',
+      },
+    };
+    (p as any).memory.patches.set(book.id, [first, second]);
+    expect((await p.loadWorkbook(book.id))!.sheets[0].cells.A1).toEqual(first.patch.cell);
+    await p.close();
+  });
+  it.each(['seq', 'at'])('rejects retry identity with conflicting %s metadata', async (field) => {
+    const p = memory(),
+      book = createBlankWorkbook();
+    await p.putWorkbook(book);
+    const record = {
+      operationId: 'same',
+      workbookId: book.id,
+      seq: 7,
+      at: 0,
+      patch: cell(book.sheets[0].id, 'A1', 5),
+    };
+    (p as any).memory.patches.set(book.id, [record, { ...record, [field]: 8 }]);
+    await expect(p.loadWorkbook(book.id)).rejects.toThrow('Conflicting persisted journal identity');
+    await p.close();
+  });
   it('matches sequential semantics across sheets, deletions, metadata and repeated addresses', () => {
     const book = createBlankWorkbook();
     const id = book.sheets[0].id;

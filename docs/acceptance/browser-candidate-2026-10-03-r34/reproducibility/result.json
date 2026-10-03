@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "version": "0.29.0",
+  "environment": {
+    "node": "v24.14.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "npm": "11.9.0"
+  },
+  "commit": "d6e11e37d362328ea32652fb568f686614f055de",
+  "dirty": true,
+  "sourceDateEpoch": "1790122493",
+  "sourceTimestamp": "2026-09-23T00:14:53.000Z",
+  "inputSha256": "ed743d7c81b69a3c1bae4fde15463d520d01a56a441d1391bf41db5df1e2d075",
+  "scope": "Two builds in one local checkout with the same installed dependencies. Not clean-install, cross-machine, browser or commercial acceptance.",
+  "runs": [
+    {
+      "siteSha256": "eee2b027616215ce2e1f76ab13d97956d8529d597acffa890b75ee0491a02820",
+      "siteFiles": 64,
+      "artifactSha256": "5afed7f6e3ae70291f1f000836395453af082ecd3fff61bfab14085e2d4b366c",
+      "artifactBytes": 726258
+    },
+    {
+      "siteSha256": "eee2b027616215ce2e1f76ab13d97956d8529d597acffa890b75ee0491a02820",
+      "siteFiles": 64,
+      "artifactSha256": "5afed7f6e3ae70291f1f000836395453af082ecd3fff61bfab14085e2d4b366c",
+      "artifactBytes": 726258
+    }
+  ]
+}

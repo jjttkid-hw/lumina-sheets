@@ -178,10 +178,52 @@ export function applyWorkbookPatch(workbook: Workbook, patch: WorkbookPatch): Wo
   return applyWorkbookPatches(workbook, [patch]);
 }
 
+/** Only retries sharing an identity need comparison. Property insertion order
+ * and storage transport fields (id/key) are not part of an edit's payload. */
+function sameJournalValue(left: unknown, right: unknown): boolean {
+  const pending: Array<[unknown, unknown]> = [[left, right]];
+  const seen = new WeakMap<object, WeakSet<object>>();
+  while (pending.length) {
+    const [a, b] = pending.pop()!;
+    if (Object.is(a, b)) continue;
+    if (!a || !b || typeof a !== 'object' || typeof b !== 'object') return false;
+    if (Array.isArray(a) !== Array.isArray(b)) return false;
+    if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b)) return false;
+    if (Array.isArray(a)) {
+      if (a.length !== (b as unknown[]).length) return false;
+    } else if (Object.getPrototypeOf(a) !== Object.prototype && Object.getPrototypeOf(a) !== null)
+      return false;
+    if (seen.get(a)?.has(b)) continue;
+    const matches = seen.get(a) ?? new WeakSet<object>();
+    matches.add(b);
+    seen.set(a, matches);
+    const keys = Object.keys(a);
+    if (keys.length !== Object.keys(b).length) return false;
+    for (const key of keys) {
+      if (!Object.hasOwn(b, key)) return false;
+      pending.push([(a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]]);
+    }
+  }
+  return true;
+}
+
 function applyPatches(workbook: Workbook, patches: QueuedPatch[]): Workbook {
   // An in-flight write may already be visible in IndexedDB before its promise
   // settles. Deduplicate that edit by identity, not by a cross-page sequence.
-  const ordered = [...new Map(patches.map((record) => [patchKey(record), record])).values()].sort(
+  const identities = new Map<string, QueuedPatch>();
+  for (const record of patches) {
+    const key = patchKey(record);
+    const previous = identities.get(key);
+    if (
+      previous &&
+      (previous.seq !== record.seq ||
+        previous.at !== record.at ||
+        !sameJournalValue(previous.patch, record.patch))
+    )
+      throw new Error('Conflicting persisted journal identity; retain storage for recovery');
+    identities.set(key, record);
+  }
+  const ordered = [...identities.values()].sort(
     (a, b) =>
       a.seq - b.seq ||
       ((a.operationId ?? '') < (b.operationId ?? '')

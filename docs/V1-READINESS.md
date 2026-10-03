@@ -7,6 +7,17 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r34](acceptance/browser-candidate-2026-10-03-r34/README.md)
+refuses conflicting workspace journal retry identities instead of silently
+selecting the last-read edit. Identical reordered retries still deduplicate.
+All 2379 tests and 159 three-engine checks pass; actual IndexedDB conflicts retain
+the base and both raw rows, and real recovery downloads contain the exact stores.
+Site hash `eee2b027616215ce2e1f76ab13d97956d8529d597acffa890b75ee0491a02820`
+and SDK hash `5afed7f6e3ae70291f1f000836395453af082ecd3fff61bfab14085e2d4b366c`
+(726258 bytes) agree across two builds. This is workspace-local recovery, not SDK
+persistence or automatic conflict reconciliation. External stable gates remain
+open; the following candidates are historical.
+
 2026-10-03: [Candidate r33](acceptance/browser-candidate-2026-10-03-r33/README.md)
 coalesces formula-draft localStorage writes over 150 ms while preserving synchronous
 committed-change, beforeunload and teardown flushes. A roughly 1 MB unit fixture
