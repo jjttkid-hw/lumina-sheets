@@ -17,6 +17,11 @@
       "sha256": "64b24269e2fb4de4e8616fa73dd6629ef7a215b5d0c8a37f6a2c6a678c8b6821"
     },
     {
+      "path": "business-corpus.json",
+      "bytes": 9567,
+      "sha256": "d8f424c89b1ad12b1a652dbd943d5555b05600381028f9142601e3d0c3a42dfc"
+    },
+    {
       "path": "chromium/focus.json",
       "bytes": 1525,
       "sha256": "9731e448fb5b7ef03b3f3332cda3f51b6f6ffbd576ae83adc3d2dd3b15c4e852"
@@ -270,6 +275,16 @@
       "path": "webkit/smoke.json",
       "bytes": 7739,
       "sha256": "3a0a77f99c2d4d4396bfdc05d69b797ab00ab140dcbe59554ed576ccd05b433c"
+    },
+    {
+      "path": "wps-corpus.json",
+      "bytes": 1448,
+      "sha256": "3855173458cbde064449709afce250a9cfcfdca3808ee4638afb44693a62b98a"
+    },
+    {
+      "path": "xlsx-corpus.json",
+      "bytes": 3851,
+      "sha256": "15cf1122835f483b065349aa749060dc4c243f0883df692cd55c5f8b4f8eb8dc"
     }
   ]
 }
