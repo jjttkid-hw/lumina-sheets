@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1523,
+      "sha256": "2cc297fcacfa6f69b578b2e440d11871591af309d4b9fdbaad23dd5bdb839273"
+    },
+    {
+      "path": "lumina-native-active-roundtrip.xlsx",
+      "bytes": 9335,
+      "sha256": "5b56d86d509abaaac77c2c2bf3be4ed4e63fe8b8500fac5b324c44bd9c75e01f"
+    },
+    {
+      "path": "lumina-native-prompt-roundtrip.xlsx",
+      "bytes": 9934,
+      "sha256": "1e2a00e63a86e08650b3788f6ba8b6cd0a92993b9125c06def121d84d72bf66b"
+    },
+    {
+      "path": "result.json",
+      "bytes": 7488,
+      "sha256": "31116e39d9960a47b2591a50ec265510962041b6dbbd3c8b539f0e2477757edb"
+    }
+  ]
+}

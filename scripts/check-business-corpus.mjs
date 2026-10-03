@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import ExcelJS from 'exceljs';
+import JSZip from 'jszip';
 
 const root = 'docs/acceptance/wps-business-2026-10-03-r34';
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
@@ -89,6 +90,8 @@ const expectedChecks = [
   'desktop-reedited-export',
   'nonblocking-validation-rejected',
   'custom-title-roundtrip',
+  'native-input-prompt-roundtrip',
+  'native-active-sheet-roundtrip',
 ];
 const report = {
   schema: 1,
@@ -175,7 +178,12 @@ try {
     assert.equal(rule.errorTitle, '审批状态');
     assert.equal(rule.message, '请选择通过、待审或拒绝');
     const json = sdk.validateWorkbook(JSON.parse(JSON.stringify(imported)));
-    const failure = sdk.checkValue(json.sheets[2].id, 'D2', '无效', json.sheets[2].dataValidations)[0];
+    const failure = sdk.checkValue(
+      json.sheets[2].id,
+      'D2',
+      '无效',
+      json.sheets[2].dataValidations,
+    )[0];
     assert.equal(sdk.formatDataValidationFailure(failure), 'D2：审批状态：请选择通过、待审或拒绝');
     const exported = await sdk.workbookToXlsx(json);
     const restored = await sdk.workbookFromXlsx(exported);
@@ -183,8 +191,104 @@ try {
     const external = new ExcelJS.Workbook();
     await external.xlsx.load(exported);
     assert.equal(external.worksheets[2].getCell('D2').dataValidation.errorTitle, '审批状态');
-    await writeFile('artifacts/business-corpus/lumina-validation-title.xlsx', new Uint8Array(exported));
-    return { fixtureSha256: hash(bytes), title: rule.errorTitle, message: rule.message, exportedSha256: hash(new Uint8Array(exported)) };
+    await writeFile(
+      'artifacts/business-corpus/lumina-validation-title.xlsx',
+      new Uint8Array(exported),
+    );
+    return {
+      fixtureSha256: hash(bytes),
+      title: rule.errorTitle,
+      message: rule.message,
+      exportedSha256: hash(new Uint8Array(exported)),
+    };
+  });
+  await check('native-input-prompt-roundtrip', async () => {
+    const file =
+      'docs/acceptance/browser-candidate-2026-10-03-r36/native-wps-input-prompt/wps-saved.xlsx';
+    const bytes = await readFile(file);
+    assert.equal(hash(bytes), 'bfdb6e22d34316bd34b9f2a2252658e128e92c4984c73dfd047d26bc4a54ab2c');
+    const imported = await sdk.workbookFromXlsx(data(bytes));
+    const verifyPrompt = (book) => {
+      const sheet = book.sheets.find((s) => s.name === '项目费用');
+      const rule = sheet.dataValidations[0];
+      assert.equal(rule.promptTitle, '审批说明😀');
+      assert.equal(rule.prompt, '请选择审批状态\n请先核对金额 <b>原文</b> _x0041_');
+      assert.equal(rule.showInputMessage, true);
+      assert.equal(rule.errorTitle, '审批状态');
+      assert.equal(sheet.cells.D2.value, '通过');
+      assert.equal(sdk.createEvaluator(book)(sheet, 'C6'), 423.44);
+    };
+    verifyPrompt(imported);
+    const exported = new Uint8Array(await sdk.workbookToXlsx(imported));
+    verifyPrompt(await sdk.workbookFromXlsx(data(exported)));
+    const zip = await JSZip.loadAsync(exported);
+    const xml = await zip.file('xl/worksheets/sheet3.xml').async('string');
+    assert.match(xml, /showInputMessage="1"/);
+    assert.match(xml, /promptTitle="审批说明😀"/);
+    const output = 'lumina-native-prompt-roundtrip.xlsx';
+    await writeFile(`artifacts/business-corpus/${output}`, exported);
+    return {
+      file,
+      fixtureSha256: hash(bytes),
+      output,
+      exportedSha256: hash(exported),
+      promptTitle: '审批说明😀',
+    };
+  });
+  await check('native-active-sheet-roundtrip', async () => {
+    const file =
+      'docs/acceptance/browser-candidate-2026-10-03-r37/native-wps-active-sheet/wps-saved.xlsx';
+    const bytes = await readFile(file);
+    assert.equal(hash(bytes), 'b495f3340e154a7a1cd308577f2a01f8a7460baee59d217782eaaa729e327fe2');
+    const desktop = new ExcelJS.Workbook();
+    await desktop.xlsx.load(data(bytes));
+    assert.equal(desktop.views[0].activeTab, 1);
+    const imported = await sdk.workbookFromXlsx(data(bytes));
+    const compare = (book) => {
+      assert.deepEqual(
+        book.sheets.map((s) => s.name),
+        ['销售明细', '经营汇总'],
+      );
+      assert.equal(book.activeSheetId, book.sheets[1].id);
+      const evaluate = sdk.createEvaluator(book);
+      let storedCells = 0,
+        formulas = 0;
+      for (const sheet of book.sheets) {
+        assert.equal(sheet.frozenRows, 1);
+        const external = desktop.getWorksheet(sheet.name);
+        for (const [key, cell] of Object.entries(sheet.cells)) {
+          const other = external.getCell(key);
+          if (typeof cell.value === 'string' && cell.value.startsWith('=')) {
+            // ExcelJS resolves shared followers through .formula/.result getters.
+            assert.equal(cell.value, `=${other.formula}`, `${sheet.name}!${key} formula`);
+            assert.notEqual(other.result, undefined, `${sheet.name}!${key} missing desktop cache`);
+            equal(evaluate(sheet, key), other.result, `${sheet.name}!${key} native cache`);
+            formulas++;
+          } else equal(cell.value, other.value ?? '', `${sheet.name}!${key} literal`);
+          storedCells++;
+        }
+      }
+      assert.equal(storedCells, 199);
+      assert.equal(formulas, 41);
+      assert.equal(evaluate(book.sheets[1], 'B2'), 8299000);
+      assert.equal(evaluate(book.sheets[1], 'B3'), 4312000);
+      return { storedCells, formulas, activeSheet: '经营汇总' };
+    };
+    compare(imported);
+    const exported = new Uint8Array(await sdk.workbookToXlsx(imported));
+    const details = compare(await sdk.workbookFromXlsx(data(exported)));
+    const zip = await JSZip.loadAsync(exported);
+    assert.match(await zip.file('xl/workbook.xml').async('string'), /activeTab="1"/);
+    for (const [index, selected] of [
+      [1, false],
+      [2, true],
+    ]) {
+      const xml = await zip.file(`xl/worksheets/sheet${index}.xml`).async('string');
+      assert.equal(/<sheetView\b[^>]*\btabSelected="1"/.test(xml), selected);
+    }
+    const output = 'lumina-native-active-roundtrip.xlsx';
+    await writeFile(`artifacts/business-corpus/${output}`, exported);
+    return { ...details, file, fixtureSha256: hash(bytes), output, exportedSha256: hash(exported) };
   });
   for (const [name, file, pattern] of [
     ['nonblocking-validation-rejected', 'wps-nonblocking-validation.xlsx', /Stop/],

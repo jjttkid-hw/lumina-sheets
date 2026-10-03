@@ -7,6 +7,13 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [r37 native-file regression](acceptance/business-corpus-2026-10-03-r37/README.md)
+extends the installed SDK business corpus to 9 cases. CI and npm release gates
+now also reimport/roundtrip the retained WPS prompt and active-sheet files, compare
+all 199 cells / 41 formulas in the active-sheet fixture against desktop caches,
+and inspect the exported active-tab XML. Runtime and package hashes are unchanged.
+
+
 2026-10-03: [Candidate r37](acceptance/browser-candidate-2026-10-03-r37/README.md)
 preserves the active worksheet on XLSX export/import and selects only that tab.
 The 42 multi-sheet browser checks now assert the restored active sheet in both
