@@ -7,6 +7,13 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-04: [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md)
+fixes direct scalar coercion for SUM/AVERAGE/MIN/MAX. All 2419 tests and 162
+three-engine checks pass; site and SDK hashes are
+`4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078` and
+`409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23`.
+External v1.0 gates remain open.
+
 2026-10-03: [Candidate r39](acceptance/browser-candidate-2026-10-03-r39/README.md)
 fixes approximate VLOOKUP/HLOOKUP duplicate thresholds, proven by 16 native WPS
 results and a reopened SDK export. All 2417 tests and 162 three-engine core checks
