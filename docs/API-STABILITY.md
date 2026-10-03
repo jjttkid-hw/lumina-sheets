@@ -73,3 +73,5 @@ CSV 冻结结果修复增加内部 WorkbookExportOptions.frozenCsvValues（Reado
 2026-09-23 增量：新增 `LuminaSpreadsheet.zoom` 只读 getter 与 `setZoom(value: number): void`，现有签名不变。运行时输入沿用构造选项的正有限数及倍率/百分比规则；此项为兼容性新增，已明确更新声明基线与安装包消费者检查。
 
 2026-09-24 REST 重试退避增强：`restDataSource` 在可重试 HTTP 响应包含有效 `Retry-After` 时遵守服务端等待提示，同时受 `maxDelayMs` 上限约束；无效或过期值回退本地指数退避。公共类型和错误码不变，新增回归覆盖 429 响应、上限裁剪与成功重试。
+
+0.29 数据验证错误标题：`DataValidationRule` 与 `DataValidationFailure` 新增可选 `errorTitle`，`DATA_VALIDATION_LIMITS` 新增 `errorTitleLength: 32`，根入口新增 `formatDataValidationFailure`。逐文件核对仅 `lib/data-validation.d.ts` 的四处增量改变，其余声明与 exports 不变。未设标题保持既有提示；有标题时 SDK 拒绝错误包含标题，失败对象正文仍独立。真实 WPS Stop 标题现在支持导入；输入提示仍拒绝。

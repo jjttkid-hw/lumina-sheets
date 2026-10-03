@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "143.0.7499.4",
+  "executedAt": "2026-10-03T07:24:53.803Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "65e7f121db9a733a771a23428540ced85b3c30fdbd1a76f26324698e08e5d74d",
+  "artifactSha256": "e8c8042fab4032cc95a81d5a12551847792190ff6b63251fec47cf6e3aa517dc",
+  "scope": "Native browser IndexedDB/localStorage workspace migration, reload and damaged-storage containment. This is isolated single-device persistence, not cross-device sync or crash-consistency certification.",
+  "checks": [
+    {
+      "name": "native-legacy-migration-reload",
+      "status": "passed",
+      "elapsedMs": 242,
+      "details": {
+        "storedWorkbooks": 1,
+        "journalEntries": 1,
+        "revisions": 1,
+        "comments": 1,
+        "marker": true,
+        "reloadedValue": "迁移后编辑",
+        "legacySourceRetained": true
+      }
+    },
+    {
+      "name": "native-concurrent-migration-single-commit",
+      "status": "passed",
+      "elapsedMs": 168,
+      "details": {
+        "pages": 2,
+        "storedWorkbooks": 1,
+        "revisions": 1,
+        "comments": 1,
+        "migrationMarkers": 1
+      }
+    },
+    {
+      "name": "native-damaged-workbook-isolation",
+      "status": "passed",
+      "elapsedMs": 203,
+      "details": {
+        "visibleWorkbook": "有效工作簿",
+        "retainedRows": 2,
+        "damagedRowRetained": true,
+        "recoveryActionVisible": true
+      }
+    },
+    {
+      "name": "native-damaged-journal-fails-closed",
+      "status": "passed",
+      "elapsedMs": 154,
+      "details": {
+        "workspaceOpened": false,
+        "storedValue": "安全内容",
+        "damagedJournalRetained": true,
+        "retryVisible": true,
+        "recoveryActionVisible": true
+      }
+    },
+    {
+      "name": "native-conflicting-journal-identity-fails-closed",
+      "status": "passed",
+      "elapsedMs": 195,
+      "details": {
+        "workspaceOpened": false,
+        "unchangedBase": true,
+        "rawConflictsRetained": 2,
+        "recoveryDownloadContainsBoth": true,
+        "backupSha256": "c4535f08dc4db9ecf68a999626f2316b9bf945d400a1ce0a78cc577b59a595c0"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "native-legacy-migration-reload",
+      "native-concurrent-migration-single-commit",
+      "native-damaged-workbook-isolation",
+      "native-damaged-journal-fails-closed",
+      "native-conflicting-journal-identity-fails-closed"
+    ],
+    "actualChecks": [
+      "native-legacy-migration-reload",
+      "native-concurrent-migration-single-commit",
+      "native-damaged-workbook-isolation",
+      "native-damaged-journal-fails-closed",
+      "native-conflicting-journal-identity-fails-closed"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

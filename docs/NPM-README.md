@@ -184,3 +184,5 @@ Formula string caches also use OOXML encoding; numeric, boolean and error caches
 多工作表宿主可使用 `grid.sheetInfos` 创建目录，通过 `grid.setActiveSheet(id)` 切换，并监听 `onActiveSheetChange` 保存活动表偏好。切表保留工作簿撤销/重做与计算缓存，重置选区/筛选；只读也可切换。分页绑定期间整个实例保持只读；CSV 按当前表选择数据源，含分页表的完整工作簿导出需先生成静态报表。r27 的三引擎浏览器候选、框架宿主、下载与导入证据已覆盖当前 SDK 制品，详见 [r27 验收记录](acceptance/browser-candidate-2026-10-01-r27/README.md) 和 SDK.md。证据范围仍不等同于完整 Excel/SpreadJS 兼容或稳定版批准。
 
 安装包的 `example.html` 新增“多工作表”示例：销售明细与经营汇总通过跨表公式关联，可切表编辑、撤销及导出当前表 CSV。打开多工作表 Excel/JSON 后通过“当前工作表”选择器浏览其他表；导入期间若继续编辑，旧导入会取消以保留新编辑。需以 HTTP 服务打开示例。r25 已在 Chromium、Firefox、WebKit 以及 React/Vue 宿主中覆盖切表、键盘、导出、导入取消和历史保留；这些检查绑定当前制品，仍不替代实体设备和原生读屏/IME 验收。
+
+数据验证规则支持可选 `errorTitle`（最多 32 个 UTF-16 代码单元）。失败对象保留独立的 `errorTitle` 和 `message`，`formatDataValidationFailure(failure)` 生成含地址、可选标题和正文的提示；未设置标题时保持原提示。XLSX Stop 规则可往返保留标题，输入提示仍未支持。

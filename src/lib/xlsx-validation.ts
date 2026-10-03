@@ -2,6 +2,7 @@ import type ExcelJS from 'exceljs';
 import {
   readXlsxArchive,
   xmlChildren,
+  xmlElement,
   xmlText,
   type XlsxArchive,
   type XmlElement,
@@ -9,6 +10,7 @@ import {
 import { cellKey, parseCellKey } from './engine';
 import { copyDataValidationRules, type DataValidationRule } from './data-validation';
 import type { CellRange, Sheet } from './types';
+import { encodeXlsxString, decodeXlsxString } from './xlsx-string';
 
 export const XLSX_VALIDATION_LIMITS = Object.freeze({
   rules: 1_000,
@@ -112,6 +114,12 @@ function numeric(value: unknown, address?: string): number {
   }
   return fail('只支持常量数字边界，不支持引用、外部链接或计算公式', address);
 }
+function errorTitle(value: unknown, address?: string): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string' || value.length > 32)
+    fail('错误标题最多 32 个 UTF-16 代码单元', address);
+  return value;
+}
 function toExcel(rule: DataValidationRule): ExcelJS.DataValidation {
   const address = rangeName(rule.range);
   const base = {
@@ -120,6 +128,7 @@ function toExcel(rule: DataValidationRule): ExcelJS.DataValidation {
     showErrorMessage: true,
     errorStyle: 'stop',
     ...(rule.message !== undefined ? { error: message(rule.message, address) } : {}),
+    ...(rule.errorTitle !== undefined ? { errorTitle: errorTitle(rule.errorTitle, address) } : {}),
   };
   if (rule.kind === 'list')
     return { ...base, type: 'list', formulae: [inlineList(rule.values, address)] };
@@ -146,6 +155,41 @@ export function exportXlsxValidationRules(
   if (Object.keys(target.model).some((key) => target.model[key] !== undefined))
     fail('目标工作表已有数据验证，请使用空目标工作表导出');
   for (const [address, rule] of entries) target.add(address, rule);
+}
+
+/** Restore original metadata after ExcelJS's attribute whitespace normalization. */
+export function applyXlsxValidationMetadata(archive: XlsxArchive, sheets: readonly Sheet[]): void {
+  for (const target of archive.sheets) {
+    const source = sheets.find((sheet) => sheet.name === target.name)!;
+    const rules = source.dataValidations ?? [];
+    if (!rules.some((rule) => rule.message !== undefined || rule.errorTitle !== undefined))
+      continue;
+    const container = xmlChildren(target.xml, 'dataValidations')[0];
+    if (!container) fail('导出文件缺少数据验证', target.name);
+    // Keep the original compact ranges rather than ExcelJS's merged entries.
+    container.attributes.count = String(rules.length);
+    container.children = rules.map((rule) => {
+      const model = toExcel(rule);
+      return xmlElement(
+        'dataValidation',
+        {
+          type: model.type,
+          ...(model.operator ? { operator: model.operator } : {}),
+          allowBlank: model.allowBlank ? '1' : '0',
+          showErrorMessage: '1',
+          errorStyle: 'stop',
+          ...(rule.message !== undefined ? { error: encodeXlsxString(rule.message) } : {}),
+          ...(rule.errorTitle !== undefined
+            ? { errorTitle: encodeXlsxString(rule.errorTitle) }
+            : {}),
+          sqref: rangeName(rule.range),
+        },
+        model.formulae!.map((value, index) =>
+          xmlElement(`formula${index + 1}`, {}, [String(value)]),
+        ),
+      );
+    });
+  }
 }
 
 function fromExcel(
@@ -177,15 +221,17 @@ function fromExcel(
     fail('allowBlank 必须为布尔值', address);
   if (raw.showErrorMessage !== true || (raw.errorStyle !== undefined && raw.errorStyle !== 'stop'))
     fail('只支持阻止无效输入的 Stop 错误策略', address);
-  if (raw.prompt || raw.promptTitle || raw.errorTitle || raw.showInputMessage)
-    fail('尚不支持输入提示或自定义标题，无法无损导入', address);
+  if (raw.prompt || raw.promptTitle || raw.showInputMessage)
+    fail('尚不支持输入提示或输入提示标题，无法无损导入', address);
   const error = message(raw.error, address);
+  const title = errorTitle(raw.errorTitle, address);
   const base = {
     id,
     range,
     allowBlank: raw.allowBlank === true,
     ...(sheetId !== undefined ? { sheetId } : {}),
     ...(error !== undefined ? { message: error } : {}),
+    ...(title !== undefined ? { errorTitle: title } : {}),
   };
   if (!Array.isArray(raw.formulae)) fail('缺少公式边界', address);
   if (raw.type === 'list') {
@@ -333,7 +379,7 @@ function sheetXmlRules(root: XmlElement): DataValidationRule[] {
             'promptTitle',
           ].includes(name)
         )
-          data[name] = value;
+          data[name] = ['error', 'errorTitle'].includes(name) ? decodeXlsxString(value) : value;
         else fail(`不支持验证属性 ${name}`, address);
       }
       for (const formula of xmlChildren(element)) {

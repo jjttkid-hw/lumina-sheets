@@ -761,7 +761,8 @@ export async function workbookToXlsx(workbook: Workbook): Promise<ArrayBuffer> {
             );
         }
   const Excel = await excelModule();
-  const { exportXlsxValidationRules } = await import('./xlsx-validation');
+  const { exportXlsxValidationRules, applyXlsxValidationMetadata } =
+    await import('./xlsx-validation');
   const target = new Excel.Workbook();
   // Cached values reflect this engine's supported subset; Excel should recalculate.
   target.calcProperties.fullCalcOnLoad = true;
@@ -850,6 +851,11 @@ export async function workbookToXlsx(workbook: Workbook): Promise<ArrayBuffer> {
   );
   if (
     !blankLinks &&
+    !workbook.sheets.some((sheet) =>
+      sheet.dataValidations?.some(
+        (rule) => rule.message !== undefined || rule.errorTitle !== undefined,
+      ),
+    ) &&
     !workbook.sheets.some((sheet) => Object.values(sheet.cells).some((cell) => cell.richText)) &&
     !workbook.sheets.some((sheet) => sheet.printSettings || sheet.hiddenRows?.length)
   )
@@ -879,6 +885,7 @@ export async function workbookToXlsx(workbook: Workbook): Promise<ArrayBuffer> {
         }
     }
   applyXlsxRichText(archive, workbook.sheets);
+  applyXlsxValidationMetadata(archive, workbook.sheets);
   applyXlsxPrintSettings(archive, workbook.sheets);
   applyXlsxVisibility(archive, workbook.sheets);
   return writeXlsxArchive(archive);

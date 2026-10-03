@@ -22,6 +22,7 @@ interface RuleForm {
   value: string;
   allowBlank: boolean;
   message: string;
+  errorTitle: string;
   listMode: 'text' | 'json';
   list: string;
 }
@@ -55,6 +56,7 @@ function formFor(rule: DataValidationRule): RuleForm {
     value: 'value' in rule ? String(rule.value) : '0',
     allowBlank: rule.allowBlank !== false,
     message: rule.message ?? '',
+    errorTitle: rule.errorTitle ?? '',
     listMode: text || rule.kind !== 'list' ? 'text' : 'json',
     list:
       rule.kind !== 'list'
@@ -199,6 +201,9 @@ export default function ValidationDialog({
       kind: form.kind,
       allowBlank: form.allowBlank,
       ...(form.message || original?.message !== undefined ? { message: form.message } : {}),
+      ...(form.errorTitle || original?.errorTitle !== undefined
+        ? { errorTitle: form.errorTitle }
+        : {}),
     };
     const candidate =
       form.kind === 'list'
@@ -458,6 +463,15 @@ export default function ValidationDialog({
                       onChange={(event) => change('allowBlank', event.target.checked)}
                     />
                     允许空白
+                  </label>
+                  <label className="validation-dialog-field">
+                    输入错误标题（可选）
+                    <input
+                      disabled={readOnly}
+                      maxLength={DATA_VALIDATION_LIMITS.errorTitleLength}
+                      value={form.errorTitle}
+                      onChange={(event) => change('errorTitle', event.target.value)}
+                    />
                   </label>
                   <label className="validation-dialog-field">
                     输入错误提示（可选）

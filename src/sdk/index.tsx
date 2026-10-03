@@ -20,6 +20,7 @@ import { planSheetRename } from '../lib/sheet-rename';
 import { validateWorkbookCellChanges } from '../lib/workbook-validation';
 import type { StructureEdit } from '../lib/formula-structure';
 import {
+  formatDataValidationFailure,
   checkValue,
   copyDataValidationRules,
   type DataValidationRule,
@@ -131,7 +132,7 @@ export class LuminaError extends Error {
 export class DataValidationError extends LuminaError {
   readonly failures: DataValidationFailure[];
   constructor(failures: DataValidationFailure[]) {
-    super('VALIDATION_FAILED', `${failures[0].key}：${failures[0].message}`);
+    super('VALIDATION_FAILED', formatDataValidationFailure(failures[0]));
     this.name = 'DataValidationError';
     this.failures = structuredClone(failures);
   }

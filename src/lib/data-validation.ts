@@ -8,6 +8,7 @@ export const DATA_VALIDATION_LIMITS = Object.freeze({
   idLength: 100,
   sheetIdLength: 200,
   messageLength: 500,
+  errorTitleLength: 32,
   cellTextLength: 32_767,
 });
 
@@ -31,6 +32,8 @@ interface ValidationRuleBase {
   /** Only the empty string is blank. Defaults to true. */
   allowBlank?: boolean;
   message?: string;
+  /** Optional error heading, preserved in XLSX Stop validation. */
+  errorTitle?: string;
 }
 
 export type DataValidationRule = ValidationRuleBase &
@@ -56,6 +59,7 @@ export interface DataValidationFailure {
   kind: DataValidationRule['kind'];
   code: DataValidationFailureCode;
   message: string;
+  errorTitle?: string;
   value: CellValue;
 }
 
@@ -74,7 +78,7 @@ const object = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 const integer = (value: unknown, min: number, max: number): value is number =>
   typeof value === 'number' && Number.isSafeInteger(value) && value >= min && value <= max;
-const commonKeys = ['id', 'sheetId', 'range', 'allowBlank', 'message', 'kind'];
+const commonKeys = ['id', 'sheetId', 'range', 'allowBlank', 'message', 'errorTitle', 'kind'];
 const singleOperators = [
   'equal',
   'notEqual',
@@ -170,6 +174,9 @@ export function copyDataValidationRules(input: unknown): DataValidationRule[] {
           }
         : {}),
       ...(raw.message !== undefined ? { message: raw.message as string } : {}),
+      ...(raw.errorTitle !== undefined
+        ? { errorTitle: validationErrorTitle(raw.errorTitle, `${path}.errorTitle`) }
+        : {}),
     };
     if (raw.kind === 'list') {
       keys(raw, [...commonKeys, 'values'], path);
@@ -293,8 +300,20 @@ export function checkValue(
         kind: rule.kind,
         code,
         message: rule.message || defaultMessage[code],
+        ...(rule.errorTitle !== undefined ? { errorTitle: rule.errorTitle } : {}),
         value: computedValue,
       });
   }
   return failures;
+}
+
+function validationErrorTitle(value: unknown, path: string): string {
+  if (typeof value !== 'string' || value.length > DATA_VALIDATION_LIMITS.errorTitleLength)
+    fail(path, `最多 ${DATA_VALIDATION_LIMITS.errorTitleLength} 个 UTF-16 代码单元`);
+  return value;
+}
+
+/** Display the optional heading while retaining the original message separately. */
+export function formatDataValidationFailure(failure: DataValidationFailure): string {
+  return `${failure.key}：${failure.errorTitle ? failure.errorTitle + '：' : ''}${failure.message}`;
 }

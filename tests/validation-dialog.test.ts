@@ -136,6 +136,14 @@ beforeEach(() => {
   hooks.effects = [];
   hooks.cursor = hooks.refCursor = hooks.effectCursor = 0;
 });
+it('preserves and edits an imported error title without dropping it on save', () => {
+  const dialog = make([{ ...rule(), errorTitle: '审批状态', message: '选择允许值' }]);
+  expect(dialog.field('输入错误标题（可选）').props.value).toBe('审批状态');
+  dialog.change('最大值', '20');
+  dialog.click('更新草稿');
+  dialog.submit();
+  expect(dialog.onSave.mock.calls[0][0][0].errorTitle).toBe('审批状态');
+});
 
 describe('ValidationDialog actual configuration handlers', () => {
   it('saves an empty collection when the initial new form is untouched', () => {

@@ -362,6 +362,55 @@ try {
     assert(state.offsets.includes(40));
     return state;
   });
+  await check('wps-validation-title-download', async () => {
+    const fixture = await readFile('docs/acceptance/wps-business-2026-10-03-r34/wps-custom-title.xlsx');
+    await page.evaluate(async (bytes) => {
+      const { createSpreadsheet, workbookFromXlsx } = await import('./lumina.js');
+      const workbook = await workbookFromXlsx(new Uint8Array(bytes).buffer);
+      workbook.activeSheetId = workbook.sheets[2].id;
+      const host = document.createElement('div');
+      host.id = 'test-title';
+      host.style.cssText = 'height:320px;width:900px';
+      document.body.append(host);
+      const grid = createSpreadsheet(host, { workbook });
+      grid.select({ row: 1, col: 3 });
+      const download = document.createElement('button');
+      download.textContent = '下载标题验证文件';
+      download.onclick = () => grid.export('xlsx');
+      host.after(download);
+      window.titleAcceptance = { grid, host, download };
+    }, Array.from(fixture));
+    const grid = page.locator('#test-title [role=grid]');
+    await grid.focus();
+    await page.keyboard.press('F2');
+    const editor = page.locator('#test-title').getByRole('textbox', { name: '编辑单元格 D2', exact: true });
+    await editor.fill('无效');
+    await editor.press('Enter');
+    await page.locator('#test-title').getByText('D2：审批状态：请选择通过、待审或拒绝', { exact: false }).waitFor();
+    assert.equal(await editor.inputValue(), '无效');
+    await editor.fill('通过');
+    await editor.press('Enter');
+    assert.equal(await page.evaluate(() => window.titleAcceptance.grid.getValue('D2')), '通过');
+    const pending = page.waitForEvent('download');
+    await page.getByRole('button', { name: '下载标题验证文件', exact: true }).click();
+    const download = await pending;
+    const destination = path.join(output, 'validation-title.xlsx');
+    await download.saveAs(destination);
+    assert.equal(await download.failure(), null);
+    const bytes = await readFile(destination);
+    const state = await page.evaluate(async (bytes) => {
+      const { workbookFromXlsx } = await import('./lumina.js');
+      const restored = await workbookFromXlsx(new Uint8Array(bytes).buffer);
+      const sheet = restored.sheets[2];
+      const state = { title: sheet.dataValidations[0].errorTitle, message: sheet.dataValidations[0].message, value: sheet.cells.D2.value };
+      window.titleAcceptance.grid.destroy();
+      window.titleAcceptance.host.remove();
+      window.titleAcceptance.download.remove();
+      return state;
+    }, Array.from(bytes));
+    assert.deepEqual(state, { title: '审批状态', message: '请选择通过、待审或拒绝', value: '通过' });
+    return { ...state, fixtureSha256: createHash('sha256').update(fixture).digest('hex'), downloadSha256: createHash('sha256').update(bytes).digest('hex') };
+  });
   await page.screenshot({ path: path.join(output, 'validation.png'), fullPage: true });
 } catch (error) {
   report.runErrors.push({
@@ -379,6 +428,7 @@ try {
     'sdk-mount-isolation-destroy',
     'sdk-pending-source-destroy',
     'sdk-prefetch-contract',
+    'wps-validation-title-download',
   ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();

@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "artifactSha256": "e8c8042fab4032cc95a81d5a12551847792190ff6b63251fec47cf6e3aa517dc",
+  "fileSha256": "5b8d305727985ee6b8c43d29f32ea0dc2003333589c366d3da4787dbb060ed87",
+  "title": "审批状态",
+  "message": "请选择通过、待审或拒绝",
+  "value": "待审",
+  "C6": 299.99,
+  "scope": "One synthetic WPS desktop validation title edit and SDK reimport/roundtrip. Not general native Excel or arbitrary Unicode UI certification."
+}

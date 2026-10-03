@@ -3,7 +3,7 @@ import { copyRichText } from './rich-text';
 import { copyHyperlink } from './cell-hyperlink';
 import { IMPORT_LIMITS } from './io';
 import { validateWorkbookCellChanges } from './workbook-validation';
-import type { DataValidationFailure } from './data-validation';
+import { formatDataValidationFailure, type DataValidationFailure } from './data-validation';
 import type { Cell, Sheet, Workbook } from './types';
 
 export interface WorkspaceCellChange {
@@ -116,7 +116,7 @@ export function planWorkspaceCellChanges(
   );
   if (failures.length)
     throw new WorkspaceEditError(
-      `${failures[0].key}：${failures[0].message}`,
+      formatDataValidationFailure(failures[0]),
       'VALIDATION_FAILED',
       failures,
     );

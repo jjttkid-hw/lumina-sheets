@@ -42,8 +42,8 @@ jobs:
       - run: npm run check:wps-corpus
       - name: Verify desktop-saved business workbook corpus
         run: node scripts/check-business-corpus.mjs
-      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-03-r34/xlsx-corpus.json
-      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-03-r34 --verify-build --require-accessibility --require-ime --require-persistence
+      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-03-r35/xlsx-corpus.json
+      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-03-r35 --verify-build --require-accessibility --require-ime --require-persistence
       - name: Generate dependency-license inventory
         run: node scripts/package-notices.mjs
       - name: Require complete dependency-license evidence

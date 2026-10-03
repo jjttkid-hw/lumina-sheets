@@ -1,5 +1,5 @@
 import { createEvaluator, parseCellKey } from './engine';
-import type { DataValidationFailure } from './data-validation';
+import { formatDataValidationFailure, type DataValidationFailure } from './data-validation';
 import { validateWorkbookCellChanges } from './workbook-validation';
 import { planRowSort } from './row-sort';
 import type { RowSortPlan, RowSortRequest } from './row-sort';
@@ -14,9 +14,7 @@ export class WorkbookSortValidationError extends Error {
   readonly failures: DataValidationFailure[];
   constructor(failures: DataValidationFailure[]) {
     super(
-      failures.length
-        ? `${failures[0].key}：${failures[0].message}`
-        : '排序后的单元格不符合输入规则',
+      failures.length ? formatDataValidationFailure(failures[0]) : '排序后的单元格不符合输入规则',
     );
     this.name = 'WorkbookSortValidationError';
     this.failures = structuredClone(failures);

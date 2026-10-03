@@ -7,6 +7,18 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r35](acceptance/browser-candidate-2026-10-03-r35/README.md)
+adds optional WPS/XLSX Stop validation error titles and fixes error-title/message
+whitespace and OOXML string-escape roundtrips. All 2389 tests and 162 three-engine
+browser checks pass; actual title-bearing downloads are retained. Native WPS
+rejects an invalid value with the original title/message, then saves a valid
+change that SDK reimports with updated SUMIF totals. Local 100k/1m performance
+budgets and two byte-identical builds pass. Site hash
+`65e7f121db9a733a771a23428540ced85b3c30fdbd1a76f26324698e08e5d74d` and SDK hash
+`e8c8042fab4032cc95a81d5a12551847792190ff6b63251fec47cf6e3aa517dc` (727127 bytes).
+Native/customer/publication and commercial stable gates remain open; earlier
+candidates below are historical.
+
 2026-10-03: [Native WPS business corpus](acceptance/wps-business-2026-10-03-r34/README.md)
 adds a three-sheet receivables/inventory/project-expense workflow on unchanged r34
 artifacts. WPS recalculated and saved 22 formulas; the installed SDK agrees with

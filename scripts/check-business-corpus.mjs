@@ -88,7 +88,7 @@ const expectedChecks = [
   'edited-cross-sheet-roundtrip',
   'desktop-reedited-export',
   'nonblocking-validation-rejected',
-  'custom-title-rejected',
+  'custom-title-roundtrip',
 ];
 const report = {
   schema: 1,
@@ -168,9 +168,26 @@ try {
     verify(sdk, await sdk.workbookFromXlsx(await sdk.workbookToXlsx(restored)), values);
     return { ...verify(sdk, restored, values), fixtureSha256: hash(bytes) };
   });
+  await check('custom-title-roundtrip', async () => {
+    const bytes = await readFixture('wps-custom-title.xlsx');
+    const imported = await sdk.workbookFromXlsx(data(bytes));
+    const rule = imported.sheets[2].dataValidations[0];
+    assert.equal(rule.errorTitle, '审批状态');
+    assert.equal(rule.message, '请选择通过、待审或拒绝');
+    const json = sdk.validateWorkbook(JSON.parse(JSON.stringify(imported)));
+    const failure = sdk.checkValue(json.sheets[2].id, 'D2', '无效', json.sheets[2].dataValidations)[0];
+    assert.equal(sdk.formatDataValidationFailure(failure), 'D2：审批状态：请选择通过、待审或拒绝');
+    const exported = await sdk.workbookToXlsx(json);
+    const restored = await sdk.workbookFromXlsx(exported);
+    assert.deepEqual(restored.sheets[2].dataValidations[0], rule);
+    const external = new ExcelJS.Workbook();
+    await external.xlsx.load(exported);
+    assert.equal(external.worksheets[2].getCell('D2').dataValidation.errorTitle, '审批状态');
+    await writeFile('artifacts/business-corpus/lumina-validation-title.xlsx', new Uint8Array(exported));
+    return { fixtureSha256: hash(bytes), title: rule.errorTitle, message: rule.message, exportedSha256: hash(new Uint8Array(exported)) };
+  });
   for (const [name, file, pattern] of [
     ['nonblocking-validation-rejected', 'wps-nonblocking-validation.xlsx', /Stop/],
-    ['custom-title-rejected', 'wps-custom-title.xlsx', /标题/],
   ])
     await check(name, async () => {
       const bytes = await readFixture(file);

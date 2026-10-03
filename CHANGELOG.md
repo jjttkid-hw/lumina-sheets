@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 支持 WPS/XLSX Stop 数据验证的可选错误标题，贯穿 JSON、规则编辑面板、SDK 失败对象和编辑提示；修复错误标题/正文属性中的换行、制表符及 OOXML 字符转义往返。真实 WPS 文件、安装包和浏览器下载纳入回归。
+
 - Reject duplicate XLSX row definitions before decoding can overwrite earlier cells, including a later blank styled row. Failed imports preserve the current workbook and undo/redo; browser coverage exercises both the site and packaged SDK example.
 
 - 修复 WPS 保存的普通共享字符串含小写 OOXML 转义时文字损坏，以及普通 inlineStr 转义未解码；新增真实 WPS 保存夹具和单次解码回归。
