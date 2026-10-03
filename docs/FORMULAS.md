@@ -21,6 +21,8 @@
 
 ## 文本提取与清理
 
+汇总函数对直接传入的标量参数沿用数值转换：`SUM("2",TRUE)` 为 3，`AVERAGE("2",TRUE)` 为 1.5；直接传入的非法文本返回 `#VALUE!`。范围和单元格引用中的文本、布尔值及空白仍忽略，`COUNT` 只统计其中的数字。这样可区分模板中的常量参数与导入列中的文本数据。
+
 `LEFT(text,[num_chars])` 和 `RIGHT(text,[num_chars])` 默认取一个字符；`MID(text,start_num,num_chars)` 从 1 起计位置。长度允许零、小数向零取整，负长度或小于 1 的起点返回 #VALUE!；起点超过文本长度返回空字符串，超大长度只截取已有内容。数字和布尔值沿用文本转换规则，公式错误传播。
 
 `FIND(find_text,within_text,[start_num])` 区分大小写、按文字原样查找（没有通配符），返回从 1 开始的位置；未找到、起点小于 1 或超过原文长度返回 #VALUE!。空查找文字返回有效起点。`REPLACE(old_text,start_num,num_chars,new_text)` 按位置替换，零长度表示插入，起点超出末尾时追加。`SUBSTITUTE(text,old_text,new_text,[instance_num])` 按文字原样替换全部不重叠匹配，或仅替换指定次序；区分大小写，空 old_text 不改变原文，指定次数小于 1 返回 #VALUE!。位置、长度和次数的小数向零取整；负长度拒绝。替换结果同样受 32,767 字符上限约束。

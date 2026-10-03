@@ -1470,9 +1470,17 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
       case 'MAX':
       case 'COUNT':
       case 'COUNTA': {
-        const values = flatten(args.map((arg) => evaluate(arg, sheet)));
+        const evaluated = args.map((arg) => ({ arg, value: evaluate(arg, sheet) }));
+        const values = flatten(evaluated.map(({ value }) => value));
         if (node.name === 'COUNTA') return values.filter((v) => v !== null).length;
-        const numbers = values.filter((v): v is number => typeof v === 'number');
+        // Direct scalar arguments coerce numeric text and logical values, while
+        // references/ranges keep spreadsheet semantics and ignore text/logicals.
+        const numbers = evaluated.flatMap(({ arg, value }) => {
+          const members = flatten([value]);
+          if (arg.kind === 'ref' || arg.kind === 'range')
+            return members.filter((v): v is number => typeof v === 'number');
+          return members.map((v) => number(v));
+        });
         if (node.name === 'COUNT') return numbers.length;
         if (node.name === 'AVERAGE' && !numbers.length) fail('#DIV/0!');
         if (node.name === 'MIN')

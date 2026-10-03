@@ -100,6 +100,14 @@ describe('safe spreadsheet formula evaluator', () => {
     expect(evaluate('=MIN(A1:A5)', values)).toBe(0);
     expect(evaluate('=MAX(A1:A5)', values)).toBe(20);
   });
+  it('coerces direct aggregate arguments but keeps references strict', () => {
+    expect(evaluate('=SUM("2",TRUE)', { A1: '2', A2: true })).toBe(3);
+    expect(evaluate('=SUM(A1:A2)', { A1: '2', A2: true })).toBe(0);
+    expect(evaluate('=AVERAGE("2",TRUE)')).toBe(1.5);
+    expect(evaluate('=MIN("2",TRUE)')).toBe(1);
+    expect(evaluate('=MAX("2",TRUE)')).toBe(2);
+    expect(evaluate('=SUM("not a number")')).toBe('#VALUE!');
+  });
   it('resolves references across Chinese sheets and recalculates dependent cells', () => {
     const workbook = createDemoWorkbook();
     const sheet = workbook.sheets[0];
