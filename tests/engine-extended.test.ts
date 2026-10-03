@@ -302,6 +302,31 @@ describe('formula compatibility boundaries', () => {
     expect(evaluate('=MATCH("alpha",A1:C2,0)', values)).toBe('#VALUE!');
   });
 
+  it('supports HLOOKUP exact, approximate, bounds, misses, and cross-sheet ranges', () => {
+    const values = { A1: 'A', B1: 'B', C1: 'C', A2: 10, B2: 20, C2: 30 };
+    expect(evaluate('=HLOOKUP("B",A1:C2,2,FALSE)', values)).toBe(20);
+    expect(evaluate('=HLOOKUP("BB",A1:C2,2,TRUE)', values)).toBe(20);
+    expect(evaluate('=HLOOKUP("Z",A1:C2,2,FALSE)', values)).toBe('#N/A');
+    expect(evaluate('=HLOOKUP("B",A1:C2,3,FALSE)', values)).toBe('#REF!');
+    expect(evaluate('=HLOOKUP("B",A1:C2,0,FALSE)', values)).toBe('#VALUE!');
+
+    const workbook = createBlankWorkbook();
+    const source = workbook.sheets[0];
+    source.name = 'Lookup';
+    source.cells = {
+      A1: { value: 'A' },
+      B1: { value: 'B' },
+      C1: { value: 'C' },
+      A2: { value: 10 },
+      B2: { value: 20 },
+      C2: { value: 30 },
+    };
+    const target = { ...source, id: 'report', name: 'Report', cells: {} as typeof source.cells };
+    workbook.sheets.push(target);
+    target.cells.A1 = { value: '=HLOOKUP("C",Lookup!A1:C2,2,FALSE)' };
+    expect(evaluateCell(target, 'A1', workbook)).toBe(30);
+  });
+
   it('preserves the Excel 1900 leap-year compatibility date', () => {
     expect(evaluate('=DATE(1900,1,1)')).toBe(1);
     expect(evaluate('=DATE(1900,2,28)')).toBe(59);

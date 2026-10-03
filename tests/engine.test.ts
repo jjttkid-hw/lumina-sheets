@@ -133,6 +133,19 @@ describe('safe spreadsheet formula evaluator', () => {
     expect(
       evaluate('=VLOOKUP(15,A1:B3,2,TRUE)', { A1: 0, A2: 10, A3: 20, B1: 1, B2: 2, B3: 3 }),
     ).toBe(2);
+    expect(
+      evaluate('=HLOOKUP(15,A1:C2,2,TRUE)', { A1: 0, B1: 10, C1: 20, A2: 1, B2: 2, C2: 3 }),
+    ).toBe(2);
+    expect(
+      evaluate('=HLOOKUP("企业*",A1:C2,2,FALSE)', {
+        A1: '个人服务',
+        B1: '企业服务',
+        C1: '公共服务',
+        A2: 1,
+        B2: 2,
+        C2: 3,
+      }),
+    ).toBe(2);
   });
   it('supports text, rounding, absolute values and dates', () => {
     expect(evaluate('=CONCAT(UPPER("abc"),LOWER("DEF"),LEN("你好"))')).toBe('ABCdef2');

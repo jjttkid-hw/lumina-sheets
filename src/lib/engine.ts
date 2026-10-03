@@ -6,6 +6,10 @@ export const MAX_ROWS = 1_048_576;
 export const MAX_COLUMNS = 16_384;
 const MAX_RANGE_CELLS = 100_000;
 const MAX_PARSED_EXPRESSIONS = 4_096;
+// Keep recursive dependency evaluation below the shallowest call-stack limit
+// observed in supported browsers. This ensures an overlong chain returns the
+// documented spreadsheet error before the JavaScript runtime throws RangeError.
+const MAX_EVALUATION_STACK = 200;
 type Scalar = CellValue | null;
 class FormulaError extends Error {
   constructor(public code: string) {
@@ -672,7 +676,7 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
       return value === undefined ? deliver(null, '#N/A') : deliver(value);
     }
     if (stack.has(id)) return deliver(null, '#CYCLE!');
-    if (stack.size > 256) {
+    if (stack.size > MAX_EVALUATION_STACK) {
       depthLimitGeneration++;
       return deliver(null, '#NUM!');
     }
@@ -1321,6 +1325,31 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
           if (approximate && c < 0) found = row;
         }
         return found >= 0 ? table.at(found, column - 1) : fail('#N/A');
+      }
+      case 'HLOOKUP': {
+        count(3, 4);
+        const lookup = scalar(get(0));
+        const table = grid(args[1]);
+        const row = Math.trunc(number(get(2)));
+        if (row < 1) fail();
+        if (row > table.rows) fail('#REF!');
+        const approximate = args.length < 4 || number(get(3)) !== 0;
+        const matches =
+          !approximate && typeof lookup === 'string' && /[?*~]/.test(lookup)
+            ? wildcardMatch(lookup)
+            : undefined;
+        let found = -1;
+        for (let column = 0; column < table.cols; column++) {
+          const candidate = table.at(0, column);
+          if (matches) {
+            if (matches(candidate)) return table.at(row - 1, column);
+            continue;
+          }
+          const comparison = compare(candidate, lookup);
+          if (comparison === 0) return table.at(row - 1, column);
+          if (approximate && comparison < 0) found = column;
+        }
+        return found >= 0 ? table.at(row - 1, found) : fail('#N/A');
       }
       case 'INDEX': {
         count(2, 3);

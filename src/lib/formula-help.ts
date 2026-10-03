@@ -17,6 +17,7 @@ export const FORMULA_HELP = [
   ['OR', 'logical1, [logical2], …', '任一条件成立'],
   ['NOT', 'logical', '反转逻辑值'],
   ['VLOOKUP', 'lookup_value, table, col_index, [range_lookup]', '按首列查找；精确查找请填 FALSE'],
+  ['HLOOKUP', 'lookup_value, table, row_index, [range_lookup]', '按首行查找；精确查找请填 FALSE'],
   ['INDEX', 'array, row_num, [column_num]', '返回范围中的单个值'],
   ['MATCH', 'lookup_value, lookup_array, [match_type]', '返回匹配位置；精确查找请填 0'],
   [
