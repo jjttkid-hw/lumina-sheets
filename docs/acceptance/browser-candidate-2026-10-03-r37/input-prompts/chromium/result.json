@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "143.0.7499.4",
+  "executedAt": "2026-10-03T09:04:04.942Z",
+  "siteSha256": "065a4d88796f1575c3c44ead8c466b7009df15dfa200767eb48c732a251196e6",
+  "artifactSha256": "3fb97d4fe24e7e557831650d0780ae10288a2dbf96994daca227ff3e27c6c01e",
+  "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
+  "scope": "Input prompt configuration, Canvas selection, persisted reload, disabled XLSX/JSON roundtrip, overlapping rules and narrow viewport. Automated browser input only.",
+  "checks": [
+    {
+      "name": "configure-prompt",
+      "status": "passed",
+      "elapsedMs": 414
+    },
+    {
+      "name": "selection-and-editing",
+      "status": "passed",
+      "elapsedMs": 88
+    },
+    {
+      "name": "reload-download",
+      "status": "passed",
+      "elapsedMs": 264,
+      "details": {
+        "downloads": [
+          {
+            "filename": "enabled-prompt.json",
+            "sha256": "49f5d0c73cf8630b33de220dcab2beab714c7777fa4a031f86c162d840f339ba"
+          },
+          {
+            "filename": "enabled-prompt.xlsx",
+            "sha256": "dc2ed93fb6133388b603597a0d3e6b6ce16d88d28915482233336177648339fa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled-roundtrip",
+      "status": "passed",
+      "elapsedMs": 961,
+      "details": {
+        "downloads": [
+          {
+            "filename": "disabled-prompt.json",
+            "sha256": "c1f51f50309e2d371ad97ea6f6ab304a6489271c6b7e1158f3706d389488f8d8"
+          },
+          {
+            "filename": "disabled-prompt.xlsx",
+            "sha256": "fd1b56c65d865e80fcb95aefaf6cd009987ced21619b4582a0e2518bbb436adb"
+          },
+          {
+            "filename": "restored-prompt.json",
+            "sha256": "bfa4c37b030e9487b5e079fabe7aa601e00e30298d66d107e91cd99e3bdfbacf"
+          }
+        ]
+      }
+    },
+    {
+      "name": "overlapping-and-range",
+      "status": "passed",
+      "elapsedMs": 135,
+      "details": {
+        "source": {
+          "filename": "overlapping.json",
+          "sha256": "22a002a9c8a2c93b7b4e73017557f4ae39b81f10f0e0c27629f3e9c84731c6fe"
+        },
+        "downloads": [
+          {
+            "filename": "overlap-source.json",
+            "sha256": "be815942d5ea512451f28514d0e891fa6e67b2c301bdffd736ec20285ebdfb2c"
+          }
+        ]
+      }
+    },
+    {
+      "name": "narrow-prompt",
+      "status": "passed",
+      "elapsedMs": 72,
+      "details": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "box": {
+          "x": 131.140625,
+          "y": 600.0625,
+          "width": 229.859375,
+          "height": 131.9375
+        }
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "configure-prompt",
+      "selection-and-editing",
+      "reload-download",
+      "disabled-roundtrip",
+      "overlapping-and-range",
+      "narrow-prompt"
+    ],
+    "actualChecks": [
+      "configure-prompt",
+      "selection-and-editing",
+      "reload-download",
+      "disabled-roundtrip",
+      "overlapping-and-range",
+      "narrow-prompt"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

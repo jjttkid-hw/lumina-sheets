@@ -9,3 +9,7 @@ XLSX 导入按 `96 / 72` 将 Excel 行高 point 转为像素，导出按 `72 / 9
 本模块只处理独立行高和行列隐藏状态，不处理分组大纲、折叠按钮或工作表 hidden/veryHidden 状态。CSV 按逻辑单元格导出，包含隐藏行列。Canvas 根据可见轴绘制，v0.8 PDF 同样跳过隐藏轴；公式仍读取完整数据，部分隐藏合并区会展示原锚点内容。PDF 的详细分页与行高语义见 [PRINT.md](PRINT.md)。
 
 `tests/io.test.ts` 使用真实 XLSX 验证空白隐藏行、隐藏列、稀疏行高、元数据超出存储区域以及行高拒绝边界；`tests/structure-edit.test.ts` 验证插删移动和删除范围清理；`tests/sdk.test.ts` 验证元数据隔离、撤销重做与原子参数拒绝。
+
+## 活动工作表
+
+XLSX 导出将 `Workbook.activeSheetId` 写为 `workbookView.activeTab`，并只为对应工作表设置 `tabSelected`，冻结行保持不变。导入按原始目录索引恢复第一份工作簿视图的活动表；缺省 `activeTab` 时使用第一张。非法或超出目录的索引明确拒绝，不从分组选择标记猜测。多个窗口只读取第一份视图；窗口大小、滚动位置、选中单元格和工作表分组不在当前保存范围内。

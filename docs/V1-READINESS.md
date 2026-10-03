@@ -7,6 +7,14 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r37](acceptance/browser-candidate-2026-10-03-r37/README.md)
+preserves the active worksheet on XLSX export/import and selects only that tab.
+The 42 multi-sheet browser checks now assert the restored active sheet in both
+site and packaged SDK examples. Native WPS opens on 经营汇总, saves it and SDK
+reimports that selection; all 199 cell results agree. WPS removes optional quotes
+in two cross-sheet formulas, recorded explicitly. Native/external stable gates remain open.
+
+
 2026-10-03: [Candidate r36](acceptance/browser-candidate-2026-10-03-r36/README.md)
 adds optional selection input messages through the rule editor, Canvas, JSON and
 XLSX. Disabled messages retain their content. Three browser engines exercise

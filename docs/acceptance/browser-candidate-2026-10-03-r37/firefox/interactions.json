@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-10-03T09:04:59.382Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "065a4d88796f1575c3c44ead8c466b7009df15dfa200767eb48c732a251196e6",
+  "artifactSha256": "3fb97d4fe24e7e557831650d0780ae10288a2dbf96994daca227ff3e27c6c01e",
+  "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
+  "checks": [
+    {
+      "name": "validation-editor-recovery",
+      "status": "passed",
+      "elapsedMs": 281
+    },
+    {
+      "name": "validation-list-keyboard",
+      "status": "passed",
+      "elapsedMs": 108
+    },
+    {
+      "name": "native-clipboard-atomic-validation",
+      "status": "passed",
+      "elapsedMs": 356,
+      "details": {
+        "transport": "native keyboard copy/paste",
+        "rejected": "B2:C2 unchanged",
+        "accepted": "both cells changed, one undo restores both"
+      }
+    },
+    {
+      "name": "native-copy-cut-paste",
+      "status": "passed",
+      "elapsedMs": 113
+    },
+    {
+      "name": "sdk-mount-isolation-destroy",
+      "status": "passed",
+      "elapsedMs": 13,
+      "details": {
+        "duplicate": "INVALID_ARGUMENT",
+        "empty": 0,
+        "restored": "customer-host",
+        "destroyed": "DESTROYED",
+        "other": 22
+      }
+    },
+    {
+      "name": "sdk-pending-source-destroy",
+      "status": "passed",
+      "elapsedMs": 163,
+      "details": {
+        "outcome": "AbortError",
+        "lateCallbacks": 0,
+        "value": "new session"
+      }
+    },
+    {
+      "name": "sdk-prefetch-contract",
+      "status": "passed",
+      "elapsedMs": 23,
+      "details": {
+        "before": {
+          "row": 0,
+          "col": 0
+        },
+        "after": {
+          "row": 0,
+          "col": 0
+        },
+        "warmedValue": 20,
+        "outcome": "AbortError",
+        "offsets": [
+          0,
+          4,
+          20,
+          40,
+          0
+        ]
+      }
+    },
+    {
+      "name": "wps-validation-title-download",
+      "status": "passed",
+      "elapsedMs": 323,
+      "details": {
+        "title": "审批状态",
+        "message": "请选择通过、待审或拒绝",
+        "value": "通过",
+        "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
+        "downloadSha256": "407b08ef2ef4187f90baad4673e65656afe48d3c1523baadc9ab787958fe3a4c"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract",
+      "wps-validation-title-download"
+    ],
+    "actualChecks": [
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract",
+      "wps-validation-title-download"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

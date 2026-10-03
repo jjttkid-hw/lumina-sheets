@@ -1,0 +1,248 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "executedAt": "2026-10-03T09:03:32.694Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0"
+  },
+  "status": "passed",
+  "artifactSha256": "3fb97d4fe24e7e557831650d0780ae10288a2dbf96994daca227ff3e27c6c01e",
+  "scope": "Installed SDK versus retained native WPS synthetic business workbook caches. Not full Excel/WPS certification, live desktop automation or customer data.",
+  "checks": [
+    {
+      "name": "desktop-caches",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 1000,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1600.25,
+            "E8": 1800.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": 6,
+            "H2": 75,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 448.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 448.5,
+            "C9": 1600.25,
+            "C10": 1625.31
+          }
+        },
+        "source": "WPS desktop-saved formula caches"
+      }
+    },
+    {
+      "name": "installed-import",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 1000,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1600.25,
+            "E8": 1800.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": 6,
+            "H2": 75,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 448.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 448.5,
+            "C9": 1600.25,
+            "C10": 1625.31
+          }
+        }
+      }
+    },
+    {
+      "name": "installed-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 1000,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1600.25,
+            "E8": 1800.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": 6,
+            "H2": 75,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 448.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 448.5,
+            "C9": 1600.25,
+            "C10": 1625.31
+          }
+        }
+      }
+    },
+    {
+      "name": "edited-cross-sheet-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 900,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1500.25,
+            "E8": 1700.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": -2,
+            "H2": -25,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 348.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 348.5,
+            "C9": 1500.25,
+            "C10": 1425.31
+          }
+        },
+        "exportedSha256": "52bfb9e118827a73d677f675ef56994fb49e7db735209ffab350f0174b6c9b15"
+      }
+    },
+    {
+      "name": "desktop-reedited-export",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 800,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1400.25,
+            "E8": 1600.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": -2,
+            "H2": -25,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 348.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 348.5,
+            "C9": 1400.25,
+            "C10": 1325.31
+          }
+        },
+        "fixtureSha256": "4f633599ca393a517b318135f450911ae5ea961d01d14af05f1db55f6ed78fc0"
+      }
+    },
+    {
+      "name": "custom-title-roundtrip",
+      "status": "passed",
+      "details": {
+        "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
+        "title": "审批状态",
+        "message": "请选择通过、待审或拒绝",
+        "exportedSha256": "53845d3f77dbc83ca047cc8a4b2282b20f6d0843f216df4ea2077a7bc899b4f7"
+      }
+    },
+    {
+      "name": "nonblocking-validation-rejected",
+      "status": "passed",
+      "details": {
+        "file": "wps-nonblocking-validation.xlsx",
+        "fixtureSha256": "012d0bba6cdbef0a7f953b9b50c2ac216039d1dc36fe2d1bf53380df1b66a2b2",
+        "rejection": "XLSX 数据验证：只支持阻止无效输入的 Stop 错误策略（D2）"
+      }
+    }
+  ],
+  "errors": [],
+  "fixtureSha256": "56bc904e89ae3f1bc55353876a9ace579fb4aa501bf2ef895cc8483c2141b9f3",
+  "validation": {
+    "expectedChecks": [
+      "desktop-caches",
+      "installed-import",
+      "installed-roundtrip",
+      "edited-cross-sheet-roundtrip",
+      "desktop-reedited-export",
+      "nonblocking-validation-rejected",
+      "custom-title-roundtrip"
+    ],
+    "actualChecks": [
+      "desktop-caches",
+      "installed-import",
+      "installed-roundtrip",
+      "edited-cross-sheet-roundtrip",
+      "desktop-reedited-export",
+      "custom-title-roundtrip",
+      "nonblocking-validation-rejected"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "errorCount": 0
+  }
+}

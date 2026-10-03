@@ -1,0 +1,568 @@
+{
+  "schema": 1,
+  "build": {
+    "schema": 1,
+    "version": "0.29.0",
+    "mode": "production",
+    "sourceSha256": "b7c30d39b570f2f1e891a7a93f171f44062baf2f9a5559bd97faf06171da00a5",
+    "sourceFiles": 115,
+    "sourceTimestamp": "2026-09-23T00:14:53.000Z",
+    "timestampSource": "SOURCE_DATE_EPOCH",
+    "scope": "Source/build configuration fingerprint; excludes installed dependency bytes and final artifacts. Development identity is captured at server startup and may precede HMR changes. Acceptance still requires site and SDK archive digests."
+  },
+  "product": "Lumina JavaScript performance laboratory",
+  "measuredAt": "2026-10-03T09:04:24.462Z",
+  "qualification": "本机实测；未配置性能通过预算；不表示第三方性能或商业认证",
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36",
+    "viewport": {
+      "width": 1378,
+      "height": 482
+    },
+    "hardwareConcurrency": 15,
+    "devicePixelRatio": 1,
+    "memory": {
+      "usedJsHeapSize": 18200000,
+      "totalJsHeapSize": 27600000,
+      "jsHeapSizeLimit": 3760000000
+    }
+  },
+  "fixture": {
+    "storedCells": 100000,
+    "formulaCount": 10000,
+    "dataReadyMs": 164.40000000223517,
+    "generatedMs": 112.19999999925494,
+    "firstDrawMs": 175,
+    "logicalRows": 1000000,
+    "logicalColumns": 256,
+    "populatedColumns": 10
+  },
+  "canvas": {
+    "frames": 79,
+    "observedFrames": 79,
+    "droppedFrames": 0,
+    "sampleLimit": 10000,
+    "averageMs": 0.55569620265425,
+    "p50Ms": 0.5,
+    "p95Ms": 1,
+    "p99Ms": 1,
+    "maxMs": 1,
+    "averagePaintedCells": 189.8987341772152,
+    "averageDomNodes": 4,
+    "samples": [
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 351.3999999985099
+      },
+      {
+        "durationMs": 0.5999999977648258,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 468.29999999701977
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 476.3999999985099
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 590
+      },
+      {
+        "durationMs": 0.7999999970197678,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 592.7999999970198
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 706.5999999977648
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 709
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 821.5
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 823.5
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 936.2999999970198
+      },
+      {
+        "durationMs": 0.9000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 939.1999999992549
+      },
+      {
+        "durationMs": 0.6000000014901161,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 1055.699999999255
+      },
+      {
+        "durationMs": 0.8999999985098839,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1064.0999999977648
+      },
+      {
+        "durationMs": 0.5999999977648258,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1177.8999999985099
+      },
+      {
+        "durationMs": 0.6999999992549419,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1180.5999999977648
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1292.699999999255
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1301.5999999977648
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1413.699999999255
+      },
+      {
+        "durationMs": 0.9000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 1418.199999999255
+      },
+      {
+        "durationMs": 0.5999999977648258,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 1532.0999999977648
+      },
+      {
+        "durationMs": 0.8999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 1534.8999999985099
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 1648.699999999255
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 1651.5
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 1764.5999999977648
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1768.3999999985099
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1880.8999999985099
+      },
+      {
+        "durationMs": 0.6999999992549419,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1884.699999999255
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 1998.3999999985099
+      },
+      {
+        "durationMs": 0.6999999992549419,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2009.8999999985099
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2123.699999999255
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2126.2999999970198
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2238.5
+      },
+      {
+        "durationMs": 0.6999999992549419,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2243.39999999851
+      },
+      {
+        "durationMs": 0.5999999977648258,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2357.599999997765
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2360.099999997765
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2476.2999999970198
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2484.199999999255
+      },
+      {
+        "durationMs": 0.5999999977648258,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2597.7999999970198
+      },
+      {
+        "durationMs": 0.6000000014901161,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2601.599999997765
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2715.39999999851
+      },
+      {
+        "durationMs": 0.6999999992549419,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2716.89999999851
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 2829.099999997765
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2833.39999999851
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2946
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 2950.89999999851
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3068.099999997765
+      },
+      {
+        "durationMs": 0.8000000007450581,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3076.5
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3190.699999999255
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 3192.7999999970198
+      },
+      {
+        "durationMs": 0.30000000074505806,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 3306.2999999970198
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3318.199999999255
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3430.89999999851
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3434.5
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3548.199999999255
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3550.699999999255
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3664.099999997765
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3668
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3781.699999999255
+      },
+      {
+        "durationMs": 0.30000000074505806,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3787.5
+      },
+      {
+        "durationMs": 0.30000000074505806,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3900.39999999851
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 3905.099999997765
+      },
+      {
+        "durationMs": 0.29999999701976776,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4018.89999999851
+      },
+      {
+        "durationMs": 0.30000000074505806,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4021
+      },
+      {
+        "durationMs": 0.30000000074505806,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4134.199999999255
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4137.39999999851
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4250.79999999702
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4255.29999999702
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4367.5
+      },
+      {
+        "durationMs": 0.30000000074505806,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4371.89999999851
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4486.199999999255
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4491.29999999702
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4605
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4609.599999997765
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4723.199999999255
+      },
+      {
+        "durationMs": 0.3999999985098839,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4726.29999999702
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4839
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4851.5
+      },
+      {
+        "durationMs": 0.4000000022351742,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 4964
+      },
+      {
+        "durationMs": 0.5,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 4976.599999997765
+      }
+    ],
+    "note": "实际Canvas绘制耗时，不等于整帧时间或FPS"
+  },
+  "editToCanvas": {
+    "frames": 0,
+    "observedFrames": 0,
+    "droppedFrames": 0,
+    "sampleLimit": 10000,
+    "averageMs": 0,
+    "p50Ms": 0,
+    "p95Ms": 0,
+    "p99Ms": 0,
+    "maxMs": 0,
+    "averagePaintedCells": 0,
+    "averageDomNodes": 0,
+    "samples": []
+  },
+  "workerCalculation": {
+    "targets": 10000,
+    "roundTripMs": 44.70000000298023,
+    "calculationMs": 44,
+    "firstValue": 5,
+    "lastValue": 50000
+  },
+  "scrollSampling": {
+    "completed": 40,
+    "planned": 40,
+    "status": "complete",
+    "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+  },
+  "notes": [
+    "数据在专用Worker中生成，按5000个单元格分批进入主线程。",
+    "dataReadyMs计时到数据准备完成；firstDrawMs计时到该数据首次Canvas绘制完成，两者均从点击加载开始。",
+    "公式往返计时使用Worker驻留的同一份数据；初次数据准备与首次绘制耗时单独记录。",
+    "编辑计时仅记录包含可见修改单元格的同一工作表版本；同一绘制前合并的多次提交只采集最后一次。",
+    "跨视区样本包含填充区与空白百万行边界，且包含滚动过程中实际发生的中间绘制；不能当作全表密集数据性能。",
+    "后台页面会中止自动采样；每个目标等待实际视区绘制，最后一个目标绘制后才完成。",
+    "Worker内部计算与往返仅单次样本；不报告P95。",
+    "绘制和编辑各保留最近10000条有效样本；超出部分计入droppedFrames，分位数仅针对保留样本。",
+    "内存只采集浏览器公开的计数器，通常不包含Worker堆。"
+  ]
+}

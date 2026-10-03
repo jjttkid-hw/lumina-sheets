@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "entry": "sdk",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-10-03T09:03:35.833Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "065a4d88796f1575c3c44ead8c466b7009df15dfa200767eb48c732a251196e6",
+  "artifactSha256": "3fb97d4fe24e7e557831650d0780ae10288a2dbf96994daca227ff3e27c6c01e",
+  "scope": "Shipped multi-sheet example controls, cross-sheet formula/history and downloaded CSV/JSON/XLSX reimport. Not desktop Excel, native IME, screen reader or physical touch certification.",
+  "checks": [
+    {
+      "name": "cross-sheet-edit-history",
+      "status": "passed",
+      "elapsedMs": 132,
+      "details": {
+        "before": 8199000,
+        "edited": 8299000,
+        "undo": 8199000,
+        "redo": 8299000,
+        "formula": "=SUM('销售明细'!C2:C37)"
+      }
+    },
+    {
+      "name": "active-sheet-csv",
+      "status": "passed",
+      "elapsedMs": 34,
+      "details": {
+        "file": "summary.csv",
+        "bytes": 197,
+        "sha256": "1a5fc65ca445cb684f1d178e87db8b3fd7f6926b09c25224c43cf2ce8c4096e1"
+      }
+    },
+    {
+      "name": "json-roundtrip",
+      "status": "passed",
+      "elapsedMs": 117,
+      "details": {
+        "file": "workbook-json.json",
+        "bytes": 21118,
+        "sha256": "1d30352bb563043a51eca9d2a48793ef233f6f12f2ec49a3ba58f87330fdef96",
+        "sheets": 2,
+        "revenue": 8299000,
+        "restoredActiveSheet": "经营汇总"
+      }
+    },
+    {
+      "name": "xlsx-roundtrip",
+      "status": "passed",
+      "elapsedMs": 255,
+      "details": {
+        "file": "workbook-xlsx.xlsx",
+        "bytes": 9407,
+        "sha256": "751eea66f64ce6293174fdd90bd7515bafa7b4dd0ba8248bbef946baf77d6bc8",
+        "sheets": 2,
+        "revenue": 8299000,
+        "restoredActiveSheet": "经营汇总"
+      }
+    },
+    {
+      "name": "duplicate-row-rejection",
+      "status": "passed",
+      "elapsedMs": 139,
+      "details": {
+        "file": "duplicate-row.xlsx",
+        "bytes": 29519,
+        "sha256": "46ea8e2af217ee38a6d4af636fad02388ef61943ccbdcf5ee2828b36e7e85870",
+        "retained": 300000,
+        "undo": 200000,
+        "redo": 300000
+      }
+    },
+    {
+      "name": "edited-session-close-protection",
+      "status": "passed",
+      "elapsedMs": 53,
+      "details": {
+        "cancelledClose": true,
+        "revenue": 8299000
+      }
+    },
+    {
+      "name": "cancelled-session-replacement",
+      "status": "passed",
+      "elapsedMs": 597,
+      "details": {
+        "cancelledSwitch": true,
+        "cancelledImport": true,
+        "retainedDraft": true,
+        "backgroundRenderRetainedDraft": true,
+        "retainedHistory": true,
+        "confirmedReplacement": true,
+        "cancelledLayoutRegeneration": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "cross-sheet-edit-history",
+      "active-sheet-csv",
+      "json-roundtrip",
+      "xlsx-roundtrip",
+      "duplicate-row-rejection",
+      "edited-session-close-protection",
+      "cancelled-session-replacement"
+    ],
+    "actualChecks": [
+      "cross-sheet-edit-history",
+      "active-sheet-csv",
+      "json-roundtrip",
+      "xlsx-roundtrip",
+      "duplicate-row-rejection",
+      "edited-session-close-protection",
+      "cancelled-session-replacement"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

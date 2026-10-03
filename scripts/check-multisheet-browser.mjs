@@ -193,7 +193,18 @@ try {
                 );
                 assert.equal(book.sheets[0].cells.C2.value, 200000);
                 assert.equal(book.sheets[1].cells.B2.value, "=SUM('销售明细'!C2:C37)");
-              } else assert.equal(result.bytes.subarray(0, 2).toString(), 'PK');
+              } else {
+                assert.equal(result.bytes.subarray(0, 2).toString(), 'PK');
+                const zip = await JSZip.loadAsync(result.bytes);
+                assert.match(await zip.file('xl/workbook.xml').async('string'), /activeTab="1"/);
+                for (const [index, selected] of [
+                  [1, false],
+                  [2, true],
+                ]) {
+                  const xml = await zip.file(`xl/worksheets/sheet${index}.xml`).async('string');
+                  assert.equal(/<sheetView\b[^>]*\btabSelected="1"/.test(xml), selected);
+                }
+              }
               // Replace first so success cannot come from unchanged prior data.
               // JSON import reset risk; the first replacement still contains edits.
               if (format === 'json')
@@ -209,6 +220,10 @@ try {
                   /报表已恢复/.test(document.querySelector('#status')?.textContent ?? '') &&
                   document.querySelector('#status')?.dataset.error !== 'true',
               );
+              assert.equal(
+                await page.locator('#sheet-select option:checked').textContent(),
+                '经营汇总',
+              );
               await sheet('销售明细');
               await select('C2');
               await value(200000);
@@ -220,6 +235,7 @@ try {
                 sha256: result.sha256,
                 sheets: 2,
                 revenue: 8299000,
+                restoredActiveSheet: '经营汇总',
               };
             });
           }

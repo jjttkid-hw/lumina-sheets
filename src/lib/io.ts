@@ -563,6 +563,20 @@ async function readXlsxWorkbook(
   const date1904 = properties[0]?.attributes.date1904;
   if (date1904 !== undefined && !['0', 'false'].includes(date1904))
     reject('XLSX 暂不支持 1904 日期系统或无效日期系统设置；请在原文件中转换为 1900 日期系统。');
+  const bookViews = xmlChildren(archive.workbook, 'bookViews');
+  if (bookViews.length > 1) reject('XLSX 工作簿视图容器重复。');
+  const activeTab = bookViews[0]
+    ? xmlChildren(bookViews[0], 'workbookView')[0]?.attributes.activeTab
+    : undefined;
+  const activeIndex = activeTab === undefined ? 0 : Number(activeTab);
+  if (
+    (activeTab !== undefined && !/^\d+$/.test(activeTab)) ||
+    !Number.isSafeInteger(activeIndex) ||
+    activeIndex < 0 ||
+    activeIndex >= archive.sheets.length
+  )
+    reject('XLSX 活动工作表索引无效或超出工作表数量。');
+  const activeSheetName = archive.sheets[activeIndex].name;
   const mergeRanges = readXlsxMerges(archive, IMPORT_LIMITS);
   const printSettings = readXlsxPrintSettings(archive);
   const validationRules = await stage(() => extractXlsxValidationRules(archive));
@@ -715,7 +729,7 @@ async function readXlsxWorkbook(
     return sheet;
   });
   if (!book.sheets.length) reject('文件中没有可读取的工作表。');
-  book.activeSheetId = book.sheets[0].id;
+  book.activeSheetId = book.sheets.find((sheet) => sheet.name === activeSheetName)!.id;
   return validateWorkbook(book);
 }
 
@@ -767,13 +781,22 @@ export async function workbookToXlsx(workbook: Workbook): Promise<ArrayBuffer> {
   // Cached values reflect this engine's supported subset; Excel should recalculate.
   target.calcProperties.fullCalcOnLoad = true;
   const evaluate = createEvaluator(workbook);
+  const activeTab = workbook.sheets.findIndex((sheet) => sheet.id === workbook.activeSheetId);
+  target.views = [
+    { x: 0, y: 0, width: 12000, height: 24000, firstSheet: 0, activeTab, visibility: 'visible' },
+  ];
   target.creator = 'Lumina Sheets';
   target.created = new Date(workbook.createdAt);
   target.modified = new Date();
   for (const sheet of workbook.sheets) {
     const ws = target.addWorksheet(sheet.name);
     exportXlsxValidationRules(ws, sheet);
-    if (sheet.frozenRows) ws.views = [{ state: 'frozen', ySplit: sheet.frozenRows }];
+    const tabSelected = sheet.id === workbook.activeSheetId;
+    // ExcelJS serializes tabSelected but its declaration omits this OOXML field.
+    const view: Partial<ExcelJS.WorksheetView> & { tabSelected: boolean } = sheet.frozenRows
+      ? { state: 'frozen', ySplit: sheet.frozenRows, tabSelected }
+      : { state: 'normal', tabSelected };
+    ws.views = [view];
     for (const [index, width] of Object.entries(sheet.columnWidths ?? {}))
       ws.getColumn(Number(index) + 1).width = width / 7;
     for (const row of sheet.hiddenRows ?? []) ws.getRow(row + 1).hidden = true;
