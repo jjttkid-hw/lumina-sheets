@@ -2,8 +2,8 @@
   "schema": 1,
   "status": "passed",
   "version": "0.29.0",
-  "executedAt": "2026-10-02T03:30:44.442Z",
-  "artifactSha256": "3e7b7b65a1d6a2ef7449ebcf01f2544dfb0b0919fe9e853b35e0af6baf5d3e35",
+  "executedAt": "2026-10-03T03:45:27.572Z",
+  "artifactSha256": "96369145572f2ca10cbbf6da971600a81f081c7990802995032433373290fd96",
   "fixture": "tests/fixtures/wps/edited-report.xlsx",
   "fixtureSha256": "1e3eec7e59d716fc5a164f641e7bb331bb716db072771c6c2a02864f8404087c",
   "environment": {

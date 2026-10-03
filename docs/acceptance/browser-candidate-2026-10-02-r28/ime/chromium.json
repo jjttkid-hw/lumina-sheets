@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "143.0.7499.4",
-  "executedAt": "2026-10-02T03:32:06.670Z",
+  "executedAt": "2026-10-03T03:46:21.388Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "a4e2023983b5692201b46607daee64e568178bde968fff604d077b2674d9e26d",
-  "artifactSha256": "3e7b7b65a1d6a2ef7449ebcf01f2544dfb0b0919fe9e853b35e0af6baf5d3e35",
+  "siteSha256": "eae8ebfbe326c2f699a859e3ad22bd3b7cb31ef0ce19447968bd85709ca5e53c",
+  "artifactSha256": "96369145572f2ca10cbbf6da971600a81f081c7990802995032433373290fd96",
   "scope": "Browser composition/input/keyboard event lifecycle against the production SDK and report example. Synthetic CompositionEvent sequences are not native operating-system IME candidate-window certification.",
   "checks": [
     {
       "name": "canvas-blur-defers-final-composition",
       "status": "passed",
-      "elapsedMs": 59,
+      "elapsedMs": 43,
       "details": {
         "value": "中文输入",
         "changes": [
@@ -37,7 +37,7 @@
     {
       "name": "canvas-composing-enter-does-not-commit",
       "status": "passed",
-      "elapsedMs": 40,
+      "elapsedMs": 21,
       "details": {
         "composing": {
           "value": "基线",
@@ -54,7 +54,7 @@
     {
       "name": "canvas-stale-composition-cannot-write-after-sheet-switch",
       "status": "passed",
-      "elapsedMs": 33,
+      "elapsedMs": 26,
       "details": {
         "source": "保留值",
         "target": "目标值",
@@ -66,7 +66,7 @@
     {
       "name": "report-formula-composing-enter-guard",
       "status": "passed",
-      "elapsedMs": 135,
+      "elapsedMs": 101,
       "details": {
         "before": "结果：月份",
         "during": "结果：月份",

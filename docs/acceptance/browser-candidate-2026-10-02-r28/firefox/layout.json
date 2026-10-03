@@ -3,21 +3,21 @@
   "version": "0.29.0",
   "engine": "firefox",
   "browserVersion": "144.0.2",
-  "executedAt": "2026-10-02T03:32:43.905Z",
+  "executedAt": "2026-10-03T03:46:47.384Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "a4e2023983b5692201b46607daee64e568178bde968fff604d077b2674d9e26d",
-  "artifactSha256": "3e7b7b65a1d6a2ef7449ebcf01f2544dfb0b0919fe9e853b35e0af6baf5d3e35",
+  "siteSha256": "eae8ebfbe326c2f699a859e3ad22bd3b7cb31ef0ce19447968bd85709ca5e53c",
+  "artifactSha256": "96369145572f2ca10cbbf6da971600a81f081c7990802995032433373290fd96",
   "scope": "Real-browser Canvas layout, hit testing, navigation and edit validation. Sparse million-row layout is not million stored cells; no native IME, Safari, screen reader or physical touch certification.",
   "checks": [
     {
       "name": "runtime-zoom-hit-draft-history",
       "status": "passed",
-      "elapsedMs": 1130,
+      "elapsedMs": 518,
       "details": {
         "scales": [
           50,
@@ -32,17 +32,17 @@
     {
       "name": "hidden-axis-keyboard",
       "status": "passed",
-      "elapsedMs": 114
+      "elapsedMs": 71
     },
     {
       "name": "merge-hit-edit-navigation",
       "status": "passed",
-      "elapsedMs": 272
+      "elapsedMs": 163
     },
     {
       "name": "frozen-row-scroll-hit",
       "status": "passed",
-      "elapsedMs": 268,
+      "elapsedMs": 166,
       "details": {
         "scrollTop": 200
       }
@@ -50,7 +50,7 @@
     {
       "name": "sparse-million-row-locate-edit",
       "status": "passed",
-      "elapsedMs": 246,
+      "elapsedMs": 150,
       "details": {
         "selection": {
           "row": 999999,
@@ -68,7 +68,7 @@
     {
       "name": "row-height-column-width-hit-undo",
       "status": "passed",
-      "elapsedMs": 215,
+      "elapsedMs": 179,
       "details": {
         "columnWidths": {
           "0": 200
@@ -81,7 +81,7 @@
     {
       "name": "filtered-navigation-visible-clipboard",
       "status": "passed",
-      "elapsedMs": 459
+      "elapsedMs": 347
     }
   ],
   "pageErrors": [],

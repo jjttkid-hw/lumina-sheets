@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "version": "0.29.0",
-  "executedAt": "2026-10-02T03:30:43.838Z",
+  "executedAt": "2026-10-03T03:45:27.100Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -9,18 +9,18 @@
     "exceljs": "4.4.0"
   },
   "artifact": "artifacts/lumina-report-sdk-0.29.0.tgz",
-  "artifactSha256": "3e7b7b65a1d6a2ef7449ebcf01f2544dfb0b0919fe9e853b35e0af6baf5d3e35",
+  "artifactSha256": "96369145572f2ca10cbbf6da971600a81f081c7990802995032433373290fd96",
   "scope": "Installed lumina-report-sdk XLSX supported-subset corpus. Covers tracked business inputs, package export/import, an independent ExcelJS reader and explicit rejection of embedded images. It is not complete Excel/OOXML compatibility or a desktop Excel/WPS certification.",
   "checks": [
     {
       "name": "business-report-roundtrip",
       "status": "passed",
-      "elapsedMs": 169,
+      "elapsedMs": 149,
       "details": {
         "input": "docs/artifacts/report-v05.xlsx",
         "inputBytes": 7579,
         "inputSha256": "75cbfb28402a8a199484417f8463c7360bbb107b12ac3213d2791cb625a1ad6d",
-        "exportedBytes": 7587,
+        "exportedBytes": 7588,
         "semanticSha256": "1d11383e5def44bea4d5b7f7ead9b8ab291673fddf25d4b54e979059313f9cdf",
         "sheets": 1,
         "storedCells": 30
@@ -29,12 +29,12 @@
     {
       "name": "structure-report-roundtrip",
       "status": "passed",
-      "elapsedMs": 68,
+      "elapsedMs": 52,
       "details": {
         "input": "docs/artifacts/report-v06-structure.xlsx",
         "inputBytes": 7518,
         "inputSha256": "d0549d7ebca354e3c1e613c117b609d893f98241ba036a1c6358ecc835690311",
-        "exportedBytes": 7520,
+        "exportedBytes": 7521,
         "semanticSha256": "18267bf663b510e33f79ac82cb4149bad0686fc2d2b93e14630d94b7f2620ce7",
         "sheets": 1,
         "storedCells": 30
@@ -43,10 +43,10 @@
     {
       "name": "synthetic-supported-subset",
       "status": "passed",
-      "elapsedMs": 44,
+      "elapsedMs": 37,
       "details": {
-        "generatedBytes": 8675,
-        "generatedSha256": "3ec0ebebab534548f1a53f93928db21da2ec1e8e1fac19aa7d4e383d2612b9a0",
+        "generatedBytes": 8677,
+        "generatedSha256": "25d9af97c8c684ec399dd43654416e4ef561e306efb78a079349b01bf3e8f6a3",
         "semanticSha256": "702d2570454d76ed3b0a89083701b479587625b0efe248f2b0ccf2ecb0a618ba",
         "sheets": 2,
         "storedCells": 12,
@@ -68,7 +68,7 @@
     {
       "name": "independent-reader-contract",
       "status": "passed",
-      "elapsedMs": 29,
+      "elapsedMs": 21,
       "details": {
         "reader": "exceljs@4.4.0",
         "sheets": [
@@ -89,8 +89,8 @@
       "elapsedMs": 23,
       "details": {
         "generator": "exceljs@4.4.0",
-        "inputBytes": 8425,
-        "inputSha256": "a6dc873a6d740930a4426fef365084430c2673fada1a3f20f4fd73da93857fba",
+        "inputBytes": 8426,
+        "inputSha256": "7d9d507cbd12aebd27e76620accd4330f9f51bcce67b2364457074b3909eab87",
         "rejected": true,
         "error": "XLSX：工作表「含图片对象」包含尚不能保留的图片或图形，已停止导入以避免内容丢失。请保留原文件，在副本中移除这些对象后再导入。"
       }

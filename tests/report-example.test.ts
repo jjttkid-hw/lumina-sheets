@@ -388,13 +388,16 @@ it('refreshes the formula bar immediately after applying a formula', async () =>
 it('keeps pointer fallback single-shot when Safari loses or delays a click', async () => {
   const first = mount();
   await first.report('list');
-  first.$('#formula').value = 'pointer value';
+  first.$('#formula').value = '1.00';
   first.$('#formula').listeners.get('input')!();
   const firstApply = first.$('#apply');
   const firstSet = vi.spyOn(first.grid, 'setCell');
+  firstApply.listeners.get('mousedown')!({ button: 0 });
   firstApply.listeners.get('mouseup')!({ button: 0 });
   await new Promise((resolve) => setTimeout(resolve, 100));
   expect(firstSet).toHaveBeenCalledTimes(1);
+  expect(first.grid.getValue('A1')).toBe(1);
+  expect(first.$('#formula').value).toBe('1');
   await firstApply.onclick!({ detail: 1 });
   expect(firstSet).toHaveBeenCalledTimes(1);
   first.$('#formula').value = 'keyboard after fallback';
@@ -409,6 +412,7 @@ it('keeps pointer fallback single-shot when Safari loses or delays a click', asy
   second.$('#formula').value = 'normal pointer click';
   second.$('#formula').listeners.get('input')!();
   const secondSet = vi.spyOn(second.grid, 'setCell');
+  second.$('#apply').listeners.get('mousedown')!({ button: 0 });
   second.$('#apply').listeners.get('mouseup')!({ button: 0 });
   await second.$('#apply').click();
   await new Promise((resolve) => setTimeout(resolve, 100));
@@ -422,6 +426,14 @@ it('does not apply a pointer release to a different cell, a disabled button or a
   $('#formula').value = 'keep as draft';
   $('#formula').listeners.get('input')!();
   const set = vi.spyOn(grid, 'setCell');
+  $('#apply').listeners.get('mouseup')!({ button: 0 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  $('#apply').listeners.get('mousedown')!({ button: 0 });
+  $('#apply').listeners.get('pointerleave')!();
+  $('#apply').listeners.get('mouseup')!({ button: 0 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
   $('#apply').listeners.get('mouseup')!({ button: 2 });
   await new Promise((resolve) => setTimeout(resolve, 100));
   expect(set).not.toHaveBeenCalled();
@@ -430,6 +442,7 @@ it('does not apply a pointer release to a different cell, a disabled button or a
   await new Promise((resolve) => setTimeout(resolve, 100));
   expect(set).not.toHaveBeenCalled();
   $('#apply').disabled = false;
+  $('#apply').listeners.get('mousedown')!({ button: 0 });
   $('#apply').listeners.get('mouseup')!({ button: 0 });
   grid.select({ row: 0, col: 1 });
   await new Promise((resolve) => setTimeout(resolve, 100));

@@ -12,9 +12,9 @@ adds a guarded pointer-release fallback for report Apply. The missing/delayed-cl
 path passes substituted-handler regressions; uninterrupted native Safari verification
 is still required. All 2364 tests, 147 three-engine browser checks and two identical
 builds pass locally. Site hash is
-`a4e2023983b5692201b46607daee64e568178bde968fff604d077b2674d9e26d`; SDK hash is
-`3e7b7b65a1d6a2ef7449ebcf01f2544dfb0b0919fe9e853b35e0af6baf5d3e35`
-(725191 bytes). npm authentication still returns E401. Version remains 0.29.0.
+`eae8ebfbe326c2f699a859e3ad22bd3b7cb31ef0ce19447968bd85709ca5e53c`; SDK hash is
+`96369145572f2ca10cbbf6da971600a81f081c7990802995032433373290fd96`
+(725311 bytes). npm authentication still returns E401. Version remains 0.29.0.
 The following r27 details are historical context.
 
 2026-10-01: [Candidate r27](acceptance/browser-candidate-2026-10-01-r27/README.md)

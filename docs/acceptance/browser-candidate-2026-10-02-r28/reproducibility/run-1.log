@@ -29,12 +29,12 @@ dist/assets/xlsx-cells-Cekrjci3.js                   3.68 kB │ gzip:   1.89 kB
 dist/assets/xlsx-rich-text-41Cxjrxv.js               4.66 kB │ gzip:   2.32 kB
 dist/assets/xlsx-print-D_iU9kBh.js                   7.32 kB │ gzip:   3.36 kB
 dist/assets/xlsx-validation-C9Mcg79g.js              7.91 kB │ gzip:   3.69 kB
-dist/assets/report-qXpUplk4.js                      88.86 kB │ gzip:  28.69 kB
+dist/assets/report-B82IL07N.js                      89.23 kB │ gzip:  28.76 kB
 dist/assets/xlsx-archive-s0-8hPuQ.js               132.71 kB │ gzip:  41.46 kB
-dist/assets/index-BzsgG7lM.js                      210.40 kB │ gzip:  64.81 kB
+dist/assets/index-lHlDesjD.js                      210.40 kB │ gzip:  64.81 kB
 dist/assets/sheet-rename-DE7WsQmi.js               382.40 kB │ gzip: 128.24 kB
 dist/assets/exceljs.min-CvWziDTR.js                940.04 kB │ gzip: 271.24 kB
-✓ built in 3.35s
+✓ built in 14.35s
 
 > lumina-sheets@0.29.0 build:sdk
 > vite build --config vite.sdk.config.ts && tsc -p tsconfig.sdk.json && node scripts/package-sdk.mjs
@@ -44,23 +44,23 @@ transforming...
 ✓ 94 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/sdk/bundle-inputs.json                        26.75 kB │ gzip:   6.35 kB
+dist/sdk/bundle-inputs.json                        26.75 kB │ gzip:   6.34 kB
 dist/sdk/lumina.css                                10.36 kB │ gzip:   2.80 kB
 dist/sdk/_commonjs-dynamic-modules-BAefz3vp.js      0.53 kB │ gzip:   0.33 kB
 dist/sdk/lumina.js                                  1.23 kB │ gzip:   0.59 kB
-dist/sdk/xlsx-merges-BoHYOx23.js                    1.57 kB │ gzip:   0.84 kB
-dist/sdk/xlsx-objects-CT4nKYTv.js                   2.03 kB │ gzip:   1.17 kB
-dist/sdk/xlsx-hyperlinks-MPj_b2Ei.js                2.11 kB │ gzip:   1.04 kB
-dist/sdk/xlsx-formulas-DGNuXP8C.js                  2.31 kB │ gzip:   1.16 kB
-dist/sdk/xlsx-visibility-C2qYJfqq.js                3.59 kB │ gzip:   1.55 kB
-dist/sdk/xlsx-cells-D5B0lhu8.js                     4.88 kB │ gzip:   2.05 kB
-dist/sdk/xlsx-rich-text-DDkdlafj.js                 6.29 kB │ gzip:   2.54 kB
-dist/sdk/xlsx-print-BrZzXrON.js                     9.28 kB │ gzip:   3.67 kB
-dist/sdk/xlsx-validation-vMOkhUwU.js                9.76 kB │ gzip:   4.00 kB
-dist/sdk/xlsx-archive-Cft9PHXs.js                 199.89 kB │ gzip:  48.52 kB
-dist/sdk/index-DNPnxCFD.js                        660.91 kB │ gzip: 168.94 kB
+dist/sdk/xlsx-merges-GdUbbVY0.js                    1.57 kB │ gzip:   0.84 kB
+dist/sdk/xlsx-objects-Cesode_d.js                   2.03 kB │ gzip:   1.17 kB
+dist/sdk/xlsx-hyperlinks-Df25DwHt.js                2.11 kB │ gzip:   1.04 kB
+dist/sdk/xlsx-formulas-BYM_qYVy.js                  2.31 kB │ gzip:   1.16 kB
+dist/sdk/xlsx-visibility-CTEJy82Z.js                3.59 kB │ gzip:   1.55 kB
+dist/sdk/xlsx-cells-CZ2nSIgw.js                     4.88 kB │ gzip:   2.05 kB
+dist/sdk/xlsx-rich-text-Badz6fDz.js                 6.29 kB │ gzip:   2.54 kB
+dist/sdk/xlsx-print-BDDUYCSP.js                     9.28 kB │ gzip:   3.67 kB
+dist/sdk/xlsx-validation-MvsgzWj5.js                9.76 kB │ gzip:   4.00 kB
+dist/sdk/xlsx-archive-kMjrrp5e.js                 199.89 kB │ gzip:  48.52 kB
+dist/sdk/index-8IO2Ma5C.js                        660.91 kB │ gzip: 168.93 kB
 dist/sdk/exceljs.min-Bp5xEe51.js                1,394.20 kB │ gzip: 302.23 kB
-✓ built in 2.38s
+✓ built in 4.22s
 {"packageInstallations":92,"uniqueNameVersions":82,"noticeFiles":127,"errors":0,"reviewItems":0,"unresolvedVendorComponents":0}
 
 > lumina-sheets@0.29.0 check:api
@@ -75,4 +75,4 @@ SDK consumer: strict TypeScript NodeNext passed without React or ambient type pa
 SDK consumer: strict TypeScript Bundler passed without React or ambient type packages
 SDK consumer: ESM import and non-DOM public API checks passed
 SDK package: archive contents, example and dependency closure passed
-{"name":"lumina-report-sdk","version":"0.29.0","files":40,"packedBytes":725191,"sha256":"3e7b7b65a1d6a2ef7449ebcf01f2544dfb0b0919fe9e853b35e0af6baf5d3e35","artifact":"/Users/huangwei/Desktop/spreadjs/artifacts/lumina-report-sdk-0.29.0.tgz"}
+{"name":"lumina-report-sdk","version":"0.29.0","files":40,"packedBytes":725311,"sha256":"96369145572f2ca10cbbf6da971600a81f081c7990802995032433373290fd96","artifact":"/Users/huangwei/Desktop/spreadjs/artifacts/lumina-report-sdk-0.29.0.tgz"}

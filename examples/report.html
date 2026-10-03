@@ -482,6 +482,7 @@
       let pointerApplyTimer = null;
       let pointerApplyRevision = 0;
       let pointerAppliedDraft = null;
+      let pointerApplyPressed = false;
       let savedWorkbookJson = null;
       function markSessionEdited() {
         sessionEdited = true;
@@ -628,7 +629,7 @@
           if (revision !== pointerApplyRevision || $('#apply').disabled || !matchesApplyDraft(draft)) return;
           try {
             applyFormulaDraft();
-            pointerAppliedDraft = draft;
+            pointerAppliedDraft = captureApplyDraft();
           } catch (error) {
             formulaDraft = {
               key: cellKey(selection.row, selection.col),
@@ -1403,11 +1404,32 @@
       // pointer release but consume the first click. A short pointer fallback
       // preserves the normal click path while committing exactly once when the
       // click event never arrives. Keyboard Enter remains synchronous.
+      $('#apply').addEventListener('pointerdown', (event) => {
+        if (event.isPrimary && event.button === 0 && !$('#apply').disabled)
+          pointerApplyPressed = true;
+      });
+      $('#apply').addEventListener('mousedown', (event) => {
+        if (event.button === 0 && !$('#apply').disabled) pointerApplyPressed = true;
+      });
+      $('#apply').addEventListener('pointerleave', () => {
+        pointerApplyPressed = false;
+      });
+      $('#apply').addEventListener('pointercancel', () => {
+        pointerApplyPressed = false;
+        ++pointerApplyRevision;
+        clearTimeout(pointerApplyTimer);
+      });
       $('#apply').addEventListener('pointerup', (event) => {
-        if (event.isPrimary && event.button === 0 && event.pointerType !== 'mouse') schedulePointerApply();
+        if (event.isPrimary && event.button === 0 && event.pointerType !== 'mouse') {
+          if (pointerApplyPressed) schedulePointerApply();
+          pointerApplyPressed = false;
+        }
       });
       $('#apply').addEventListener('mouseup', (event) => {
-        if (event.button === 0) schedulePointerApply();
+        if (event.button === 0) {
+          if (pointerApplyPressed) schedulePointerApply();
+          pointerApplyPressed = false;
+        }
       });
       $('#formula').onkeydown = (event) => {
         if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229)
