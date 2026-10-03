@@ -29,7 +29,7 @@ commercial review remain open.
 adds a second synthetic business workflow: three sheets, 70 cells and 28 formulas
 with exact/approximate lookup, INDEX/MATCH, missing SKU, #N/A, discounts and wildcard
 aggregation. Desktop edits and installed-SDK roundtrips agree; the shared CI/npm
-corpus now runs 11 checks. Runtime hashes are unchanged and external gates remain open.
+corpus now runs 12 checks, including duplicate lookup thresholds. Runtime hashes are unchanged and external gates remain open.
 
 2026-10-03: The stable gate now requires an independent human commercial-review
 report bound to the candidate archive and its original packed inventory/notices.
