@@ -12,5 +12,14 @@ On the same unchanged r37 runtime hashes, local macOS Firefox smoke passed all
 assertion to fail: the report captured the phase and storage state, restored the
 Storage interceptor in a `finally` block, and all later checks still passed. This
 does not explain or erase the Linux failure. No timeout or product assertion was
-relaxed and no runtime change was made. The next cloud run must provide fresh
-evidence; the original cause remains unproven.
+relaxed and no runtime change was made. Cloud follow-up CI 37114765396 (commit 2406947) passed on the same
+runtime hashes; its report is retained as ci-followup-smoke.json. Later CI
+37115540429 (4140fcb) and CI 37116436946 (73ba6c0) also passed. The original cause
+remains unproven.
+
+The five repeated runs, fault-injection report and final smoke are now retained
+alongside the original failure. The injected-failure report must remain failed;
+it proves diagnostic/cleanup behavior, not product acceptance. On 2026-10-03 an
+audit found that a prior README edit had not updated this directory manifest.
+Only that stale README entry changed; the original CI failure report/screenshot
+bytes remained intact. The manifest now includes the supplemental raw reports.
