@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "chromium",
   "browserVersion": "143.0.7499.4",
-  "executedAt": "2026-10-03T07:48:18.797Z",
+  "executedAt": "2026-10-03T07:57:23.096Z",
   "siteSha256": "65e7f121db9a733a771a23428540ced85b3c30fdbd1a76f26324698e08e5d74d",
   "artifactSha256": "e8c8042fab4032cc95a81d5a12551847792190ff6b63251fec47cf6e3aa517dc",
   "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
@@ -12,26 +12,26 @@
     {
       "name": "imported-rule-preserved",
       "status": "passed",
-      "elapsedMs": 401
+      "elapsedMs": 350
     },
     {
       "name": "title-edit-history",
       "status": "passed",
-      "elapsedMs": 379
+      "elapsedMs": 398
     },
     {
       "name": "rule-reload-download",
       "status": "passed",
-      "elapsedMs": 468,
+      "elapsedMs": 508,
       "details": {
         "downloads": [
           {
             "filename": "edited-title.xlsx",
-            "sha256": "0a0493266d4fac19c29c02ddb8fc04b5f1fcc2c6477e522f136a9e4d8a46ee35"
+            "sha256": "745c2a19bf63a7a20579dcf3040520ce4840ff7dae364acea1a1d39a660940bb"
           },
           {
             "filename": "edited-title.json",
-            "sha256": "55c6b2269c7f3f99aa268cb013bcfd88fc2021b9ca08632dfb22acd7ed550988"
+            "sha256": "36a31a928d44a616188fa3f715288a061d009b419b408bcaa7ecab562d43fcc2"
           }
         ]
       }
@@ -39,16 +39,16 @@
     {
       "name": "empty-title-download",
       "status": "passed",
-      "elapsedMs": 917,
+      "elapsedMs": 852,
       "details": {
         "downloads": [
           {
             "filename": "empty-title.xlsx",
-            "sha256": "d2e09515662240448251cba5190fed2c092824370f0dba468ab3cd348fad0174"
+            "sha256": "3ff0bf25a0a3f9f76b31056525310fcfb33dc448924c3276fc4118b125d3ee9c"
           },
           {
             "filename": "empty-title.json",
-            "sha256": "674183d2b930844524b8129891d1482a5f1bb222d17d0b680ef1a1f6eb94b3c0"
+            "sha256": "30c9b82bf958b5187d7109b627227e17a6f904b57e3366c77a4fb8e623992c87"
           }
         ]
       }
@@ -56,29 +56,29 @@
     {
       "name": "narrow-dialog-keyboard",
       "status": "passed",
-      "elapsedMs": 205
+      "elapsedMs": 206
     },
     {
       "name": "metadata-whitespace-preserved",
       "status": "passed",
-      "elapsedMs": 685,
+      "elapsedMs": 668,
       "details": {
         "source": {
           "filename": "metadata-title.xlsx",
-          "sha256": "2e79808fdb87d8510d03543dbb632467e1b90b6e701dc2966fb308f300345070"
+          "sha256": "386dda2acedecd25f1af405648a0e2dcab8ad1c096efeb808a180dcdae13ce39"
         },
         "downloads": [
           {
             "filename": "metadata-title-after-edit.json",
-            "sha256": "4eea2ced1b5319c96cd9aa7a5210bec32985c604d6f2b78511f37d2dbd0c2c30"
+            "sha256": "f1dfef4cff17e9458c6fbf7e4777fa201eadd87526b170b69d80a993666c2a46"
           },
           {
             "filename": "metadata-title-after-edit.xlsx",
-            "sha256": "dd6acba078976d74702b0837ed4fadff38161dbfa18843e0025ba5aa9b0f41c1"
+            "sha256": "5db5772a70478ced24c6c8daf0a0f1c23376c4f91dcd7d8e527d4cff3231c58f"
           },
           {
             "filename": "metadata-title-restored.json",
-            "sha256": "e094b756c7b29723bfa5f97b3a80376da75d1d3e969c3473aba4ba45e6e24778"
+            "sha256": "f57826c96a417cdfe6081cc1619d4019b311b47e013d3b51f463194e557b0c00"
           }
         ]
       }

@@ -3,14 +3,13 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import ExcelJS from 'exceljs';
-import JSZip from 'jszip';
 import { siteDigest } from './site-evidence.mjs';
 import { verifySiteHttp } from './site-runtime.mjs';
 import { finalizeBrowserReport } from './browser-report.mjs';
 
 // Operate shipped workspace controls. Page evaluation only observes visible state.
 const runtime = path.resolve('scripts/fixtures/frameworks/node_modules');
+const { default: JSZip } = await import(pathToFileURL(path.join(runtime, 'jszip/lib/index.js')));
 const { preview } = await import(pathToFileURL(path.join(runtime, 'vite/dist/node/index.js')));
 const engines = await import(pathToFileURL(path.join(runtime, 'playwright/index.mjs')));
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
@@ -172,16 +171,11 @@ try {
         assert.equal(await dialog.getByLabel('允许空白', { exact: true }).isChecked(), true);
         await save();
         const xlsx = await download('xlsx', 'edited-title');
-        const external = new ExcelJS.Workbook();
-        await external.xlsx.load(xlsx.bytes);
-        assert.equal(
-          external.getWorksheet('项目费用').getCell('D2').dataValidation.errorTitle,
-          '审批要求',
-        );
-        assert.equal(
-          external.getWorksheet('项目费用').getCell('D2').dataValidation.error,
-          '请选择通过、待审或拒绝',
-        );
+        const archive = await JSZip.loadAsync(xlsx.bytes);
+        const xml = await archive.file('xl/worksheets/sheet3.xml').async('string');
+        const validation = xml.match(/<dataValidation\b[^>]*\bsqref="D2"[^>]*>/)?.[0];
+        assert.match(validation ?? '', /\berrorTitle="审批要求"/);
+        assert.match(validation ?? '', /\berror="请选择通过、待审或拒绝"/);
         const json = await download('json', 'edited-title');
         const rule = JSON.parse(json.bytes).sheets[2].dataValidations[0];
         assert.equal(rule.errorTitle, '审批要求');

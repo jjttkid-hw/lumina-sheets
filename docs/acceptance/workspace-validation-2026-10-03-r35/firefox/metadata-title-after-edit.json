@@ -1,10 +1,10 @@
 {
-  "id": "a60877b9-e170-4627-a1d3-f80769aa137b",
+  "id": "b6f7b6e9-38ea-4a8b-a881-cdb00e1aa14d",
   "name": "metadata-title",
   "description": "在同一张表格里，让数据变成决策。",
   "sheets": [
     {
-      "id": "f76a40b3-2637-41ec-a4a5-4f5e9b209c76",
+      "id": "00784cc8-0cb8-450e-8aaa-8077070564d3",
       "name": "应收账款",
       "cells": {
         "A1": {
@@ -279,7 +279,7 @@
       "merges": []
     },
     {
-      "id": "35432ef0-c2e1-4978-8265-9dc3c2e55009",
+      "id": "a4aaf992-94fc-4ea6-be7f-63493a4b4c2a",
       "name": "库存",
       "cells": {
         "A1": {
@@ -502,7 +502,7 @@
       "merges": []
     },
     {
-      "id": "3c9f29d0-f9a6-4692-a23d-c3cc4a4e652b",
+      "id": "9786871e-1de0-4414-997b-24f89d42de19",
       "name": "项目费用",
       "cells": {
         "A1": {
@@ -664,9 +664,9 @@
       "merges": []
     }
   ],
-  "activeSheetId": "3c9f29d0-f9a6-4692-a23d-c3cc4a4e652b",
-  "createdAt": "2026-10-03T07:48:27.180Z",
-  "updatedAt": "2026-10-03T07:48:27.572Z",
+  "activeSheetId": "9786871e-1de0-4414-997b-24f89d42de19",
+  "createdAt": "2026-10-03T07:57:31.235Z",
+  "updatedAt": "2026-10-03T07:57:31.615Z",
   "starred": false,
   "category": "我的工作簿"
 }

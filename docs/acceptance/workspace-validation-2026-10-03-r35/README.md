@@ -14,7 +14,7 @@ SDK calls or modifying application state. Page evaluation only reads visible sta
   change allowBlank, save and reject invalid input with original heading.
 - Edit heading, save, reject invalid input, undo and redo the rule change.
 - Wait for durable save, actually reload, reopen the rule; export XLSX/JSON and
-  independently inspect the ExcelJS title/message and JSON rule.
+  independently inspect the original OOXML title/message and JSON rule.
 - Clear heading, verify default error format, download XLSX/JSON, import the actual
   downloaded workbook and confirm the title stays empty and message stays intact.
 - At 390px, use the real navigation backdrop and close the data-insight panel
@@ -41,3 +41,9 @@ hash. This is a dated deployment observation; later evidence commits may redeplo
 This is browser automation on synthetic files, not native system IME, real screen
 reader, physical touch, customer hardware or full Excel/WPS compatibility acceptance.
 npm first publication and the other v1 stable gates remain open.
+
+The first supplemental CI run 37107662083 failed before browser launch because
+the isolated framework job does not install root ExcelJS/JSZip dependencies.
+The runner now resolves JSZip from the locked browser-tool installation and
+checks the original validation XML independently, preserving the same title/message
+assertions. Local final reports below were rerun with this corrected runner.
