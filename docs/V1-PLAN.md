@@ -1,3 +1,5 @@
+2026-10-04 r41：当前候选修复 SUM、AVERAGE、MIN、MAX 的直接标量文本/布尔参数转换，保留范围/引用的严格忽略语义。2,419 项测试、162 项 Chromium/Firefox/WebKit 核心检查、React/Vue、XLSX/WPS 与 12 项业务语料检查均通过；站点摘要 `4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078`，SDK 摘要 `409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23`。npm 注册表首发、原生 IME、真实屏幕阅读器、实体触控和人工商业复核仍未完成，版本保持 0.29.0。
+
 2026-10-03 r38：公式引擎新增 HLOOKUP，并降低递归依赖上限以修复本机长链溢出；全量 2412 项测试、当前站点/SDK 构建和重新执行的 25 份三引擎核心报告通过。详情见 [r38](acceptance/browser-candidate-2026-10-03-r38/README.md)，版本仍为 0.29.0。
 
 2026-10-03 r37：修复 XLSX 导出/导入丢失活动工作表。三引擎站点与 SDK 示例实际下载/重导入，以及原生 WPS 打开/保存对照通过。详情见 [r37](acceptance/browser-candidate-2026-10-03-r37/README.md)，版本仍为 0.29.0。

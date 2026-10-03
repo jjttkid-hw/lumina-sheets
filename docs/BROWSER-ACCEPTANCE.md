@@ -1,3 +1,5 @@
+2026-10-04 r41 当前候选：SUM/AVERAGE/MIN/MAX 直接标量转换修复后的站点与 SDK 已在 Chromium、Firefox、WebKit 串行重跑核心矩阵，共 162 项通过；React/Vue、XLSX/WPS、12 项业务语料、API、许可证和可重复构建也通过。站点摘要为 `4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078`，SDK 摘要为 `409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23`，原始记录见 [r41](acceptance/browser-candidate-2026-10-04-r41/README.md)。该候选仍不替代原生系统 IME、真实 VoiceOver/NVDA/JAWS、实体移动设备和人工商业复核，npm 注册表也尚未出现 `lumina-report-sdk`。
+
 2026-10-01 CI 核心矩阵：新增 `scripts/check-browser-core.mjs`，使用锁定的独立 Playwright 工具链和下载的受测站点/SDK，逐引擎执行 smoke、ARIA、焦点、交互、布局、性能、原生持久化、合成输入事件，Chromium 另执行触控模拟。每套件删除旧结果、校验退出状态、检查制品摘要及错误计数；各引擎失败不取消其他引擎，报告和截图始终上传，全部 CI 成功后才部署。此自动化不关闭原生 Safari、系统 IME、真实读屏器、实体设备等验收项。
 
 2026-09-28 后续补验：已在 WPS 12.1.26055 实际打开 Safari 下载文件，修改明细并另存，SDK 重导入与重算验证通过；文件加入持续语料回归。Safari 两次逐字输入草稿/提交值一致，旧异常未复现但归因仍开放。见 [后续证据](acceptance/safari-2026-09-28-r21/FOLLOWUP.md)。
