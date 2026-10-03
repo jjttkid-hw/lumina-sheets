@@ -30,7 +30,8 @@ const archive = await readFile(`artifacts/lumina-report-sdk-${version}.tgz`);
 const browser = await engines[engine].launch({
   headless: process.env.BROWSER_HEADED !== '1',
   ...(engine === 'chromium' && process.env.BROWSER_CHANNEL !== 'bundled'
-    ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
+    ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' }
+    : {}),
   // Only local candidate traffic skips system proxies; remote runs keep normal routing.
   ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
     ? { firefoxUserPrefs: { 'network.proxy.type': 0 } }
@@ -67,6 +68,7 @@ page.on('console', (message) => {
   if (message.type() === 'error')
     report.consoleErrors.push({ text: message.text(), location: message.location() });
 });
+let draftSavePhase;
 const check = async (name, action) => {
   const started = Date.now();
   try {
@@ -74,29 +76,35 @@ const check = async (name, action) => {
     report.checks.push({ name, status: 'passed', elapsedMs: Date.now() - started, details });
     console.log(`PASS ${name}`);
   } catch (error) {
-    const diagnostics = name === 'report-draft-save-coalescing-reload'
-      ? await page.evaluate(() => {
-        let saved;
-        try {
-          const session = JSON.parse(localStorage.getItem('lumina.report.example.v1'));
-          saved = { draft: session?.formulaDraft, selection: session?.selection };
-        } catch (error) { saved = { error: error.message }; }
-        return {
-          readyState: document.readyState,
-          formula: document.querySelector('#formula')?.value,
-          committed: document.querySelector('#value')?.textContent,
-          notice: document.querySelector('#session-note')?.textContent,
-          writeLengths: window.reportSaveWrites,
-          saved,
-        };
-      }).catch((error) => ({ observationError: error.message }))
-      : undefined;
+    const diagnostics =
+      name === 'report-draft-save-coalescing-reload'
+        ? await page
+            .evaluate(() => {
+              let saved;
+              try {
+                const session = JSON.parse(localStorage.getItem('lumina.report.example.v1'));
+                saved = { draft: session?.formulaDraft, selection: session?.selection };
+              } catch (error) {
+                saved = { error: error.message };
+              }
+              return {
+                readyState: document.readyState,
+                formula: document.querySelector('#formula')?.value,
+                committed: document.querySelector('#value')?.textContent,
+                notice: document.querySelector('#session-note')?.textContent,
+                writeLengths: window.reportSaveWrites,
+                storageCounterInstalled: typeof window.reportSaveOriginal === 'function',
+                saved,
+              };
+            })
+            .catch((error) => ({ observationError: error.message }))
+        : undefined;
     report.checks.push({
       name,
       status: 'failed',
       elapsedMs: Date.now() - started,
       error: error.message,
-      ...(diagnostics ? { diagnostics } : {}),
+      ...(diagnostics ? { diagnostics: { phase: draftSavePhase, ...diagnostics } } : {}),
     });
     console.log(`FAIL ${name}: ${error.message}`);
     await page
@@ -264,42 +272,68 @@ try {
     await reportAddress.fill('A1');
     await reportAddress.press('Enter');
     await page.getByRole('textbox', { name: '单元格内容或公式', exact: true }).waitFor();
-    await valueEquals(page.getByRole('textbox', { name: '单元格内容或公式', exact: true }), 'browser reload recovery');
+    await valueEquals(
+      page.getByRole('textbox', { name: '单元格内容或公式', exact: true }),
+      'browser reload recovery',
+    );
     return { restored: true, notice: await page.locator('#session-note').innerText() };
   });
   await check('report-draft-save-coalescing-reload', async () => {
-    await page.evaluate(() => {
-      window.reportSaveOriginal = Storage.prototype.setItem;
-      window.reportSaveWrites = [];
-      Storage.prototype.setItem = function(key, value) {
-        if (key === 'lumina.report.example.v1') window.reportSaveWrites.push(value.length);
-        return window.reportSaveOriginal.call(this, key, value);
-      };
-      const formula = document.querySelector('#formula');
-      for (let i = 0; i < 40; i++) {
-        formula.value = `burst draft ${i}`;
+    try {
+      draftSavePhase = 'install-counter-and-input-burst';
+      await page.evaluate(() => {
+        window.reportSaveOriginal = Storage.prototype.setItem;
+        window.reportSaveWrites = [];
+        Storage.prototype.setItem = function (key, value) {
+          if (key === 'lumina.report.example.v1') window.reportSaveWrites.push(value.length);
+          return window.reportSaveOriginal.call(this, key, value);
+        };
+        const formula = document.querySelector('#formula');
+        for (let i = 0; i < 40; i++) {
+          formula.value = `burst draft ${i}`;
+          formula.dispatchEvent(new InputEvent('input', { bubbles: true }));
+        }
+      });
+      draftSavePhase = 'no-immediate-write';
+      const immediate = await page.evaluate(() => window.reportSaveWrites.length);
+      assert.equal(immediate, 0);
+      draftSavePhase = 'wait-for-one-coalesced-write';
+      await page.waitForFunction(() => window.reportSaveWrites.length === 1);
+      draftSavePhase = 'verify-persisted-burst';
+      const retained = await page.evaluate(() => ({
+        writes: window.reportSaveWrites.length,
+        value: JSON.parse(localStorage.getItem('lumina.report.example.v1')).formulaDraft.value,
+      }));
+      assert.deepEqual(retained, { writes: 1, value: 'burst draft 39' });
+      draftSavePhase = 'input-before-immediate-reload';
+      await page.evaluate(() => {
+        const formula = document.querySelector('#formula');
+        formula.value = 'last draft before immediate reload';
         formula.dispatchEvent(new InputEvent('input', { bubbles: true }));
-      }
-    });
-    const immediate = await page.evaluate(() => window.reportSaveWrites.length);
-    assert.equal(immediate, 0);
-    await page.waitForFunction(() => window.reportSaveWrites.length === 1);
-    const retained = await page.evaluate(() => ({
-      writes: window.reportSaveWrites.length,
-      value: JSON.parse(localStorage.getItem('lumina.report.example.v1')).formulaDraft.value,
-    }));
-    assert.deepEqual(retained, { writes: 1, value: 'burst draft 39' });
-    await page.evaluate(() => {
-      const formula = document.querySelector('#formula');
-      formula.value = 'last draft before immediate reload';
-      formula.dispatchEvent(new InputEvent('input', { bubbles: true }));
-      Storage.prototype.setItem = window.reportSaveOriginal;
-    });
-    await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
-    await page.getByText('已从本机浏览器恢复上次报表', { exact: false }).waitFor();
-    await valueEquals(page.locator('#formula'), 'last draft before immediate reload');
-    assert.equal(await page.locator('#value').innerText(), '结果：browser reload recovery');
-    return { ...retained, reloadRetainsUncommittedDraft: true, committedValueUnchanged: true };
+        Storage.prototype.setItem = window.reportSaveOriginal;
+        delete window.reportSaveOriginal;
+      });
+      draftSavePhase = 'reload';
+      await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
+      draftSavePhase = 'wait-for-restored-session';
+      await page.getByText('已从本机浏览器恢复上次报表', { exact: false }).waitFor();
+      draftSavePhase = 'verify-restored-draft';
+      await valueEquals(page.locator('#formula'), 'last draft before immediate reload');
+      draftSavePhase = 'verify-committed-value-unchanged';
+      assert.equal(await page.locator('#value').innerText(), '结果：browser reload recovery');
+      return { ...retained, reloadRetainsUncommittedDraft: true, committedValueUnchanged: true };
+    } finally {
+      // A failed assertion must not leave a storage interceptor in later checks.
+      // Preserve its observations for the outer failure report.
+      await page
+        .evaluate(() => {
+          if (window.reportSaveOriginal) {
+            Storage.prototype.setItem = window.reportSaveOriginal;
+            delete window.reportSaveOriginal;
+          }
+        })
+        .catch(() => {});
+    }
   });
   await check('report-idle', async () => {
     await page.locator('#check-idle').click();
@@ -323,7 +357,9 @@ try {
     await page.locator('#sheet-select').selectOption({ label: '经营汇总' });
     await page.locator('#address').fill('B2');
     await page.locator('#address').press('Enter');
-    await page.waitForFunction(() => document.querySelector('#value')?.textContent === '结果：8344000');
+    await page.waitForFunction(
+      () => document.querySelector('#value')?.textContent === '结果：8344000',
+    );
     await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.getByText('已从本机浏览器恢复上次报表', { exact: false }).waitFor();
     assert.equal(await page.locator('#sheet-select option:checked').innerText(), '经营汇总');

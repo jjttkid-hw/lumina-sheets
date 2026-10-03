@@ -8,9 +8,9 @@ notice still says restored. The core report retains the failure; all seven other
 Firefox suites passed. CD did not deploy this failed run.
 
 On the same unchanged r37 runtime hashes, local macOS Firefox smoke passed all
-12 checks. This does not explain or erase the Linux failure. No timeout or
-assertion was relaxed and no runtime change was made. The smoke runner now
-captures readyState, draft, committed result, notice, write lengths and persisted
-draft/selection whenever this check fails. These fields contain only the isolated
-synthetic browser fixture. The next cloud run must provide fresh evidence; the
-cause remains unproven at the time of this record.
+12 checks in five consecutive runs. A fault-injection run then forced the save
+assertion to fail: the report captured the phase and storage state, restored the
+Storage interceptor in a `finally` block, and all later checks still passed. This
+does not explain or erase the Linux failure. No timeout or product assertion was
+relaxed and no runtime change was made. The next cloud run must provide fresh
+evidence; the original cause remains unproven.
