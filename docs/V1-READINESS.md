@@ -7,6 +7,16 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r38](acceptance/browser-candidate-2026-10-03-r38/README.md)
+adds HLOOKUP to the safe formula subset with exact, approximate and wildcard
+semantics, and lowers the recursive dependency guard so long chains return
+`#NUM!` before a browser call-stack overflow. All 2406 tests pass; the current
+candidate site and SDK hashes are `ae0091fa180c7e99804103637d489c81bb123e78b0b9ab1e7306ec4ccf044305`
+and `166bead41426361ad7dcd264f29add2230d80c9700bf38f88ef40e25edfe84ab`.
+The automated browser/core and file evidence is rebound to r38; native Safari
+mouse, system IME, screen readers, physical touch, npm publication and human
+commercial review remain open.
+
 2026-10-03: [Native WPS quotation lookup corpus](acceptance/wps-lookup-2026-10-03-r37/README.md)
 adds a second synthetic business workflow: three sheets, 70 cells and 28 formulas
 with exact/approximate lookup, INDEX/MATCH, missing SKU, #N/A, discounts and wildcard

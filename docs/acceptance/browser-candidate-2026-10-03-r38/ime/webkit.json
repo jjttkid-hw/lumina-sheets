@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "webkit",
+  "browserVersion": "26.0",
+  "executedAt": "2026-10-03T09:06:25.861Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "ae0091fa180c7e99804103637d489c81bb123e78b0b9ab1e7306ec4ccf044305",
+  "artifactSha256": "166bead41426361ad7dcd264f29add2230d80c9700bf38f88ef40e25edfe84ab",
+  "scope": "Browser composition/input/keyboard event lifecycle against the production SDK and report example. Synthetic CompositionEvent sequences are not native operating-system IME candidate-window certification.",
+  "checks": [
+    {
+      "name": "canvas-blur-defers-final-composition",
+      "status": "passed",
+      "elapsedMs": 21,
+      "details": {
+        "value": "中文输入",
+        "changes": [
+          [
+            {
+              "key": "A1",
+              "cell": {
+                "value": "中文输入",
+                "style": {}
+              }
+            }
+          ]
+        ],
+        "editorCount": 0
+      }
+    },
+    {
+      "name": "canvas-composing-enter-does-not-commit",
+      "status": "passed",
+      "elapsedMs": 26,
+      "details": {
+        "composing": {
+          "value": "基线",
+          "changes": 0,
+          "editorCount": 1
+        },
+        "committed": {
+          "value": "候选文字",
+          "changes": 1,
+          "editorCount": 0
+        }
+      }
+    },
+    {
+      "name": "canvas-stale-composition-cannot-write-after-sheet-switch",
+      "status": "passed",
+      "elapsedMs": 33,
+      "details": {
+        "source": "保留值",
+        "target": "目标值",
+        "activeSheet": "ime-sheet-1",
+        "changes": 0,
+        "detached": true
+      }
+    },
+    {
+      "name": "report-formula-composing-apply-guard",
+      "status": "passed",
+      "elapsedMs": 249,
+      "details": {
+        "before": "结果：月份",
+        "during": "结果：月份",
+        "after": "结果：完整候选文字",
+        "oneUndoRestoresInitialValue": true
+      }
+    },
+    {
+      "name": "report-formula-composing-enter-guard",
+      "status": "passed",
+      "elapsedMs": 38,
+      "details": {
+        "before": "结果：月份",
+        "during": "结果：月份",
+        "after": "结果：报表中文"
+      }
+    },
+    {
+      "name": "report-pointer-activation-keeps-press-ownership",
+      "status": "passed",
+      "elapsedMs": 425,
+      "details": {
+        "changedCellIgnored": true,
+        "changedDraftIgnored": true,
+        "cancellationIgnored": true,
+        "freshClickAndKeyboardUndoPassed": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "canvas-blur-defers-final-composition",
+      "canvas-composing-enter-does-not-commit",
+      "canvas-stale-composition-cannot-write-after-sheet-switch",
+      "report-formula-composing-apply-guard",
+      "report-formula-composing-enter-guard",
+      "report-pointer-activation-keeps-press-ownership"
+    ],
+    "actualChecks": [
+      "canvas-blur-defers-final-composition",
+      "canvas-composing-enter-does-not-commit",
+      "canvas-stale-composition-cannot-write-after-sheet-switch",
+      "report-formula-composing-apply-guard",
+      "report-formula-composing-enter-guard",
+      "report-pointer-activation-keeps-press-ownership"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

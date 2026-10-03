@@ -1,0 +1,78 @@
+
+> lumina-sheets@0.29.0 build:site
+> npm run build -- --base=/lumina-sheets/ && npm run build:sdk
+
+
+> lumina-sheets@0.29.0 build
+> tsc -b && vite build --base=/lumina-sheets/
+
+vite v6.4.3 building for production...
+transforming...
+✓ 1694 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                      0.88 kB │ gzip:   0.53 kB
+dist/examples/report.html                           16.17 kB │ gzip:   5.06 kB
+dist/assets/lab.worker-BXJrM8GU.js                  29.09 kB
+dist/assets/calculation.worker-Df1pRNdT.js          29.63 kB
+dist/assets/range-benchmark.worker-DRD6uCM-.js      30.03 kB
+dist/assets/report-3k6ecC6N.css                      0.26 kB │ gzip:   0.21 kB
+dist/assets/sheet-rename-Dl5D_brh.css               10.53 kB │ gzip:   2.83 kB
+dist/assets/index-riBiZuOF.css                      70.17 kB │ gzip:  15.05 kB
+dist/assets/_commonjs-dynamic-modules-TDtrdbi3.js    0.24 kB │ gzip:   0.19 kB
+dist/assets/xlsx-merges-jRX67lKV.js                  1.23 kB │ gzip:   0.76 kB
+dist/assets/xlsx-hyperlinks-CLBYy6jU.js              1.59 kB │ gzip:   0.95 kB
+dist/assets/xlsx-formulas-p5F4GvzI.js                1.82 kB │ gzip:   1.07 kB
+dist/assets/xlsx-objects-P1c5Ims8.js                 1.83 kB │ gzip:   1.14 kB
+dist/assets/xlsx-visibility-DlyqHwmT.js              2.83 kB │ gzip:   1.42 kB
+dist/assets/xlsx-cells-BagUCJBR.js                   3.68 kB │ gzip:   1.89 kB
+dist/assets/xlsx-rich-text-CIWt0gMt.js               4.66 kB │ gzip:   2.31 kB
+dist/assets/xlsx-print-DZcoUzHJ.js                   7.32 kB │ gzip:   3.36 kB
+dist/assets/xlsx-validation-Bbg7L5Wy.js              9.68 kB │ gzip:   4.13 kB
+dist/assets/report-C4gdo-oX.js                      90.60 kB │ gzip:  29.11 kB
+dist/assets/xlsx-archive-DOgndSi-.js               132.71 kB │ gzip:  41.46 kB
+dist/assets/index-QxgWkc0Q.js                      212.81 kB │ gzip:  65.38 kB
+dist/assets/sheet-rename-BYgImDgz.js               385.44 kB │ gzip: 129.10 kB
+dist/assets/exceljs.min-Dmusz3cO.js                940.04 kB │ gzip: 271.24 kB
+✓ built in 2.44s
+
+> lumina-sheets@0.29.0 build:sdk
+> vite build --config vite.sdk.config.ts && tsc -p tsconfig.sdk.json && node scripts/package-sdk.mjs
+
+vite v6.4.3 building for production...
+transforming...
+✓ 94 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/sdk/bundle-inputs.json                        26.75 kB │ gzip:   6.34 kB
+dist/sdk/lumina.css                                10.79 kB │ gzip:   2.93 kB
+dist/sdk/_commonjs-dynamic-modules-BAefz3vp.js      0.53 kB │ gzip:   0.33 kB
+dist/sdk/lumina.js                                  1.27 kB │ gzip:   0.61 kB
+dist/sdk/xlsx-merges-DHBMrBLd.js                    1.57 kB │ gzip:   0.83 kB
+dist/sdk/xlsx-objects-7EWC8H10.js                   2.03 kB │ gzip:   1.17 kB
+dist/sdk/xlsx-hyperlinks-BYVgApQK.js                2.11 kB │ gzip:   1.04 kB
+dist/sdk/xlsx-formulas-DZB6pFcr.js                  2.31 kB │ gzip:   1.16 kB
+dist/sdk/xlsx-visibility-CFtrNQRC.js                3.59 kB │ gzip:   1.55 kB
+dist/sdk/xlsx-cells-JejtMOga.js                     4.88 kB │ gzip:   2.05 kB
+dist/sdk/xlsx-rich-text-DnDrDfzR.js                 6.29 kB │ gzip:   2.54 kB
+dist/sdk/xlsx-print-QmCaJzd-.js                     9.28 kB │ gzip:   3.67 kB
+dist/sdk/xlsx-validation-Km4aXNx4.js               12.12 kB │ gzip:   4.51 kB
+dist/sdk/xlsx-archive-CWgDM_ax.js                 199.89 kB │ gzip:  48.52 kB
+dist/sdk/index-C1xtCPn1.js                        664.90 kB │ gzip: 169.95 kB
+dist/sdk/exceljs.min-Bp5xEe51.js                1,394.20 kB │ gzip: 302.23 kB
+✓ built in 1.79s
+{"packageInstallations":92,"uniqueNameVersions":82,"noticeFiles":127,"errors":0,"reviewItems":0,"unresolvedVendorComponents":0}
+
+> lumina-sheets@0.29.0 check:api
+> node scripts/check-api.mjs
+
+SDK public declaration contract passed (16 files).
+
+> lumina-sheets@0.29.0 check:sdk
+> node scripts/check-sdk.mjs --pack-destination artifacts
+
+SDK consumer: strict TypeScript NodeNext passed without React or ambient type packages
+SDK consumer: strict TypeScript Bundler passed without React or ambient type packages
+SDK consumer: ESM import and non-DOM public API checks passed
+SDK package: archive contents, example and dependency closure passed
+{"name":"lumina-report-sdk","version":"0.29.0","files":40,"packedBytes":728359,"sha256":"166bead41426361ad7dcd264f29add2230d80c9700bf38f88ef40e25edfe84ab","artifact":"/Users/huangwei/Desktop/spreadjs/artifacts/lumina-report-sdk-0.29.0.tgz"}
