@@ -564,6 +564,69 @@ it('does not apply a pointer release to a different cell, a disabled button or a
   expect(set).not.toHaveBeenCalled();
 });
 
+it('keeps pointer activation owned by the cell and draft present at press time', async () => {
+  const { grid, $, report } = mount();
+  await report('list');
+  $('#formula').value = 'source draft';
+  $('#formula').listeners.get('input')!();
+  const apply = $('#apply');
+  const set = vi.spyOn(grid, 'setCell');
+  apply.listeners.get('mousedown')!({ button: 0 });
+  grid.select({ row: 0, col: 1 });
+  $('#formula').value = 'new cell draft';
+  $('#formula').listeners.get('input')!();
+  apply.listeners.get('mouseup')!({ button: 0 });
+  await apply.onclick!({ detail: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  expect(grid.getValue('B1')).toBe('产品');
+  expect($('#formula').value).toBe('new cell draft');
+
+  apply.listeners.get('mousedown')!({ button: 0 });
+  $('#formula').value = 'newer draft during press';
+  $('#formula').listeners.get('input')!();
+  apply.listeners.get('mouseup')!({ button: 0 });
+  await apply.onclick!({ detail: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  expect(grid.getValue('B1')).toBe('产品');
+  apply.listeners.get('mousedown')!({ button: 0 });
+  apply.listeners.get('pointercancel')!();
+  apply.listeners.get('mouseup')!({ button: 0 });
+  await apply.onclick!({ detail: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+});
+
+it('does not complete an old pointer activation after sheet switch or report replacement', async () => {
+  const { grid, $, report } = mount();
+  await report('sheets');
+  const apply = $('#apply');
+  $('#formula').value = 'old sheet draft';
+  $('#formula').listeners.get('input')!();
+  const set = vi.spyOn(grid, 'setCell');
+  apply.listeners.get('mousedown')!({ button: 0 });
+  grid.setActiveSheet(grid.sheetInfos[0].id);
+  apply.listeners.get('mouseup')!({ button: 0 });
+  await apply.onclick!({ detail: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  expect(grid.getValue('A1')).toBe('月份');
+
+  apply.listeners.get('mousedown')!({ button: 0 });
+  await report('formulas');
+  apply.listeners.get('mouseup')!({ button: 0 });
+  await apply.onclick!({ detail: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  expect(grid.getValue('A1')).toBe('场景');
+  $('#formula').value = 'new keyboard draft';
+  $('#formula').listeners.get('input')!();
+  $('#formula').onkeydown!({ key: 'Enter' });
+  expect(set).toHaveBeenCalledTimes(1);
+  expect(grid.getValue('A1')).toBe('new keyboard draft');
+});
+
 it('exposes the financial formula examples shipped by the engine', async () => {
   const { grid, report } = mount();
   await report('formulas');

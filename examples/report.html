@@ -488,6 +488,8 @@
       let pointerApplyRevision = 0;
       let pointerAppliedDraft = null;
       let pointerApplyPressed = false;
+      let pointerApplyDraft = null;
+      let pointerApplyCancelled = false;
       let savedWorkbookJson = null;
       let pendingUnloadRecovery = null;
       function markSessionEdited() {
@@ -676,7 +678,9 @@
         return draft && Object.keys(current).every((key) => draft[key] === current[key]);
       }
       function cancelPointerApply() {
+        if (pointerApplyDraft) pointerApplyCancelled = true;
         pointerApplyPressed = false;
+        pointerApplyDraft = null;
         ++pointerApplyRevision;
         pointerAppliedDraft = null;
         clearTimeout(pointerApplyTimer);
@@ -684,7 +688,8 @@
       }
       function schedulePointerApply() {
         if (formulaComposing || $('#apply').disabled) return;
-        const draft = captureApplyDraft();
+        const draft = pointerApplyDraft;
+        if (!matchesApplyDraft(draft)) return;
         pointerAppliedDraft = null;
         const revision = ++pointerApplyRevision;
         clearTimeout(pointerApplyTimer);
@@ -1461,11 +1466,17 @@
         try {
           const handledByPointerFallback =
             event?.detail !== 0 && matchesApplyDraft(pointerAppliedDraft);
+          const stalePointerActivation =
+            event?.detail > 0 &&
+            (pointerApplyCancelled || (pointerApplyDraft && !matchesApplyDraft(pointerApplyDraft)));
           ++pointerApplyRevision;
           pointerAppliedDraft = null;
+          pointerApplyDraft = null;
+          pointerApplyPressed = false;
+          pointerApplyCancelled = false;
           clearTimeout(pointerApplyTimer);
           pointerApplyTimer = null;
-          if (handledByPointerFallback) return;
+          if (handledByPointerFallback || stalePointerActivation) return;
           applyFormulaDraft();
         } catch (error) {
           formulaDraft = { key: cellKey(selection.row, selection.col), value: $('#formula').value };
@@ -1478,19 +1489,28 @@
       // preserves the normal click path while committing exactly once when the
       // click event never arrives. Keyboard Enter remains synchronous.
       $('#apply').addEventListener('pointerdown', (event) => {
-        if (event.isPrimary && event.button === 0 && !$('#apply').disabled)
+        if (event.isPrimary && event.button === 0 && !$('#apply').disabled) {
+          pointerApplyCancelled = false;
           pointerApplyPressed = true;
+          pointerApplyDraft = captureApplyDraft();
+        }
       });
       $('#apply').addEventListener('mousedown', (event) => {
-        if (event.button === 0 && !$('#apply').disabled) pointerApplyPressed = true;
+        if (event.button === 0 && !$('#apply').disabled) {
+          // Mouse compatibility events follow pointerdown: retain its original
+          // ownership instead of recapturing a draft changed by another handler.
+          if (!pointerApplyPressed) {
+            pointerApplyCancelled = false;
+            pointerApplyDraft = captureApplyDraft();
+          }
+          pointerApplyPressed = true;
+        }
       });
       $('#apply').addEventListener('pointerleave', () => {
         pointerApplyPressed = false;
       });
       $('#apply').addEventListener('pointercancel', () => {
-        pointerApplyPressed = false;
-        ++pointerApplyRevision;
-        clearTimeout(pointerApplyTimer);
+        cancelPointerApply();
       });
       $('#apply').addEventListener('pointerup', (event) => {
         if (event.isPrimary && event.button === 0 && event.pointerType !== 'mouse') {

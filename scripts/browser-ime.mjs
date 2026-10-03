@@ -337,6 +337,51 @@ try {
     assert.equal(after, '结果：报表中文');
     return { before, during, after };
   });
+  await check('report-pointer-activation-keeps-press-ownership', async () => {
+    await page.locator('#address').fill('A1');
+    await page.locator('#jump').click();
+    await page.locator('#formula').fill('source pointer draft');
+    await page.locator('#apply').evaluate((apply) => {
+      apply.dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true }));
+      document.querySelector('#address').value = 'B1';
+      document.querySelector('#jump').click();
+      const formula = document.querySelector('#formula');
+      formula.value = 'different cell draft';
+      formula.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      apply.dispatchEvent(new MouseEvent('mouseup', { button: 0, bubbles: true }));
+      apply.dispatchEvent(new MouseEvent('click', { button: 0, detail: 1, bubbles: true }));
+    });
+    await page.waitForTimeout(120);
+    assert.equal(await page.locator('#value').textContent(), '结果：产品');
+    assert.equal(await page.locator('#formula').inputValue(), 'different cell draft');
+    await page.locator('#apply').evaluate((apply) => {
+      apply.dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true }));
+      const formula = document.querySelector('#formula');
+      formula.value = 'newer draft while pressed';
+      formula.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      apply.dispatchEvent(new MouseEvent('mouseup', { button: 0, bubbles: true }));
+      apply.dispatchEvent(new MouseEvent('click', { button: 0, detail: 1, bubbles: true }));
+    });
+    await page.waitForTimeout(120);
+    assert.equal(await page.locator('#value').textContent(), '结果：产品');
+    assert.equal(await page.locator('#formula').inputValue(), 'newer draft while pressed');
+    await page.locator('#apply').click();
+    assert.equal(await page.locator('#value').textContent(), '结果：newer draft while pressed');
+    await page.locator('#undo').click();
+    assert.equal(await page.locator('#value').textContent(), '结果：产品');
+    await page.locator('#formula').fill('cancelled pointer draft');
+    await page.locator('#apply').evaluate((apply) => {
+      apply.dispatchEvent(new PointerEvent('pointerdown', { button: 0, isPrimary: true, pointerType: 'touch', bubbles: true }));
+      apply.dispatchEvent(new PointerEvent('pointercancel', { isPrimary: true, pointerType: 'touch', bubbles: true }));
+      apply.dispatchEvent(new MouseEvent('click', { button: 0, detail: 1, bubbles: true }));
+    });
+    assert.equal(await page.locator('#value').textContent(), '结果：产品');
+    await page.locator('#formula').press('Enter');
+    assert.equal(await page.locator('#value').textContent(), '结果：cancelled pointer draft');
+    await page.locator('#undo').click();
+    assert.equal(await page.locator('#value').textContent(), '结果：产品');
+    return { changedCellIgnored: true, changedDraftIgnored: true, cancellationIgnored: true, freshClickAndKeyboardUndoPassed: true };
+  });
 } catch (error) {
   report.runErrors.push({
     name: error?.name ?? 'Error',
@@ -351,6 +396,7 @@ try {
     'canvas-stale-composition-cannot-write-after-sheet-switch',
     'report-formula-composing-apply-guard',
     'report-formula-composing-enter-guard',
+    'report-pointer-activation-keeps-press-ownership',
   ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();

@@ -7,6 +7,15 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r32](acceptance/browser-candidate-2026-10-03-r32/README.md)
+fixes formula-bar activation ownership across selection/draft changes and cancels
+late clicks across pointercancel, sheet switch and report replacement. A failing
+regression reproduced the wrong-cell write before the fix. All 2372 tests and 153
+three-engine checks pass; two builds agree on site `7e1c53a7791bc0eef950a510f81cc17056ec9ff1c8a356ea4b2c465055a97962`
+and SDK `b0ae6a1ef23aa47524b5677ebcb3023bbf56e4b7249e1f57e403cb6167403593`
+(726106 bytes). Native input/platform and publication gates remain open. The
+following records are historical and do not certify r32 native behavior.
+
 2026-10-03: [Native r31 event investigation](acceptance/safari-session-2026-10-03-r31/README.md)
 reproduces mouse-cancel → first Apply failing on both the deployed example and an
 independent page containing no Lumina code. The diagnostic page observes release
