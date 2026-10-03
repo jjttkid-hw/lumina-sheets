@@ -114,10 +114,13 @@ jobs:
         env:
           BROWSER_ENGINE: ${{ matrix.engine }}
           BROWSER_CHANNEL: bundled
+          BROWSER_PERFORMANCE_BUDGET_FILE: scripts/fixtures/performance-ci-budget.json
           # Linux WebKit needs a display session for the native OS clipboard.
           # Keep actual copy/paste assertions enabled instead of synthesizing events.
           BROWSER_HEADED: ${{ matrix.engine == 'webkit' && '1' || '0' }}
         run: xvfb-run --auto-servernum node scripts/check-browser-core.mjs
+      - name: Verify raw performance measurements and budget judgement
+        run: node scripts/check-browser-performance-evidence.mjs artifacts/browser-performance/${{ matrix.engine }}
       - uses: actions/upload-artifact@v7
         if: always()
         with:

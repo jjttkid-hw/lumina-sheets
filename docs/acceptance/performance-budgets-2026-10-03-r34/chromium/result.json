@@ -1,0 +1,561 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "143.0.7499.4",
+  "executedAt": "2026-10-03T06:40:33.452Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true,
+    "cpuModel": "Apple M5 Pro",
+    "logicalCpuCount": 15,
+    "totalMemoryBytes": 25769803776
+  },
+  "siteSha256": "eee2b027616215ce2e1f76ab13d97956d8529d597acffa890b75ee0491a02820",
+  "artifactSha256": "5afed7f6e3ae70291f1f000836395453af082ecd3fff61bfab14085e2d4b366c",
+  "scope": "Measured real-browser performance on this machine. An explicit profile optionally judges latency ceilings; see performanceBudget for configuration and results. No customer hardware SLA or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.",
+  "checks": [
+    {
+      "name": "fixture-100000",
+      "status": "passed",
+      "elapsedMs": 6157,
+      "details": {
+        "fixture": {
+          "storedCells": 100000,
+          "formulaCount": 10000,
+          "dataReadyMs": 149.2999999988824,
+          "generatedMs": 111.60000000149012,
+          "firstDrawMs": 160.39999999850988,
+          "logicalRows": 1000000,
+          "logicalColumns": 256,
+          "populatedColumns": 10
+        },
+        "canvas": 1.900000000372529,
+        "edit": {
+          "frames": 30,
+          "observedFrames": 30,
+          "droppedFrames": 0,
+          "sampleLimit": 10000,
+          "averageMs": 3.639999999975165,
+          "p50Ms": 3.099999999627471,
+          "p95Ms": 7.699999999254942,
+          "p99Ms": 9.5,
+          "maxMs": 9.5,
+          "averagePaintedCells": 169,
+          "averageDomNodes": 4,
+          "samples": [
+            {
+              "durationMs": 5.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 7.699999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1.599999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 9.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.299999998882413,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1.200000001117587,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1.800000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1.800000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.800000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.199999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.900000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.299999998882413,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.199999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.699999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.799999998882413,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.299999998882413,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.099999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.800000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.599999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.300000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.400000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.699999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.900000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.099999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.600000001490116,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 6.600000001490116,
+              "paintedCells": 169,
+              "domNodes": 4
+            }
+          ]
+        },
+        "worker": {
+          "targets": 10000,
+          "roundTripMs": 50.59999999962747,
+          "calculationMs": 49.600000001490116,
+          "firstValue": 5,
+          "lastValue": 50000
+        },
+        "evidence": {
+          "file": "fixture-100000-after-edit.json",
+          "sha256": "393c6785fc5071025228c61c01305d1ec3e22624e312fcf53bdccfcebc34b8b3"
+        }
+      }
+    },
+    {
+      "name": "fixture-1000000",
+      "status": "passed",
+      "elapsedMs": 9216,
+      "details": {
+        "fixture": {
+          "storedCells": 1000000,
+          "formulaCount": 100000,
+          "dataReadyMs": 1573.7999999988824,
+          "generatedMs": 1563.800000000745,
+          "firstDrawMs": 1583.0999999996275,
+          "logicalRows": 1000000,
+          "logicalColumns": 256,
+          "populatedColumns": 10
+        },
+        "canvas": 2.200000001117587,
+        "edit": {
+          "frames": 30,
+          "observedFrames": 30,
+          "droppedFrames": 0,
+          "sampleLimit": 10000,
+          "averageMs": 3.6199999999254944,
+          "p50Ms": 2.900000000372529,
+          "p95Ms": 7.400000000372529,
+          "p99Ms": 8,
+          "maxMs": 8,
+          "averagePaintedCells": 169,
+          "averageDomNodes": 4,
+          "samples": [
+            {
+              "durationMs": 2.799999998882413,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 7.400000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 6.299999998882413,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 8,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.300000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.300000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.400000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.699999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.400000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 6.200000001117587,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.699999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.400000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 7,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 6.199999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.300000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.900000000372529,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.599999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.699999999254942,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.899999998509884,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 1.5,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.099999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.099999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.100000001490116,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.099999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 3.799999998882413,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 2.800000000745058,
+              "paintedCells": 169,
+              "domNodes": 4
+            },
+            {
+              "durationMs": 4.099999999627471,
+              "paintedCells": 169,
+              "domNodes": 4
+            }
+          ]
+        },
+        "worker": {
+          "targets": 100000,
+          "roundTripMs": 532,
+          "calculationMs": 518.5,
+          "firstValue": 5,
+          "lastValue": 500000
+        },
+        "evidence": {
+          "file": "fixture-1000000-after-edit.json",
+          "sha256": "f80e67393b628bd0a92fe4e9b0cf8445b27973e8890788bd227f6bc69fa3d1bc"
+        }
+      }
+    },
+    {
+      "name": "scroll-cancel-clear",
+      "status": "passed",
+      "elapsedMs": 100,
+      "details": {
+        "cancelled": {
+          "completed": 1,
+          "planned": 40,
+          "status": "cancelled",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        },
+        "reset": {
+          "completed": 0,
+          "planned": 40,
+          "status": "not-started",
+          "scope": "24 populated-area targets and 16 whole-sheet targets including empty rows; summary covers retained draws, with observed/dropped counts"
+        }
+      }
+    },
+    {
+      "name": "range-cancel",
+      "status": "passed",
+      "elapsedMs": 34
+    },
+    {
+      "name": "range-disjoint",
+      "status": "passed",
+      "elapsedMs": 2327,
+      "details": {
+        "invalidationP50Ms": 0,
+        "invalidationP95Ms": 0.10000000149011612,
+        "incrementalReadP50Ms": 3.099999999627471,
+        "incrementalReadP95Ms": 3.5,
+        "fullRecalculationP50Ms": 44.29999999888241,
+        "fullRecalculationP95Ms": 49.40000000037253,
+        "meanRecomputedFormulas": 1,
+        "meanCandidateChecks": 13.033333333333333,
+        "meanIndexVisits": 26.733333333333334
+      }
+    },
+    {
+      "name": "range-overlapping",
+      "status": "passed",
+      "elapsedMs": 2341,
+      "details": {
+        "invalidationP50Ms": 8,
+        "invalidationP95Ms": 10.599999999627471,
+        "incrementalReadP50Ms": 20.90000000037253,
+        "incrementalReadP95Ms": 24.799999998882413,
+        "fullRecalculationP50Ms": 20.700000001117587,
+        "fullRecalculationP95Ms": 22.90000000037253,
+        "meanRecomputedFormulas": 10000,
+        "meanCandidateChecks": 10000,
+        "meanIndexVisits": 20000
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "performanceBudget": {
+    "profile": {
+      "schema": 1,
+      "name": "Local desktop reference target v1",
+      "scope": "Reference targets for the recorded developer Mac only. Canvas paint is not FPS; edit starts at commit, not physical keypress; worker is one round trip. Target customer devices require their own recorded runs.",
+      "fixtures": {
+        "100000": {
+          "firstDrawMs": 1500,
+          "canvasP95Ms": 16.7,
+          "editP95Ms": 50,
+          "workerRoundTripMs": 1000
+        },
+        "1000000": {
+          "firstDrawMs": 5000,
+          "canvasP95Ms": 16.7,
+          "editP95Ms": 50,
+          "workerRoundTripMs": 5000
+        }
+      }
+    },
+    "profileSha256": "c20c99084f69af3ef2ba6b4606094562cc0a765ea0bff12511734b4eca0df423",
+    "status": "passed",
+    "fixtures": [
+      {
+        "storedCells": 100000,
+        "status": "passed",
+        "measured": {
+          "firstDrawMs": 160.39999999850988,
+          "canvasP95Ms": 1.8999999985098839,
+          "editP95Ms": 7.699999999254942,
+          "workerRoundTripMs": 43.09999999962747
+        },
+        "limits": {
+          "firstDrawMs": 1500,
+          "canvasP95Ms": 16.7,
+          "editP95Ms": 50,
+          "workerRoundTripMs": 1000
+        },
+        "failures": [],
+        "evidence": {
+          "file": "fixture-100000-after-edit.json",
+          "sha256": "393c6785fc5071025228c61c01305d1ec3e22624e312fcf53bdccfcebc34b8b3"
+        }
+      },
+      {
+        "storedCells": 1000000,
+        "status": "passed",
+        "measured": {
+          "firstDrawMs": 1583.0999999996275,
+          "canvasP95Ms": 2.199999999254942,
+          "editP95Ms": 7.400000000372529,
+          "workerRoundTripMs": 487.80000000074506
+        },
+        "limits": {
+          "firstDrawMs": 5000,
+          "canvasP95Ms": 16.7,
+          "editP95Ms": 50,
+          "workerRoundTripMs": 5000
+        },
+        "failures": [],
+        "evidence": {
+          "file": "fixture-1000000-after-edit.json",
+          "sha256": "f80e67393b628bd0a92fe4e9b0cf8445b27973e8890788bd227f6bc69fa3d1bc"
+        }
+      }
+    ]
+  },
+  "validation": {
+    "expectedChecks": [
+      "fixture-100000",
+      "fixture-1000000",
+      "scroll-cancel-clear",
+      "range-cancel",
+      "range-disjoint",
+      "range-overlapping"
+    ],
+    "actualChecks": [
+      "fixture-100000",
+      "fixture-1000000",
+      "scroll-cancel-clear",
+      "range-cancel",
+      "range-disjoint",
+      "range-overlapping"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

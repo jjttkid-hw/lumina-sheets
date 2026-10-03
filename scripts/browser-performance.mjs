@@ -3,9 +3,11 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
+import { cpus, totalmem } from 'node:os';
 import { siteDigest } from './site-evidence.mjs';
 import { verifySiteHttp } from './site-runtime.mjs';
 import { finalizeBrowserReport } from './browser-report.mjs';
+import { evaluateBrowserPerformanceBudget, validateBrowserPerformanceBudget } from './browser-performance-budget.mjs';
 
 // Real browser smoke coverage only. Native IME, Safari, assistive technology and
 // physical touch still require the separate acceptance matrix.
@@ -22,7 +24,11 @@ assert(
   'Use a local candidate server or the official Pages deployment',
 );
 const output = path.resolve(`artifacts/browser-performance/${engine}`);
+const budgetFile = process.env.BROWSER_PERFORMANCE_BUDGET_FILE;
+const budgetBytes = budgetFile ? await readFile(budgetFile) : null;
+const budget = budgetBytes ? validateBrowserPerformanceBudget(JSON.parse(budgetBytes.toString('utf8'))) : null;
 await mkdir(output, { recursive: true });
+if (budgetBytes) await writeFile(path.join(output, 'budget.json'), budgetBytes);
 const site = await siteDigest('dist');
 await verifySiteHttp('dist', origin.origin);
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
@@ -52,15 +58,24 @@ const report = {
     arch: process.arch,
     node: process.version,
     headless: process.env.BROWSER_HEADED !== '1',
+    cpuModel: cpus()[0]?.model ?? 'unknown',
+    logicalCpuCount: cpus().length,
+    totalMemoryBytes: totalmem(),
   },
   siteSha256: site.sha256,
   artifactSha256: createHash('sha256').update(archive).digest('hex'),
   scope:
-    'Measured real-browser performance on this machine, no pass/fail latency budget or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.',
+    'Measured real-browser performance on this machine. An explicit profile optionally judges latency ceilings; see performanceBudget for configuration and results. No customer hardware SLA or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.',
   checks: [],
   pageErrors: [],
   consoleErrors: [],
   runErrors: [],
+  performanceBudget: budget ? {
+    profile: budget,
+    profileSha256: createHash('sha256').update(budgetBytes).digest('hex'),
+    status: 'running',
+    fixtures: [],
+  } : { status: 'not-configured' },
 };
 page.on('pageerror', (error) => report.pageErrors.push(error.message));
 page.on('console', (message) => {
@@ -129,7 +144,8 @@ try {
       await page.getByLabel('跳至行').fill('1');
       await page.getByRole('button', { name: '定位', exact: true }).click();
       await page.getByRole('gridcell').filter({ hasText: 'A1 1' }).waitFor();
-      for (const value of [10, 20, 30, 40, 50]) {
+      // Enough committed edits for a useful p95; final A1 remains 50.
+      for (const value of Array.from({ length: 30 }, (_, index) => index < 29 ? 10 + index : 50)) {
         await page.getByRole('grid').focus();
         await page.keyboard.press('F2');
         const input = page.getByRole('textbox', { name: '编辑单元格 A1', exact: true });
@@ -154,13 +170,26 @@ try {
       const edited = await download('导出实测报告', `fixture-${size}-after-edit.json`);
       assert.equal(edited.workerCalculation.firstValue, 54);
       assert.equal(edited.workerCalculation.lastValue, size / 2);
-      assert.equal(edited.editToCanvas.frames, 5);
+      assert.equal(edited.editToCanvas.frames, 30);
+      if (budget) {
+        const judged = evaluateBrowserPerformanceBudget(edited, budget);
+        judged.evidence = {
+          file: `fixture-${size}-after-edit.json`,
+          sha256: createHash('sha256').update(await readFile(path.join(output, `fixture-${size}-after-edit.json`))).digest('hex'),
+        };
+        report.performanceBudget.fixtures.push(judged);
+        assert.equal(judged.status, 'passed', `Performance budget exceeded: ${JSON.stringify(judged.failures)}`);
+      }
       await page.screenshot({ path: path.join(output, `fixture-${size}.png`), fullPage: true });
       return {
         fixture: first.fixture,
         canvas: first.canvas.p95Ms,
         edit: edited.editToCanvas,
         worker: first.workerCalculation,
+        evidence: {
+          file: `fixture-${size}-after-edit.json`,
+          sha256: createHash('sha256').update(await readFile(path.join(output, `fixture-${size}-after-edit.json`))).digest('hex'),
+        },
       };
     });
   }
@@ -205,6 +234,8 @@ try {
   });
   throw error;
 } finally {
+  if (budget) report.performanceBudget.status =
+    report.performanceBudget.fixtures.length === 2 && report.performanceBudget.fixtures.every(item => item.status === 'passed') ? 'passed' : 'failed';
   finalizeBrowserReport(report, [
     'fixture-100000',
     'fixture-1000000',

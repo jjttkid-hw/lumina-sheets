@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "name": "CI browser regression guard v1",
+  "scope": "Generous regression ceilings for GitHub hosted Linux runners. Canvas paint is not FPS; edit starts at commit, not physical keypress; worker is one round trip. Not a customer hardware SLA or a competitor comparison.",
+  "fixtures": {
+    "100000": { "firstDrawMs": 5000, "canvasP95Ms": 50, "editP95Ms": 150, "workerRoundTripMs": 5000 },
+    "1000000": { "firstDrawMs": 15000, "canvasP95Ms": 50, "editP95Ms": 150, "workerRoundTripMs": 15000 }
+  }
+}

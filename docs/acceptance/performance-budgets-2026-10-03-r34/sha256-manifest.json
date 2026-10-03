@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2548,
+      "sha256": "52a7da56cd0b8f67539f336584d4f6f1df1cded4e79cfc34593fdca56c0be3ac"
+    },
+    {
+      "path": "chromium/budget.json",
+      "bytes": 517,
+      "sha256": "c20c99084f69af3ef2ba6b4606094562cc0a765ea0bff12511734b4eca0df423"
+    },
+    {
+      "path": "chromium/core.json",
+      "bytes": 1383,
+      "sha256": "d41ae09b829ef64bba0ccca8030b62003157371956bb953e0dd145f4c3f85c6a"
+    },
+    {
+      "path": "chromium/fixture-100000-after-edit.json",
+      "bytes": 23342,
+      "sha256": "393c6785fc5071025228c61c01305d1ec3e22624e312fcf53bdccfcebc34b8b3"
+    },
+    {
+      "path": "chromium/fixture-1000000-after-edit.json",
+      "bytes": 24075,
+      "sha256": "f80e67393b628bd0a92fe4e9b0cf8445b27973e8890788bd227f6bc69fa3d1bc"
+    },
+    {
+      "path": "chromium/result.json",
+      "bytes": 16185,
+      "sha256": "15b4ac36eae0306e660832e2b0c0940650ef12efa049788f1ed3acade22b5328"
+    },
+    {
+      "path": "firefox/budget.json",
+      "bytes": 517,
+      "sha256": "c20c99084f69af3ef2ba6b4606094562cc0a765ea0bff12511734b4eca0df423"
+    },
+    {
+      "path": "firefox/core.json",
+      "bytes": 1280,
+      "sha256": "70567d6d5ccb42348cd911e6fed9d8952ccb8cb546c24fa29d44c44efcaaec20"
+    },
+    {
+      "path": "firefox/fixture-100000-after-edit.json",
+      "bytes": 26229,
+      "sha256": "7fa745bcf1c0c8422efc1990c199da0dcb888375ac8209a21f872c312853aef6"
+    },
+    {
+      "path": "firefox/fixture-1000000-after-edit.json",
+      "bytes": 26391,
+      "sha256": "85ad3259572932b1146339e073720d975f2657c168b8370c7c43e4e23b0aacaf"
+    },
+    {
+      "path": "firefox/result.json",
+      "bytes": 14909,
+      "sha256": "15a27895f9ea4ad4093666b90ab763fc604514642687fe4f3ebc781781995c65"
+    },
+    {
+      "path": "tests.log",
+      "bytes": 10324,
+      "sha256": "758dfbb7d9ab2b519630c795dd86757dc52090515514e0a6f3ed564443989c5c"
+    },
+    {
+      "path": "webkit/budget.json",
+      "bytes": 517,
+      "sha256": "c20c99084f69af3ef2ba6b4606094562cc0a765ea0bff12511734b4eca0df423"
+    },
+    {
+      "path": "webkit/core.json",
+      "bytes": 1279,
+      "sha256": "37c2880b0936654c19288430a9adfe7b4fb95a529749794715cd091568f15fe9"
+    },
+    {
+      "path": "webkit/fixture-100000-after-edit.json",
+      "bytes": 20307,
+      "sha256": "9f75926ee4e9b14ae0b203894321d35e254c4ef8b7159e9cb36c0febe7e477f5"
+    },
+    {
+      "path": "webkit/fixture-1000000-after-edit.json",
+      "bytes": 20436,
+      "sha256": "df8a765835ff3ba0cc53e0beb0fbaf10e0002620f722749f1406d9d136b8a2e0"
+    },
+    {
+      "path": "webkit/result.json",
+      "bytes": 15132,
+      "sha256": "216064aba073e7782b42386efff89b455fbbc21b99b0bbffd447a6d1b3acad66"
+    }
+  ]
+}

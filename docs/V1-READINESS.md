@@ -7,6 +7,15 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Explicit performance budgets](acceptance/performance-budgets-2026-10-03-r34/README.md)
+supplement r34 without changing product artifacts. Both 100,000 and 1,000,000
+stored-cell workloads pass the committed developer-desktop profile in Chromium,
+Firefox and WebKit, using 40 target viewports and 30 separate edits per fixture.
+Raw downloads and budget bytes are retained and independently revalidated.
+All 2385 tests and the 159-check core rerun pass. CI now enforces its separate,
+generous runner regression ceilings; customer hardware/SLA and competitor
+comparison gates remain open. See [methodology](PERFORMANCE-BUDGETS.md).
+
 2026-10-03: [Candidate r34](acceptance/browser-candidate-2026-10-03-r34/README.md)
 refuses conflicting workspace journal retry identities instead of silently
 selecting the last-read edit. Identical reordered retries still deduplicate.
