@@ -1,6 +1,6 @@
 # Lumina Sheets v1.0 readiness
 
-This page records the candidate evidence observed through 2026-10-03; deployment commit IDs
+This page records the candidate evidence observed through 2026-10-04; deployment commit IDs
 are dated observations, not a promise that they remain the newest main commit. Live
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
