@@ -7,6 +7,14 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Workspace rule-dialog acceptance](acceptance/workspace-validation-2026-10-03-r35/README.md)
+adds 18 shipped-control browser checks on unchanged r35 artifacts. WPS import,
+rule/title editing, undo/redo, durable reload, empty-title export/reimport, narrow
+keyboard operation and exact metadata whitespace roundtrips pass in three engines.
+CI now runs this workflow and retains actual XLSX/JSON downloads. Commit e376f5d
+passed CI 37106530604 and CD 37106839749; the live build-info response agrees.
+This does not close native, customer, npm or commercial stable gates.
+
 2026-10-03: [Candidate r35](acceptance/browser-candidate-2026-10-03-r35/README.md)
 adds optional WPS/XLSX Stop validation error titles and fixes error-title/message
 whitespace and OOXML string-escape roundtrips. All 2389 tests and 162 three-engine
