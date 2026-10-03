@@ -1,0 +1,208 @@
+
+> lumina-sheets@0.29.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /Users/huangwei/Desktop/spreadjs
+
+ ✓ tests/xlsx-validation.test.ts (26 tests) 516ms
+ ✓ tests/stable-release.test.ts (26 tests) 874ms
+   ✓ stable release evidence > checks actual tarball inventory, site files, report bytes and symlink confinement  845ms
+ ✓ tests/registry-artifact.test.ts (4 tests) 1144ms
+   ✓ downloads a version from a local registry fixture, installs and imports it; rejects tampering and 404  1135ms
+ ✓ tests/xlsx-print.test.ts (20 tests) 826ms
+   ✓ XLSX archive preflight > rejects declared XML decompression size before inflating a large member  372ms
+ ✓ tests/lookup-wildcard.test.ts (5 tests) 1007ms
+   ✓ wildcard report lookups > propagates exhausted matching budgets instead of using the missing-value fallback  710ms
+ ✓ tests/xlsx-merges.test.ts (23 tests) 883ms
+ ✓ tests/xlsx-formula-cache.test.ts (16 tests) 910ms
+ ✓ tests/csv-wide-row.test.ts (3 tests) 1152ms
+   ✓ static CSV wide-row serialization > splits a wide row while preserving formulas, escaping, Unicode and trailing empty fields  1143ms
+ ✓ tests/xlsx-dates.test.ts (24 tests) 1004ms
+ ✓ tests/api-contract.test.ts (4 tests) 1558ms
+   ✓ public API declaration gate > ignores private implementation and comments while preserving public contracts  431ms
+   ✓ public API declaration gate > rejects changed public signatures and never updates the baseline implicitly  404ms
+   ✓ public API declaration gate > rejects changed package exports  370ms
+   ✓ public API declaration gate > rejects an empty declaration graph or unsupported arguments  351ms
+ ✓ tests/xlsx-scalar-values.test.ts (39 tests) 1180ms
+ ✓ tests/xlsx-string-structure.test.ts (10 tests) 382ms
+ ✓ tests/validation-input-message.test.ts (4 tests) 631ms
+   ✓ validation selection input messages > imports and roundtrips enabled and disabled input messages without changing Stop errors  425ms
+ ✓ tests/app-workspace.test.ts (102 tests) 1351ms
+ ✓ tests/xlsx-merge-content.test.ts (12 tests) 326ms
+ ✓ tests/build-info.test.ts (3 tests) 707ms
+   ✓ deployed build identity > updates the content digest when deployed bytes change and is repeatable otherwise  308ms
+ ✓ tests/engine-financial.test.ts (25 tests) 657ms
+   ✓ periodic discounted cash flow > validates argument/work limits and propagates formula errors  369ms
+ ✓ tests/cell-hyperlink.test.ts (11 tests) 596ms
+ ✓ tests/report-csv-wide-row.test.ts (5 tests) 441ms
+ ✓ tests/wildcard.test.ts (4 tests) 654ms
+   ✓ bounded wildcard matching > supports conditional functions and MATCH without regex backtracking  566ms
+ ✓ tests/xlsx-shared-strings.test.ts (18 tests) 799ms
+ ✓ tests/xlsx-objects.test.ts (16 tests) 427ms
+ ✓ tests/xlsx-error-values.test.ts (10 tests) 783ms
+ ✓ tests/xlsx-rich-text-encoding.test.ts (12 tests) 624ms
+ ✓ tests/rich-text-script.test.ts (3 tests) 135ms
+ ✓ tests/xlsx-cells.test.ts (12 tests) 552ms
+ ✓ tests/sdk-import.test.ts (43 tests) 465ms
+ ✓ tests/report-example.test.ts (44 tests) 2173ms
+   ✓ does not apply a pointer release to a different cell, a disabled button or a secondary button  505ms
+   ✓ keeps pointer activation owned by the cell and draft present at press time  303ms
+ ✓ tests/xlsx-rich-text-cancel.test.ts (8 tests) 241ms
+ ✓ tests/rich-text.test.ts (10 tests) 385ms
+ ✓ tests/validation-error-title.test.ts (3 tests) 369ms
+ ✓ tests/io-print-settings.test.ts (11 tests) 526ms
+ ✓ tests/calculation-thread.test.ts (6 tests) 461ms
+ ✓ tests/wps-roundtrip.test.ts (1 test) 387ms
+   ✓ preserves WPS 12.1.26055 saved text, formulas, validation and layout  386ms
+ ✓ tests/delimited-numbers.test.ts (18 tests) 220ms
+ ✓ tests/xlsx-rich-text-budget.test.ts (3 tests) 454ms
+ ✓ tests/engine-incremental.test.ts (17 tests) 596ms
+   ✓ managed incremental evaluator > indexes 10,000 independent ranges without scanning every subscription on edit  318ms
+ ✓ tests/workspace-edit.test.ts (20 tests) 181ms
+ ✓ tests/row-sort.test.ts (13 tests) 185ms
+ ✓ tests/deploy-site.test.ts (1 test) 333ms
+   ✓ downloaded deployment artifact verification > requires tested commit, version, and actual file bytes before deployment  333ms
+ ✓ tests/engine-text.test.ts (30 tests) 367ms
+ ✓ tests/structure-io.test.ts (2 tests) 319ms
+ ✓ tests/xlsx-formula-budget.test.ts (7 tests) 165ms
+ ✓ tests/formula-numeric-literal.test.ts (14 tests) 268ms
+ ✓ tests/xlsx-formula-kinds.test.ts (11 tests) 548ms
+ ✓ tests/io.test.ts (21 tests) 507ms
+ ✓ tests/validation-dialog.test.ts (31 tests) 228ms
+ ✓ tests/calculation-session.test.ts (6 tests) 322ms
+ ✓ tests/tsv-import.test.ts (8 tests) 408ms
+   ✓ delimited file import > imports 100,000 rows without expanding the row count into call arguments  401ms
+ ✓ tests/xlsx-xml-async.test.ts (9 tests) 221ms
+ ✓ tests/delimited-extent.test.ts (7 tests) 299ms
+ ✓ tests/supplemental-notices.test.ts (10 tests) 163ms
+ ✓ tests/performance-worker.test.ts (1 test) 333ms
+   ✓ performance laboratory worker > streams the stated actual cell count and calculates real formulas on resident data  332ms
+ ✓ tests/sdk.test.ts (41 tests) 409ms
+   ✓ embeddable SDK edit controller > validates load atomically without imposing the file-import 100k-cell quota  322ms
+ ✓ tests/report-snapshot.test.ts (27 tests) 367ms
+ ✓ tests/engine-extended.test.ts (16 tests) 225ms
+ ✓ tests/browser-performance-budget.test.ts (6 tests) 229ms
+ ✓ tests/canvas-visible-integration.test.ts (46 tests) 105ms
+ ✓ tests/report-data-export.test.ts (16 tests) 149ms
+ ✓ tests/product-build.test.ts (7 tests) 341ms
+ ✓ tests/sdk-quality.test.ts (31 tests) 284ms
+ ✓ tests/hyperlink-structure.test.ts (4 tests) 310ms
+   ✓ internal hyperlink structure tracking > updates links on other sheets atomically and preserves them through XLSX  306ms
+ ✓ tests/calculation-queue.test.ts (37 tests) 68ms
+ ✓ tests/range-dependency-index.test.ts (6 tests) 177ms
+ ✓ tests/validation-workspace-evidence.test.ts (1 test) 104ms
+ ✓ tests/sheet-rename.test.ts (3 tests) 384ms
+   ✓ atomic worksheet rename > rewrites qualifiers in formulas and single-cell links while preserving text and identities  382ms
+ ✓ tests/site-runtime.test.ts (9 tests) 145ms
+ ✓ tests/report-advanced.test.ts (22 tests) 154ms
+ ✓ tests/delimited-parse-cancel.test.ts (7 tests) 98ms
+ ✓ tests/validation-picker.test.ts (28 tests) 52ms
+ ✓ tests/canvas-validation-integration.test.ts (71 tests) 159ms
+ ✓ tests/io-stream.test.ts (21 tests) 106ms
+ ✓ tests/persistence-open.test.ts (7 tests) 60ms
+ ✓ tests/xlsx-import-cancel.test.ts (4 tests) 385ms
+ ✓ tests/canvas-interaction.test.ts (7 tests) 88ms
+ ✓ tests/sort-dialog.test.ts (14 tests) 139ms
+ ✓ tests/calculation-transfer.test.ts (12 tests) 68ms
+ ✓ tests/sdk-sort.test.ts (24 tests) 94ms
+ ✓ tests/data-validation.test.ts (42 tests) 37ms
+ ✓ tests/engine.test.ts (25 tests) 23ms
+ ✓ tests/bundle-evidence.test.ts (3 tests) 72ms
+ ✓ tests/performance-lab.test.ts (8 tests) 72ms
+ ✓ tests/xlsx-archive-cancel.test.ts (4 tests) 62ms
+ ✓ tests/validation-options.test.ts (29 tests) 36ms
+ ✓ tests/range-benchmark.test.ts (3 tests) 54ms
+ ✓ tests/site-evidence.test.ts (3 tests) 57ms
+ ✓ tests/sdk-structure.test.ts (18 tests) 27ms
+ ✓ tests/release-policy.test.ts (19 tests) 59ms
+ ✓ tests/xlsx-export-lifecycle.test.ts (6 tests) 30ms
+ ✓ tests/persistence-replay.test.ts (27 tests) 43ms
+ ✓ tests/formula-bar.test.ts (29 tests) 37ms
+ ✓ tests/sdk-sheets.test.ts (21 tests) 42ms
+ ✓ tests/sdk-incremental.test.ts (4 tests) 36ms
+ ✓ tests/file-text-chunks.test.ts (7 tests) 30ms
+ ✓ tests/report-rest-cancel.test.ts (5 tests) 13ms
+ ✓ tests/range-benchmark-panel.test.ts (6 tests) 36ms
+ ✓ tests/calculation.test.ts (2 tests) 14ms
+ ✓ tests/validation-overlay.test.ts (27 tests) 9ms
+ ✓ tests/sdk-rename.test.ts (9 tests) 59ms
+ ✓ tests/release-workflow.test.ts (4 tests) 9ms
+ ✓ tests/report-cache-concurrency.test.ts (6 tests) 27ms
+ ✓ tests/persistence.test.ts (21 tests) 20ms
+ ✓ tests/formula-structure.test.ts (37 tests) 21ms
+ ✓ tests/workspace-validation.test.ts (64 tests) 29ms
+ ✓ tests/delimited-field-budget.test.ts (5 tests) 28ms
+ ✓ tests/sdk-layout.test.ts (36 tests) 26ms
+ ✓ tests/analytics.test.ts (6 tests) 22ms
+ ✓ tests/report-data.test.ts (33 tests) 55ms
+ ✓ tests/report-pdf-visibility.test.ts (14 tests) 24ms
+ ✓ tests/paged-export-boundary.test.ts (7 tests) 16ms
+ ✓ tests/sdk-validation.test.ts (11 tests) 20ms
+ ✓ tests/file-encoding.test.ts (14 tests) 15ms
+ ✓ tests/report-rest-encoding.test.ts (8 tests) 11ms
+ ✓ tests/evaluation-result.test.ts (3 tests) 6ms
+ ✓ tests/structure-dialog.test.ts (9 tests) 19ms
+ ✓ tests/report-print-settings.test.ts (29 tests) 17ms
+ ✓ tests/sdk-print.test.ts (7 tests) 13ms
+ ✓ tests/workbook-sort.test.ts (11 tests) 17ms
+ ✓ tests/rich-text-dialog.test.ts (4 tests) 18ms
+ ✓ tests/pdf-lifecycle.test.ts (11 tests) 74ms
+ ✓ tests/report-rest-budget.test.ts (14 tests) 22ms
+ ✓ tests/canvas-selection-operations.test.ts (10 tests) 14ms
+ ✓ tests/report-csv-budget.test.ts (10 tests) 24ms
+ ✓ tests/workspace-stats.test.ts (6 tests) 18ms
+ ✓ tests/row-sort-formulas.test.ts (27 tests) 12ms
+ ✓ tests/performance-harness.test.ts (22 tests) 21ms
+ ✓ tests/workspace-save.test.ts (9 tests) 32ms
+ ✓ tests/lookup-lazy.test.ts (5 tests) 15ms
+ ✓ tests/report.test.ts (4 tests) 7ms
+ ✓ tests/structure-edit.test.ts (20 tests) 12ms
+ ✓ tests/workbook-validation.test.ts (9 tests) 8ms
+ ✓ tests/sdk-visible.test.ts (15 tests) 15ms
+ ✓ tests/sdk-zoom.test.ts (14 tests) 14ms
+ ✓ tests/license-evidence.test.ts (40 tests) 11ms
+ ✓ tests/recovery-backup.test.ts (20 tests) 11ms
+ ✓ tests/report-pdf.test.ts (9 tests) 13ms
+ ✓ tests/csv-stream-abort.test.ts (9 tests) 11ms
+ ✓ tests/report-cache-extent.test.ts (17 tests) 7ms
+ ✓ tests/workspace-calculation.test.ts (11 tests) 7ms
+ ✓ tests/recovery-import.test.ts (17 tests) 12ms
+ ✓ tests/paged-snapshot.test.ts (17 tests) 7ms
+ ✓ tests/persistence-compaction-failure.test.ts (3 tests) 6ms
+ ✓ tests/recovery-dialog.test.ts (2 tests) 7ms
+ ✓ tests/sdk-mount.test.ts (7 tests) 9ms
+ ✓ tests/modal-ime.test.ts (12 tests) 8ms
+ ✓ tests/sdk-rich-text.test.ts (1 test) 8ms
+ ✓ tests/trash-storage.test.ts (10 tests) 9ms
+ ✓ tests/persistence-snapshot.test.ts (9 tests) 9ms
+ ✓ tests/workspace-history.test.ts (7 tests) 12ms
+ ✓ tests/persistence-migration-failure.test.ts (3 tests) 13ms
+ ✓ tests/rich-text-edit.test.ts (5 tests) 5ms
+ ✓ tests/engine-paged.test.ts (1 test) 6ms
+ ✓ tests/hyperlink-navigation.test.ts (5 tests) 28ms
+ ✓ tests/build-time.test.ts (10 tests) 8ms
+ ✓ tests/hyperlink-dialog.test.ts (8 tests) 8ms
+ ✓ tests/report-cache-budget.test.ts (12 tests) 17ms
+ ✓ tests/report-hydrate.test.ts (7 tests) 6ms
+ ✓ tests/offline-assets.test.ts (1 test) 13ms
+ ✓ tests/workspace-routes.test.ts (7 tests) 6ms
+ ✓ tests/file-operation.test.ts (4 tests) 4ms
+ ✓ tests/error-boundary.test.ts (3 tests) 15ms
+ ✓ tests/canvas-geometry.test.ts (5 tests) 4ms
+ ✓ tests/cell-input.test.ts (24 tests) 3ms
+ ✓ tests/focus-return.test.ts (7 tests) 6ms
+ ✓ tests/auxiliary-records.test.ts (4 tests) 5ms
+ ✓ tests/browser-report.test.ts (5 tests) 3ms
+ ✓ tests/canvas-projection.test.ts (8 tests) 10ms
+ ✓ tests/formula-help.test.ts (2 tests) 2ms
+ ✓ tests/row-metrics.test.ts (7 tests) 5ms
+ ✓ tests/canvas-filter-result.test.ts (3 tests) 2ms
+ ✓ tests/vendor-evidence.test.ts (11 tests) 6354ms
+   ✓ binds every exact-source archive to the current ExcelJS map and notice text  6155ms
+
+ Test Files  171 passed (171)
+      Tests  2394 passed (2394)
+   Start at  16:20:43
+   Duration  7.00s (transform 3.64s, setup 0ms, collect 18.39s, tests 44.16s, environment 15ms, prepare 7.51s)
+

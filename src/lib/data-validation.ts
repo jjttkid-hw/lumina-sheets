@@ -9,6 +9,8 @@ export const DATA_VALIDATION_LIMITS = Object.freeze({
   sheetIdLength: 200,
   messageLength: 500,
   errorTitleLength: 32,
+  promptTitleLength: 32,
+  promptLength: 255,
   cellTextLength: 32_767,
 });
 
@@ -34,6 +36,10 @@ interface ValidationRuleBase {
   message?: string;
   /** Optional error heading, preserved in XLSX Stop validation. */
   errorTitle?: string;
+  promptTitle?: string;
+  prompt?: string;
+  /** Show selection guidance only when explicitly enabled. */
+  showInputMessage?: boolean;
 }
 
 export type DataValidationRule = ValidationRuleBase &
@@ -78,7 +84,18 @@ const object = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === 'object' && !Array.isArray(value);
 const integer = (value: unknown, min: number, max: number): value is number =>
   typeof value === 'number' && Number.isSafeInteger(value) && value >= min && value <= max;
-const commonKeys = ['id', 'sheetId', 'range', 'allowBlank', 'message', 'errorTitle', 'kind'];
+const commonKeys = [
+  'id',
+  'sheetId',
+  'range',
+  'allowBlank',
+  'message',
+  'errorTitle',
+  'promptTitle',
+  'prompt',
+  'showInputMessage',
+  'kind',
+];
 const singleOperators = [
   'equal',
   'notEqual',
@@ -160,8 +177,24 @@ export function copyDataValidationRules(input: unknown): DataValidationRule[] {
       (typeof raw.message !== 'string' || raw.message.length > DATA_VALIDATION_LIMITS.messageLength)
     )
       fail(`${path}.message`, `最多 ${DATA_VALIDATION_LIMITS.messageLength} 个 UTF-16 代码单元`);
+    for (const [field, maximum] of [
+      ['promptTitle', DATA_VALIDATION_LIMITS.promptTitleLength],
+      ['prompt', DATA_VALIDATION_LIMITS.promptLength],
+    ] as const)
+      if (
+        raw[field] !== undefined &&
+        (typeof raw[field] !== 'string' || raw[field].length > maximum)
+      )
+        fail(`${path}.${field}`, `最多 ${maximum} 个 UTF-16 代码单元`);
+    if (raw.showInputMessage !== undefined && typeof raw.showInputMessage !== 'boolean')
+      fail(`${path}.showInputMessage`, '必须为布尔值');
     const base: ValidationRuleBase = {
       id,
+      ...(raw.promptTitle !== undefined ? { promptTitle: raw.promptTitle as string } : {}),
+      ...(raw.prompt !== undefined ? { prompt: raw.prompt as string } : {}),
+      ...(raw.showInputMessage !== undefined
+        ? { showInputMessage: raw.showInputMessage as boolean }
+        : {}),
       range: copyRange(raw.range, `${path}.range`),
       allowBlank: raw.allowBlank ?? true,
       ...(raw.sheetId !== undefined

@@ -23,6 +23,9 @@ interface RuleForm {
   allowBlank: boolean;
   message: string;
   errorTitle: string;
+  promptTitle: string;
+  prompt: string;
+  showInputMessage: boolean;
   listMode: 'text' | 'json';
   list: string;
 }
@@ -57,6 +60,9 @@ function formFor(rule: DataValidationRule): RuleForm {
     allowBlank: rule.allowBlank !== false,
     message: rule.message ?? '',
     errorTitle: rule.errorTitle ?? '',
+    promptTitle: rule.promptTitle ?? '',
+    prompt: rule.prompt ?? '',
+    showInputMessage: rule.showInputMessage === true,
     listMode: text || rule.kind !== 'list' ? 'text' : 'json',
     list:
       rule.kind !== 'list'
@@ -199,6 +205,13 @@ export default function ValidationDialog({
       ...(original?.sheetId !== undefined ? { sheetId: original.sheetId } : {}),
       range,
       kind: form.kind,
+      ...(form.promptTitle || original?.promptTitle !== undefined
+        ? { promptTitle: form.promptTitle }
+        : {}),
+      ...(form.prompt || original?.prompt !== undefined ? { prompt: form.prompt } : {}),
+      ...(form.showInputMessage || original?.showInputMessage !== undefined
+        ? { showInputMessage: form.showInputMessage }
+        : {}),
       allowBlank: form.allowBlank,
       ...(form.message || original?.message !== undefined ? { message: form.message } : {}),
       ...(form.errorTitle || original?.errorTitle !== undefined
@@ -464,6 +477,38 @@ export default function ValidationDialog({
                     />
                     允许空白
                   </label>
+                  <label className="validation-dialog-checkbox">
+                    <input
+                      type="checkbox"
+                      disabled={readOnly}
+                      checked={form.showInputMessage}
+                      onChange={(event) => change('showInputMessage', event.target.checked)}
+                    />
+                    选中单元格时显示输入说明
+                  </label>
+                  <label className="validation-dialog-field">
+                    输入说明标题（可选）
+                    <textarea
+                      disabled={readOnly}
+                      rows={1}
+                      maxLength={DATA_VALIDATION_LIMITS.promptTitleLength}
+                      value={form.promptTitle}
+                      onChange={(event) => change('promptTitle', event.target.value)}
+                    />
+                  </label>
+                  <label className="validation-dialog-field">
+                    输入说明（可选）
+                    <textarea
+                      disabled={readOnly}
+                      rows={2}
+                      maxLength={DATA_VALIDATION_LIMITS.promptLength}
+                      value={form.prompt}
+                      onChange={(event) => change('prompt', event.target.value)}
+                    />
+                  </label>
+                  <p className="validation-dialog-hint">
+                    输入说明最多 255 字符；关闭显示后仍保留内容。
+                  </p>
                   <label className="validation-dialog-field">
                     输入错误标题（可选）
                     <input

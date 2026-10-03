@@ -1,0 +1,326 @@
+{
+  "schema": 1,
+  "sha256": "1d1de63660dd8b913d2f4a65cbf0ea2564ae5b06f957c64fe360a999297dd8a4",
+  "files": [
+    {
+      "path": "assets/_commonjs-dynamic-modules-TDtrdbi3.js",
+      "bytes": 239,
+      "sha256": "590ab8057bc032c3e14f9f1a76aaeffd01da609413fb12888819ca0433c1fae9"
+    },
+    {
+      "path": "assets/calculation.worker-CMQatE0L.js",
+      "bytes": 29255,
+      "sha256": "4e90268ed0a0eb60b10ffc7044721ffcd1692b3a015f2e3d7a9d3da4890b5ed2"
+    },
+    {
+      "path": "assets/exceljs.min-BL6A713c.js",
+      "bytes": 940036,
+      "sha256": "32d331a66a0217fa3ca18bfa8776c6558c254f02651e9cc36b1b63bd5dfc2133"
+    },
+    {
+      "path": "assets/index-Dqj84KMs.js",
+      "bytes": 212703,
+      "sha256": "5c7f4de079e9a9bfe6219b7eca4bfec45e2eb15c558def969ff98cedc5863ccc"
+    },
+    {
+      "path": "assets/index-riBiZuOF.css",
+      "bytes": 70165,
+      "sha256": "e0ab9e00e9e87563f9bf5771b186fac3b3c87cd666ea9e5ba91dd418c3948ac1"
+    },
+    {
+      "path": "assets/lab.worker-onjvi_kA.js",
+      "bytes": 28706,
+      "sha256": "408fe9119283be28b8e106bb2a53c351157aae1b628b27c2987a466417a75ddb"
+    },
+    {
+      "path": "assets/range-benchmark.worker-DHZ6Cd4j.js",
+      "bytes": 29647,
+      "sha256": "ef2ec8f05c42416302fd7a4b314e6aeccba5478ee370572ca63af298c72d8a7d"
+    },
+    {
+      "path": "assets/report-3k6ecC6N.css",
+      "bytes": 263,
+      "sha256": "4741db1a54dfa6b6b32751538ac4856a87826075dfe63b17371debab317f8c06"
+    },
+    {
+      "path": "assets/report-DLNbExnB.js",
+      "bytes": 90596,
+      "sha256": "144660e5bd384294cc95b09ffdfecc396a7b8b58545695c6b73db61e4feb0cf3"
+    },
+    {
+      "path": "assets/sheet-rename-BfKclZ0l.js",
+      "bytes": 384353,
+      "sha256": "18fdfb96c1bb2a420cf21d27b634932266b4a04e72e3fc4df3cc719bd6552c86"
+    },
+    {
+      "path": "assets/sheet-rename-Dl5D_brh.css",
+      "bytes": 10532,
+      "sha256": "782427ba49358d11b60e7542c29b51c6a9f289c56a1b0b7005ab2441ad730f0d"
+    },
+    {
+      "path": "assets/xlsx-archive-CdSJhZYs.js",
+      "bytes": 132708,
+      "sha256": "5d8a3fe12f40af49fc3f20489f3d8ed45548c36848f1d7c0570c9dc74d7b2c46"
+    },
+    {
+      "path": "assets/xlsx-cells-D8_xOaUp.js",
+      "bytes": 3676,
+      "sha256": "e577b6cdf10b160303c6a34a78a278928996d384e89f0b088d81f1daa50aed73"
+    },
+    {
+      "path": "assets/xlsx-formulas-C5NrZxti.js",
+      "bytes": 1818,
+      "sha256": "6fc910e477ef908ea07da87a34ea0ae1bd14075859fb3f04bb4e3a0fb9f73064"
+    },
+    {
+      "path": "assets/xlsx-hyperlinks-BMwNSnxp.js",
+      "bytes": 1586,
+      "sha256": "19243796b4f58b269bde45b5868110c7d7563554c4c0137be5b6c980b2f27d6c"
+    },
+    {
+      "path": "assets/xlsx-merges-ByeP9p_V.js",
+      "bytes": 1234,
+      "sha256": "2861731751d24f3844949b4a99b879e0bb5feaa7804f8075c393f070fc14f8ef"
+    },
+    {
+      "path": "assets/xlsx-objects-CWg2fmla.js",
+      "bytes": 1832,
+      "sha256": "93bf18c3100b567dff0f3716878e000a02b6bd13fbd8d0ff05ca504859c42b59"
+    },
+    {
+      "path": "assets/xlsx-print-B00I6BnL.js",
+      "bytes": 7321,
+      "sha256": "1f4d74db19bc94d5a159791f8a22779325d32a7aeb8c55e7864b87853811575a"
+    },
+    {
+      "path": "assets/xlsx-rich-text-DS54E_nI.js",
+      "bytes": 4657,
+      "sha256": "bc1f774b67e7f75b2874714e8b330b512017a7c84f9ed7ea451bda0910d6150a"
+    },
+    {
+      "path": "assets/xlsx-validation-qh0wXlni.js",
+      "bytes": 9678,
+      "sha256": "a81c27665255db4ff86f2170a6dadff2a65804a3731c8efbdca5c6940043d9d1"
+    },
+    {
+      "path": "assets/xlsx-visibility-DL-8qG5B.js",
+      "bytes": 2827,
+      "sha256": "c71a4548f54f4fc2ed1be26439b3765632256cf1ebe974b1659ffa090a663285"
+    },
+    {
+      "path": "examples/report.html",
+      "bytes": 16166,
+      "sha256": "8951ce4e605c7ce4dd7192cff729e92ca889113deccb3797ae5906a33cb2e6c1"
+    },
+    {
+      "path": "favicon.svg",
+      "bytes": 239,
+      "sha256": "9026d8a10f499c839378ae12e896f3f02b50c6e741a3656d7cf6be9354317a27"
+    },
+    {
+      "path": "index.html",
+      "bytes": 880,
+      "sha256": "de4bb36164e20a80d98ccc1c3bd6630b8aeaf42864ab9e6c577f7f61dfd2a4d2"
+    },
+    {
+      "path": "sdk/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "sdk/NOTICE",
+      "bytes": 491,
+      "sha256": "38f8e95b8293008e5f0fc6dd449b6268e0a9a44a334d071ccb1ab38e5e69cb64"
+    },
+    {
+      "path": "sdk/README.md",
+      "bytes": 18104,
+      "sha256": "41c2934f1ec2e1c4ace80614724dcacf8e3b1af8c9c50e60957f8fa4f236130c"
+    },
+    {
+      "path": "sdk/THIRD_PARTY_NOTICES.txt",
+      "bytes": 395657,
+      "sha256": "8025f0e76c3452b75537ab6c9ddeb119163d8c84d79c2ef3df51bf2bddb6346b"
+    },
+    {
+      "path": "sdk/_commonjs-dynamic-modules-BAefz3vp.js",
+      "bytes": 531,
+      "sha256": "1242c717c44e573c18bd99a9cbf2b82255ea48fcbf0d49b46cd9aaec7c799c0b"
+    },
+    {
+      "path": "sdk/bundle-inputs.json",
+      "bytes": 26753,
+      "sha256": "8b13d0d53a7160ffb66e5a366b7b3288159650661eddf0db532db4700c33d3f0"
+    },
+    {
+      "path": "sdk/dependency-inventory.json",
+      "bytes": 563728,
+      "sha256": "80df0dca246bab0f5da67cc749b6c88d9dee0971f9390873f15e84173347f9c6"
+    },
+    {
+      "path": "sdk/example.html",
+      "bytes": 78016,
+      "sha256": "ba0874255f3b682cc5eed5b283d55a41e40da4953caaffdf9169db7a831bc0f6"
+    },
+    {
+      "path": "sdk/exceljs.min-Bp5xEe51.js",
+      "bytes": 1394200,
+      "sha256": "5cb2986a20050c68e55f7f52326edf7a927caff7ddbea5382582fa95ae322872"
+    },
+    {
+      "path": "sdk/favicon.svg",
+      "bytes": 239,
+      "sha256": "9026d8a10f499c839378ae12e896f3f02b50c6e741a3656d7cf6be9354317a27"
+    },
+    {
+      "path": "sdk/index-DWoxEJkz.js",
+      "bytes": 663418,
+      "sha256": "ebd9358ece7dfbf30b7d6a61417eee62d6cbc55ab4824c3005410f40abd245bf"
+    },
+    {
+      "path": "sdk/lumina.css",
+      "bytes": 10794,
+      "sha256": "a371a3aa4db676bc05c5bab0cdc6ddee99d164a51e263110c89f40bd1097bd91"
+    },
+    {
+      "path": "sdk/lumina.js",
+      "bytes": 1272,
+      "sha256": "601310c96e039d890f04e3613469bb0f6ef535c5a5edd9475755a5a456f2f849"
+    },
+    {
+      "path": "sdk/package.json",
+      "bytes": 1246,
+      "sha256": "061e55461a01913deaa684eb650c9bb61094e3111b197bb1a96088056fd97e3c"
+    },
+    {
+      "path": "sdk/types/lib/cell-input.d.ts",
+      "bytes": 449,
+      "sha256": "5eeed3c6e0e2c0c63f5e1164cfbff0f3af64d99bc9e3a83d0a0a3affa08d2824"
+    },
+    {
+      "path": "sdk/types/lib/data-validation.d.ts",
+      "bytes": 2890,
+      "sha256": "6634f310d44dab7d462aa4e929f51bf4e743f029315e162429ddc0adcb39a86f"
+    },
+    {
+      "path": "sdk/types/lib/engine.d.ts",
+      "bytes": 3126,
+      "sha256": "15e95910d9e7f401ab6c1a93e1ae83b4f8abcf5df898ece07aca932d09bb7c0b"
+    },
+    {
+      "path": "sdk/types/lib/formula-structure.d.ts",
+      "bytes": 912,
+      "sha256": "83384615d5c0987774ccbfea311baa5b2d6ef1f2552a11a1bbe01c66f6538193"
+    },
+    {
+      "path": "sdk/types/lib/io-stream.d.ts",
+      "bytes": 2499,
+      "sha256": "5820f8bf8ad1dffea9b20a375e9c4187c3c9467063fb76c4bdf6d66ec8330d84"
+    },
+    {
+      "path": "sdk/types/lib/io.d.ts",
+      "bytes": 1651,
+      "sha256": "9a1148fd88638764f006143e9a91529c4cca3c61a7633b0e84be088bb0eb5715"
+    },
+    {
+      "path": "sdk/types/lib/print-settings.d.ts",
+      "bytes": 593,
+      "sha256": "752e545f4e63c3c1bf065a8cbe57df456078d39355732025522fc39bbbfa5330"
+    },
+    {
+      "path": "sdk/types/lib/product-build.d.ts",
+      "bytes": 410,
+      "sha256": "0a88d5feef08981de1eeb57e324b408ab52d37fdbd6f038e8a5ab25caac32962"
+    },
+    {
+      "path": "sdk/types/lib/report-data-export.d.ts",
+      "bytes": 1613,
+      "sha256": "4c198475fdb13b952a073a52306d8f666add2b7d428bd69e173b774693ba80a4"
+    },
+    {
+      "path": "sdk/types/lib/report-data.d.ts",
+      "bytes": 5015,
+      "sha256": "49821f1684cedbf7ad5d92156514f51cca5d39d8170f661b4ef16bd861b1e053"
+    },
+    {
+      "path": "sdk/types/lib/report-pdf.d.ts",
+      "bytes": 1816,
+      "sha256": "c9b9de77b4e4b29233c6796b153236c229430a1422430cb345e803d1e8c595c4"
+    },
+    {
+      "path": "sdk/types/lib/report.d.ts",
+      "bytes": 1758,
+      "sha256": "69ec5338cf92b623706de4c90749e63cea72e9d98d4154cc9a775b40c0543122"
+    },
+    {
+      "path": "sdk/types/lib/row-sort.d.ts",
+      "bytes": 732,
+      "sha256": "d0fd4231b727ab2b11e933de707bffd501a455ad4f47b9a36863e5c3ecc141ef"
+    },
+    {
+      "path": "sdk/types/lib/types.d.ts",
+      "bytes": 3324,
+      "sha256": "e324b8940a8f2456c9584c356ba282eeba0d29cf578326efe2ad8f88eac84667"
+    },
+    {
+      "path": "sdk/types/sdk/index.d.ts",
+      "bytes": 11890,
+      "sha256": "5a8e62d3a36bbf23fb2da42afeb8954050720d45c30e1f3f7e497aef82ae4b7c"
+    },
+    {
+      "path": "sdk/types/style.d.ts",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "path": "sdk/xlsx-archive-LBfqJt72.js",
+      "bytes": 199886,
+      "sha256": "d91b4eae3871ebbece3d8bad36cf33003e39ff435dafa6463e29b00451448e50"
+    },
+    {
+      "path": "sdk/xlsx-cells-D-zGeFmz.js",
+      "bytes": 4876,
+      "sha256": "afc5e9cd035455b7a8f7a9d9d0a5fefba379e0819e5c7ca109ef091cd9ad29ca"
+    },
+    {
+      "path": "sdk/xlsx-formulas-BHYii4rn.js",
+      "bytes": 2312,
+      "sha256": "1501f3e4572590dac83680609c8a423f745d95e616d6ed2f0f82ea2d2769133f"
+    },
+    {
+      "path": "sdk/xlsx-hyperlinks-D-O1A-1D.js",
+      "bytes": 2110,
+      "sha256": "48cb3a3be47ba83223810c8d2a1b8245adec1eb80191f6282e4040d10fb5ded5"
+    },
+    {
+      "path": "sdk/xlsx-merges-J1vTx1pV.js",
+      "bytes": 1568,
+      "sha256": "b9cd318dd934d629c438c7071066be951fd659ad00cd139b40a6a34e8dc7c1e2"
+    },
+    {
+      "path": "sdk/xlsx-objects-BEqFT3dM.js",
+      "bytes": 2027,
+      "sha256": "4a9c15f351222209e9f9510a76eed8b3b20286c9f691c39c5ed547c51a2f426d"
+    },
+    {
+      "path": "sdk/xlsx-print-D2Dn5IDu.js",
+      "bytes": 9279,
+      "sha256": "d430f4c7c6b536800b0ec11353a1cdba461fc679b8d0aaf5a565b50f347a0f7e"
+    },
+    {
+      "path": "sdk/xlsx-rich-text-Bbxyehpb.js",
+      "bytes": 6288,
+      "sha256": "39f9c2c22ef4a9fe2e3306af02119ff736533cf1a3db0c12afe7b4d99ae7f0f3"
+    },
+    {
+      "path": "sdk/xlsx-validation-CpBpNzNo.js",
+      "bytes": 12118,
+      "sha256": "e876471f7b475baf5cc7503cec52a950e187b77a36ef8369a3b13df62295ef80"
+    },
+    {
+      "path": "sdk/xlsx-visibility-BgM3gMY5.js",
+      "bytes": 3593,
+      "sha256": "3c73ba500b7c9f2e6c6a1a0509ba60c8ff75b83a9d96ea165b4476e70de58654"
+    }
+  ]
+}

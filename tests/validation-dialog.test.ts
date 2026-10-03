@@ -146,6 +146,21 @@ it('preserves and edits an imported error title without dropping it on save', ()
 });
 
 describe('ValidationDialog actual configuration handlers', () => {
+  it('retains input-message content when disabling it and saving another rule field', () => {
+    const dialog = make([
+      { ...rule(), promptTitle: '数量说明', prompt: '请填写\r\n数量', showInputMessage: true },
+    ]);
+    expect(dialog.field('输入说明标题（可选）').props.value).toBe('数量说明');
+    dialog.change('选中单元格时显示输入说明', false);
+    dialog.change('最大值', '20');
+    dialog.submit();
+    expect(dialog.onSave.mock.calls[0][0][0]).toMatchObject({
+      promptTitle: '数量说明',
+      prompt: '请填写\r\n数量',
+      showInputMessage: false,
+      max: 20,
+    });
+  });
   it('saves an empty collection when the initial new form is untouched', () => {
     const dialog = make();
     dialog.submit();

@@ -127,6 +127,9 @@ function toExcel(rule: DataValidationRule): ExcelJS.DataValidation {
     allowBlank: rule.allowBlank !== false,
     showErrorMessage: true,
     errorStyle: 'stop',
+    ...(rule.prompt !== undefined ? { prompt: rule.prompt } : {}),
+    ...(rule.promptTitle !== undefined ? { promptTitle: rule.promptTitle } : {}),
+    ...(rule.showInputMessage !== undefined ? { showInputMessage: rule.showInputMessage } : {}),
     ...(rule.message !== undefined ? { error: message(rule.message, address) } : {}),
     ...(rule.errorTitle !== undefined ? { errorTitle: errorTitle(rule.errorTitle, address) } : {}),
   };
@@ -162,7 +165,16 @@ export function applyXlsxValidationMetadata(archive: XlsxArchive, sheets: readon
   for (const target of archive.sheets) {
     const source = sheets.find((sheet) => sheet.name === target.name)!;
     const rules = source.dataValidations ?? [];
-    if (!rules.some((rule) => rule.message !== undefined || rule.errorTitle !== undefined))
+    if (
+      !rules.some(
+        (rule) =>
+          rule.message !== undefined ||
+          rule.errorTitle !== undefined ||
+          rule.prompt !== undefined ||
+          rule.promptTitle !== undefined ||
+          rule.showInputMessage !== undefined,
+      )
+    )
       continue;
     const container = xmlChildren(target.xml, 'dataValidations')[0];
     if (!container) fail('导出文件缺少数据验证', target.name);
@@ -178,6 +190,13 @@ export function applyXlsxValidationMetadata(archive: XlsxArchive, sheets: readon
           allowBlank: model.allowBlank ? '1' : '0',
           showErrorMessage: '1',
           errorStyle: 'stop',
+          ...(rule.prompt !== undefined ? { prompt: encodeXlsxString(rule.prompt) } : {}),
+          ...(rule.promptTitle !== undefined
+            ? { promptTitle: encodeXlsxString(rule.promptTitle) }
+            : {}),
+          ...(rule.showInputMessage !== undefined
+            ? { showInputMessage: rule.showInputMessage ? '1' : '0' }
+            : {}),
           ...(rule.message !== undefined ? { error: encodeXlsxString(rule.message) } : {}),
           ...(rule.errorTitle !== undefined
             ? { errorTitle: encodeXlsxString(rule.errorTitle) }
@@ -221,12 +240,25 @@ function fromExcel(
     fail('allowBlank 必须为布尔值', address);
   if (raw.showErrorMessage !== true || (raw.errorStyle !== undefined && raw.errorStyle !== 'stop'))
     fail('只支持阻止无效输入的 Stop 错误策略', address);
-  if (raw.prompt || raw.promptTitle || raw.showInputMessage)
-    fail('尚不支持输入提示或输入提示标题，无法无损导入', address);
+  if (raw.showInputMessage !== undefined && typeof raw.showInputMessage !== 'boolean')
+    fail('showInputMessage 必须为布尔值', address);
+  for (const [key, limit] of [
+    ['promptTitle', 32],
+    ['prompt', 255],
+  ] as const) {
+    const value = raw[key];
+    if (value !== undefined && (typeof value !== 'string' || value.length > limit))
+      fail(`${key} 必须为最多 ${limit} 个 UTF-16 代码单元的文本`, address);
+  }
   const error = message(raw.error, address);
   const title = errorTitle(raw.errorTitle, address);
   const base = {
     id,
+    ...(raw.prompt !== undefined ? { prompt: raw.prompt as string } : {}),
+    ...(raw.promptTitle !== undefined ? { promptTitle: raw.promptTitle as string } : {}),
+    ...(raw.showInputMessage !== undefined
+      ? { showInputMessage: raw.showInputMessage as boolean }
+      : {}),
     range,
     allowBlank: raw.allowBlank === true,
     ...(sheetId !== undefined ? { sheetId } : {}),
@@ -379,7 +411,9 @@ function sheetXmlRules(root: XmlElement): DataValidationRule[] {
             'promptTitle',
           ].includes(name)
         )
-          data[name] = ['error', 'errorTitle'].includes(name) ? decodeXlsxString(value) : value;
+          data[name] = ['error', 'errorTitle', 'prompt', 'promptTitle'].includes(name)
+            ? decodeXlsxString(value)
+            : value;
         else fail(`不支持验证属性 ${name}`, address);
       }
       for (const formula of xmlChildren(element)) {

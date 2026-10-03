@@ -1,0 +1,675 @@
+{
+  "id": "3a5c2349-55c9-40dc-9fc0-1fc167755629",
+  "name": "wps-custom-title",
+  "description": "在同一张表格里，让数据变成决策。",
+  "sheets": [
+    {
+      "id": "6331fc6e-525c-4ede-8a23-69b7b406cc5d",
+      "name": "应收账款",
+      "cells": {
+        "A1": {
+          "value": "单号",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "B1": {
+          "value": "客户",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "C1": {
+          "value": "开票金额",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "D1": {
+          "value": "已收金额",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "E1": {
+          "value": "未收金额",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "F1": {
+          "value": "状态",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "G1": {
+          "value": "开票日",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "H1": {
+          "value": "账期天数",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "A2": {
+          "value": "000001"
+        },
+        "B2": {
+          "value": "华东演示客户"
+        },
+        "C2": {
+          "value": 1200.5,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "D2": {
+          "value": 200.5,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "E2": {
+          "value": "=ROUND(C2-D2,2)",
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "F2": {
+          "value": "未结清"
+        },
+        "G2": {
+          "value": 45292,
+          "style": {
+            "format": "date",
+            "fontSize": 11
+          }
+        },
+        "H2": {
+          "value": 30
+        },
+        "A3": {
+          "value": "000002"
+        },
+        "B3": {
+          "value": "华南演示客户"
+        },
+        "C3": {
+          "value": 3000,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "D3": {
+          "value": 3000,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "E3": {
+          "value": "=ROUND(C3-D3,2)",
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "F3": {
+          "value": "已结清"
+        },
+        "G3": {
+          "value": 45323,
+          "style": {
+            "format": "date",
+            "fontSize": 11
+          }
+        },
+        "H3": {
+          "value": 60
+        },
+        "A4": {
+          "value": "000003"
+        },
+        "B4": {
+          "value": "华东演示客户"
+        },
+        "C4": {
+          "value": 800.25,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "D4": {
+          "value": 0,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "E4": {
+          "value": "=ROUND(C4-D4,2)",
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "F4": {
+          "value": "未结清"
+        },
+        "G4": {
+          "value": 45351,
+          "style": {
+            "format": "date",
+            "fontSize": 11
+          }
+        },
+        "H4": {
+          "value": 45
+        },
+        "A5": {
+          "value": "000004"
+        },
+        "B5": {
+          "value": "跨行\n演示客户😀"
+        },
+        "C5": {
+          "value": 500,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "D5": {
+          "value": 700,
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "E5": {
+          "value": "=ROUND(C5-D5,2)",
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "F5": {
+          "value": "预收"
+        },
+        "G5": {
+          "value": 45352.5,
+          "style": {
+            "format": "date",
+            "fontSize": 11
+          }
+        },
+        "H5": {
+          "value": 15
+        },
+        "A6": {
+          "value": "合计"
+        },
+        "E6": {
+          "value": "=SUM(E2:E5)"
+        },
+        "B8": {
+          "value": "华东未收"
+        },
+        "E8": {
+          "value": "=SUMIFS(E2:E5,B2:B5,\"华东演示客户\",F2:F5,\"未结清\")"
+        },
+        "B9": {
+          "value": "未结清单数"
+        },
+        "E9": {
+          "value": "=COUNTIF(F2:F5,\"未结清\")"
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {
+        "0": 126,
+        "1": 126,
+        "2": 126,
+        "3": 126,
+        "4": 126,
+        "5": 126,
+        "6": 126,
+        "7": 126
+      },
+      "printSettings": {
+        "paperSize": "A4",
+        "orientation": "landscape",
+        "margins": {
+          "top": 72,
+          "right": 54,
+          "bottom": 72,
+          "left": 54
+        },
+        "repeatRows": 0,
+        "repeatColumns": 0
+      },
+      "dataValidations": [],
+      "frozenRows": 1,
+      "merges": []
+    },
+    {
+      "id": "389fb9ee-8d9c-4d20-a14a-865833764fd4",
+      "name": "库存",
+      "cells": {
+        "A1": {
+          "value": "物料编号",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "B1": {
+          "value": "物料",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "C1": {
+          "value": "期初",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "D1": {
+          "value": "入库",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "E1": {
+          "value": "出库",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "F1": {
+          "value": "结存",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "G1": {
+          "value": "单价",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "H1": {
+          "value": "库存金额",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "I1": {
+          "value": "安全库存",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "J1": {
+          "value": "补货提示",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "A2": {
+          "value": "SKU-001"
+        },
+        "B2": {
+          "value": "演示组件 A"
+        },
+        "C2": {
+          "value": 10
+        },
+        "D2": {
+          "value": 8
+        },
+        "E2": {
+          "value": 12
+        },
+        "F2": {
+          "value": "=C2+D2-E2"
+        },
+        "G2": {
+          "value": 12.5
+        },
+        "H2": {
+          "value": "=ROUND(F2*G2,2)",
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "I2": {
+          "value": 8
+        },
+        "J2": {
+          "value": "=IF(F2<I2,\"补货\",\"充足\")"
+        },
+        "A3": {
+          "value": "SKU-002"
+        },
+        "B3": {
+          "value": "演示组件 B"
+        },
+        "C3": {
+          "value": 20
+        },
+        "D3": {
+          "value": 5
+        },
+        "E3": {
+          "value": 3
+        },
+        "F3": {
+          "value": "=C3+D3-E3"
+        },
+        "G3": {
+          "value": 8.25
+        },
+        "H3": {
+          "value": "=ROUND(F3*G3,2)",
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "I3": {
+          "value": 10
+        },
+        "J3": {
+          "value": "=IF(F3<I3,\"补货\",\"充足\")"
+        },
+        "A4": {
+          "value": "SKU-003"
+        },
+        "B4": {
+          "value": "演示组件 C"
+        },
+        "C4": {
+          "value": 0
+        },
+        "D4": {
+          "value": 100
+        },
+        "E4": {
+          "value": 40
+        },
+        "F4": {
+          "value": "=C4+D4-E4"
+        },
+        "G4": {
+          "value": 3.2
+        },
+        "H4": {
+          "value": "=ROUND(F4*G4,2)",
+          "style": {
+            "format": "number",
+            "fontSize": 11
+          }
+        },
+        "I4": {
+          "value": 25
+        },
+        "J4": {
+          "value": "=IF(F4<I4,\"补货\",\"充足\")"
+        },
+        "A5": {
+          "value": "合计"
+        },
+        "H5": {
+          "value": "=SUMPRODUCT(F2:F4,G2:G4)"
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {
+        "0": 126,
+        "1": 126,
+        "2": 126,
+        "3": 126,
+        "4": 126,
+        "5": 126,
+        "6": 126,
+        "7": 126,
+        "8": 126,
+        "9": 126
+      },
+      "printSettings": {
+        "paperSize": "A4",
+        "orientation": "landscape",
+        "margins": {
+          "top": 72,
+          "right": 54,
+          "bottom": 72,
+          "left": 54
+        },
+        "repeatRows": 0,
+        "repeatColumns": 0
+      },
+      "dataValidations": [],
+      "frozenRows": 1,
+      "merges": []
+    },
+    {
+      "id": "1b02bea9-01f0-4b51-8171-1d5f14a6d778",
+      "name": "项目费用",
+      "cells": {
+        "A1": {
+          "value": "项目",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "B1": {
+          "value": "部门",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "C1": {
+          "value": "金额",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "D1": {
+          "value": "审批",
+          "style": {
+            "bold": true,
+            "color": "#23644D",
+            "fontSize": 11
+          }
+        },
+        "A2": {
+          "value": "项目甲"
+        },
+        "B2": {
+          "value": "研发"
+        },
+        "C2": {
+          "value": 123.45
+        },
+        "D2": {
+          "value": "通过"
+        },
+        "A3": {
+          "value": "项目甲"
+        },
+        "B3": {
+          "value": "销售"
+        },
+        "C3": {
+          "value": 200
+        },
+        "D3": {
+          "value": "通过"
+        },
+        "A4": {
+          "value": "项目乙"
+        },
+        "B4": {
+          "value": "研发"
+        },
+        "C4": {
+          "value": 50
+        },
+        "D4": {
+          "value": "待审"
+        },
+        "A5": {
+          "value": "项目乙"
+        },
+        "B5": {
+          "value": "研发"
+        },
+        "C5": {
+          "value": 99.99
+        },
+        "D5": {
+          "value": "通过"
+        },
+        "A6": {
+          "value": "通过合计"
+        },
+        "C6": {
+          "value": "=SUMIF(D2:D5,\"通过\",C2:C5)"
+        },
+        "A7": {
+          "value": "研发通过"
+        },
+        "C7": {
+          "value": "=SUMIFS(C2:C5,B2:B5,\"研发\",D2:D5,\"通过\")"
+        },
+        "A8": {
+          "value": "库存占用"
+        },
+        "C8": {
+          "value": "=库存!H5"
+        },
+        "A9": {
+          "value": "应收余额"
+        },
+        "C9": {
+          "value": "=应收账款!E6"
+        },
+        "A10": {
+          "value": "净占用"
+        },
+        "C10": {
+          "value": "=C8+C9-C6"
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {
+        "0": 126,
+        "1": 126,
+        "2": 126,
+        "3": 126
+      },
+      "printSettings": {
+        "paperSize": "A4",
+        "orientation": "landscape",
+        "margins": {
+          "top": 72,
+          "right": 54,
+          "bottom": 72,
+          "left": 54
+        },
+        "repeatRows": 0,
+        "repeatColumns": 0
+      },
+      "dataValidations": [
+        {
+          "id": "xlsx-validation-1",
+          "promptTitle": "审批说明😀",
+          "prompt": "请选择审批状态\n请先核对金额 <b>原文</b> _x0041_",
+          "showInputMessage": true,
+          "range": {
+            "start": {
+              "row": 1,
+              "col": 3
+            },
+            "end": {
+              "row": 1,
+              "col": 3
+            }
+          },
+          "allowBlank": false,
+          "message": "请选择通过、待审或拒绝",
+          "errorTitle": "审批状态",
+          "kind": "list",
+          "values": [
+            "通过",
+            "待审",
+            "拒绝"
+          ]
+        }
+      ],
+      "frozenRows": 1,
+      "merges": []
+    }
+  ],
+  "activeSheetId": "1b02bea9-01f0-4b51-8171-1d5f14a6d778",
+  "createdAt": "2026-10-03T08:23:54.397Z",
+  "updatedAt": "2026-10-03T08:23:55.096Z",
+  "starred": false,
+  "category": "我的工作簿"
+}

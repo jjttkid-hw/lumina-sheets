@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 数据验证新增选中输入说明：配置标题、正文及显示开关，Canvas 单格显示，JSON/XLSX 保留关闭状态和原始文本。
+
 - 支持 WPS/XLSX Stop 数据验证的可选错误标题，贯穿 JSON、规则编辑面板、SDK 失败对象和编辑提示；修复错误标题/正文属性中的换行、制表符及 OOXML 字符转义往返。真实 WPS 文件、安装包和浏览器下载纳入回归。
 
 - Reject duplicate XLSX row definitions before decoding can overwrite earlier cells, including a later blank styled row. Failed imports preserve the current workbook and undo/redo; browser coverage exercises both the site and packaged SDK example.

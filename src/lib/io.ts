@@ -853,7 +853,12 @@ export async function workbookToXlsx(workbook: Workbook): Promise<ArrayBuffer> {
     !blankLinks &&
     !workbook.sheets.some((sheet) =>
       sheet.dataValidations?.some(
-        (rule) => rule.message !== undefined || rule.errorTitle !== undefined,
+        (rule) =>
+          rule.message !== undefined ||
+          rule.errorTitle !== undefined ||
+          rule.prompt !== undefined ||
+          rule.promptTitle !== undefined ||
+          rule.showInputMessage !== undefined,
       ),
     ) &&
     !workbook.sheets.some((sheet) => Object.values(sheet.cells).some((cell) => cell.richText)) &&

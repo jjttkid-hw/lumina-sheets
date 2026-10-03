@@ -476,6 +476,27 @@ export default function Spreadsheet({
   const singleSelection =
     (selection.endRow === undefined || selection.endRow === selection.row) &&
     (selection.endCol === undefined || selection.endCol === selection.col);
+  const inputPrompts = useMemo(() => {
+    if (!singleSelection || !selectedTarget || filterPending) return [];
+    return (sheet.dataValidations ?? []).filter(
+      (rule) =>
+        rule.showInputMessage === true &&
+        (rule.promptTitle || rule.prompt) &&
+        (rule.sheetId === undefined || rule.sheetId === sheet.id) &&
+        selectedTarget.row >= rule.range.start.row &&
+        selectedTarget.row <= rule.range.end.row &&
+        selectedTarget.col >= rule.range.start.col &&
+        selectedTarget.col <= rule.range.end.col,
+    );
+  }, [
+    sheet.id,
+    sheet.dataValidations,
+    selectedTarget?.row,
+    selectedTarget?.col,
+    singleSelection,
+    filterPending,
+  ]);
+  const promptId = `${activeId}-input-prompt`;
   const hasListOptions = useMemo(
     () =>
       !!(
@@ -1849,6 +1870,7 @@ export default function Spreadsheet({
         aria-readonly={readOnly}
         aria-multiselectable="true"
         aria-activedescendant={activeId}
+        aria-describedby={inputPrompts.length ? promptId : undefined}
         onScroll={(event) => {
           const left = event.currentTarget.scrollLeft,
             top = event.currentTarget.scrollTop;
@@ -1908,6 +1930,7 @@ export default function Spreadsheet({
             ref={editRef}
             className="sheet-cell-editor sheet-canvas-editor"
             aria-label={`编辑单元格 ${cellKey(editing.row, editing.col)}`}
+            aria-describedby={inputPrompts.length ? promptId : undefined}
             style={{
               left: editRect.left + scroll.left,
               top: editRect.top + scroll.top,
@@ -1979,6 +2002,21 @@ export default function Spreadsheet({
           />
         )}
       </div>
+      {inputPrompts.length > 0 && (
+        <aside
+          className="sheet-input-prompt"
+          id={promptId}
+          aria-label="单元格输入说明"
+          aria-live="polite"
+        >
+          {inputPrompts.map((rule) => (
+            <div key={rule.id}>
+              {rule.promptTitle && <strong>{rule.promptTitle}</strong>}
+              {rule.prompt && <p>{rule.prompt}</p>}
+            </div>
+          ))}
+        </aside>
+      )}
       {listLayout && (
         <button
           type="button"

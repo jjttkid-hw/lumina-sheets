@@ -7,6 +7,14 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r36](acceptance/browser-candidate-2026-10-03-r36/README.md)
+adds optional selection input messages through the rule editor, Canvas, JSON and
+XLSX. Disabled messages retain their content. Three browser engines exercise
+selection, edit rejection, undo/redo, reload, real downloads/reimport, overlapping
+rules and unobscured 390px rendering. Native Excel/WPS prompt UI acceptance is
+still open; older native error-title evidence does not certify this new feature.
+
+
 2026-10-03: [Cloud workspace validation evidence](acceptance/workspace-validation-ci-2026-10-03-r35/README.md)
 confirms all 18 workspace checks in Linux CI after correcting the runner's isolated
 dependency resolution. CI 37108097392 and CD 37108507318 passed for commit 887ae73;

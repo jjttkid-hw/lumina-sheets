@@ -185,4 +185,4 @@ Formula string caches also use OOXML encoding; numeric, boolean and error caches
 
 安装包的 `example.html` 新增“多工作表”示例：销售明细与经营汇总通过跨表公式关联，可切表编辑、撤销及导出当前表 CSV。打开多工作表 Excel/JSON 后通过“当前工作表”选择器浏览其他表；导入期间若继续编辑，旧导入会取消以保留新编辑。需以 HTTP 服务打开示例。r25 已在 Chromium、Firefox、WebKit 以及 React/Vue 宿主中覆盖切表、键盘、导出、导入取消和历史保留；这些检查绑定当前制品，仍不替代实体设备和原生读屏/IME 验收。
 
-数据验证规则支持可选 `errorTitle`（最多 32 个 UTF-16 代码单元）。失败对象保留独立的 `errorTitle` 和 `message`，`formatDataValidationFailure(failure)` 生成含地址、可选标题和正文的提示；未设置标题时保持原提示。XLSX Stop 规则可往返保留标题，输入提示仍未支持。
+数据验证规则支持可选 `errorTitle`（最多 32 个 UTF-16 代码单元）。失败对象保留独立的 `errorTitle` 和 `message`，`formatDataValidationFailure(failure)` 生成含地址、可选标题和正文的提示；未设置标题时保持原提示。XLSX Stop 规则可往返保留标题。另支持选中单元格时的输入说明：`promptTitle` 最多 32、`prompt` 最多 255 个 UTF-16 代码单元，`showInputMessage: true` 启用显示。关闭或省略显示开关时仍保留正文与标题，JSON/XLSX 均可往返。

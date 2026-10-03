@@ -42,8 +42,8 @@ jobs:
       - run: npm run check:wps-corpus
       - name: Verify desktop-saved business workbook corpus
         run: node scripts/check-business-corpus.mjs
-      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-03-r35/xlsx-corpus.json
-      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-03-r35 --verify-build --require-accessibility --require-ime --require-persistence
+      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-03-r36/xlsx-corpus.json
+      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-03-r36 --verify-build --require-accessibility --require-ime --require-persistence
       - name: Generate dependency-license inventory
         run: node scripts/package-notices.mjs
       - name: Require complete dependency-license evidence
@@ -172,6 +172,8 @@ jobs:
         run: node scripts/check-validation-workspace-browser.mjs
       - name: Verify workspace rule download evidence
         run: node scripts/check-validation-workspace-evidence.mjs
+      - name: Verify selection input prompts across browser engines
+        run: node scripts/check-validation-prompt-browser.mjs
       - name: Verify real recovery downloads, imports and persistent copies
         run: node scripts/check-recovery-browser.mjs
       - name: Verify recovery evidence and screenshots
@@ -185,5 +187,6 @@ jobs:
             artifacts/browser-recovery/
             artifacts/browser-multisheet/
             artifacts/browser-validation-workspace/
+            artifacts/browser-validation-prompts/
           if-no-files-found: error
           retention-days: 14

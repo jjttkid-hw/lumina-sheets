@@ -214,7 +214,6 @@ describe('XLSX data-validation interoperability', () => {
     [{ type: 'list' }, ['"a,""b"""']],
     [{ type: 'whole', showErrorMessage: '0' }, ['1', '10']],
     [{ type: 'whole', errorStyle: 'warning' }, ['1', '10']],
-    [{ type: 'whole', prompt: '请填写', showInputMessage: '1' }, ['1', '10']],
     [{ type: 'whole', showDropDown: '1' }, ['1', '10']],
   ] as [Record<string, string>, string[]][])(
     'rejects unsupported original XML without silent coercion: %j',

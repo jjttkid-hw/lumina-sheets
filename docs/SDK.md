@@ -511,4 +511,4 @@ XLSX 公式容量：预处理在解码前检查每格公式（含前导 =）最�
 
 2026-09-23 桌面 WPS 往返修复：普通共享字符串和 inlineStr 从原始 XML 单次解码 OOXML 转义，保留小写/混合大小写十六进制、CRLF、Emoji 和字面 `_x0041_`；避免依赖底层库的大小写限制或二次解码。WPS 12.1.26055 实际保存的脱敏合成夹具已加入回归，不代表完整桌面兼容。
 
-数据验证规则支持可选 `errorTitle`（最多 32 个 UTF-16 代码单元）。失败对象保留独立的 `errorTitle` 和 `message`，`formatDataValidationFailure(failure)` 生成含地址、可选标题和正文的提示；未设置标题时保持原提示。XLSX Stop 规则可往返保留标题，输入提示仍未支持。
+数据验证规则支持可选 `errorTitle`（最多 32 个 UTF-16 代码单元）。失败对象保留独立的 `errorTitle` 和 `message`，`formatDataValidationFailure(failure)` 生成含地址、可选标题和正文的提示；未设置标题时保持原提示。XLSX Stop 规则可往返保留标题。另支持选中单元格时的输入说明：`promptTitle` 最多 32、`prompt` 最多 255 个 UTF-16 代码单元，`showInputMessage: true` 启用显示。关闭或省略显示开关时仍保留正文与标题，JSON/XLSX 均可往返。

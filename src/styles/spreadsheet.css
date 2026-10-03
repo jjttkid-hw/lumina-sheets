@@ -444,3 +444,29 @@
   outline: 2px solid #4c7d36;
   outline-offset: 2px;
 }
+
+.sheet-input-prompt {
+  position: absolute;
+  right: 16px;
+  bottom: 18px;
+  z-index: 10;
+  max-width: min(320px, calc(100% - 32px));
+  max-height: min(160px, 35%);
+  overflow: auto;
+  padding: 10px 14px;
+  background: #fffbea;
+  border: 1px solid #dfd7b4;
+  border-radius: 6px;
+  box-shadow: 0 3px 12px #263d3114;
+  color: #514a32;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.sheet-input-prompt p {
+  margin: 3px 0 0;
+}
+.sheet-input-prompt > div + div {
+  margin-top: 8px;
+}
