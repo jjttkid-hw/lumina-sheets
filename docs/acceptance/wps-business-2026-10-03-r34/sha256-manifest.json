@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3567,
+      "sha256": "1c3c16fcabf17deb85ac81ea722bf55612f37947ce1e6ff775b16bffbb504bcf"
+    },
+    {
+      "path": "desktop-edit-expenses.png",
+      "bytes": 317572,
+      "sha256": "1889afa4a42291cbb0c645ea364d87c12f9c434f6c05e515a725a6a8c36901b1"
+    },
+    {
+      "path": "desktop-edit-receivables.png",
+      "bytes": 382048,
+      "sha256": "ec63cc1b0ecba02a1272b0ea04994d838f2dd13e20e7d5a4bf62c20092a47ee9"
+    },
+    {
+      "path": "expenses.png",
+      "bytes": 316712,
+      "sha256": "459a4ceb17ea35c26de3f5154001d2a664a6cda67692e20682987581760e2571"
+    },
+    {
+      "path": "export-receivables.png",
+      "bytes": 373340,
+      "sha256": "b98656502d4b336f79d5da458f9a07d54e08ab69791341eb43fa752ef9978101"
+    },
+    {
+      "path": "installed-corpus.json",
+      "bytes": 6243,
+      "sha256": "352b7c32ffc70d2088dff877e45a0d223e15d3777dda938e516f77414997e729"
+    },
+    {
+      "path": "inventory.png",
+      "bytes": 326517,
+      "sha256": "090fc417af9e5c54dc4933fcaedd55f062f9621924f93d439ac5c7f10ef7a42c"
+    },
+    {
+      "path": "receivables.png",
+      "bytes": 378359,
+      "sha256": "e5ced5fff64b6e03129e91a25cc7721fd9559eef8a1e6d2dbf9e86184bbc2693"
+    },
+    {
+      "path": "wps-business-saved.xlsx",
+      "bytes": 12697,
+      "sha256": "56bc904e89ae3f1bc55353876a9ace579fb4aa501bf2ef895cc8483c2141b9f3"
+    },
+    {
+      "path": "wps-custom-title.xlsx",
+      "bytes": 12716,
+      "sha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae"
+    },
+    {
+      "path": "wps-nonblocking-validation.xlsx",
+      "bytes": 12659,
+      "sha256": "012d0bba6cdbef0a7f953b9b50c2ac216039d1dc36fe2d1bf53380df1b66a2b2"
+    },
+    {
+      "path": "wps-reedited-export.xlsx",
+      "bytes": 12698,
+      "sha256": "4f633599ca393a517b318135f450911ae5ea961d01d14af05f1db55f6ed78fc0"
+    }
+  ]
+}

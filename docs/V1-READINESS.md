@@ -7,6 +7,15 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Native WPS business corpus](acceptance/wps-business-2026-10-03-r34/README.md)
+adds a three-sheet receivables/inventory/project-expense workflow on unchanged r34
+artifacts. WPS recalculated and saved 22 formulas; the installed SDK agrees with
+its caches, roundtrips them, exports edited values, and reimports a further native
+WPS edit with correct cross-sheet totals. Seven installed-package checks now run
+in CI and before npm publication, including two documented validation rejections.
+This extends actual application evidence but does not close the broader Excel/WPS
+customer corpus or other stable gates.
+
 2026-10-03: [Explicit performance budgets](acceptance/performance-budgets-2026-10-03-r34/README.md)
 supplement r34 without changing product artifacts. Both 100,000 and 1,000,000
 stored-cell workloads pass the committed developer-desktop profile in Chromium,

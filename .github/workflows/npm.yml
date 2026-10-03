@@ -70,6 +70,7 @@ jobs:
         run: |
           npm run check:xlsx-corpus
           npm run check:wps-corpus
+          node scripts/check-business-corpus.mjs
       - name: Smoke-test the final Pages build over HTTP
         run: npm run check:site-runtime
       - name: Require artifact-bound acceptance for stable 1.x and later
