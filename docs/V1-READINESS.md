@@ -7,6 +7,8 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r30](acceptance/browser-candidate-2026-10-03-r30/README.md) adds explicit formula-input browser text-assistance hints. All 2365 tests, 147 three-engine checks and two identical builds pass. Site hash is `74fa5f999486a48fee36b443ec8baec28b895e47f7a39b71e4aa7998ce2a87e6`; SDK hash is `76a96daef90ad0e09f88fbc5b5155e4c3836865dd18130730b9e0f1fd9294e48` (725616 bytes). Native Safari first Apply remains unverified; input hints do not close that gate. The following candidate records are historical.
+
 2026-10-02: [Candidate r29](acceptance/browser-candidate-2026-10-03-r29/README.md)
 adds cancellation recovery for Safari beforeunload prompts and retains the guarded pointer-release fallback. All 2365 tests, 147 three-engine browser checks and two identical builds pass locally. Site hash is `2750e1ea50f27475ecae73fdf79e37a67e34b3d7b3c73d3a8388937591328639`; SDK hash is `f6a67d9ffe9b3af03b4f82f16474056d5fad86791ab7ef4c5764fbf7facdc90f` (725584 bytes). npm authentication still returns E401. Version remains 0.29.0. The following r27 details are historical context.
 
