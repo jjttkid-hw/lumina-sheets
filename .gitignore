@@ -6,6 +6,8 @@ docs/artifacts/*
 !docs/artifacts/validation-options-v016.json
 *.tsbuildinfo
 .DS_Store
+.~*.xlsx
+~$*.xlsx
 .env
 .env.*
 !.env.example
