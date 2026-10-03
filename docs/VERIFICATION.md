@@ -18,6 +18,8 @@
 
 # 验证记录
 
+2026-10-03 当前主线复核：提交 `8a7a4f7` 的依赖审计文档已与实际清单同步；`npm run check:licenses -- --strict` 报告 92 个安装记录、82 个唯一名称/版本、127 份通知材料，0 errors、0 reviewItems、0 unresolvedVendorComponents。此前关于 `binary` 的非零计数属于历史记录。提交 `4140fcb` 的 CI/CD 均通过，线上 `build-info.json` 当前仍为该运行代码对应的 `0.29.0` 部署摘要；Firefox 草稿保存复跑通过。npm 注册表仍返回 404，本地 `npm whoami` 返回 E401，Safari 实体鼠标、原生 IME、真实读屏器、实体触控、客户硬件性能和人工商业复核仍未完成，未创建 `1.0.0`。
+
 ## r26 已部署候选（2026-10-01，提交 `b0b5b9d`）
 
 - 报表示例编辑后的工作簿快照和公式草稿现在保存到同源浏览器本地存储；浏览器拒绝写入时会提示导出且保留页面编辑。Chromium、Firefox、WebKit smoke 均实际执行刷新恢复和存储拒绝检查。SDK 仍由宿主通过 `toJSON()`/`load()` 明确保存。
