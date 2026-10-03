@@ -492,15 +492,23 @@
       let pointerApplyCancelled = false;
       let savedWorkbookJson = null;
       let pendingUnloadRecovery = null;
-      function markSessionEdited() {
+      let sessionSaveTimer = null;
+      function markSessionEdited(deferSave = false) {
         pendingUnloadRecovery = null;
         sessionEdited = true;
         leaveRisk = true;
         $('#session-note').textContent =
           '报表有编辑或草稿，正在保存到本机浏览器；刷新后可在本机恢复。跨设备前请导出文件。';
-        persistSession();
+        if (deferSave) {
+          // Draft bursts must not rewrite the cached workbook on every key.
+          // Committed changes and beforeunload still flush synchronously.
+          clearTimeout(sessionSaveTimer);
+          sessionSaveTimer = setTimeout(persistSession, 150);
+        } else persistSession();
       }
       function resetSessionNotice() {
+        clearTimeout(sessionSaveTimer);
+        sessionSaveTimer = null;
         pendingUnloadRecovery = null;
         savedWorkbookJson = null;
         sessionEdited = false;
@@ -516,6 +524,8 @@
         }
       }
       function persistSession() {
+        clearTimeout(sessionSaveTimer);
+        sessionSaveTimer = null;
         if (!grid || !sessionEdited || restoringStartupSession) return;
         try {
           // Workbook edits invalidate this snapshot. Draft typing and view
@@ -596,7 +606,7 @@
       // be partial or its download may be cancelled, so it cannot clear risk.
       const markFormulaDraft = () => {
         formulaDraft = { key: cellKey(selection.row, selection.col), value: $('#formula').value };
-        markSessionEdited();
+        markSessionEdited(true);
       };
       const startFormulaComposition = () => {
         formulaComposing = true;
@@ -609,7 +619,8 @@
       $('#formula').addEventListener('compositionstart', startFormulaComposition);
       $('#formula').addEventListener('compositionend', endFormulaComposition);
       $('#formula').addEventListener('input', markFormulaDraft);
-      $('#report').addEventListener('input', markSessionEdited);
+      const markReportInput = () => markSessionEdited();
+      $('#report').addEventListener('input', markReportInput);
       function captureUnloadRecovery() {
         if (!grid || !leaveRisk) return null;
         const key = cellKey(selection.row, selection.col);
@@ -1885,12 +1896,13 @@
         syncSelection();
       }, 400);
       const teardown = () => {
+        persistSession();
         window.removeEventListener('beforeunload', beforeUnload);
         window.removeEventListener('focus', restoreCancelledUnload);
         $('#formula').removeEventListener('compositionstart', startFormulaComposition);
         $('#formula').removeEventListener('compositionend', endFormulaComposition);
         $('#formula').removeEventListener('input', markFormulaDraft);
-        $('#report').removeEventListener('input', markSessionEdited);
+        $('#report').removeEventListener('input', markReportInput);
         clearInterval(metricsTimer);
         clearTimeout(pointerApplyTimer);
         stopImport();

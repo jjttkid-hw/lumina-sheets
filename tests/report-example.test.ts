@@ -41,12 +41,14 @@ class Element {
 let dispose: (() => void) | undefined;
 const storage = new Map<string, string>();
 let failStorageWrites = false;
+let storageWrites = 0;
 beforeEach(() => {
   vi.stubGlobal('HTMLElement', Element);
   vi.stubGlobal('localStorage', {
     getItem: (key: string) => storage.get(key) ?? null,
     setItem: (key: string, value: string) => {
       if (failStorageWrites) throw new Error('storage quota exceeded');
+      storageWrites++;
       storage.set(key, value);
     },
     removeItem: (key: string) => storage.delete(key),
@@ -57,6 +59,7 @@ afterEach(() => {
   dispose = undefined;
   storage.clear();
   failStorageWrites = false;
+  storageWrites = 0;
   vi.unstubAllGlobals();
 });
 function mount() {
@@ -169,6 +172,7 @@ it('persists an edited report and restores it on the next mount', async () => {
   first.$('#sheet-select').onchange!();
   first.$('#formula').value = '本机草稿';
   first.$('#formula').listeners.get('input')!();
+  await new Promise((resolve) => setTimeout(resolve, 180));
   const saved = JSON.parse(storage.get('lumina.report.example.v1')!);
   expect(saved.version).toBe(1);
   expect(saved.workbook.sheets).toHaveLength(2);
@@ -243,6 +247,63 @@ it('warns and retains the previous recoverable copy when a new report exceeds th
   expect($('#session-note').textContent).toContain('超过本机恢复容量');
   expect(storage.get('lumina.report.example.v1')).toBe(previous);
   expect(grid.getValue('A1')).toBe('still in memory');
+});
+it('coalesces rapid formula typing into one local save and flushes the latest draft before leaving', async () => {
+  const { grid, report, $, listeners } = mount();
+  await report('list');
+  const book = grid.toJSON();
+  book.sheets[0].rowCount = 50;
+  for (let row = 0; row < 50; row++)
+    book.sheets[0].cells[`A${row + 1}`] = { value: 'x'.repeat(20_000) };
+  grid.load(book);
+  grid.setCell('B1', 'large workbook baseline');
+  const snapshot = vi.spyOn(grid, 'toJSON');
+  const writesBefore = storageWrites;
+  vi.useFakeTimers();
+  try {
+    for (let i = 0; i < 40; i++) {
+      $('#formula').value = `draft ${i}`;
+      $('#formula').listeners.get('input')!();
+    }
+    expect(storageWrites).toBe(writesBefore);
+    await vi.advanceTimersByTimeAsync(150);
+    expect(storageWrites).toBe(writesBefore + 1);
+    expect(snapshot).not.toHaveBeenCalled();
+    expect(JSON.parse(storage.get('lumina.report.example.v1')!).formulaDraft.value).toBe(
+      'draft 39',
+    );
+    $('#formula').value = 'last draft before leave';
+    $('#formula').listeners.get('input')!();
+    listeners.get('beforeunload')!({ preventDefault() {}, returnValue: '' });
+    expect(JSON.parse(storage.get('lumina.report.example.v1')!).formulaDraft.value).toBe(
+      'last draft before leave',
+    );
+    const afterFlush = storageWrites;
+    await vi.advanceTimersByTimeAsync(150);
+    expect(storageWrites).toBe(afterFlush);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+it('flushes pending draft on teardown and never saves it into a replacement report', async () => {
+  const first = mount();
+  await first.report('list');
+  first.$('#formula').value = 'draft just before teardown';
+  first.$('#formula').listeners.get('input')!();
+  dispose!();
+  dispose = undefined;
+  expect(JSON.parse(storage.get('lumina.report.example.v1')!).formulaDraft.value).toBe(
+    'draft just before teardown',
+  );
+  storage.clear();
+  const second = mount();
+  await second.report('list');
+  second.$('#formula').value = 'obsolete delayed draft';
+  second.$('#formula').listeners.get('input')!();
+  await second.report('formulas');
+  await new Promise((resolve) => setTimeout(resolve, 180));
+  expect(storage.has('lumina.report.example.v1')).toBe(false);
+  expect(second.$('#formula').value).toBe('场景');
 });
 it('protects memory edits, rejected drafts and structure changes until successful replacement', async () => {
   const { grid, report, $, listeners } = mount();

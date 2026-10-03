@@ -1,0 +1,76 @@
+
+ RUN  v3.2.7 /Users/huangwei/Desktop/spreadjs
+
+ ❯ tests/report-example.test.ts (43 tests | 1 failed | 42 skipped) 14ms
+   ↓ preserves edits, drafts and history when replacement or import confirmation is cancelled
+   ↓ does not request replacement confirmation in an unedited session
+   ↓ persists an edited report and restores it on the next mount
+   ↓ warns before reload when browser storage rejects the local draft
+   ↓ restores the latest sheet and selection after navigation without another edit
+   ↓ reuses the workbook snapshot during typing and navigation and refreshes it after edits
+   ↓ warns and retains the previous recoverable copy when a new report exceeds the restore limit
+   × coalesces rapid formula typing into one local save and flushes the latest draft before leaving 13ms
+     → expected 41 to be 1 // Object.is equality
+   ↓ protects memory edits, rejected drafts and structure changes until successful replacement
+   ↓ changes report zoom and retains the preference across report replacement
+   ↓ does not clear edited-session protection when an export finishes or fails
+   ↓ restores the formula draft when a cancelled beforeunload returns focus
+   ↓ does not restore an old unload draft after a newer input or successful Apply
+   ↓ does not restore an unload selection or draft into a replacement report
+   ↓ does not apply partial IME text by click, keyboard or pointer fallback
+   ↓ cancels a queued pointer Apply when a new composition starts
+   ↓ keeps an edited session alive when pagehide is cancelled by the browser
+   ↓ exposes actual multi-sheet formula recalculation and workbook undo in the example
+   ↓ refreshes directory and readonly controls when replacing the multi-sheet demo
+   ↓ does not commit formula drafts on IME confirmation keys
+   ↓ refreshes the formula bar immediately after applying a formula
+   ↓ keeps pointer fallback single-shot when Safari loses or delays a click
+   ↓ does not infer a completed activation from the native release-before-down anomaly
+   ↓ does not apply a pointer release to a different cell, a disabled button or a secondary button
+   ↓ keeps pointer activation owned by the cell and draft present at press time
+   ↓ does not complete an old pointer activation after sheet switch or report replacement
+   ↓ exposes the financial formula examples shipped by the engine
+   ↓ uses SDK import ownership so edits cancel late parsing instead of being overwritten
+   ↓ makes sheets from an imported workbook selectable
+   ↓ materializes the complete bounded source and unlocks static editing and export
+   ↓ cancels materialization without replacing the current workbook
+   ↓ never overwrites a newer example or edit with a late materialized workbook
+   ↓ cancels import waiting from the shared cancel button and preserves the old workbook
+   ↓ prevents an older file from committing while a newer snapshot is still being generated
+   ↓ keeps a new import cancellable after superseding an older import
+   ↓ keeps a newer import cancel control visible after sheet navigation stops an export
+   ↓ aborts file waiting on pagehide without applying late input or changing the final status
+   ↓ preserves numeric-looking input 00123 in the standalone formula bar
+   ↓ preserves numeric-looking input 9007199254740993 in the standalone formula bar
+   ↓ preserves numeric-looking input 0.1234567890123456789 in the standalone formula bar
+   ↓ preserves numeric-looking input 1e-999 in the standalone formula bar
+   ↓ preserves numeric-looking input 3e-324 in the standalone formula bar
+   ↓ preserves numeric-looking input -0.00 in the standalone formula bar
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 42 skipped (43)
+   Start at  14:03:05
+   Duration  441ms (transform 174ms, setup 0ms, collect 238ms, tests 14ms, environment 0ms, prepare 42ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/report-example.test.ts > coalesces rapid formula typing into one local save and flushes the latest draft before leaving
+AssertionError: expected 41 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 41
+
+ ❯ tests/report-example.test.ts:268:27
+    266|       $('#formula').listeners.get('input')!();
+    267|     }
+    268|     expect(storageWrites).toBe(writesBefore);
+       |                           ^
+    269|     await vi.advanceTimersByTimeAsync(150);
+    270|     expect(storageWrites).toBe(writesBefore + 1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

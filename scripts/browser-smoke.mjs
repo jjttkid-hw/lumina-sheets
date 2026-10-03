@@ -249,6 +249,40 @@ try {
     await valueEquals(page.getByRole('textbox', { name: '单元格内容或公式', exact: true }), 'browser reload recovery');
     return { restored: true, notice: await page.locator('#session-note').innerText() };
   });
+  await check('report-draft-save-coalescing-reload', async () => {
+    await page.evaluate(() => {
+      window.reportSaveOriginal = Storage.prototype.setItem;
+      window.reportSaveWrites = [];
+      Storage.prototype.setItem = function(key, value) {
+        if (key === 'lumina.report.example.v1') window.reportSaveWrites.push(value.length);
+        return window.reportSaveOriginal.call(this, key, value);
+      };
+      const formula = document.querySelector('#formula');
+      for (let i = 0; i < 40; i++) {
+        formula.value = `burst draft ${i}`;
+        formula.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      }
+    });
+    const immediate = await page.evaluate(() => window.reportSaveWrites.length);
+    assert.equal(immediate, 0);
+    await page.waitForFunction(() => window.reportSaveWrites.length === 1);
+    const retained = await page.evaluate(() => ({
+      writes: window.reportSaveWrites.length,
+      value: JSON.parse(localStorage.getItem('lumina.report.example.v1')).formulaDraft.value,
+    }));
+    assert.deepEqual(retained, { writes: 1, value: 'burst draft 39' });
+    await page.evaluate(() => {
+      const formula = document.querySelector('#formula');
+      formula.value = 'last draft before immediate reload';
+      formula.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      Storage.prototype.setItem = window.reportSaveOriginal;
+    });
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.getByText('已从本机浏览器恢复上次报表', { exact: false }).waitFor();
+    await valueEquals(page.locator('#formula'), 'last draft before immediate reload');
+    assert.equal(await page.locator('#value').innerText(), '结果：browser reload recovery');
+    return { ...retained, reloadRetainsUncommittedDraft: true, committedValueUnchanged: true };
+  });
   await check('report-idle', async () => {
     await page.locator('#check-idle').click();
     await page.waitForFunction(() =>
@@ -343,6 +377,7 @@ try {
     'report-layouts',
     'report-downloads-roundtrip',
     'report-local-session-reload',
+    'report-draft-save-coalescing-reload',
     'report-idle',
     'report-local-view-reload',
     'report-local-storage-failure',

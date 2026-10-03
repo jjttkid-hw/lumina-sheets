@@ -7,6 +7,17 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r33](acceptance/browser-candidate-2026-10-03-r33/README.md)
+coalesces formula-draft localStorage writes over 150 ms while preserving synchronous
+committed-change, beforeunload and teardown flushes. A roughly 1 MB unit fixture
+reproduces the previous 40 writes per 40-input burst. All 2374 tests and 156
+three-engine checks pass; immediate actual reload recovers the latest uncommitted
+draft. Site hash `0c9a21e19854fb946053a0851ce92ba3ac73e1dfbe5f9a86b3121e499ef36864`
+and SDK hash `263e31fd130b1239b160b3fa8ac30b5099eba5ac326652815b78e39155102b82`
+(726253 bytes) agree across two builds. Forced process termination during the
+150 ms draft window is not guaranteed to recover the last input. External stable
+gates remain open; the following candidates are historical.
+
 2026-10-03: [Candidate r32](acceptance/browser-candidate-2026-10-03-r32/README.md)
 fixes formula-bar activation ownership across selection/draft changes and cancels
 late clicks across pointercancel, sheet switch and report replacement. A failing
