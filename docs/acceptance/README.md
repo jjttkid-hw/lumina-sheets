@@ -10,7 +10,7 @@
 - 验收记录必须有 `siteSha256`（安装包单独发布也用于绑定重复构建报告），对应 `build:site` 后整个 `dist/` 的内容摘要。运行 `node scripts/check-site.mjs` 获取摘要及逐文件清单；该命令只读取内容，不创建“已通过”记录。
 - `browsers` 下 `chromium`、`firefox`、`safari`、`mobile-touch` 四项。每项填写实际 `browserVersion`、设备和操作系统 `environment`、执行时间 `executedAt`、复核人 `reviewer`、`status: "passed"`、报告路径 `report` 及原始文件 SHA-256 `reportSha256`。
 - 每个浏览器的 `checks` 必须逐项为 `passed`：`render-zoom`、`editing-ime`、`layout-navigation`、`clipboard-validation`、`history-persistence`、`file-roundtrip`、`sdk-lifecycle`、`accessibility`。步骤参见 [浏览器验收矩阵](../BROWSER-ACCEPTANCE.md)。移动设备需记录实际浏览器与触控行为。
-- `gates` 下 `performance`、`xlsx-corpus`、`frameworks`、`api`、`reproducibility` 五项，使用相同的执行时间、环境、复核人、状态和报告字段。性能报告应含原始测量及数据规模；文件语料报告明确来源与受支持子集；框架报告覆盖实际生命周期；API 报告记录契约结果；重复构建报告注明来源时间与两份制品哈希。
+- `gates` 下 `performance`、`xlsx-corpus`、`frameworks`、`api`、`reproducibility`、`commercial-review` 六项，使用相同的执行时间、环境、复核人、状态和报告字段。性能报告应含原始测量及数据规模；文件语料报告明确来源与受支持子集；框架报告覆盖实际生命周期；API 报告记录契约结果；重复构建报告注明来源时间与两份制品哈希。
 
 报告必须是仓库 `docs/acceptance/` 内的实际非空文件，路径不允许越界（包括符号链接）；文件内容的哈希必须与记录一致。门禁从实际 tgz 读取包名、版本及依赖清单，要求 errors、reviewItems、unresolvedVendorComponents 均为零且 issues 为空，不能用旁边更新后的 dist 清单替代旧包里的清单。
 
@@ -49,3 +49,15 @@ CI 在上传制品之前执行 `node scripts/check-stable-release.mjs --site`，
 
 
 重复构建门禁读取 `gates.reproducibility.report` 指向的原始 result.json，而不只接受 passed 标签或文件哈希。报告必须为 schema 1/passed、同版本、dirty=false，含有效 commit、输入摘要、来源 epoch 与一致的 ISO 时间及 Node/npm/平台/架构。必须恰好两次运行，记录一致，且站点和 tgz 摘要匹配验收账本，文件数/字节数为正整数。仅重新计算报告哈希无法让 dirty=true 或不一致产物通过。该项检查不证明报告真实执行，也不自动验证干净安装/跨机器复现；inputs.json、站点清单、构建日志仍需随报告保存并由维护者核查。不得把当前 dirty=true 本地结果改写成干净候选。
+
+## 人工商业再分发复核
+
+`gates.commercial-review` 是独立门槛，不能用零问题的自动许可证清单替代。其 `report` 指向 JSON 原始复核记录，必须包含：
+
+- `schema: 1`、`status: "passed"`、`reviewType: "human"`、候选 `version` 与 `artifactSha256`。
+- `inventorySha256` 和 `noticesSha256`，分别是同一 tgz 内 `dependency-inventory.json` 与 `THIRD_PARTY_NOTICES.txt` 的原始字节摘要，不能使用解析后重排的 JSON 摘要。
+- `reviewer`、`executedAt`、`environment` 与账本该项一致；由实际复核人提供身份、复核时间和环境。
+- 非空 `scope` 和 `basis`，说明审查的产品、使用/再分发范围、材料和依据。
+- `decision: "approved-for-commercial-redistribution"`，`unresolvedItems: []`；`checks.projectRights`、`checks.thirdPartyLicenses`、`checks.noticeObligations` 均为 `passed`。
+
+门禁读取报告内容并核对上述字段与包内原始材料；仅重算报告摘要不能让待审结论、旧包材料或自动报告通过。它不能证明复核人的身份或结论真实性，也不构成法律意见。维护者须核实真实人工复核及其依据，不能由代理根据自动检查结果填写通过。当前项目尚无这份实际批准记录，稳定门槛继续开放。

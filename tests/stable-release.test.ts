@@ -95,6 +95,25 @@ function evidence() {
     gates: Object.fromEntries(evidenceGates.map((gate: string) => [gate, record()])),
   };
 }
+function commercialReview(accepted: ReturnType<typeof evidence>) {
+  return {
+    schema: 1,
+    status: 'passed',
+    reviewType: 'human',
+    version: accepted.version,
+    artifactSha256: accepted.artifactSha256,
+    inventorySha256: digest(JSON.stringify(inventory)),
+    noticesSha256: digest(notices),
+    reviewer: accepted.gates['commercial-review'].reviewer,
+    environment: accepted.gates['commercial-review'].environment,
+    executedAt: accepted.gates['commercial-review'].executedAt,
+    decision: 'approved-for-commercial-redistribution',
+    unresolvedItems: [],
+    scope: 'Synthetic unit-test record, not an actual review',
+    basis: 'Synthetic test fixture',
+    checks: { projectRights: 'passed', thirdPartyLicenses: 'passed', noticeObligations: 'passed' },
+  };
+}
 const temporary: string[] = [];
 afterEach(() =>
   temporary.splice(0).forEach((folder) => rmSync(folder, { recursive: true, force: true })),
@@ -135,8 +154,46 @@ describe('stable release evidence', () => {
   it.each(['1.0.0', '1.2.3', '2.0.0', '1.0.0+build'])('requires acceptance for %s', (version) => {
     expect(requiresStableAcceptance(version)).toBe(true);
   });
+  it('rejects automated, stale or incomplete commercial review contents despite a rehashed ledger', () => {
+    const accepted = evidence();
+    const report = commercialReview(accepted);
+    const check = (candidate: unknown) =>
+      policy.validateStableCommercialReview(
+        candidate,
+        accepted,
+        JSON.stringify(inventory),
+        notices,
+      );
+    expect(() => check(report)).not.toThrow();
+    for (const change of [
+      { reviewType: 'automated' },
+      { status: 'pending' },
+      { version: '0.29.0' },
+      { artifactSha256: 'f'.repeat(64) },
+      { inventorySha256: 'f'.repeat(64) },
+      { noticesSha256: 'f'.repeat(64) },
+      { reviewer: '' },
+      { executedAt: '2020-01-01' },
+      { environment: 'different' },
+      { scope: '' },
+      { basis: '' },
+      { decision: 'pending' },
+      { unresolvedItems: ['unresolved right'] },
+      { checks: {} },
+    ])
+      expect(() => check({ ...report, ...change })).toThrow();
+  });
+  it('requires the documented human commercial review even with a clean automated inventory', () => {
+    const value = evidence();
+    delete value.gates['commercial-review'];
+    expect(() => validateStableAcceptance(value, '1.0.0', hash, inventory, notices)).toThrow(
+      'commercial-review',
+    );
+  });
   it('accepts complete synthetic records only for their exact artifact', () => {
-    expect(validateStableAcceptance(evidence(), '1.0.0', hash, inventory, notices)).toHaveLength(9);
+    expect(validateStableAcceptance(evidence(), '1.0.0', hash, inventory, notices)).toHaveLength(
+      10,
+    );
     expect(() => validateStableAcceptance(evidence(), '1.0.1', hash, inventory, notices)).toThrow(
       'version',
     );
@@ -199,7 +256,7 @@ describe('stable release evidence', () => {
     value.summary.uniqueNameVersions = 2;
     value.summary.noticeFiles = 2;
     const shipped = `${notices}\n--- node_modules/second/LICENSE ---\n${text}\n`;
-    expect(validateStableAcceptance(evidence(), '1.0.0', hash, value, shipped)).toHaveLength(9);
+    expect(validateStableAcceptance(evidence(), '1.0.0', hash, value, shipped)).toHaveLength(10);
     value.packages[1].licenseFiles[0].bytes = text.length;
     expect(() => validateStableAcceptance(evidence(), '1.0.0', hash, value, shipped)).toThrow();
   });
@@ -262,6 +319,10 @@ describe('stable release evidence', () => {
       write('docs/acceptance/reproducibility.json', result);
       value.gates.reproducibility.report = 'docs/acceptance/reproducibility.json';
       value.gates.reproducibility.reportSha256 = digest(result);
+      const review = JSON.stringify(commercialReview(value));
+      write('docs/acceptance/commercial-review.json', review);
+      value.gates['commercial-review'].report = 'docs/acceptance/commercial-review.json';
+      value.gates['commercial-review'].reportSha256 = digest(review);
       write('docs/acceptance/stable-release.json', JSON.stringify(value));
     };
     write('package.json', JSON.stringify({ version: '1.0.0' }));
@@ -280,6 +341,16 @@ describe('stable release evidence', () => {
     accepted.gates.reproducibility.reportSha256 = digest(result);
     write('docs/acceptance/stable-release.json', JSON.stringify(accepted));
     expect(run(true).status).toBe(0);
+    const reviewPath = 'docs/acceptance/commercial-review.json';
+    const reviewText = readFileSync(path.join(cwd, reviewPath), 'utf8');
+    const pendingReview = JSON.stringify({ ...JSON.parse(reviewText), decision: 'pending' });
+    write(reviewPath, pendingReview);
+    accepted.gates['commercial-review'].reportSha256 = digest(pendingReview);
+    write('docs/acceptance/stable-release.json', JSON.stringify(accepted));
+    expect(run().stderr).toContain('not approved');
+    write(reviewPath, reviewText);
+    accepted.gates['commercial-review'].reportSha256 = digest(reviewText);
+    write('docs/acceptance/stable-release.json', JSON.stringify(accepted));
     write('dist/index.html', 'untested site');
     expect(run(true).stderr).toContain('different site build');
     // Package-only publishing does not claim that a site was deployed.

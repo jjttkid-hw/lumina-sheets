@@ -7,6 +7,15 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: The stable gate now requires an independent human commercial-review
+report bound to the candidate archive and its original packed inventory/notices.
+A clean automated license inventory cannot substitute for that review. A [regression run](acceptance/commercial-gate-2026-10-03/README.md)
+first reproduced the missing gate; all 2405 tests pass and no actual commercial approval is claimed.
+Native Safari r37 mouse Stay → first Apply still leaves the committed value unchanged
+under CUA; physical mouse confirmation remains pending, consistent with the r31
+independent-control investigation. See [r37 native follow-up](acceptance/safari-session-2026-10-03-r37/README.md).
+
+
 2026-10-03: [r37 native-file regression](acceptance/business-corpus-2026-10-03-r37/README.md)
 extends the installed SDK business corpus to 9 cases. CI and npm release gates
 now also reimport/roundtrip the retained WPS prompt and active-sheet files, compare
