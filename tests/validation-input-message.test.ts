@@ -56,6 +56,34 @@ describe('validation selection input messages', () => {
     expect(rule).toMatchObject({ promptTitle: '', prompt: '' });
     expect(rule).not.toHaveProperty('showInputMessage');
   });
+  it('preserves the native WPS-saved prompt and all source cell values', async () => {
+    const root = 'docs/acceptance/browser-candidate-2026-10-03-r36';
+    const before = await workbookFromXlsx(
+      await readFile(`${root}/input-prompts/chromium/enabled-prompt.xlsx`),
+    );
+    const after = await workbookFromXlsx(
+      await readFile(`${root}/native-wps-input-prompt/wps-saved.xlsx`),
+    );
+    expect(after.sheets.map((sheet) => sheet.name)).toEqual(
+      before.sheets.map((sheet) => sheet.name),
+    );
+    for (let index = 0; index < before.sheets.length; index++) {
+      const original = before.sheets[index];
+      const restored = after.sheets[index];
+      const values = (sheet: typeof original) =>
+        Object.fromEntries(Object.entries(sheet.cells).map(([key, cell]) => [key, cell.value]));
+      expect(values(restored)).toEqual(values(original));
+      expect(restored.dataValidations).toEqual(original.dataValidations);
+    }
+    const rule = after.sheets[2].dataValidations![0];
+    expect(rule).toMatchObject({
+      promptTitle: '审批说明😀',
+      prompt: '请选择审批状态\n请先核对金额 <b>原文</b> _x0041_',
+      showInputMessage: true,
+    });
+    const again = await workbookFromXlsx(await workbookToXlsx(after));
+    expect(again.sheets[2].dataValidations).toEqual(after.sheets[2].dataValidations);
+  });
   it('validates title, prompt and visibility bounds without mutating callers', () => {
     const base = {
       id: 'rule',

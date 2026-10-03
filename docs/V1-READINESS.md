@@ -11,8 +11,10 @@ deployment identity is available in `build-info.json`. Historical candidate note
 adds optional selection input messages through the rule editor, Canvas, JSON and
 XLSX. Disabled messages retain their content. Three browser engines exercise
 selection, edit rejection, undo/redo, reload, real downloads/reimport, overlapping
-rules and unobscured 390px rendering. Native Excel/WPS prompt UI acceptance is
-still open; older native error-title evidence does not certify this new feature.
+rules and unobscured 390px rendering. Native WPS now also displays the prompt and saves a workbook that SDK reimports
+with exact metadata and all original cell values/formulas. Retained files and a
+regression cover this single synthetic case; native Excel and broader WPS cases
+remain open.
 
 
 2026-10-03: [Cloud workspace validation evidence](acceptance/workspace-validation-ci-2026-10-03-r35/README.md)

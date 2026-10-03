@@ -3,7 +3,7 @@
   "status": "observed",
   "application": "WPS Office 12.1.26055/build 26055",
   "platform": "macOS arm64",
-  "source": "artifacts/browser-validation-prompts/chromium/enabled-prompt.xlsx",
+  "source": "input-prompts/chromium/enabled-prompt.xlsx",
   "observedAt": "2026-10-03",
   "sheet": "项目费用",
   "cell": "D2",
@@ -45,5 +45,9 @@
       }
     }
   ],
-  "scope": "Native WPS visual display plus save and SDK reimport of the prompt workbook. This does not certify Excel or all WPS versions."
+  "scope": "Native WPS visual display plus save and SDK reimport of the prompt workbook. This does not certify Excel or all WPS versions.",
+  "savedFile": "native-wps-input-prompt/wps-saved.xlsx",
+  "sourceSha256": "58122e3dce47e606312b15ff1a435be01edef4ade632036dbc5825ea06231d4d",
+  "savedSha256": "bfdb6e22d34316bd34b9f2a2252658e128e92c4984c73dfd047d26bc4a54ab2c",
+  "notes": "During UI navigation a paste initially affected A1 in the synthetic copy. Undo restored it before saving. SDK comparison of all cell values/formulas in all three sheets confirms no changes; all validation rules compare equal. WPS displayed grouped worksheet selection; no deliberate cell edits were saved."
 }

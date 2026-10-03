@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 2807,
-      "sha256": "caeebbe16b59bdb314d423f05b5ac92470a473bc379f808a482d08cd8c427daf"
+      "bytes": 3078,
+      "sha256": "b0602d4d9a97a42ac9a0a5232eba0bd499f4868c9d8e7a2f9f835972888005ba"
     },
     {
       "path": "accessibility/chromium.json",
@@ -257,9 +257,24 @@
       "sha256": "d577890db722aae573fcbff1b3e71f9b50bf5a8b8687361c070888cb19cd956e"
     },
     {
+      "path": "native-wps-input-prompt/display.png",
+      "bytes": 356218,
+      "sha256": "9ffdf2db9182ad0bf4756e84d000ed43cb9fd51d311daade48663bf4f90da34a"
+    },
+    {
       "path": "native-wps-input-prompt/result.json",
-      "bytes": 1400,
-      "sha256": "1a8c4861324a167e323630c156b2fa81baea65b91833385ebc39efcae9139c6e"
+      "bytes": 1925,
+      "sha256": "f3cb8e133fc397027df5abda9d8eeab9ebc9bc452787e48c9ce0a5696c929708"
+    },
+    {
+      "path": "native-wps-input-prompt/tests.log",
+      "bytes": 10806,
+      "sha256": "e5fc44a89edbdcbb9bc11cbddfa82383369ee9611720c88610fcbf46c011e9ba"
+    },
+    {
+      "path": "native-wps-input-prompt/wps-saved.xlsx",
+      "bytes": 12815,
+      "sha256": "bfdb6e22d34316bd34b9f2a2252658e128e92c4984c73dfd047d26bc4a54ab2c"
     },
     {
       "path": "performance-raw/chromium/budget.json",

@@ -16,7 +16,7 @@ preserve empty strings, CR/LF, tabs and literal OOXML escape-shaped text. Existi
 Stop error titles and invalid-edit rejection continue to work. Lookup scans at
 most the bounded rule collection, never expands logical cells.
 
-All 2394 tests in 171 files pass. Core browser regression passes 162 checks in
+The runtime candidate passed 2394 tests in 171 files; the retained native WPS fixture regression brings the supplemental full run to 2395 passing tests (native-wps-input-prompt/tests.log). Core browser regression passes 162 checks in
 25 reports (56 Chromium, 53 Firefox, 53 WebKit). Input-prompt controls add 18
 checks and the existing workspace rule suite adds another 18. Actual downloaded
 JSON/XLSX files, browser versions, hashes and screenshots are retained per engine.
@@ -32,7 +32,7 @@ bundle budgets, XLSX 5 / WPS 4 / business 7 corpus checks pass. All three engine
 pass the explicit local developer-desktop 100k/1m performance profile; retained
 raw evidence is revalidated. This is not a customer SLA or competitor benchmark.
 
-WPS 12.1.26055 also opened the prompt workbook without repair and visibly showed the title/body in `项目费用!D2`; the observation is retained in `native-wps-input-prompt/result.json`. It did not save/reimport this prompt-specific copy, and does not certify Excel or other WPS versions. The r35 native WPS
+WPS 12.1.26055 also opened the prompt workbook without repair and visibly showed the title/body in `项目费用!D2`; the observation is retained in `native-wps-input-prompt/result.json`. The WPS-saved workbook and cropped display screenshot are retained. SDK reimport confirms exact prompt metadata and no cell value/formula changes in all three sheets. This does not certify Excel or other WPS versions. The r35 native WPS
 error-title evidence remains historical and is not relabeled as prompt evidence.
 Native Safari mouse-cancel first Apply, native IME, screen readers, physical touch,
 customer hardware, broader desktop corpus, npm publication and commercial review
