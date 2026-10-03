@@ -74,11 +74,29 @@ const check = async (name, action) => {
     report.checks.push({ name, status: 'passed', elapsedMs: Date.now() - started, details });
     console.log(`PASS ${name}`);
   } catch (error) {
+    const diagnostics = name === 'report-draft-save-coalescing-reload'
+      ? await page.evaluate(() => {
+        let saved;
+        try {
+          const session = JSON.parse(localStorage.getItem('lumina.report.example.v1'));
+          saved = { draft: session?.formulaDraft, selection: session?.selection };
+        } catch (error) { saved = { error: error.message }; }
+        return {
+          readyState: document.readyState,
+          formula: document.querySelector('#formula')?.value,
+          committed: document.querySelector('#value')?.textContent,
+          notice: document.querySelector('#session-note')?.textContent,
+          writeLengths: window.reportSaveWrites,
+          saved,
+        };
+      }).catch((error) => ({ observationError: error.message }))
+      : undefined;
     report.checks.push({
       name,
       status: 'failed',
       elapsedMs: Date.now() - started,
       error: error.message,
+      ...(diagnostics ? { diagnostics } : {}),
     });
     console.log(`FAIL ${name}: ${error.message}`);
     await page

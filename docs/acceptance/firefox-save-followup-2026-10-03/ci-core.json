@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "executedAt": "2026-10-03T09:51:37.921Z",
+  "siteSha256": "065a4d88796f1575c3c44ead8c466b7009df15dfa200767eb48c732a251196e6",
+  "artifactSha256": "3fb97d4fe24e7e557831650d0780ae10288a2dbf96994daca227ff3e27c6c01e",
+  "scope": "Automated core browser regression; not native IME, Safari, screen reader or physical touch acceptance.",
+  "status": "failed",
+  "suites": [
+    {
+      "suite": "smoke",
+      "status": "failed",
+      "exitCode": 1,
+      "error": "smoke exited unsuccessfully\n\n1 !== 0\n"
+    },
+    {
+      "suite": "accessibility",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 5
+    },
+    {
+      "suite": "focus",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 4
+    },
+    {
+      "suite": "interactions",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 8
+    },
+    {
+      "suite": "layout",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 7
+    },
+    {
+      "suite": "performance",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 6
+    },
+    {
+      "suite": "persistence",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 5
+    },
+    {
+      "suite": "ime",
+      "status": "passed",
+      "exitCode": 0,
+      "checks": 6
+    }
+  ]
+}

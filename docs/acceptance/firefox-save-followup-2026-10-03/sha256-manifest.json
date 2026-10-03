@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1011,
+      "sha256": "814612fb7fc6324561d04f83cb626578a8e03046c39a2de255459eacdcb04010"
+    },
+    {
+      "path": "ci-core.json",
+      "bytes": 1319,
+      "sha256": "73530d2aa986f0a594a30616d674f81ed6542bd0b6a38a5b74ff438937976383"
+    },
+    {
+      "path": "ci-failure.png",
+      "bytes": 348621,
+      "sha256": "b5db270ea6ffcc9733b4a5115b07bfc5626ca124db6c625bfd6f6fd8949815da"
+    },
+    {
+      "path": "ci-smoke.json",
+      "bytes": 7850,
+      "sha256": "0f23101f9d220f8b80870baeabd21cf366e67093bd4da00c318df3e648c22a1c"
+    },
+    {
+      "path": "local-smoke.json",
+      "bytes": 7749,
+      "sha256": "f27b006e2564a23a27e19887967c3134f7e8d3f4126c281c29db3fede57ea580"
+    }
+  ]
+}
