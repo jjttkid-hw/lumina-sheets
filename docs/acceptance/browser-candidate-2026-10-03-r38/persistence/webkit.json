@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-10-03T09:06:23.772Z",
+  "executedAt": "2026-10-03T14:14:13.955Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,7 +17,7 @@
     {
       "name": "native-legacy-migration-reload",
       "status": "passed",
-      "elapsedMs": 538,
+      "elapsedMs": 467,
       "details": {
         "storedWorkbooks": 1,
         "journalEntries": 1,
@@ -31,7 +31,7 @@
     {
       "name": "native-concurrent-migration-single-commit",
       "status": "passed",
-      "elapsedMs": 296,
+      "elapsedMs": 319,
       "details": {
         "pages": 2,
         "storedWorkbooks": 1,
@@ -43,7 +43,7 @@
     {
       "name": "native-damaged-workbook-isolation",
       "status": "passed",
-      "elapsedMs": 266,
+      "elapsedMs": 303,
       "details": {
         "visibleWorkbook": "有效工作簿",
         "retainedRows": 2,
@@ -54,7 +54,7 @@
     {
       "name": "native-damaged-journal-fails-closed",
       "status": "passed",
-      "elapsedMs": 211,
+      "elapsedMs": 209,
       "details": {
         "workspaceOpened": false,
         "storedValue": "安全内容",
@@ -66,13 +66,13 @@
     {
       "name": "native-conflicting-journal-identity-fails-closed",
       "status": "passed",
-      "elapsedMs": 233,
+      "elapsedMs": 271,
       "details": {
         "workspaceOpened": false,
         "unchangedBase": true,
         "rawConflictsRetained": 2,
         "recoveryDownloadContainsBoth": true,
-        "backupSha256": "71e925421fb47d75b98b9e5c7463c2c68a9953635a730c8465aed98c72df283f"
+        "backupSha256": "d824a72c950e3dc8efde1afebf58ea7372706a9c09d2b9e3e9e39e4e5a9a399d"
       }
     }
   ],

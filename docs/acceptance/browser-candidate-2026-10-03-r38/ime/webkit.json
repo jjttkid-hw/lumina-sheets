@@ -3,7 +3,7 @@
   "version": "0.29.0",
   "engine": "webkit",
   "browserVersion": "26.0",
-  "executedAt": "2026-10-03T09:06:25.861Z",
+  "executedAt": "2026-10-03T14:14:16.000Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -17,7 +17,7 @@
     {
       "name": "canvas-blur-defers-final-composition",
       "status": "passed",
-      "elapsedMs": 21,
+      "elapsedMs": 24,
       "details": {
         "value": "中文输入",
         "changes": [
@@ -54,7 +54,7 @@
     {
       "name": "canvas-stale-composition-cannot-write-after-sheet-switch",
       "status": "passed",
-      "elapsedMs": 33,
+      "elapsedMs": 37,
       "details": {
         "source": "保留值",
         "target": "目标值",
@@ -66,7 +66,7 @@
     {
       "name": "report-formula-composing-apply-guard",
       "status": "passed",
-      "elapsedMs": 249,
+      "elapsedMs": 240,
       "details": {
         "before": "结果：月份",
         "during": "结果：月份",
@@ -77,7 +77,7 @@
     {
       "name": "report-formula-composing-enter-guard",
       "status": "passed",
-      "elapsedMs": 38,
+      "elapsedMs": 39,
       "details": {
         "before": "结果：月份",
         "during": "结果：月份",
@@ -87,7 +87,7 @@
     {
       "name": "report-pointer-activation-keeps-press-ownership",
       "status": "passed",
-      "elapsedMs": 425,
+      "elapsedMs": 394,
       "details": {
         "changedCellIgnored": true,
         "changedDraftIgnored": true,

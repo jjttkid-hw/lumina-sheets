@@ -4,14 +4,14 @@
     "schema": 1,
     "version": "0.29.0",
     "mode": "production",
-    "sourceSha256": "b7c30d39b570f2f1e891a7a93f171f44062baf2f9a5559bd97faf06171da00a5",
+    "sourceSha256": "ea8c406577757259ad63e48a88ea929a516884e12f365df9d7a80531f651e73e",
     "sourceFiles": 115,
     "sourceTimestamp": "2026-09-23T00:14:53.000Z",
     "timestampSource": "SOURCE_DATE_EPOCH",
     "scope": "Source/build configuration fingerprint; excludes installed dependency bytes and final artifacts. Development identity is captured at server startup and may precede HMR changes. Acceptance still requires site and SDK archive digests."
   },
   "product": "Lumina JavaScript performance laboratory",
-  "measuredAt": "2026-10-03T09:05:26.104Z",
+  "measuredAt": "2026-10-03T14:13:12.882Z",
   "qualification": "本机实测；未配置性能通过预算；不表示第三方性能或商业认证",
   "environment": {
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0",
@@ -26,1033 +26,1027 @@
   "fixture": {
     "storedCells": 1000000,
     "formulaCount": 100000,
-    "dataReadyMs": 1423,
-    "generatedMs": 1412,
+    "dataReadyMs": 1417,
+    "generatedMs": 1397,
     "firstDrawMs": 1431,
     "logicalRows": 1000000,
     "logicalColumns": 256,
     "populatedColumns": 10
   },
   "canvas": {
-    "frames": 168,
-    "observedFrames": 168,
+    "frames": 167,
+    "observedFrames": 167,
     "droppedFrames": 0,
     "sampleLimit": 10000,
-    "averageMs": 1.7738095238095237,
-    "p50Ms": 1,
+    "averageMs": 1.9221556886227544,
+    "p50Ms": 2,
     "p95Ms": 4,
-    "p99Ms": 4,
+    "p99Ms": 5,
     "maxMs": 5,
-    "averagePaintedCells": 177.66666666666666,
-    "averageDomNodes": 4.160714285714286,
+    "averagePaintedCells": 177.7185628742515,
+    "averageDomNodes": 4.155688622754491,
     "samples": [
       {
         "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 9492
+        "timestamp": 9818
       },
       {
-        "durationMs": 3,
+        "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 9618
+        "timestamp": 9941
       },
       {
         "durationMs": 3,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 9625
+        "timestamp": 9949
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 10076
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 10083
       },
       {
         "durationMs": 1,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 9742
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 9751
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 9885
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 9894
+        "timestamp": 10198
       },
       {
         "durationMs": 2,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 10017
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 10025
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 10153
+        "timestamp": 10207
       },
       {
         "durationMs": 4,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 10160
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10285
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10292
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10410
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 10418
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 10543
+        "timestamp": 10343
       },
       {
         "durationMs": 4,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10552
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10677
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10683
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10809
-      },
-      {
-        "durationMs": 1,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 10815
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 10933
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 10942
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11070
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 11075
+        "timestamp": 10350
       },
       {
         "durationMs": 5,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 11195
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 11203
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 11326
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11333
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11459
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 11468
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 11593
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11601
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11718
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11724
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11842
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 11852
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 11974
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 11983
+        "timestamp": 10476
       },
       {
         "durationMs": 4,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 12110
+        "timestamp": 10484
       },
       {
         "durationMs": 3,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 12119
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 12244
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 12252
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 12377
+        "timestamp": 10608
       },
       {
         "durationMs": 4,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 12385
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 12507
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 12517
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 12641
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 12650
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 12766
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 12775
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 12891
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 12900
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 13026
+        "timestamp": 10617
       },
       {
         "durationMs": 3,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 13035
+        "timestamp": 10742
       },
       {
-        "durationMs": 2,
+        "durationMs": 5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 10750
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 10875
+      },
+      {
+        "durationMs": 3,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 13159
+        "timestamp": 10883
       },
       {
         "durationMs": 3,
-        "paintedCells": 195,
+        "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 13168
+        "timestamp": 11008
       },
       {
-        "durationMs": 2,
-        "paintedCells": 195,
+        "durationMs": 4,
+        "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 13293
+        "timestamp": 11018
       },
       {
-        "durationMs": 2,
-        "paintedCells": 195,
+        "durationMs": 4,
+        "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 13300
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 13434
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 13443
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 13576
+        "timestamp": 11142
       },
       {
         "durationMs": 1,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 13582
+        "timestamp": 11147
       },
       {
-        "durationMs": 2,
+        "durationMs": 3,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 13708
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 13717
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 195,
-        "domNodes": 4,
-        "timestamp": 13849
+        "timestamp": 11276
       },
       {
         "durationMs": 1,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 13858
+        "timestamp": 11280
       },
       {
         "durationMs": 3,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 13975
+        "timestamp": 11400
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 11409
       },
       {
         "durationMs": 3,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 13985
+        "timestamp": 11534
       },
       {
         "durationMs": 3,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 14109
+        "timestamp": 11542
       },
       {
         "durationMs": 3,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 14118
+        "timestamp": 11667
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 11675
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 11800
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 11806
+      },
+      {
+        "durationMs": 5,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 11934
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 11942
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 12067
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 12075
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 12208
       },
       {
         "durationMs": 2,
         "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 14234
+        "timestamp": 12216
       },
       {
-        "durationMs": 2,
-        "paintedCells": 182,
+        "durationMs": 3,
+        "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 14242
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 182,
-        "domNodes": 4,
-        "timestamp": 14367
+        "timestamp": 12341
       },
       {
         "durationMs": 3,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 14376
+        "timestamp": 12349
       },
       {
         "durationMs": 3,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 14501
+        "timestamp": 12475
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 12483
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 12609
       },
       {
         "durationMs": 3,
-        "paintedCells": 182,
+        "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 14510
+        "timestamp": 12616
       },
       {
         "durationMs": 3,
-        "paintedCells": 182,
+        "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 14634
+        "timestamp": 12734
       },
       {
         "durationMs": 1,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 14642
+        "timestamp": 12741
       },
       {
-        "durationMs": 2,
+        "durationMs": 3,
         "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 17223
+        "timestamp": 12866
       },
       {
-        "durationMs": 1,
-        "paintedCells": 169,
+        "durationMs": 3,
+        "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 17228
+        "timestamp": 12874
       },
       {
         "durationMs": 2,
-        "paintedCells": 169,
+        "paintedCells": 195,
         "domNodes": 4,
-        "timestamp": 17238
+        "timestamp": 13006
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 17273
+        "timestamp": 13013
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 13147
       },
       {
         "durationMs": 2,
-        "paintedCells": 169,
+        "paintedCells": 182,
         "domNodes": 4,
-        "timestamp": 17287
+        "timestamp": 13156
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 13283
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 13291
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 13416
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 13424
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 13557
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 13563
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 13680
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 13690
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 13816
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 13823
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 13949
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 13959
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 14083
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 14091
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 14215
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 14225
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 14357
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 14366
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 14491
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 14499
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 195,
+        "domNodes": 4,
+        "timestamp": 14623
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 14633
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 14756
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 14764
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 14891
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 14899
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 15024
+      },
+      {
+        "durationMs": 3,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 15033
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 182,
+        "domNodes": 4,
+        "timestamp": 17572
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 17323
+        "timestamp": 17578
       },
       {
-        "durationMs": 1,
+        "durationMs": 0,
         "paintedCells": 169,
         "domNodes": 5,
-        "timestamp": 17329
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17338
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17372
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17378
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17387
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17414
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17421
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17428
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17455
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17461
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17469
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17497
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17504
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17512
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17539
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17545
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17554
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 4,
         "timestamp": 17581
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17587
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 17595
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17622
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17638
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17645
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17672
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17689
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17722
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17729
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17737
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17760
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17769
+        "timestamp": 17591
       },
       {
         "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 17779
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17818
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17823
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17837
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17865
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17878
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17887
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 17923
+        "timestamp": 17624
       },
       {
         "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 5,
-        "timestamp": 17937
+        "timestamp": 17631
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 17945
+        "timestamp": 17639
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 17973
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 17978
+        "timestamp": 17675
       },
       {
         "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 17987
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18022
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18028
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18041
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18067
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18076
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18083
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18118
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18125
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18132
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18160
-      },
-      {
-        "durationMs": 2,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18175
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18183
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18210
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18224
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18232
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18259
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18265
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18274
-      },
-      {
-        "durationMs": 0,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18301
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18307
-      },
-      {
-        "durationMs": 1,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18316
+        "timestamp": 17690
       },
       {
         "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18343
+        "timestamp": 17726
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 5,
-        "timestamp": 18348
+        "timestamp": 17732
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17748
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18358
-      },
-      {
-        "durationMs": 0,
-        "paintedCells": 169,
-        "domNodes": 4,
-        "timestamp": 18383
+        "timestamp": 17775
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 5,
-        "timestamp": 18391
+        "timestamp": 17781
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18400
+        "timestamp": 17790
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17825
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 17832
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
+        "timestamp": 17840
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17874
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 17882
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17890
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17924
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17940
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17975
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 17982
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 17999
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18030
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18044
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18052
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18079
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18093
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18120
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18135
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18141
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18182
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18194
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18203
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18261
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18269
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18285
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18321
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18328
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18335
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18371
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18377
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18386
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18420
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
         "timestamp": 18426
       },
       {
-        "durationMs": 0,
-        "paintedCells": 169,
-        "domNodes": 5,
-        "timestamp": 18432
-      },
-      {
-        "durationMs": 1,
+        "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18441
+        "timestamp": 18435
       },
       {
         "durationMs": 0,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18467
+        "timestamp": 18470
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 5,
-        "timestamp": 18474
+        "timestamp": 18477
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18485
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18520
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18526
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18535
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18570
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18577
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18585
+      },
+      {
+        "durationMs": 0,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18620
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18627
       },
       {
         "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18483
+        "timestamp": 18643
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18509
+        "timestamp": 18669
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 5,
-        "timestamp": 18517
+        "timestamp": 18677
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18524
+        "timestamp": 18685
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18552
+        "timestamp": 18712
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 5,
-        "timestamp": 18558
+        "timestamp": 18725
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18566
+        "timestamp": 18732
+      },
+      {
+        "durationMs": 0,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18766
       },
       {
         "durationMs": 1,
         "paintedCells": 169,
         "domNodes": 4,
-        "timestamp": 18592
+        "timestamp": 18780
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18816
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18823
+      },
+      {
+        "durationMs": 0,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18830
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18857
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18864
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18873
+      },
+      {
+        "durationMs": 0,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18899
+      },
+      {
+        "durationMs": 0,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18905
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18914
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18941
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18947
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18956
+      },
+      {
+        "durationMs": 0,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18982
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 18989
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 18997
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 19025
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 5,
+        "timestamp": 19031
+      },
+      {
+        "durationMs": 0,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 19039
+      },
+      {
+        "durationMs": 1,
+        "paintedCells": 169,
+        "domNodes": 4,
+        "timestamp": 19074
       }
     ],
     "note": "实际Canvas绘制耗时，不等于整帧时间或FPS"
@@ -1062,8 +1056,8 @@
     "observedFrames": 30,
     "droppedFrames": 0,
     "sampleLimit": 10000,
-    "averageMs": 4.633333333333334,
-    "p50Ms": 4,
+    "averageMs": 3.7666666666666666,
+    "p50Ms": 3,
     "p95Ms": 8,
     "p99Ms": 9,
     "maxMs": 9,
@@ -1076,62 +1070,12 @@
         "domNodes": 4
       },
       {
-        "durationMs": 3,
+        "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4
       },
       {
         "durationMs": 4,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 5,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 6,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 4,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 8,
         "paintedCells": 169,
         "domNodes": 4
       },
@@ -1141,12 +1085,57 @@
         "domNodes": 4
       },
       {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
         "durationMs": 8,
         "paintedCells": 169,
         "domNodes": 4
       },
       {
-        "durationMs": 7,
+        "durationMs": 8,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 2,
         "paintedCells": 169,
         "domNodes": 4
       },
@@ -1156,7 +1145,12 @@
         "domNodes": 4
       },
       {
-        "durationMs": 8,
+        "durationMs": 3,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 3,
         "paintedCells": 169,
         "domNodes": 4
       },
@@ -1176,17 +1170,7 @@
         "domNodes": 4
       },
       {
-        "durationMs": 7,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 3,
-        "paintedCells": 169,
-        "domNodes": 4
-      },
-      {
-        "durationMs": 3,
+        "durationMs": 4,
         "paintedCells": 169,
         "domNodes": 4
       },
@@ -1196,7 +1180,17 @@
         "domNodes": 4
       },
       {
-        "durationMs": 5,
+        "durationMs": 2,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 4,
+        "paintedCells": 169,
+        "domNodes": 4
+      },
+      {
+        "durationMs": 4,
         "paintedCells": 169,
         "domNodes": 4
       },
@@ -1216,7 +1210,7 @@
         "domNodes": 4
       },
       {
-        "durationMs": 4,
+        "durationMs": 3,
         "paintedCells": 169,
         "domNodes": 4
       }
@@ -1224,8 +1218,8 @@
   },
   "workerCalculation": {
     "targets": 100000,
-    "roundTripMs": 1802,
-    "calculationMs": 1798,
+    "roundTripMs": 2117,
+    "calculationMs": 2113,
     "firstValue": 54,
     "lastValue": 500000
   },

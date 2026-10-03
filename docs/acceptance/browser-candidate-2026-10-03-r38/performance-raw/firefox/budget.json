@@ -1,9 +1,0 @@
-{
-  "schema": 1,
-  "name": "Local desktop reference target v1",
-  "scope": "Reference targets for the recorded developer Mac only. Canvas paint is not FPS; edit starts at commit, not physical keypress; worker is one round trip. Target customer devices require their own recorded runs.",
-  "fixtures": {
-    "100000": { "firstDrawMs": 1500, "canvasP95Ms": 16.7, "editP95Ms": 50, "workerRoundTripMs": 1000 },
-    "1000000": { "firstDrawMs": 5000, "canvasP95Ms": 16.7, "editP95Ms": 50, "workerRoundTripMs": 5000 }
-  }
-}
