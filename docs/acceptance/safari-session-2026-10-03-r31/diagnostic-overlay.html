@@ -1,0 +1,10 @@
+<textarea id="native-event-log" aria-label="原生事件记录" readonly style="position:fixed;bottom:0;left:0;width:100%;height:110px;z-index:9999;background:white;font-size:12px"></textarea><script>
+const eventRecords=[];
+for(const type of ['beforeunload','focus','blur','pointerdown','pointerup','mousedown','mouseup','click','input','compositionstart','compositionend']) window.addEventListener(type,event=>{
+ const target=event.target; const id=target===window?'window':target===document?'document':target.id||target.tagName;
+ if(['beforeunload','focus','blur'].includes(type)||['apply','formula'].includes(id)) {
+ eventRecords.push(type+':'+id+':'+(event.button??'')+':'+(event.detail??'')+':'+(document.activeElement?.id||document.activeElement?.tagName));
+ document.querySelector('#native-event-log').value=eventRecords.slice(-30).join(' | ');
+ }
+},true);
+</script>

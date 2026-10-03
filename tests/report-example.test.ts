@@ -507,6 +507,34 @@ it('keeps pointer fallback single-shot when Safari loses or delays a click', asy
   expect(second.grid.getValue('A1')).toBe('normal pointer click');
 });
 
+it('does not infer a completed activation from the native release-before-down anomaly', async () => {
+  const { grid, $, report } = mount();
+  await report('list');
+  $('#formula').value = 'retain incomplete activation';
+  $('#formula').listeners.get('input')!();
+  const set = vi.spyOn(grid, 'setCell');
+  const apply = $('#apply');
+  // Observed after mouse-cancelling Safari's native leave-page sheet, including
+  // on a control page without Lumina. The first activation has no final release.
+  apply.listeners.get('pointerup')!({ isPrimary: true, button: 0, pointerType: 'mouse' });
+  apply.listeners.get('mouseup')!({ button: 0 });
+  apply.listeners.get('pointerdown')!({ isPrimary: true, button: 0 });
+  apply.listeners.get('mousedown')!({ button: 0 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  expect(grid.getValue('A1')).toBe('月份');
+  expect($('#formula').value).toBe('retain incomplete activation');
+
+  apply.listeners.get('mousedown')!({ button: 0 });
+  apply.listeners.get('mouseup')!({ button: 0 });
+  await apply.onclick!({ detail: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).toHaveBeenCalledTimes(1);
+  expect(grid.getValue('A1')).toBe('retain incomplete activation');
+  grid.undo();
+  expect(grid.getValue('A1')).toBe('月份');
+});
+
 it('does not apply a pointer release to a different cell, a disabled button or a secondary button', async () => {
   const { grid, $, report } = mount();
   await report('list');

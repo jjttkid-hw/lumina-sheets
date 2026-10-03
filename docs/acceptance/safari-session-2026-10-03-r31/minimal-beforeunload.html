@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <title>Native beforeunload control experiment</title>
+  <style>
+    body { font: 20px system-ui; padding: 32px; }
+    input, button { font: inherit; padding: 16px; }
+    textarea { width: 95%; height: 320px; font: 16px monospace; }
+  </style>
+  <h1>Native beforeunload control experiment</h1>
+  <p>No Lumina code. Type a draft, refresh, cancel, then click Apply once.</p>
+  <input id="formula" aria-label="Control draft" autocomplete="off" />
+  <button id="apply">Apply control</button>
+  <output id="result" aria-live="polite">Committed: initial</output>
+  <p><textarea id="events" aria-label="Control events" readonly></textarea></p>
+  <script>
+    let dirty = false;
+    let commits = 0;
+    const rows = [];
+    const formula = document.querySelector('#formula');
+    formula.addEventListener('input', () => { dirty = true; });
+    document.querySelector('#apply').addEventListener('click', () => {
+      document.querySelector('#result').textContent = `Committed: ${formula.value}; count: ${++commits}`;
+    });
+    window.addEventListener('beforeunload', event => {
+      if (!dirty) return;
+      event.preventDefault();
+      event.returnValue = '';
+    });
+    for (const type of ['beforeunload', 'focus', 'blur', 'pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click']) {
+      window.addEventListener(type, event => {
+        const target = event.target;
+        const id = target === window ? 'window' : target === document ? 'document' : target.id || target.tagName;
+        rows.push(`${type}:${id}:${event.button ?? ''}:${event.detail ?? ''}:${document.activeElement?.id || document.activeElement?.tagName}`);
+        document.querySelector('#events').value = rows.slice(-30).join('\n');
+      }, true);
+    }
+  </script>
+</html>
