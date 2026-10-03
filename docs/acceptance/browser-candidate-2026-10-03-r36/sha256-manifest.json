@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 2577,
-      "sha256": "8222099e0ad77ff1f85be3c7e97c4365d7125fca3837af925517907ab7f9b18a"
+      "bytes": 2807,
+      "sha256": "caeebbe16b59bdb314d423f05b5ac92470a473bc379f808a482d08cd8c427daf"
     },
     {
       "path": "accessibility/chromium.json",
