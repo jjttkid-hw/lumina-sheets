@@ -257,6 +257,11 @@
       "sha256": "d577890db722aae573fcbff1b3e71f9b50bf5a8b8687361c070888cb19cd956e"
     },
     {
+      "path": "native-wps-input-prompt/result.json",
+      "bytes": 930,
+      "sha256": "1a80100889a453574c1543591b2ea36faf1a63a2954a17572d9f7f890552c82d"
+    },
+    {
       "path": "performance-raw/chromium/budget.json",
       "bytes": 517,
       "sha256": "c20c99084f69af3ef2ba6b4606094562cc0a765ea0bff12511734b4eca0df423"

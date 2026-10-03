@@ -32,7 +32,7 @@ bundle budgets, XLSX 5 / WPS 4 / business 7 corpus checks pass. All three engine
 pass the explicit local developer-desktop 100k/1m performance profile; retained
 raw evidence is revalidated. This is not a customer SLA or competitor benchmark.
 
-No new native WPS/Excel prompt UI acceptance was performed. The r35 native WPS
+WPS 12.1.26055 also opened the prompt workbook without repair and visibly showed the title/body in `项目费用!D2`; the observation is retained in `native-wps-input-prompt/result.json`. It did not save/reimport this prompt-specific copy, and does not certify Excel or other WPS versions. The r35 native WPS
 error-title evidence remains historical and is not relabeled as prompt evidence.
 Native Safari mouse-cancel first Apply, native IME, screen readers, physical touch,
 customer hardware, broader desktop corpus, npm publication and commercial review

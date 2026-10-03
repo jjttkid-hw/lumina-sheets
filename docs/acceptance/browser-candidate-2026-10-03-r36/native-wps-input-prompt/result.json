@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "observed",
+  "application": "WPS Office 12.1.26055/build 26055",
+  "platform": "macOS arm64",
+  "source": "artifacts/browser-validation-prompts/chromium/enabled-prompt.xlsx",
+  "observedAt": "2026-10-03",
+  "sheet": "项目费用",
+  "cell": "D2",
+  "checks": [
+    {
+      "name": "opens-without-repair-dialog",
+      "status": "passed"
+    },
+    {
+      "name": "selection-displays-input-prompt",
+      "status": "passed",
+      "details": {
+        "title": "审批说明😀",
+        "body": "请选择审批状态\n请先核对金额 <b>原文</b> _x0041_",
+        "cellValue": "通过"
+      }
+    },
+    {
+      "name": "prompt-preserves-literal-markup-and-escape-text",
+      "status": "passed"
+    }
+  ],
+  "scope": "Native WPS visual observation of the shipped XLSX. No save/reimport was performed in this prompt-specific observation; this does not certify Excel or all WPS versions."
+}
