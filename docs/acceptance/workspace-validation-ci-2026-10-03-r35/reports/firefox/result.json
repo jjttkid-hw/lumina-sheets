@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-10-03T08:04:02.469Z",
+  "siteSha256": "65e7f121db9a733a771a23428540ced85b3c30fdbd1a76f26324698e08e5d74d",
+  "artifactSha256": "e8c8042fab4032cc95a81d5a12551847792190ff6b63251fec47cf6e3aa517dc",
+  "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
+  "scope": "Shipped workspace rule dialog, edit errors, undo/redo, real IndexedDB reload and downloaded XLSX/JSON. Native IME, screen reader and physical touch remain unverified.",
+  "checks": [
+    {
+      "name": "imported-rule-preserved",
+      "status": "passed",
+      "elapsedMs": 761
+    },
+    {
+      "name": "title-edit-history",
+      "status": "passed",
+      "elapsedMs": 1100
+    },
+    {
+      "name": "rule-reload-download",
+      "status": "passed",
+      "elapsedMs": 1586,
+      "details": {
+        "downloads": [
+          {
+            "filename": "edited-title.xlsx",
+            "sha256": "4edbe16d89772a76d295e5ff749eeda8359d3129700263fadf0b2a53dbdf4f33"
+          },
+          {
+            "filename": "edited-title.json",
+            "sha256": "aabea302780c6c0a48358b0aa2b3525d3c8be8597b7b072b33231256ed80f8e5"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-title-download",
+      "status": "passed",
+      "elapsedMs": 2026,
+      "details": {
+        "downloads": [
+          {
+            "filename": "empty-title.xlsx",
+            "sha256": "489624f629a7d0119674542f36780bb9239bd782cce11cd7c241f4d51ffd9440"
+          },
+          {
+            "filename": "empty-title.json",
+            "sha256": "0cf4b68ccd9893716858a0386a628c068148e09dabebaa1b297fa487bb62a129"
+          }
+        ]
+      }
+    },
+    {
+      "name": "narrow-dialog-keyboard",
+      "status": "passed",
+      "elapsedMs": 615
+    },
+    {
+      "name": "metadata-whitespace-preserved",
+      "status": "passed",
+      "elapsedMs": 1576,
+      "details": {
+        "source": {
+          "filename": "metadata-title.xlsx",
+          "sha256": "5a66d592573fd9b3ade1251909330f0aabb214af498ae14d57e52813738fa179"
+        },
+        "downloads": [
+          {
+            "filename": "metadata-title-after-edit.json",
+            "sha256": "519616a61bb2a9f65f3811b4c342fb5743ef2336b877e09ec82d7344abc692a8"
+          },
+          {
+            "filename": "metadata-title-after-edit.xlsx",
+            "sha256": "528cbfd9462d294c53ead1d0c9b65f2f22cd26b5610a9bd6e041f79d33772fca"
+          },
+          {
+            "filename": "metadata-title-restored.json",
+            "sha256": "f81c36de534458da504a8e8a5361990a138f663fc14f9e0b32a306346a39b36a"
+          }
+        ]
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "imported-rule-preserved",
+      "title-edit-history",
+      "rule-reload-download",
+      "empty-title-download",
+      "narrow-dialog-keyboard",
+      "metadata-whitespace-preserved"
+    ],
+    "actualChecks": [
+      "imported-rule-preserved",
+      "title-edit-history",
+      "rule-reload-download",
+      "empty-title-download",
+      "narrow-dialog-keyboard",
+      "metadata-whitespace-preserved"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

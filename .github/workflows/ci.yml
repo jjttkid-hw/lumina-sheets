@@ -170,6 +170,8 @@ jobs:
         run: node scripts/check-multisheet-browser.mjs
       - name: Verify workspace validation rule editing, history and file round trips
         run: node scripts/check-validation-workspace-browser.mjs
+      - name: Verify workspace rule download evidence
+        run: node scripts/check-validation-workspace-evidence.mjs
       - name: Verify real recovery downloads, imports and persistent copies
         run: node scripts/check-recovery-browser.mjs
       - name: Verify recovery evidence and screenshots

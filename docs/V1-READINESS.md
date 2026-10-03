@@ -7,6 +7,14 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Cloud workspace validation evidence](acceptance/workspace-validation-ci-2026-10-03-r35/README.md)
+confirms all 18 workspace checks in Linux CI after correcting the runner's isolated
+dependency resolution. CI 37108097392 and CD 37108507318 passed for commit 887ae73;
+live build-info matches unchanged r35 hashes. Actual cloud downloads are retained
+and independently checked for digests and exact JSON/OOXML content. A verifier
+regression rejects missing/tampered evidence even when the wrong title is rehashed.
+All 2390 tests pass. Runtime/API/package contents and external stable gates are unchanged.
+
 2026-10-03: [Workspace rule-dialog acceptance](acceptance/workspace-validation-2026-10-03-r35/README.md)
 adds 18 shipped-control browser checks on unchanged r35 artifacts. WPS import,
 rule/title editing, undo/redo, durable reload, empty-title export/reimport, narrow
