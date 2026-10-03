@@ -7,6 +7,14 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r39](acceptance/browser-candidate-2026-10-03-r39/README.md)
+fixes approximate VLOOKUP/HLOOKUP duplicate thresholds, proven by 16 native WPS
+results and a reopened SDK export. All 2417 tests and 162 three-engine core checks
+pass; the installed business corpus has 12 checks. Site and SDK hashes are
+`00987b73918c19b025b16edfa849d5512017266b9329a5aa3ba9779a856a6e99` and
+`56ede0c174d3eb5293417db5c8a8c33cb655552abab0811e6041ae8433ef9fe3`.
+The external stable gates below remain open; npm whoami still returns E401.
+
 2026-10-03: [Candidate r38](acceptance/browser-candidate-2026-10-03-r38/README.md)
 adds HLOOKUP to the safe formula subset with exact, approximate and wildcard
 semantics, and lowers the recursive dependency guard so long chains return

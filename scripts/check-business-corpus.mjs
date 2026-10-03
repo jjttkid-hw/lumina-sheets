@@ -94,6 +94,7 @@ const expectedChecks = [
   'native-active-sheet-roundtrip',
   'native-lookup-roundtrip',
   'native-lookup-reedited-roundtrip',
+  'native-duplicate-threshold-roundtrip',
 ];
 const report = {
   schema: 1,
@@ -398,6 +399,60 @@ try {
         exportedSha256: hash(exported),
       };
     });
+  await check('native-duplicate-threshold-roundtrip', async () => {
+    const file = 'docs/acceptance/wps-lookup-duplicates-2026-10-03-r39/wps-saved.xlsx';
+    const bytes = await readFile(file);
+    assert.equal(hash(bytes), '61f05edcc0c1d8aadfb36b7058f8a085951e6f19afb6df8b9e7e0a6af01da15e');
+    const desktop = new ExcelJS.Workbook();
+    await desktop.xlsx.load(data(bytes));
+    const expected = ['旧10', '新10', '新10', '新10', '旧20', '新20', '新20', '#N/A'];
+    const imported = await sdk.workbookFromXlsx(data(bytes));
+    const compare = (book) => {
+      assert.deepEqual(book.sheets.map(s => s.name), ['重复档位']);
+      const sheet = book.sheets[0];
+      const external = desktop.worksheets[0];
+      const keys = [];
+      external.eachRow(row => row.eachCell(cell => { if (cell.value !== null) keys.push(cell.address); }));
+      assert.deepEqual(Object.keys(sheet.cells).filter(key => sheet.cells[key].value !== '').sort(), keys.sort());
+      const evaluate = sdk.createEvaluator(book);
+      let formulas = 0;
+      for (const key of keys) {
+        const other = external.getCell(key);
+        if (other.formula) {
+          assert.equal(sheet.cells[key].value, `=${other.formula}`);
+          const cache = typeof other.result === 'object' ? other.result.error : other.result;
+          equal(cache, expected[Number(key.slice(1)) - 2], `${key} native expected result`);
+          equal(evaluate(sheet, key), cache, `${key} SDK versus native duplicate match`);
+          formulas++;
+        } else equal(sheet.cells[key].value, other.value, `${key} literal`);
+      }
+      assert.equal(formulas, 16);
+      return { formulas, cells: keys.length };
+    };
+    compare(imported);
+    const exported = new Uint8Array(await sdk.workbookToXlsx(imported));
+    const details = compare(await sdk.workbookFromXlsx(data(exported)));
+    const independent = new ExcelJS.Workbook();
+    await independent.xlsx.load(data(exported));
+    for (const [i, value] of expected.entries()) for (const column of ['L', 'M']) {
+      const cache = independent.worksheets[0].getCell(`${column}${i + 2}`).result;
+      equal(typeof cache === 'object' ? cache.error : cache, value, `${column}${i + 2} exported cache`);
+    }
+    const nativeRoundtripFile = 'docs/acceptance/wps-lookup-duplicates-2026-10-03-r39/wps-resaved-sdk.xlsx';
+    const nativeRoundtrip = await readFile(nativeRoundtripFile);
+    assert.equal(hash(nativeRoundtrip), '2992dacdee3af47ee2e67cd94e189abf98483b181f3725d0ae74e5319008e763');
+    const reopened = new ExcelJS.Workbook();
+    await reopened.xlsx.load(data(nativeRoundtrip));
+    for (const [i, value] of expected.entries()) for (const column of ['L', 'M']) {
+      const cell = reopened.worksheets[0].getCell(`${column}${i + 2}`);
+      assert.equal(cell.formula, desktop.worksheets[0].getCell(cell.address).formula);
+      equal(typeof cell.result === 'object' ? cell.result.error : cell.result, value, `${cell.address} native reopened cache`);
+    }
+    compare(await sdk.workbookFromXlsx(data(nativeRoundtrip)));
+    const output = 'lumina-duplicate-thresholds.xlsx';
+    await writeFile(`artifacts/business-corpus/${output}`, exported);
+    return { ...details, file, fixtureSha256: hash(bytes), nativeRoundtripFile, nativeRoundtripSha256: hash(nativeRoundtrip), output, exportedSha256: hash(exported) };
+  });
   for (const [name, file, pattern] of [
     ['nonblocking-validation-rejected', 'wps-nonblocking-validation.xlsx', /Stop/],
   ])

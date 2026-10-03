@@ -61,3 +61,5 @@ CI 在上传制品之前执行 `node scripts/check-stable-release.mjs --site`，
 - `decision: "approved-for-commercial-redistribution"`，`unresolvedItems: []`；`checks.projectRights`、`checks.thirdPartyLicenses`、`checks.noticeObligations` 均为 `passed`。
 
 门禁读取报告内容并核对上述字段与包内原始材料；仅重算报告摘要不能让待审结论、旧包材料或自动报告通过。它不能证明复核人的身份或结论真实性，也不构成法律意见。维护者须核实真实人工复核及其依据，不能由代理根据自动检查结果填写通过。当前项目尚无这份实际批准记录，稳定门槛继续开放。
+
+2026-10-03: [Candidate r39](browser-candidate-2026-10-03-r39/README.md) and [native duplicate lookup thresholds](wps-lookup-duplicates-2026-10-03-r39/README.md) retain current three-engine regressions and WPS comparison files.

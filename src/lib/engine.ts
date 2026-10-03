@@ -1321,8 +1321,8 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
             continue;
           }
           const c = compare(candidate, lookup);
-          if (c === 0) return table.at(row, column - 1);
-          if (approximate && c < 0) found = row;
+          if (!approximate && c === 0) return table.at(row, column - 1);
+          if (approximate && c <= 0) found = row;
         }
         return found >= 0 ? table.at(found, column - 1) : fail('#N/A');
       }
@@ -1346,8 +1346,8 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
             continue;
           }
           const comparison = compare(candidate, lookup);
-          if (comparison === 0) return table.at(row - 1, column);
-          if (approximate && comparison < 0) found = column;
+          if (!approximate && comparison === 0) return table.at(row - 1, column);
+          if (approximate && comparison <= 0) found = column;
         }
         return found >= 0 ? table.at(row - 1, found) : fail('#N/A');
       }
