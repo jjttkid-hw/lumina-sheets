@@ -304,6 +304,21 @@ it('does not clear edited-session protection when an export finishes or fails', 
   expect(event.preventDefault).toHaveBeenCalledTimes(2);
 });
 
+it('restores the formula draft when a cancelled beforeunload returns focus', async () => {
+  const { grid, $, listeners, report } = mount();
+  await report('list');
+  $('#formula').value = 'Safari cancelled draft';
+  $('#formula').listeners.get('input')!();
+  const before = listeners.get('beforeunload')!({ preventDefault() {}, returnValue: '' });
+  expect(before).toBeUndefined();
+  grid.select({ row: 1, col: 1 });
+  $('#formula').value = 'stale after prompt';
+  listeners.get('focus')!();
+  expect($('#formula').value).toBe('Safari cancelled draft');
+  expect($('#selected').textContent).toBe('A1');
+  expect($('#session-note').textContent).toContain('保存');
+});
+
 it('keeps an edited session alive when pagehide is cancelled by the browser', async () => {
   const { grid, $, listeners } = mount();
   grid.setCell('A1', 'keep through cancelled navigation');

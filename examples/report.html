@@ -484,6 +484,7 @@
       let pointerAppliedDraft = null;
       let pointerApplyPressed = false;
       let savedWorkbookJson = null;
+      let pendingUnloadRecovery = null;
       function markSessionEdited() {
         sessionEdited = true;
         leaveRisk = true;
@@ -590,14 +591,50 @@
       };
       $('#formula').addEventListener('input', markFormulaDraft);
       $('#report').addEventListener('input', markSessionEdited);
+      function captureUnloadRecovery() {
+        if (!grid || !leaveRisk) return null;
+        const key = cellKey(selection.row, selection.col);
+        const value = formulaDraft?.value ?? $('#formula').value;
+        return {
+          activeSheetId: grid.activeSheetInfo.id,
+          selection: { ...selection },
+          formulaDraft: { key, value },
+          layout: currentLayout,
+          workbook: savedWorkbookJson ?? JSON.stringify(grid.toJSON()),
+        };
+      }
+      function restoreCancelledUnload() {
+        const saved = pendingUnloadRecovery;
+        if (!saved || !grid) return;
+        pendingUnloadRecovery = null;
+        try {
+          if (grid.sheetInfos.some((sheet) => sheet.id === saved.activeSheetId))
+            grid.setActiveSheet(saved.activeSheetId);
+          grid.select(saved.selection);
+          currentLayout = saved.layout;
+          formulaDraft = saved.formulaDraft;
+          selection = { ...saved.selection };
+          selectionDirty = true;
+          syncSelection(true);
+          syncLayout();
+          status.dataset.error = 'false';
+          status.textContent = '已取消离页操作 · 报表草稿已保留';
+          persistSession();
+        } catch {
+          pendingUnloadRecovery = saved;
+        }
+      }
       const beforeUnload = (event) => {
         if (!leaveRisk) return;
+        pendingUnloadRecovery = captureUnloadRecovery();
+        persistSession();
         event.preventDefault();
         // Safari and older browsers require the legacy property to be set to
         // an empty string. The browser supplies the actual prompt text.
         event.returnValue = '';
       };
       window.addEventListener('beforeunload', beforeUnload);
+      window.addEventListener('focus', restoreCancelledUnload);
       function applyFormulaDraft() {
         const raw = $('#formula').value;
         formulaDraft = null;
@@ -1791,6 +1828,7 @@
       }, 400);
       const teardown = () => {
         window.removeEventListener('beforeunload', beforeUnload);
+        window.removeEventListener('focus', restoreCancelledUnload);
         $('#formula').removeEventListener('input', markFormulaDraft);
         $('#report').removeEventListener('input', markSessionEdited);
         clearInterval(metricsTimer);
