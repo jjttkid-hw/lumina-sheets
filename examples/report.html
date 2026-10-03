@@ -483,6 +483,7 @@
       // while a render callback is still queued. Keep that draft attached to
       // its cell so a deferred selection sync cannot overwrite it.
       let formulaDraft = null;
+      let formulaComposing = false;
       let pointerApplyTimer = null;
       let pointerApplyRevision = 0;
       let pointerAppliedDraft = null;
@@ -490,6 +491,7 @@
       let savedWorkbookJson = null;
       let pendingUnloadRecovery = null;
       function markSessionEdited() {
+        pendingUnloadRecovery = null;
         sessionEdited = true;
         leaveRisk = true;
         $('#session-note').textContent =
@@ -497,6 +499,7 @@
         persistSession();
       }
       function resetSessionNotice() {
+        pendingUnloadRecovery = null;
         savedWorkbookJson = null;
         sessionEdited = false;
         leaveRisk = false;
@@ -593,6 +596,16 @@
         formulaDraft = { key: cellKey(selection.row, selection.col), value: $('#formula').value };
         markSessionEdited();
       };
+      const startFormulaComposition = () => {
+        formulaComposing = true;
+        cancelPointerApply();
+      };
+      const endFormulaComposition = () => {
+        formulaComposing = false;
+        markFormulaDraft();
+      };
+      $('#formula').addEventListener('compositionstart', startFormulaComposition);
+      $('#formula').addEventListener('compositionend', endFormulaComposition);
       $('#formula').addEventListener('input', markFormulaDraft);
       $('#report').addEventListener('input', markSessionEdited);
       function captureUnloadRecovery() {
@@ -600,17 +613,18 @@
         const key = cellKey(selection.row, selection.col);
         const value = formulaDraft?.value ?? $('#formula').value;
         return {
+          generation: reportGeneration,
           activeSheetId: grid.activeSheetInfo.id,
           selection: { ...selection },
           formulaDraft: { key, value },
           layout: currentLayout,
-          workbook: savedWorkbookJson ?? JSON.stringify(grid.toJSON()),
         };
       }
       function restoreCancelledUnload() {
         const saved = pendingUnloadRecovery;
         if (!saved || !grid) return;
         pendingUnloadRecovery = null;
+        if (saved.generation !== reportGeneration) return;
         try {
           if (grid.sheetInfos.some((sheet) => sheet.id === saved.activeSheetId))
             grid.setActiveSheet(saved.activeSheetId);
@@ -640,6 +654,8 @@
       window.addEventListener('beforeunload', beforeUnload);
       window.addEventListener('focus', restoreCancelledUnload);
       function applyFormulaDraft() {
+        if (formulaComposing || $('#apply').disabled) return;
+        pendingUnloadRecovery = null;
         const raw = $('#formula').value;
         formulaDraft = null;
         const value = parseCellInput(raw);
@@ -659,15 +675,22 @@
         const current = captureApplyDraft();
         return draft && Object.keys(current).every((key) => draft[key] === current[key]);
       }
+      function cancelPointerApply() {
+        pointerApplyPressed = false;
+        ++pointerApplyRevision;
+        pointerAppliedDraft = null;
+        clearTimeout(pointerApplyTimer);
+        pointerApplyTimer = null;
+      }
       function schedulePointerApply() {
-        if ($('#apply').disabled) return;
+        if (formulaComposing || $('#apply').disabled) return;
         const draft = captureApplyDraft();
         pointerAppliedDraft = null;
         const revision = ++pointerApplyRevision;
         clearTimeout(pointerApplyTimer);
         pointerApplyTimer = setTimeout(() => {
           pointerApplyTimer = null;
-          if (revision !== pointerApplyRevision || $('#apply').disabled || !matchesApplyDraft(draft)) return;
+          if (revision !== pointerApplyRevision || formulaComposing || $('#apply').disabled || !matchesApplyDraft(draft)) return;
           try {
             applyFormulaDraft();
             pointerAppliedDraft = captureApplyDraft();
@@ -718,6 +741,8 @@
       grid = createSpreadsheet($('#report'), {
         onError: showError,
         onActiveSheetChange: () => {
+          formulaComposing = false;
+          cancelPointerApply();
           formulaDraft = null;
           stopSnapshot();
           stopExport();
@@ -959,6 +984,9 @@
         selectionDirty = true;
       }
       async function report(mode) {
+        pendingUnloadRecovery = null;
+        formulaComposing = false;
+        cancelPointerApply();
         stopImport();
         stopSnapshot();
         formulaDraft = null;
@@ -1426,6 +1454,10 @@
           $('#jump').click();
       };
       $('#apply').onclick = (event) => {
+        if (formulaComposing || $('#apply').disabled) {
+          cancelPointerApply();
+          return;
+        }
         try {
           const handledByPointerFallback =
             event?.detail !== 0 && matchesApplyDraft(pointerAppliedDraft);
@@ -1473,7 +1505,7 @@
         }
       });
       $('#formula').onkeydown = (event) => {
-        if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229)
+        if (event.key === 'Enter' && !formulaComposing && !event.isComposing && event.keyCode !== 229)
           $('#apply').click();
       };
       $('#undo').onclick = () => {
@@ -1722,6 +1754,8 @@
           if (generation !== reportGeneration) return;
           grid.setConditionalRules([]);
           formulaDraft = null;
+          formulaComposing = false;
+          cancelPointerApply();
           currentLayout = 'imported';
           updateControls();
           syncPrint();
@@ -1833,6 +1867,8 @@
       const teardown = () => {
         window.removeEventListener('beforeunload', beforeUnload);
         window.removeEventListener('focus', restoreCancelledUnload);
+        $('#formula').removeEventListener('compositionstart', startFormulaComposition);
+        $('#formula').removeEventListener('compositionend', endFormulaComposition);
         $('#formula').removeEventListener('input', markFormulaDraft);
         $('#report').removeEventListener('input', markSessionEdited);
         clearInterval(metricsTimer);

@@ -290,6 +290,37 @@ try {
     timeout: 60_000,
   });
   await page.locator('#formula').waitFor();
+  await check('report-formula-composing-apply-guard', async () => {
+    await page.locator('#address').fill('A1');
+    await page.locator('#jump').click();
+    const before = await page.locator('#value').textContent();
+    await page.locator('#formula').evaluate((input) => {
+      input.focus();
+      input.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }));
+      input.value = '未完成候选';
+      input.dispatchEvent(new InputEvent('input', { bubbles: true, isComposing: true }));
+      const apply = document.querySelector('#apply');
+      apply.click();
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      apply.dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true }));
+      apply.dispatchEvent(new MouseEvent('mouseup', { button: 0, bubbles: true }));
+    });
+    await page.waitForTimeout(120);
+    const during = await page.locator('#value').textContent();
+    assert.equal(during, before);
+    assert.equal(await page.locator('#formula').inputValue(), '未完成候选');
+    await page.locator('#formula').evaluate((input) => {
+      input.value = '完整候选文字';
+      input.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: input.value }));
+      input.dispatchEvent(new InputEvent('input', { bubbles: true, isComposing: false }));
+    });
+    await page.locator('#apply').click();
+    await page.waitForFunction(() => document.querySelector('#value')?.textContent === '结果：完整候选文字');
+    const after = await page.locator('#value').textContent();
+    await page.locator('#undo').click();
+    assert.equal(await page.locator('#value').textContent(), before);
+    return { before, during, after, oneUndoRestoresInitialValue: true };
+  });
   await check('report-formula-composing-enter-guard', async () => {
     await page.locator('#address').fill('A1');
     await page.locator('#jump').click();
@@ -318,6 +349,7 @@ try {
     'canvas-blur-defers-final-composition',
     'canvas-composing-enter-does-not-commit',
     'canvas-stale-composition-cannot-write-after-sheet-switch',
+    'report-formula-composing-apply-guard',
     'report-formula-composing-enter-guard',
   ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');

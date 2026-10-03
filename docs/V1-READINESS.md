@@ -7,6 +7,8 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-03: [Candidate r31](acceptance/browser-candidate-2026-10-03-r31/README.md) prevents partial composition commits and invalidates stale cancelled-unload recovery after new input, Apply or report replacement. All 2369 tests, 150 three-engine checks and two identical builds pass. Site hash is `f454ab2f96a424e195777ecca765117a301c9fb5363a52373cfb0d84d9283594`; SDK hash is `7a959bbd2ba01ade6b49d9f8fce49a13d0fa6f9252f091d6e332ee79989e73d6` (725902 bytes). Native Safari first Apply and external stable gates remain open. The following candidates are historical.
+
 2026-10-03: [Candidate r30](acceptance/browser-candidate-2026-10-03-r30/README.md) adds explicit formula-input browser text-assistance hints. All 2365 tests, 147 three-engine checks and two identical builds pass. Site hash is `74fa5f999486a48fee36b443ec8baec28b895e47f7a39b71e4aa7998ce2a87e6`; SDK hash is `76a96daef90ad0e09f88fbc5b5155e4c3836865dd18130730b9e0f1fd9294e48` (725616 bytes). Native Safari first Apply remains unverified; input hints do not close that gate. The following candidate records are historical.
 
 2026-10-02: [Candidate r29](acceptance/browser-candidate-2026-10-03-r29/README.md)

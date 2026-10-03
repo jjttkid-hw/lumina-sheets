@@ -319,6 +319,78 @@ it('restores the formula draft when a cancelled beforeunload returns focus', asy
   expect($('#session-note').textContent).toContain('保存');
 });
 
+it('does not restore an old unload draft after a newer input or successful Apply', async () => {
+  const { grid, $, listeners, report } = mount();
+  await report('list');
+  $('#formula').value = 'old pending draft';
+  $('#formula').listeners.get('input')!();
+  const warn = () => listeners.get('beforeunload')!({ preventDefault() {}, returnValue: '' });
+  warn();
+  $('#formula').value = 'newer draft';
+  $('#formula').listeners.get('input')!();
+  listeners.get('focus')!();
+  expect($('#formula').value).toBe('newer draft');
+  warn();
+  $('#apply').click();
+  listeners.get('focus')!();
+  expect(grid.getValue('A1')).toBe('newer draft');
+  expect($('#formula').value).toBe('newer draft');
+  expect(JSON.parse(storage.get('lumina.report.example.v1')!).formulaDraft).toBeNull();
+});
+
+it('does not restore an unload selection or draft into a replacement report', async () => {
+  const { grid, $, listeners, report } = mount();
+  await report('list');
+  grid.select({ row: 1, col: 1 });
+  $('#formula').value = 'old report draft';
+  $('#formula').listeners.get('input')!();
+  listeners.get('beforeunload')!({ preventDefault() {}, returnValue: '' });
+  await report('formulas');
+  listeners.get('focus')!();
+  expect($('#formula').value).toBe('场景');
+  expect(grid.selectedRange).toEqual({ row: 0, col: 0 });
+  expect($('#status').textContent).toContain('已生成公式示例');
+});
+
+it('does not apply partial IME text by click, keyboard or pointer fallback', async () => {
+  const { grid, $, report } = mount();
+  await report('list');
+  const initial = grid.getValue('A1');
+  const set = vi.spyOn(grid, 'setCell');
+  const formula = $('#formula');
+  formula.listeners.get('compositionstart')!();
+  formula.value = '未完成候选';
+  formula.listeners.get('input')!();
+  $('#apply').click();
+  formula.onkeydown!({ key: 'Enter' });
+  $('#apply').listeners.get('mousedown')!({ button: 0 });
+  $('#apply').listeners.get('mouseup')!({ button: 0 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+  expect(grid.getValue('A1')).toBe(initial);
+  formula.value = '最终中文';
+  formula.listeners.get('compositionend')!();
+  formula.listeners.get('input')!();
+  $('#apply').click();
+  expect(set).toHaveBeenCalledOnce();
+  expect(grid.getValue('A1')).toBe('最终中文');
+  expect(formula.value).toBe('最终中文');
+});
+
+it('cancels a queued pointer Apply when a new composition starts', async () => {
+  const { grid, $, report } = mount();
+  await report('list');
+  const set = vi.spyOn(grid, 'setCell');
+  $('#formula').value = 'pending pointer';
+  $('#formula').listeners.get('input')!();
+  $('#apply').listeners.get('mousedown')!({ button: 0 });
+  $('#apply').listeners.get('mouseup')!({ button: 0 });
+  $('#formula').listeners.get('compositionstart')!();
+  $('#formula').listeners.get('compositionend')!();
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  expect(set).not.toHaveBeenCalled();
+});
+
 it('keeps an edited session alive when pagehide is cancelled by the browser', async () => {
   const { grid, $, listeners } = mount();
   grid.setCell('A1', 'keep through cancelled navigation');
