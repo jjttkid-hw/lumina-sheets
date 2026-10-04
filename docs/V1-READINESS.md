@@ -242,12 +242,12 @@ they need refresh recovery.
 
 | Item | Evidence | Status |
 | --- | --- | --- |
-| Source and Pages deployment | Commit [`92670db`](https://github.com/jjttkid-hw/lumina-sheets/commit/92670db334ff499ea4900dfaaeccae8073dbcd68), [CI run 36858240934](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36858240934), [CD run 36858835989](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/36858835989) | Passed |
-| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `92670db`, site SHA-256 `939ce1eb3268e6a623ed126367fe4ac17040319a5a1385fd1dca989d62dcd110` | Passed |
-| SDK artifact | Candidate r27, SDK SHA-256 `7586704641638f54423083490cb588ba9ae8b2684c295ba9e2f12f09ea68be74` (724638 bytes) | Passed |
-| Automated regression | 167 test files, 2,362 tests; API, package isolation, strict license and reproducibility gates | Passed |
-| Real-browser automation | [Candidate r27](acceptance/browser-candidate-2026-10-01-r27/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
-| File corpus | Candidate r27 XLSX and WPS reports, plus native Safari/WPS retained files | Passed for the documented subset |
+| Source and Pages deployment | Commit [`dc87796`](https://github.com/jjttkid-hw/lumina-sheets/commit/dc87796350f41695bd56d35c575b3e25016e76ba), [CI run 37161768920](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37161768920), [CD run 37162164421](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37162164421) | Passed |
+| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `dc87796`, site SHA-256 `4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078` | Passed |
+| SDK artifact | Candidate r41, SDK SHA-256 `409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23` (728421 bytes) | Passed |
+| Automated regression | 174 test files, 2,419 tests; API, package isolation, strict license and reproducibility gates | Passed |
+| Real-browser automation | [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
+| File corpus | Candidate r41 XLSX/WPS reports and 12-case business corpus, plus retained native Safari/WPS files | Passed for the documented subset |
 | npm package | Public registry lookup for `lumina-report-sdk` currently returns 404; local `npm whoami` currently returns E401 | **Open** |
 
 Supplemental evidence: [multi-sheet acceptance](acceptance/multisheet-2026-09-28/README.md) adds 24 passing browser checks for cross-sheet editing/history and actual CSV/JSON/XLSX downloads and reimports, across both the site and SDK example. The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md) independently verifies the deployed cross-sheet edit, recalculation and undo path on the current Pages commit.
