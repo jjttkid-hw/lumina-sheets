@@ -242,8 +242,8 @@ they need refresh recovery.
 
 | Item | Evidence | Status |
 | --- | --- | --- |
-| Source and Pages deployment | Commit [`3678ca8`](https://github.com/jjttkid-hw/lumina-sheets/commit/3678ca8d42f1cbd777028c72159a9e35141c8ddb), [CI run 37166308566](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37166308566), [CD run 37166703192](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37166703192) | Passed |
-| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `3678ca8`, site SHA-256 `4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078` | Passed |
+| Source and Pages deployment | Main-branch CI/CD must pass for the deployed commit; the exact live commit is read from [`build-info.json`](https://jjttkid-hw.github.io/lumina-sheets/build-info.json), not copied into this ledger | Passed |
+| Site identity | [`build-info.json`](https://jjttkid-hw.github.io/lumina-sheets/build-info.json) is the authoritative live version, commit and site SHA-256 record; the r41 candidate hashes above bind the acceptance reports | Passed |
 | SDK artifact | Candidate r41, SDK SHA-256 `409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23` (728421 bytes) | Passed |
 | Automated regression | 174 test files, 2,419 tests; API, package isolation, strict license and reproducibility gates | Passed |
 | Real-browser automation | [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
