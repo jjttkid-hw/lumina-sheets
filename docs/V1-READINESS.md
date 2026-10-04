@@ -242,8 +242,8 @@ they need refresh recovery.
 
 | Item | Evidence | Status |
 | --- | --- | --- |
-| Source and Pages deployment | Commit [`dc87796`](https://github.com/jjttkid-hw/lumina-sheets/commit/dc87796350f41695bd56d35c575b3e25016e76ba), [CI run 37161768920](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37161768920), [CD run 37162164421](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37162164421) | Passed |
-| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `dc87796`, site SHA-256 `4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078` | Passed |
+| Source and Pages deployment | Commit [`f87547d`](https://github.com/jjttkid-hw/lumina-sheets/commit/f87547d850f6e96c44c154ae4fe60146785e0e8c), [CI run 37165633045](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37165633045), [CD run 37165967253](https://github.com/jjttkid-hw/lumina-sheets/actions/runs/37165967253) | Passed |
+| Site identity | `https://jjttkid-hw.github.io/lumina-sheets/build-info.json` → version `0.29.0`, commit `f87547d`, site SHA-256 `4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078` | Passed |
 | SDK artifact | Candidate r41, SDK SHA-256 `409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23` (728421 bytes) | Passed |
 | Automated regression | 174 test files, 2,419 tests; API, package isolation, strict license and reproducibility gates | Passed |
 | Real-browser automation | [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
