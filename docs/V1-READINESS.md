@@ -7,6 +7,12 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-05: [Workspace rename acceptance](acceptance/sheet-rename-2026-10-05-r41/README.md)
+adds 18 actual-control browser checks against unchanged r41 site/SDK bytes.
+Cross-sheet formulas and internal links, rejection, undo/redo, durable reload,
+actual XLSX/JSON downloads and 390px keyboard focus pass in three engines.
+This supplemental evidence does not close native input, device or review gates.
+
 2026-10-04: [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md)
 fixes direct scalar coercion for SUM/AVERAGE/MIN/MAX. All 2419 tests and 162
 three-engine checks pass; site and SDK hashes are

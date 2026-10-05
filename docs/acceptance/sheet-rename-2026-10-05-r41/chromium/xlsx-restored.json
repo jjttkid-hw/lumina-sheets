@@ -1,0 +1,70 @@
+{
+  "id": "ab26dd6d-c377-4501-b6d2-6a7ee6e509b5",
+  "name": "rename-roundtrip",
+  "description": "在同一张表格里，让数据变成决策。",
+  "sheets": [
+    {
+      "id": "4c01fd9a-6666-4df0-a2ab-eb15785ff89e",
+      "name": "O'Brien 数据",
+      "cells": {
+        "A1": {
+          "value": 3
+        },
+        "B1": {
+          "value": "='O''Brien 数据'!A1+A2"
+        },
+        "A2": {
+          "value": 4
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {},
+      "dataValidations": [],
+      "frozenRows": 0,
+      "merges": []
+    },
+    {
+      "id": "4c98ebb5-d7db-49fd-8f4f-842843bc50dc",
+      "name": "Summary",
+      "cells": {
+        "A1": {
+          "value": "=SUM('O''Brien 数据'!$A$1:'O''Brien 数据'!A2)"
+        },
+        "B1": {
+          "value": "=\"Data!A1\""
+        },
+        "C1": {
+          "value": "link",
+          "hyperlink": {
+            "target": "#'O''Brien 数据'!$A$1",
+            "tooltip": "hint"
+          }
+        },
+        "D1": {
+          "value": "local",
+          "hyperlink": {
+            "target": "#A1"
+          }
+        },
+        "E1": {
+          "value": "web",
+          "hyperlink": {
+            "target": "https://example.com/Data!A1"
+          }
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {},
+      "dataValidations": [],
+      "frozenRows": 0,
+      "merges": []
+    }
+  ],
+  "activeSheetId": "4c98ebb5-d7db-49fd-8f4f-842843bc50dc",
+  "createdAt": "2026-10-05T09:07:13.613Z",
+  "updatedAt": "2026-10-05T09:07:13.648Z",
+  "starred": false,
+  "category": "我的工作簿"
+}

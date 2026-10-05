@@ -1,0 +1,64 @@
+{
+  "id": "rename-browser",
+  "name": "重命名验收",
+  "description": "Synthetic browser fixture",
+  "sheets": [
+    {
+      "id": "data",
+      "name": "O'Brien 数据",
+      "cells": {
+        "A1": {
+          "value": 3
+        },
+        "A2": {
+          "value": 4
+        },
+        "B1": {
+          "value": "='O''Brien 数据'!A1+A2"
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {}
+    },
+    {
+      "id": "summary",
+      "name": "Summary",
+      "cells": {
+        "A1": {
+          "value": "=SUM('O''Brien 数据'!$A$1:'O''Brien 数据'!A2)"
+        },
+        "B1": {
+          "value": "=\"Data!A1\""
+        },
+        "C1": {
+          "value": "link",
+          "hyperlink": {
+            "target": "#'O''Brien 数据'!$A$1",
+            "tooltip": "hint"
+          }
+        },
+        "D1": {
+          "value": "local",
+          "hyperlink": {
+            "target": "#A1"
+          }
+        },
+        "E1": {
+          "value": "web",
+          "hyperlink": {
+            "target": "https://example.com/Data!A1"
+          }
+        }
+      },
+      "rowCount": 100,
+      "colCount": 16,
+      "columnWidths": {}
+    }
+  ],
+  "activeSheetId": "summary",
+  "createdAt": "2026-10-05T00:00:00Z",
+  "updatedAt": "2026-10-05T09:07:16.200Z",
+  "starred": false,
+  "category": "导入文件"
+}

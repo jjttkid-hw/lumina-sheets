@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "webkit",
+  "browserVersion": "26.0",
+  "executedAt": "2026-10-05T09:07:18.396Z",
+  "siteSha256": "4e53d3de973b331e3ba63df1b3c840ac2e79fe88eb17f37bb44ce952b1839078",
+  "artifactSha256": "409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23",
+  "runnerSha256": "5a40003ae23d49f6025e1a1ca76c99a508e1d58031d0c1cbe2d00b91a8956652",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "fixtureSha256": "925efa9de021899c87aa16c111579603d8764f8a121ae1b1ca49b90c82705747",
+  "scope": "Shipped workspace rename controls, history, IndexedDB reload and actual JSON/XLSX downloads. Synthetic corpus; not native IME, screen reader or physical touch certification.",
+  "checks": [
+    {
+      "name": "cancel-and-invalid-name",
+      "status": "passed",
+      "elapsedMs": 454,
+      "details": {
+        "download": {
+          "filename": "rejected-unchanged.json",
+          "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+        }
+      }
+    },
+    {
+      "name": "rename-cross-sheet-references",
+      "status": "passed",
+      "elapsedMs": 212,
+      "details": {
+        "download": {
+          "filename": "renamed.json",
+          "sha256": "6acfc1a2a1164de418bd778ee3c8c2080ef606c23c7f87ff9e6cd516161bd879"
+        }
+      }
+    },
+    {
+      "name": "rename-undo-redo",
+      "status": "passed",
+      "elapsedMs": 200,
+      "details": {
+        "downloads": [
+          {
+            "filename": "undo.json",
+            "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+          },
+          {
+            "filename": "redo.json",
+            "sha256": "6acfc1a2a1164de418bd778ee3c8c2080ef606c23c7f87ff9e6cd516161bd879"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rename-persistent-reload",
+      "status": "passed",
+      "elapsedMs": 104,
+      "details": {
+        "download": {
+          "filename": "reload.json",
+          "sha256": "6acfc1a2a1164de418bd778ee3c8c2080ef606c23c7f87ff9e6cd516161bd879"
+        }
+      }
+    },
+    {
+      "name": "rename-xlsx-roundtrip",
+      "status": "passed",
+      "elapsedMs": 349,
+      "details": {
+        "downloads": [
+          {
+            "filename": "rename-roundtrip.xlsx",
+            "sha256": "aed8f4397b141b31f3a173e43ddbc29d218daf1f99e4ac13d201b728361bd52f"
+          },
+          {
+            "filename": "xlsx-restored.json",
+            "sha256": "276ea9bea9be4d046f15dcdcc124bb204f1b50ef5054e224cfb84ab64639f58a"
+          }
+        ]
+      }
+    },
+    {
+      "name": "narrow-keyboard-focus",
+      "status": "passed",
+      "elapsedMs": 421,
+      "details": {
+        "screenshot": "narrow.png",
+        "sha256": "02a75b68bc6c4fa0cb3a464dfd27973fcecfb5acdd477c2627e95359afd5a27e"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "cancel-and-invalid-name",
+      "rename-cross-sheet-references",
+      "rename-undo-redo",
+      "rename-persistent-reload",
+      "rename-xlsx-roundtrip",
+      "narrow-keyboard-focus"
+    ],
+    "actualChecks": [
+      "cancel-and-invalid-name",
+      "rename-cross-sheet-references",
+      "rename-undo-redo",
+      "rename-persistent-reload",
+      "rename-xlsx-roundtrip",
+      "narrow-keyboard-focus"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

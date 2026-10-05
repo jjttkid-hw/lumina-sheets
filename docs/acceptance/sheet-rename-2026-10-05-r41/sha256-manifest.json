@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2589,
+      "sha256": "8cac3a68704c8787440881e902e90b2bdd0f119bde51229e0222a9de1db2e77d"
+    },
+    {
+      "path": "chromium/narrow.png",
+      "bytes": 73816,
+      "sha256": "04d7b1c7eaaba090b03e4707de106f9c8f396b5402bc864c5890a1ec2888a0fb"
+    },
+    {
+      "path": "chromium/redo.json",
+      "bytes": 1359,
+      "sha256": "8d586ecd839fc3749676f6ee8f01f4f98275c534bed65bd58c06c05e962e7307"
+    },
+    {
+      "path": "chromium/rejected-unchanged.json",
+      "bytes": 1292,
+      "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+    },
+    {
+      "path": "chromium/reload.json",
+      "bytes": 1359,
+      "sha256": "8d586ecd839fc3749676f6ee8f01f4f98275c534bed65bd58c06c05e962e7307"
+    },
+    {
+      "path": "chromium/rename-roundtrip.xlsx",
+      "bytes": 7939,
+      "sha256": "a39e53186737bef68c99561c9369255d768b56fef0c20f0dbb11126283894cc3"
+    },
+    {
+      "path": "chromium/renamed.json",
+      "bytes": 1359,
+      "sha256": "8d586ecd839fc3749676f6ee8f01f4f98275c534bed65bd58c06c05e962e7307"
+    },
+    {
+      "path": "chromium/result.json",
+      "bytes": 3617,
+      "sha256": "b7ceeb3a0ea358d6d70afa5df1159ab5c109b4fa3eb5718b92a2baa035babc0c"
+    },
+    {
+      "path": "chromium/undo.json",
+      "bytes": 1292,
+      "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+    },
+    {
+      "path": "chromium/xlsx-restored.json",
+      "bytes": 1646,
+      "sha256": "f47b6c9fa36d506c6c9e8d4be553d09b643095987be2c5229c32b67fa0f985d8"
+    },
+    {
+      "path": "firefox/narrow.png",
+      "bytes": 80223,
+      "sha256": "902eeb0e68b806cb30602f46278b7275474009995a558156d53908756542ba79"
+    },
+    {
+      "path": "firefox/redo.json",
+      "bytes": 1359,
+      "sha256": "4fd699e1f33c021c8d0912cc3d5919794ea366b6aeefbb14f0f7f0c97adf4f0e"
+    },
+    {
+      "path": "firefox/rejected-unchanged.json",
+      "bytes": 1292,
+      "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+    },
+    {
+      "path": "firefox/reload.json",
+      "bytes": 1359,
+      "sha256": "4fd699e1f33c021c8d0912cc3d5919794ea366b6aeefbb14f0f7f0c97adf4f0e"
+    },
+    {
+      "path": "firefox/rename-roundtrip.xlsx",
+      "bytes": 7939,
+      "sha256": "a9419e7a6d3cfb5633c9f184616c43af5a2b0f786e25e7b1a72ac3547ff07a03"
+    },
+    {
+      "path": "firefox/renamed.json",
+      "bytes": 1359,
+      "sha256": "4fd699e1f33c021c8d0912cc3d5919794ea366b6aeefbb14f0f7f0c97adf4f0e"
+    },
+    {
+      "path": "firefox/result.json",
+      "bytes": 3612,
+      "sha256": "cecec66eedb5f8659e6804c1149547538472ffb0f7e56d04b8328ea097941eaa"
+    },
+    {
+      "path": "firefox/undo.json",
+      "bytes": 1292,
+      "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+    },
+    {
+      "path": "firefox/xlsx-restored.json",
+      "bytes": 1646,
+      "sha256": "32a96e100e487e8566f339a58edb2c8e81932f2444349d63adc63bf2eb0fe215"
+    },
+    {
+      "path": "webkit/narrow.png",
+      "bytes": 77847,
+      "sha256": "02a75b68bc6c4fa0cb3a464dfd27973fcecfb5acdd477c2627e95359afd5a27e"
+    },
+    {
+      "path": "webkit/redo.json",
+      "bytes": 1359,
+      "sha256": "6acfc1a2a1164de418bd778ee3c8c2080ef606c23c7f87ff9e6cd516161bd879"
+    },
+    {
+      "path": "webkit/rejected-unchanged.json",
+      "bytes": 1292,
+      "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+    },
+    {
+      "path": "webkit/reload.json",
+      "bytes": 1359,
+      "sha256": "6acfc1a2a1164de418bd778ee3c8c2080ef606c23c7f87ff9e6cd516161bd879"
+    },
+    {
+      "path": "webkit/rename-roundtrip.xlsx",
+      "bytes": 7939,
+      "sha256": "aed8f4397b141b31f3a173e43ddbc29d218daf1f99e4ac13d201b728361bd52f"
+    },
+    {
+      "path": "webkit/renamed.json",
+      "bytes": 1359,
+      "sha256": "6acfc1a2a1164de418bd778ee3c8c2080ef606c23c7f87ff9e6cd516161bd879"
+    },
+    {
+      "path": "webkit/result.json",
+      "bytes": 3608,
+      "sha256": "6c53792a32460d863063ff7209c7eb53d394b0a1346033cbad19418955af189b"
+    },
+    {
+      "path": "webkit/undo.json",
+      "bytes": 1292,
+      "sha256": "6649e6c4eb8b7289b259befe79de17b6c35955bc67f031cbcc7dcb96d9ed0468"
+    },
+    {
+      "path": "webkit/xlsx-restored.json",
+      "bytes": 1646,
+      "sha256": "276ea9bea9be4d046f15dcdcc124bb204f1b50ef5054e224cfb84ab64639f58a"
+    }
+  ]
+}

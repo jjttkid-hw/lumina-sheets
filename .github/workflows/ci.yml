@@ -172,6 +172,8 @@ jobs:
         run: node scripts/check-validation-workspace-browser.mjs
       - name: Verify workspace rule download evidence
         run: node scripts/check-validation-workspace-evidence.mjs
+      - name: Verify workspace sheet rename, history and file round trips
+        run: node scripts/check-sheet-rename-browser.mjs
       - name: Verify selection input prompts across browser engines
         run: node scripts/check-validation-prompt-browser.mjs
       - name: Verify real recovery downloads, imports and persistent copies
@@ -187,6 +189,7 @@ jobs:
             artifacts/browser-recovery/
             artifacts/browser-multisheet/
             artifacts/browser-validation-workspace/
+            artifacts/browser-sheet-rename/
             artifacts/browser-validation-prompts/
           if-no-files-found: error
           retention-days: 14

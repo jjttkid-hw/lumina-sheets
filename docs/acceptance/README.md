@@ -1,5 +1,9 @@
 # 稳定版发布证据
 
+2026-10-05: [Workspace sheet rename](sheet-rename-2026-10-05-r41/README.md) adds
+18 real-browser checks on unchanged r41 artifacts, with retained downloads and
+narrow screenshots. Native input/device and external stable gates remain open.
+
 此目录目前没有已完成的稳定版验收记录。`stable-release.json` 只在真实验收结束后填写；不要把测试夹具或未执行的步骤复制成“通过”。
 
 `npm run check:stable` 对正式的 1.0.0 及更高主版本生效。0.x 与带预发布后缀的版本只输出未声明稳定验收，不证明可商用或通过稳定版门槛。npm 工作流在上传、发布前执行检查。本地正式发布也必须先执行它。
