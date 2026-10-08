@@ -50,7 +50,7 @@ npm view lumina-report-sdk dist-tags --json
 
 如果包页面尚不存在，先由拥有发布权限的 npm 账号完成这一次本地发布；`lumina-report-sdk` 出现在注册表后才能在包 Settings 中新增 Trusted Publisher。npm 登录账号属于维护者个人凭据，不写入仓库文档；GitHub Trusted Publisher 的组织/用户字段固定填写仓库所有者 `jjttkid-hw`。
 
-首次或后续发布如果为 1.0.0 及以上的正式版，必须先通过 `npm run check:stable`；直接运行 npm publish 不会自动执行本仓库门禁。0.x 开发线和预发布版本本地发布都应显式加 `--tag next`，避免 npm 默认写入 latest。
+npm 发布不是 v1.0 验收前置条件；如果发布 1.0.0 及以上正式版，仍必须先通过 `npm run check:stable`。直接运行 npm publish 不会自动执行本仓库门禁。0.x 开发线和预发布版本本地发布都应显式加 `--tag next`，避免 npm 默认写入 latest。
 
 | 字段                        | 值              |
 | --------------------------- | --------------- |
@@ -78,7 +78,7 @@ Trusted Publisher 的逐字段配置和发布后核验步骤见 [npm Trusted Pub
 
 发布前先查看 [当前 v1.0 readiness 账本](V1-READINESS.md)。它是当前候选的简表；历史验收记录不会自动替代其中的开放门槛。
 
-所有 npm 发布候选在构建后先执行 `check:licenses` 严格依赖审计；任何 error/review 或预打包组件未核实都会阻止发布。正式 1.x 及以上版本还执行 `check:stable`。它要求 [稳定版验收记录](acceptance/README.md) 绑定实际 tgz 哈希，检查浏览器核心项目与独立门槛、报告文件及哈希，并从包内读取零未解决问题的依赖清单。缺失或旧证据不能发布。当前没有通过的稳定版记录，因此简单修改版本为 1.0.0 会失败。仓库变量 `RELEASE_SOURCE_DATE_EPOCH` 可固定候选与正式重建的来源时间，防止仅提交验收文档就改变包哈希；值必须与候选构建一致。
+所有 npm 发布候选在构建后先执行 `check:licenses` 严格依赖审计；任何 error/review 或预打包组件未核实都会阻止发布。正式 1.x 及以上 npm 发布仍执行 `check:stable`；这属于发布门禁，不是 v1.0 验收所需的公共注册表状态。它要求 [稳定版验收记录](acceptance/README.md) 绑定实际 tgz 哈希，检查浏览器核心项目与独立门槛、报告文件及哈希，并从包内读取零未解决问题的依赖清单。缺失或旧证据不能发布。当前没有通过的稳定版记录，因此简单修改版本为 1.0.0 会失败。仓库变量 `RELEASE_SOURCE_DATE_EPOCH` 可固定候选与正式重建的来源时间，防止仅提交验收文档就改变包哈希；值必须与候选构建一致。
 
 
 ## 构建来源时间与重复验证

@@ -3,8 +3,8 @@
 2026-10-08: [Native WPS payroll corpus](wps-payroll-2026-10-05-r41/README.md)
 adds a four-sheet payroll and cash-control workflow. WPS and the installed SDK
 agree across 51 formulas and 119 non-empty cells for the baseline, a real 50% →
-75% attendance edit, and a WPS-resaved SDK export. Stable platform, npm and
-commercial-review gates remain open.
+75% attendance edit, and a WPS-resaved SDK export. Stable platform and commercial-review gates remain open; public npm publication is a
+separate distribution task and is not required for v1.0 acceptance.
 
 2026-10-05: [Workspace sheet rename](sheet-rename-2026-10-05-r41/README.md) adds
 18 real-browser checks on unchanged r41 artifacts, with retained downloads and
@@ -42,7 +42,7 @@ narrow screenshots. Native input/device and external stable gates remain open.
 
 先生成与目标正式版同版本的候选包，记录该次构建使用的 `SOURCE_DATE_EPOCH`，完成真实验收并保留 tgz。填好验收记录后提交报告；仅新增证据的提交也会改变默认 Git 构建时间，因此正式发布必须显式沿用候选构建的来源时间。发布工作流读取仓库变量 `RELEASE_SOURCE_DATE_EPOCH`（若有），以便重建相同制品；未设置时沿用 Git 时间。若重建哈希不匹配，应排查输入差异并重新验收，而不是修改证据哈希来强行放行。
 
-当前技术依赖门禁已通过（`0 errors / 0 reviewItems / 0 unresolvedVendorComponents`），并已有绑定同一站点与 SDK 摘要的 r41 Chromium、Firefox、WebKit 自动化候选及 macOS Safari 定向记录。它们仍不等于稳定版签署：原生中文 IME、真实 VoiceOver/NVDA/JAWS、实体移动触控、跨设备性能、完整 Excel/WPS 业务语料、npm registry 首发和商业法务复核仍未完成。本目录不提供虚假的已通过清单。
+当前技术依赖门禁已通过（`0 errors / 0 reviewItems / 0 unresolvedVendorComponents`），并已有绑定同一站点与 SDK 摘要的 r41 Chromium、Firefox、WebKit 自动化候选及 macOS Safari 定向记录。它们仍不等于稳定版签署：原生中文 IME、真实 VoiceOver/NVDA/JAWS、实体移动触控、跨设备性能、完整 Excel/WPS 业务语料和商业法务复核仍未完成；npm registry 首发属于独立分发任务。本目录不提供虚假的已通过清单。
 
 ## 站点与安装包分别绑定
 
@@ -72,6 +72,6 @@ CI 在上传制品之前执行 `node scripts/check-stable-release.mjs --site`，
 
 门禁读取报告内容并核对上述字段与包内原始材料；仅重算报告摘要不能让待审结论、旧包材料或自动报告通过。它不能证明复核人的身份或结论真实性，也不构成法律意见。维护者须核实真实人工复核及其依据，不能由代理根据自动检查结果填写通过。当前项目尚无这份实际批准记录，稳定门槛继续开放。
 
-2026-10-04: [Candidate r41](browser-candidate-2026-10-04-r41/README.md) records the direct aggregate coercion fix with 2,419 tests, 162 three-engine browser checks, 12 business-corpus checks, XLSX/WPS evidence, and reproducible site/SDK hashes. Native IME, screen readers, physical touch, public npm publication, and independent human commercial review remain open.
+2026-10-04: [Candidate r41](browser-candidate-2026-10-04-r41/README.md) records the direct aggregate coercion fix with 2,419 tests, 162 three-engine browser checks, 12 business-corpus checks, XLSX/WPS evidence, and reproducible site/SDK hashes. Native IME, screen readers, physical touch, and independent human commercial review remain open; public npm publication is a separate distribution task.
 
 2026-10-03: [Candidate r39](browser-candidate-2026-10-03-r39/README.md) and [native duplicate lookup thresholds](wps-lookup-duplicates-2026-10-03-r39/README.md) retain current three-engine regressions and WPS comparison files.

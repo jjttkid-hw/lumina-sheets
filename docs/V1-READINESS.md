@@ -1,6 +1,6 @@
 # Lumina Sheets v1.0 readiness
 
-This page records the candidate evidence observed through 2026-10-04; deployment commit IDs
+This page records the candidate evidence observed through 2026-10-08; deployment commit IDs
 are dated observations, not a promise that they remain the newest main commit. Live
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
@@ -260,7 +260,7 @@ they need refresh recovery.
 | Automated regression | 174 test files, 2,419 tests; API, package isolation, strict license and reproducibility gates | Passed |
 | Real-browser automation | [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
 | File corpus | Candidate r41 XLSX/WPS reports and 15-check business corpus, plus retained native Safari/WPS files | Passed for the documented subset |
-| npm package | Public registry lookup for `lumina-report-sdk` currently returns 404; local `npm whoami` currently returns E401 | **Open** |
+| npm package | The SDK archive passes local isolated-install and package-integrity checks; public npm publication is a separate post-acceptance distribution task | **Separate distribution task** |
 
 Supplemental evidence: [multi-sheet acceptance](acceptance/multisheet-2026-09-28/README.md) adds 24 passing browser checks for cross-sheet editing/history and actual CSV/JSON/XLSX downloads and reimports, across both the site and SDK example. The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md) independently verifies the deployed cross-sheet edit, recalculation and undo path on the current Pages commit.
 
@@ -268,7 +268,6 @@ Supplemental evidence: [multi-sheet acceptance](acceptance/multisheet-2026-09-28
 
 These are release gates, not claims that the implementation is broken:
 
-- npm first publication and an isolated install from the public registry;
 - native system IME candidate-window testing, real screen-reader sessions (VoiceOver,
   NVDA or JAWS), and physical mobile touch testing;
 - cross-device performance measurements using the target customer hardware matrix;
@@ -292,10 +291,10 @@ rendering, or a commercial SLA.
 
 ## Publication and stable release sequence
 
-1. Bootstrap the still-unpublished package with an authenticated maintainer account:
-   publish a verified 0.x archive explicitly to `next`, then verify the public
-   tarball and isolated install. GitHub login alone cannot authorize npm.
-2. Once the package exists, configure its npm Settings → Trusted Publishers with
+1. The v1.0 acceptance package gate is the reproducible SDK archive and its local
+   isolated install. Public npm publication is not required to accept v1.0 and may
+   happen afterward as an independent distribution release.
+2. When the package exists, configure its npm Settings → Trusted Publishers with
    `jjttkid-hw / lumina-sheets / npm.yml / npm`. Subsequent versions may use OIDC.
    This repository contains the workflow; it does not prove the npm-side binding.
 3. After the remaining platform and review gates close, prepare the intended 1.0.0
