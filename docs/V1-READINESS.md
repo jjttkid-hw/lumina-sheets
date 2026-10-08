@@ -7,6 +7,12 @@ deployment identity is available in `build-info.json`. Historical candidate note
 
 ## Latest candidate verification
 
+2026-10-08: [Native WPS payroll corpus](acceptance/wps-payroll-2026-10-05-r41/README.md)
+adds 51 formulas and 119 non-empty cells across payroll, department and cash
+control sheets. Native WPS recalculation agrees with the installed SDK for the
+baseline, a real attendance edit, and a WPS-resaved SDK export. This expands the
+business corpus without claiming full Excel/WPS compatibility.
+
 2026-10-05: [Workspace rename acceptance](acceptance/sheet-rename-2026-10-05-r41/README.md)
 adds 18 actual-control browser checks against unchanged r41 site/SDK bytes.
 Cross-sheet formulas and internal links, rejection, undo/redo, durable reload,
@@ -253,7 +259,7 @@ they need refresh recovery.
 | SDK artifact | Candidate r41, SDK SHA-256 `409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23` (728421 bytes) | Passed |
 | Automated regression | 174 test files, 2,419 tests; API, package isolation, strict license and reproducibility gates | Passed |
 | Real-browser automation | [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
-| File corpus | Candidate r41 XLSX/WPS reports and 12-case business corpus, plus retained native Safari/WPS files | Passed for the documented subset |
+| File corpus | Candidate r41 XLSX/WPS reports and 15-check business corpus, plus retained native Safari/WPS files | Passed for the documented subset |
 | npm package | Public registry lookup for `lumina-report-sdk` currently returns 404; local `npm whoami` currently returns E401 | **Open** |
 
 Supplemental evidence: [multi-sheet acceptance](acceptance/multisheet-2026-09-28/README.md) adds 24 passing browser checks for cross-sheet editing/history and actual CSV/JSON/XLSX downloads and reimports, across both the site and SDK example. The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md) independently verifies the deployed cross-sheet edit, recalculation and undo path on the current Pages commit.

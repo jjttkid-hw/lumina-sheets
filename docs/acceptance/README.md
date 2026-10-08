@@ -1,5 +1,11 @@
 # 稳定版发布证据
 
+2026-10-08: [Native WPS payroll corpus](wps-payroll-2026-10-05-r41/README.md)
+adds a four-sheet payroll and cash-control workflow. WPS and the installed SDK
+agree across 51 formulas and 119 non-empty cells for the baseline, a real 50% →
+75% attendance edit, and a WPS-resaved SDK export. Stable platform, npm and
+commercial-review gates remain open.
+
 2026-10-05: [Workspace sheet rename](sheet-rename-2026-10-05-r41/README.md) adds
 18 real-browser checks on unchanged r41 artifacts, with retained downloads and
 narrow screenshots. Native input/device and external stable gates remain open.
