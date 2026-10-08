@@ -4,6 +4,6 @@ Executed 2026-10-04 after the direct aggregate argument coercion fix. Site SHA-2
 
 The formula engine now converts direct scalar text/boolean arguments for SUM, AVERAGE, MIN and MAX while preserving strict range/reference behavior. Full tests: 2419 tests in 174 files passed.
 
-Chromium, Firefox and WebKit core reports were rerun serially against this build after a complete site and SDK build; 162 checks passed. React/Vue integration, API, license, XLSX, WPS and 15-check business corpus validations passed; the payroll supplement is retained in [its own record](../wps-payroll-2026-10-05-r41/README.md). Reproducibility passed with dirty=false and identical site/package bytes. Firefox’s 1,000,000-cell sample is retained from the serial run; an overlapping local run timed out and was not archived.
+Chromium, Firefox and WebKit core reports were rerun serially against this build after a complete site and SDK build; 162 checks passed. React/Vue integration, API, license, XLSX, WPS and 12-check business corpus validations passed. Reproducibility passed with dirty=false and identical site/package bytes. Firefox’s 1,000,000-cell sample is retained from the serial run; an overlapping local run timed out and was not archived.
 
 This is regression evidence, not stable approval. Native IME, screen readers, physical touch, public npm publication and independent human commercial review remain open.
