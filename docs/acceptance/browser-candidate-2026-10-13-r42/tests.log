@@ -1,0 +1,302 @@
+
+> lumina-sheets@0.29.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /Users/huangwei/Desktop/spreadjs
+
+ ✓ tests/build-info.test.ts (3 tests) 3271ms
+   ✓ deployed build identity > records the checked-out commit rather than a different workflow trigger  551ms
+   ✓ deployed build identity > updates the content digest when deployed bytes change and is repeatable otherwise  2014ms
+   ✓ deployed build identity > fails without a checked-out commit instead of inventing one from the environment  704ms
+ ✓ tests/engine-financial.test.ts (25 tests) 3047ms
+   ✓ periodic financial functions > retains financial formula text and computed values over an XLSX round trip  1191ms
+   ✓ periodic discounted cash flow > validates argument/work limits and propagates formula errors  1374ms
+ ✓ tests/lookup-wildcard.test.ts (5 tests) 4136ms
+   ✓ wildcard report lookups > supports horizontal wildcard lookup and preserves formulas through XLSX and edits  1206ms
+   ✓ wildcard report lookups > propagates exhausted matching budgets instead of using the missing-value fallback  2893ms
+ ✓ tests/validation-input-message.test.ts (5 tests) 4382ms
+   ✓ validation selection input messages > imports and roundtrips enabled and disabled input messages without changing Stop errors  2649ms
+   ✓ validation selection input messages > rejects malformed original XML metadata before loading workbook cells  491ms
+   ✓ validation selection input messages > retains empty prompts and an omitted display flag across XLSX  681ms
+   ✓ validation selection input messages > preserves the native WPS-saved prompt and all source cell values  539ms
+ ✓ tests/csv-wide-row.test.ts (3 tests) 4494ms
+   ✓ static CSV wide-row serialization > splits a wide row while preserving formulas, escaping, Unicode and trailing empty fields  4479ms
+ ✓ tests/stable-release.test.ts (28 tests) 4948ms
+   ✓ stable release evidence > checks actual tarball inventory, site files, report bytes and symlink confinement  4897ms
+ ✓ tests/xlsx-shared-strings.test.ts (18 tests) 4402ms
+   ✓ XLSX shared string index validation > rejects an invalid shared string reference "" instead of decoding a different value  529ms
+   ✓ XLSX shared string index validation > rejects an invalid shared string reference "0x1" instead of decoding a different value  354ms
+   ✓ XLSX shared string index validation > accepts decimal integer reference "+1" consistently for plain text  306ms
+   ✓ XLSX shared string index validation > keeps shared rich text and its formatting through an XLSX roundtrip  462ms
+   ✓ desktop producer escape spelling > decodes mixed-case tokens once in hyperlink strings and retains literals on roundtrip  326ms
+ ✓ tests/registry-artifact.test.ts (4 tests) 5634ms
+   ✓ downloads a version from a local registry fixture, installs and imports it; rejects tampering and 404  5617ms
+ ✓ tests/xlsx-dates.test.ts (24 tests) 4890ms
+   ✓ XLSX 1900 date serial fidelity > imports ISO date 1900-01-01 as a 1900 serial and preserves XLSX round trips  1151ms
+   ✓ XLSX 1900 date serial fidelity > imports ISO date 1900-02-28T12:00:00 as a 1900 serial and preserves XLSX round trips  591ms
+   ✓ XLSX 1900 date serial fidelity > imports ISO date 2024-01-01T00:00:00-05:00 as a 1900 serial and preserves XLSX round trips  496ms
+ ✓ tests/xlsx-formula-cache.test.ts (16 tests) 4991ms
+   ✓ XLSX formula string caches > writes an exact OOXML string cache for referenced text "a\r\nb\rc\nd"  1058ms
+   ✓ XLSX formula string caches > writes an exact OOXML string cache for referenced text "a\u0000b\u0001cd"  312ms
+   ✓ XLSX formula string caches > writes an exact OOXML string cache for referenced text "😀\ud800Z\udfff￾￿"  307ms
+   ✓ XLSX formula string caches > retains encoded caches through rich-text and print archive rewriting and refreshes after input changes  547ms
+   ✓ XLSX formula string caches > keeps formula-returned #N/A text distinct from an actual error  443ms
+   ✓ XLSX formula string caches > keeps formula-returned #NAME? text distinct from an actual error  518ms
+   ✓ XLSX formula string caches > keeps formula-returned #VALUE! text distinct from an actual error  360ms
+ ✓ tests/api-contract.test.ts (4 tests) 6427ms
+   ✓ public API declaration gate > ignores private implementation and comments while preserving public contracts  1017ms
+   ✓ public API declaration gate > rejects changed public signatures and never updates the baseline implicitly  2323ms
+   ✓ public API declaration gate > rejects changed package exports  2123ms
+   ✓ public API declaration gate > rejects an empty declaration graph or unsupported arguments  963ms
+ ✓ tests/xlsx-scalar-values.test.ts (39 tests) 5569ms
+   ✓ XLSX scalar lexical validation > rejects unknown cell type "number" instead of interpreting its payload as a number  557ms
+   ✓ XLSX scalar lexical validation > keeps string values distinct from numbers and permits omitted numeric type  688ms
+   ✓ XLSX scalar lexical validation > preserves a valid single inline string "plain text"  445ms
+   ✓ XLSX scalar lexical validation > rejects malformed numeric value "1e" without partial parsing  318ms
+ ✓ tests/xlsx-cells.test.ts (12 tests) 1343ms
+   ✓ sparse XLSX stored cells > retains style-only template cells at the import bounds without creating a dense rectangle  414ms
+ ✓ tests/xlsx-merges.test.ts (23 tests) 2619ms
+   ✓ XLSX merge expansion preflight > bounds visible column expansion before decoding: {"min":"1","max":"1000000000"}  486ms
+   ✓ XLSX merge expansion preflight > retains exactly 10,000 merged coordinates in a valid round trip  524ms
+ ✓ tests/xlsx-print.test.ts (20 tests) 2679ms
+   ✓ XLSX persisted print subset > round-trips real XLSX paper, margins, titles, row and column breaks  598ms
+   ✓ XLSX archive preflight > rejects declared XML decompression size before inflating a large member  1135ms
+ ✓ tests/sdk-import.test.ts (43 tests) 1439ms
+   ✓ SDK asynchronous import ownership > preserves the workbook and history when an XLSX cell has conflicting payloads  440ms
+ ✓ tests/cell-hyperlink.test.ts (11 tests) 1616ms
+   ✓ cell hyperlink metadata > preserves an empty label and https://example.com/a?x=1&y=2 without serializing a placeholder or object as text  304ms
+ ✓ tests/engine-dated-financial.test.ts (31 tests) 2166ms
+   ✓ dated financial functions > bounds iterative member work for large schedules  1466ms
+   ✓ dated financial functions > invalidates both cross-sheet cash and date dependencies and survives XLSX  681ms
+ ✓ tests/calculation-thread.test.ts (7 tests) 1504ms
+ ✓ tests/wildcard.test.ts (4 tests) 2112ms
+   ✓ bounded wildcard matching > agrees with an independent exhaustive matcher on short patterns and values  352ms
+   ✓ bounded wildcard matching > supports conditional functions and MATCH without regex backtracking  1757ms
+ ✓ tests/report-example.test.ts (44 tests) 2770ms
+   ✓ does not apply a pointer release to a different cell, a disabled button or a secondary button  515ms
+   ✓ keeps pointer activation owned by the cell and draft present at press time  308ms
+ ✓ tests/xlsx-error-values.test.ts (10 tests) 2227ms
+   ✓ XLSX constant error semantics > retains #N/A as an error literal while identical text stays text  397ms
+   ✓ XLSX constant error semantics > retains #NULL! as an error literal while identical text stays text  364ms
+   ✓ XLSX constant error semantics > retains #VALUE! as an error literal while identical text stays text  308ms
+   ✓ XLSX constant error semantics > rejects an unsupported constant error "#SPILL!" instead of importing text or blank  333ms
+ ✓ tests/xlsx-active-sheet.test.ts (8 tests) 2630ms
+   ✓ XLSX active sheet > retains the active tab without grouping worksheets (frozen=false)  696ms
+   ✓ XLSX active sheet > defaults missing activeTab to the first sheet and uses the first workbook view  500ms
+   ✓ XLSX active sheet > rejects malformed/out-of-range activeTab 3  306ms
+   ✓ XLSX active sheet > rejects malformed/out-of-range activeTab 9007199254740993  407ms
+ ✓ tests/app-workspace.test.ts (102 tests) 6409ms
+   ✓ App workspace hydration and async record ownership > discards pending revisions reads after unmount  370ms
+   ✓ App workspace hydration and async record ownership > guards leaving during pending/failed saves and clears the guard after a successful durable retry  359ms
+   ✓ App workspace hydration and async record ownership > moves a link labelled "详情" to the merge master and preserves XLSX export and undo  684ms
+ ✓ tests/xlsx-validation.test.ts (26 tests) 2718ms
+   ✓ XLSX data-validation interoperability > rejects unsupported original XML without silent coercion: {"type":"whole","errorStyle":"warning"}  419ms
+   ✓ XLSX data-validation interoperability > rejects overlapping sqref fragments and validation extensions  362ms
+ ✓ tests/report-csv-wide-row.test.ts (5 tests) 1715ms
+   ✓ paged CSV wide-row serialization > preserves Unicode and formula-injection protection across actual encoded stream chunks  1017ms
+   ✓ paged CSV wide-row serialization > bounds chunks inside a wide row and preserves escaping with ,  516ms
+ ✓ tests/engine-incremental.test.ts (17 tests) 2439ms
+   ✓ managed incremental evaluator > stores a range rectangle rather than an edge per range member  1280ms
+   ✓ managed incremental evaluator > indexes 10,000 independent ranges without scanning every subscription on edit  869ms
+ ✓ tests/xlsx-rich-text-budget.test.ts (3 tests) 1142ms
+   ✓ rejects cumulative shared rich text expansion across worksheets before ExcelJS decoding  568ms
+   ✓ counts empty runs as objects even when text expansion is small  361ms
+ ✓ tests/xlsx-objects.test.ts (16 tests) 2888ms
+   ✓ XLSX unsupported object loss protection > rejects a real ExcelJS embedded image before decoding  359ms
+   ✓ XLSX unsupported object loss protection > continues importing and exporting plain cell workbooks  374ms
+ ✓ tests/sdk.test.ts (41 tests) 1153ms
+   ✓ embeddable SDK edit controller > validates load atomically without imposing the file-import 100k-cell quota  946ms
+ ✓ tests/validation-error-title.test.ts (3 tests) 1850ms
+   ✓ validation error titles > imports the retained WPS title and preserves it through JSON and XLSX  891ms
+   ✓ validation error titles > rejects oversized XLSX titles before importing and retains Unicode/control escapes  953ms
+ ✓ tests/io.test.ts (21 tests) 1578ms
+   ✓ XLSX interoperability > round trips sparse hidden rows, hidden columns and row heights  599ms
+   ✓ XLSX interoperability > keeps blank hidden metadata outside stored cells and rejects overlarge row heights  365ms
+   ✓ XLSX interoperability > round trips multiple sheets, formulas, styles, widths and frozen rows  317ms
+ ✓ tests/io-print-settings.test.ts (11 tests) 2417ms
+   ✓ persisted report settings at file boundaries > writes A4 paper, inches, print titles and explicit row breaks to actual XLSX  522ms
+   ✓ persisted report settings at file boundaries > writes A3 paper, inches, print titles and explicit row breaks to actual XLSX  452ms
+   ✓ persisted report settings at file boundaries > covers sparse print metadata beyond the stored dimensions on both axes  525ms
+ ✓ tests/report-snapshot.test.ts (27 tests) 1320ms
+   ✓ complete bounded report snapshots > reads all pages sequentially, preserves primitive values and exports static XLSX  934ms
+ ✓ tests/xlsx-string-structure.test.ts (10 tests) 1772ms
+   ✓ shared plain string structures > rejects duplicate content instead of silently changing it  307ms
+ ✓ tests/xlsx-rich-text-encoding.test.ts (12 tests) 3208ms
+   ✓ XLSX rich text encoding > preserves escaped rich hyperlink labels, font names and source immutability  801ms
+   ✓ XLSX rich text encoding > decodes original shared rich strings once while retaining empty runs  439ms
+   ✓ XLSX rich text encoding > preserves exact UTF-16 text "a\u0000b\u0001c\u000bd" through export and two independent readers  380ms
+ ✓ tests/xlsx-merge-content.test.ts (12 tests) 1194ms
+ ✓ tests/tsv-import.test.ts (8 tests) 1081ms
+   ✓ delimited file import > imports 100,000 rows without expanding the row count into call arguments  981ms
+ ✓ tests/xlsx-formula-kinds.test.ts (11 tests) 1845ms
+   ✓ XLSX formula storage semantics > preserves text literals and quoted sheet names while expanding shared references  318ms
+ ✓ tests/rich-text.test.ts (10 tests) 1468ms
+   ✓ rich text preservation > round trips actual inline XML and rich hyperlink labels without executing text  670ms
+ ✓ tests/calculation-session.test.ts (6 tests) 735ms
+   ✓ worker incremental calculation session > resets after structural changes and full resynchronization  315ms
+ ✓ tests/engine-extended.test.ts (18 tests) 531ms
+   ✓ commercial report formulas > bounds SUMPRODUCT shapes, propagates errors and leaves normal formulas scalar  486ms
+ ✓ tests/performance-worker.test.ts (1 test) 830ms
+   ✓ performance laboratory worker > streams the stated actual cell count and calculates real formulas on resident data  829ms
+ ✓ tests/delimited-extent.test.ts (7 tests) 928ms
+   ✓ preserves TSV trailing rows/columns through XLSX and CSV without exporting the padded canvas  894ms
+ ✓ tests/deploy-site.test.ts (1 test) 1173ms
+   ✓ downloaded deployment artifact verification > requires tested commit, version, and actual file bytes before deployment  1172ms
+ ✓ tests/lookup-duplicates.test.ts (5 tests) 1161ms
+   ✓ duplicate lookup thresholds > matches native WPS results and keeps formula caches through XLSX export  1154ms
+ ✓ tests/sheet-rename.test.ts (3 tests) 774ms
+   ✓ atomic worksheet rename > rewrites qualifiers in formulas and single-cell links while preserving text and identities  767ms
+ ✓ tests/engine-text.test.ts (30 tests) 1096ms
+   ✓ text extraction and cleanup > recalculates and round-trips a lookup/replacement pipeline  938ms
+ ✓ tests/sdk-quality.test.ts (31 tests) 827ms
+   ✓ commercial SDK boundaries > cancels static xlsx before download and reports progress  484ms
+ ✓ tests/structure-io.test.ts (2 tests) 908ms
+   ✓ structural edits across the real XLSX boundary > retains moved rules, print positions, merges and cross-sheet formula results after insertion  548ms
+   ✓ structural edits across the real XLSX boundary > exports deleted-target formulas with real #REF! cached errors and preserves surviving metadata  359ms
+ ✓ tests/hlookup.test.ts (6 tests) 1019ms
+   ✓ horizontal table lookup > preserves formula text and recomputes after XLSX import  987ms
+ ✓ tests/wps-roundtrip.test.ts (1 test) 1333ms
+   ✓ preserves WPS 12.1.26055 saved text, formulas, validation and layout  1332ms
+ ✓ tests/xlsx-rich-text-cancel.test.ts (8 tests) 980ms
+ ✓ tests/formula-numeric-literal.test.ts (14 tests) 1014ms
+   ✓ non-finite numeric formula literals > exports an error instead of Infinity in CSV and XLSX caches, preserving formula text  994ms
+ ✓ tests/range-dependency-index.test.ts (6 tests) 961ms
+   ✓ dynamic rectangle dependency index > matches a brute-force oracle during randomized insertions, removals and queries  714ms
+ ✓ tests/delimited-numbers.test.ts (18 tests) 1148ms
+   ✓ retains rejected numeric coercions as text through XLSX encoding and decoding  1134ms
+ ✓ tests/hyperlink-structure.test.ts (4 tests) 1305ms
+   ✓ internal hyperlink structure tracking > updates links on other sheets atomically and preserves them through XLSX  1185ms
+ ✓ tests/canvas-validation-integration.test.ts (71 tests) 516ms
+ ✓ tests/row-sort.test.ts (13 tests) 572ms
+   ✓ atomic sparse row sorting > rejects oversized final patches instead of returning a partial permutation  550ms
+ ✓ tests/report-data-export.test.ts (16 tests) 564ms
+   ✓ complete paged-source CSV export > isolates validated page values while yielding chunks to consumers  484ms
+ ✓ tests/xlsx-xml-async.test.ts (9 tests) 483ms
+   ✓ cancels a real XLSX during XML parsing before ExcelJS decoding starts  345ms
+ ✓ tests/workspace-edit.test.ts (20 tests) 636ms
+   ✓ main workspace atomic cell edits > enforces the stored-cell budget across sheets using the final batch size  547ms
+ ✓ tests/product-build.test.ts (7 tests) 1314ms
+ ✓ tests/validation-dialog.test.ts (31 tests) 564ms
+ ✓ tests/browser-performance-budget.test.ts (6 tests) 843ms
+   ✓ real browser performance budgets > independently verifies raw downloads and rejects a rehashed failed measurement  832ms
+ ✓ tests/rich-text-script.test.ts (3 tests) 794ms
+   ✓ superscript and subscript rich text > imports actual shared strings with family/charset and round trips script semantics  778ms
+ ✓ tests/canvas-visible-integration.test.ts (46 tests) 321ms
+ ✓ tests/report-advanced.test.ts (22 tests) 164ms
+ ✓ tests/sort-dialog.test.ts (14 tests) 109ms
+ ✓ tests/xlsx-formula-budget.test.ts (7 tests) 769ms
+   ✓ XLSX expanded formula capacity > rejects oversized shared=true formula before decoding  424ms
+ ✓ tests/supplemental-notices.test.ts (10 tests) 537ms
+ ✓ tests/validation-picker.test.ts (28 tests) 161ms
+ ✓ tests/delimited-parse-cancel.test.ts (7 tests) 131ms
+ ✓ tests/xlsx-import-cancel.test.ts (4 tests) 675ms
+ ✓ tests/validation-workspace-evidence.test.ts (1 test) 279ms
+ ✓ tests/calculation-queue.test.ts (37 tests) 158ms
+ ✓ tests/calculation-transfer.test.ts (12 tests) 146ms
+ ✓ tests/performance-lab.test.ts (8 tests) 141ms
+ ✓ tests/site-runtime.test.ts (9 tests) 414ms
+ ✓ tests/io-stream.test.ts (21 tests) 264ms
+ ✓ tests/canvas-interaction.test.ts (7 tests) 140ms
+ ✓ tests/bundle-evidence.test.ts (3 tests) 246ms
+ ✓ tests/sdk-layout.test.ts (36 tests) 57ms
+ ✓ tests/workbook-sort.test.ts (11 tests) 34ms
+ ✓ tests/report-rest-encoding.test.ts (8 tests) 36ms
+ ✓ tests/persistence-replay.test.ts (27 tests) 53ms
+ ✓ tests/formula-bar.test.ts (29 tests) 51ms
+ ✓ tests/formula-structure.test.ts (37 tests) 56ms
+ ✓ tests/engine.test.ts (26 tests) 60ms
+ ✓ tests/report-data.test.ts (33 tests) 54ms
+ ✓ tests/calculation.test.ts (2 tests) 21ms
+ ✓ tests/xlsx-archive-cancel.test.ts (4 tests) 244ms
+ ✓ tests/release-policy.test.ts (19 tests) 83ms
+ ✓ tests/sdk-sort.test.ts (24 tests) 109ms
+ ✓ tests/canvas-selection-operations.test.ts (10 tests) 31ms
+ ✓ tests/report-print-settings.test.ts (29 tests) 45ms
+ ✓ tests/site-evidence.test.ts (3 tests) 122ms
+ ✓ tests/persistence-migration-failure.test.ts (3 tests) 12ms
+ ✓ tests/vendor-evidence.test.ts (11 tests) 17159ms
+   ✓ upstream embedded package metadata evidence > binds actual vendor input bytes and rejects stale or altered attribution records  519ms
+   ✓ binds every exact-source archive to the current ExcelJS map and notice text  16132ms
+ ✓ tests/xlsx-export-lifecycle.test.ts (6 tests) 80ms
+ ✓ tests/report-cache-extent.test.ts (17 tests) 14ms
+ ✓ tests/license-evidence.test.ts (40 tests) 20ms
+ ✓ tests/sdk-sheets.test.ts (21 tests) 57ms
+ ✓ tests/validation-options.test.ts (29 tests) 57ms
+ ✓ tests/range-benchmark-panel.test.ts (6 tests) 118ms
+ ✓ tests/data-validation.test.ts (42 tests) 150ms
+ ✓ tests/report-csv-budget.test.ts (10 tests) 20ms
+ ✓ tests/persistence.test.ts (21 tests) 78ms
+ ✓ tests/performance-harness.test.ts (22 tests) 103ms
+ ✓ tests/sdk-structure.test.ts (18 tests) 146ms
+ ✓ tests/range-benchmark.test.ts (3 tests) 75ms
+ ✓ tests/sdk-validation.test.ts (11 tests) 66ms
+ ✓ tests/delimited-field-budget.test.ts (5 tests) 75ms
+ ✓ tests/persistence-open.test.ts (7 tests) 65ms
+ ✓ tests/row-sort-formulas.test.ts (27 tests) 53ms
+ ✓ tests/persistence-snapshot.test.ts (9 tests) 13ms
+ ✓ tests/file-text-chunks.test.ts (7 tests) 57ms
+ ✓ tests/report-rest-budget.test.ts (14 tests) 33ms
+ ✓ tests/workspace-validation.test.ts (64 tests) 163ms
+ ✓ tests/workspace-stats.test.ts (6 tests) 36ms
+ ✓ tests/report-pdf-visibility.test.ts (14 tests) 40ms
+ ✓ tests/sdk-incremental.test.ts (4 tests) 155ms
+ ✓ tests/workspace-calculation.test.ts (11 tests) 24ms
+ ✓ tests/sdk-print.test.ts (7 tests) 47ms
+ ✓ tests/sdk-rename.test.ts (9 tests) 52ms
+ ✓ tests/analytics.test.ts (6 tests) 37ms
+ ✓ tests/rich-text-dialog.test.ts (4 tests) 84ms
+ ✓ tests/structure-dialog.test.ts (9 tests) 70ms
+ ✓ tests/lookup-lazy.test.ts (5 tests) 88ms
+ ✓ tests/workspace-save.test.ts (9 tests) 77ms
+ ✓ tests/sdk-rich-text.test.ts (1 test) 14ms
+ ✓ tests/csv-stream-abort.test.ts (9 tests) 23ms
+ ✓ tests/recovery-backup.test.ts (20 tests) 134ms
+ ✓ tests/release-workflow.test.ts (4 tests) 38ms
+ ✓ tests/report-cache-concurrency.test.ts (6 tests) 35ms
+ ✓ tests/structure-edit.test.ts (20 tests) 124ms
+ ✓ tests/report-rest-cancel.test.ts (5 tests) 64ms
+ ✓ tests/offline-assets.test.ts (1 test) 9ms
+ ✓ tests/workspace-history.test.ts (7 tests) 14ms
+ ✓ tests/recovery-import.test.ts (17 tests) 71ms
+ ✓ tests/evaluation-result.test.ts (3 tests) 21ms
+ ✓ tests/pdf-lifecycle.test.ts (11 tests) 44ms
+ ✓ tests/file-encoding.test.ts (14 tests) 132ms
+ ✓ tests/paged-export-boundary.test.ts (7 tests) 27ms
+ ✓ tests/report-pdf.test.ts (9 tests) 25ms
+ ✓ tests/canvas-filter-result.test.ts (3 tests) 4ms
+ ✓ tests/canvas-projection.test.ts (8 tests) 7ms
+ ✓ tests/sdk-zoom.test.ts (14 tests) 31ms
+ ✓ tests/workspace-routes.test.ts (7 tests) 15ms
+ ✓ tests/workbook-validation.test.ts (9 tests) 22ms
+ ✓ tests/modal-ime.test.ts (12 tests) 23ms
+ ✓ tests/validation-overlay.test.ts (27 tests) 52ms
+ ✓ tests/engine-paged.test.ts (1 test) 12ms
+ ✓ tests/auxiliary-records.test.ts (4 tests) 5ms
+ ✓ tests/sdk-visible.test.ts (15 tests) 96ms
+ ✓ tests/paged-snapshot.test.ts (17 tests) 15ms
+ ✓ tests/canvas-geometry.test.ts (5 tests) 12ms
+ ✓ tests/file-operation.test.ts (4 tests) 9ms
+ ✓ tests/sdk-mount.test.ts (7 tests) 21ms
+ ✓ tests/rich-text-edit.test.ts (5 tests) 15ms
+ ✓ tests/formula-help.test.ts (2 tests) 15ms
+ ✓ tests/report.test.ts (4 tests) 10ms
+ ✓ tests/focus-return.test.ts (7 tests) 5ms
+ ✓ tests/report-hydrate.test.ts (7 tests) 22ms
+ ✓ tests/recovery-dialog.test.ts (2 tests) 17ms
+ ✓ tests/browser-report.test.ts (5 tests) 4ms
+ ✓ tests/persistence-compaction-failure.test.ts (3 tests) 14ms
+ ✓ tests/hyperlink-navigation.test.ts (5 tests) 12ms
+ ✓ tests/trash-storage.test.ts (10 tests) 18ms
+ ✓ tests/cell-input.test.ts (24 tests) 4ms
+ ✓ tests/hyperlink-dialog.test.ts (8 tests) 17ms
+ ✓ tests/error-boundary.test.ts (3 tests) 10ms
+ ✓ tests/report-cache-budget.test.ts (12 tests) 14ms
+ ✓ tests/row-metrics.test.ts (7 tests) 11ms
+ ✓ tests/build-time.test.ts (10 tests) 6ms
+
+ Test Files  175 passed (175)
+      Tests  2451 passed (2451)
+   Start at  11:52:16
+   Duration  21.88s (transform 9.97s, setup 0ms, collect 53.98s, tests 164.83s, environment 42ms, prepare 23.98s)
+

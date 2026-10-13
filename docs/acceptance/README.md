@@ -75,3 +75,5 @@ CI 在上传制品之前执行 `node scripts/check-stable-release.mjs --site`，
 2026-10-04: [Candidate r41](browser-candidate-2026-10-04-r41/README.md) records the direct aggregate coercion fix with 2,419 tests, 162 three-engine browser checks, 12 business-corpus checks, XLSX/WPS evidence, and reproducible site/SDK hashes. Native IME, screen readers, physical touch, and independent human commercial review remain open; public npm publication is a separate distribution task.
 
 2026-10-03: [Candidate r39](browser-candidate-2026-10-03-r39/README.md) and [native duplicate lookup thresholds](wps-lookup-duplicates-2026-10-03-r39/README.md) retain current three-engine regressions and WPS comparison files.
+
+2026-10-13: [Candidate r42](browser-candidate-2026-10-13-r42/README.md) adds XNPV/XIRR and editable investment cash flows toward v2.0, with 2,451 tests and 165 three-engine core checks. npm publication remains a separate distribution task.

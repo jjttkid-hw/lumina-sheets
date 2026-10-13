@@ -1,11 +1,20 @@
 # Lumina Sheets v1.0 readiness
 
-This page records the candidate evidence observed through 2026-10-08; deployment commit IDs
+This page records the candidate evidence observed through 2026-10-13; deployment commit IDs
 are dated observations, not a promise that they remain the newest main commit. Live
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
 
 ## Latest candidate verification
+
+2026-10-13: [Candidate r42](acceptance/browser-candidate-2026-10-13-r42/README.md)
+starts the [v2.0 roadmap](V2-PLAN.md) with XNPV/XIRR and an editable investment
+cash-flow example. 2,451 tests and 165 three-engine core checks pass, including
+cash/date edit, undo, XLSX download/reimport. Current site SHA-256 is
+`a1812eef15580cfdda0d9d2dab169c4baaa0a47a4c3f26de746e823bb76802b3`;
+SDK SHA-256 is `8681aa7702ca2c289a7a62557ee45175a2ac383597f0d1b54fe8a75985299312`
+(729549 bytes). The release remains 0.29.0; platform and independent commercial
+review gates stay open. Older dated records below apply to their own candidates.
 
 2026-10-08: [Native WPS payroll corpus](acceptance/wps-payroll-2026-10-05-r41/README.md)
 adds 51 formulas and 119 non-empty cells across payroll, department and cash
@@ -255,11 +264,11 @@ they need refresh recovery.
 | Item | Evidence | Status |
 | --- | --- | --- |
 | Source and Pages deployment | Main-branch CI/CD must pass for the deployed commit; the exact live commit is read from [`build-info.json`](https://jjttkid-hw.github.io/lumina-sheets/build-info.json), not copied into this ledger | Passed |
-| Site identity | [`build-info.json`](https://jjttkid-hw.github.io/lumina-sheets/build-info.json) is the authoritative live version, commit and site SHA-256 record; the r41 candidate hashes above bind the acceptance reports | Passed |
-| SDK artifact | Candidate r41, SDK SHA-256 `409cb3657939fab6eef47c22163330d9d87958bc824272e756f5dc2fa049db23` (728421 bytes) | Passed |
-| Automated regression | 174 test files, 2,419 tests; API, package isolation, strict license and reproducibility gates | Passed |
-| Real-browser automation | [Candidate r41](acceptance/browser-candidate-2026-10-04-r41/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
-| File corpus | Candidate r41 XLSX/WPS reports and 15-check business corpus, plus retained native Safari/WPS files | Passed for the documented subset |
+| Site identity | [`build-info.json`](https://jjttkid-hw.github.io/lumina-sheets/build-info.json) is the authoritative live version, commit and site SHA-256 record; the r42 candidate hashes above bind the acceptance reports | Passed |
+| SDK artifact | Candidate r42, SDK SHA-256 `8681aa7702ca2c289a7a62557ee45175a2ac383597f0d1b54fe8a75985299312` (729549 bytes) | Passed |
+| Automated regression | 175 test files, 2,451 tests; API, package isolation, strict license and reproducibility gates | Passed |
+| Real-browser automation | [Candidate r42](acceptance/browser-candidate-2026-10-13-r42/README.md): Chromium, Firefox and WebKit smoke, interaction, focus, layout, performance, ARIA, composition-event and persistence suites; Chromium touch simulation | Passed for the documented scope |
+| File corpus | Candidate r42 XLSX/WPS reports and 15-check business corpus, plus retained native Safari/WPS files | Passed for the documented subset |
 | npm package | The SDK archive passes local isolated-install and package-integrity checks; public npm publication is a separate post-acceptance distribution task | **Separate distribution task** |
 
 Supplemental evidence: [multi-sheet acceptance](acceptance/multisheet-2026-09-28/README.md) adds 24 passing browser checks for cross-sheet editing/history and actual CSV/JSON/XLSX downloads and reimports, across both the site and SDK example. The [r24 Pages manual record](acceptance/manual-pages-2026-10-01-r24/README.md) independently verifies the deployed cross-sheet edit, recalculation and undo path on the current Pages commit.
