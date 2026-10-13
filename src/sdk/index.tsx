@@ -42,6 +42,14 @@ import {
   type ReportRecord,
 } from '../lib/report';
 import { exportWorkbook, importFile } from '../lib/io';
+import {
+  findStoredCells,
+  replaceStoredCells,
+  type CellMatch,
+  type FindCellsOptions,
+  type ReplaceAllRequest,
+  type ReplaceAllResult,
+} from '../lib/search-replace';
 export { productBuildIdentity } from '../lib/product-build';
 export type { ProductBuildIdentity } from '../lib/product-build';
 import '../styles/spreadsheet.css';
@@ -52,6 +60,7 @@ export { parseCellInput } from '../lib/cell-input';
 export * from '../lib/report-data';
 export * from '../lib/report-data-export';
 export * from '../lib/report';
+export * from '../lib/search-replace';
 export * from '../lib/data-validation';
 export * from '../lib/print-settings';
 export { workbookCsvBlob, workbookCsvReadableStream, iterateCsvChunks } from '../lib/io-stream';
@@ -1081,6 +1090,20 @@ export class LuminaSpreadsheet {
   setCells(changes: CellChange[]) {
     this.assertWritable();
     this.apply(this.currentSheet.id, changes);
+  }
+  /** Find and replace stored text atomically; logical blank cells are skipped. */
+  findCells(search: string, options: FindCellsOptions = {}): CellMatch[] {
+    this.assertLive();
+    if (this.cache || this.currentSheet.dataSource?.kind === 'paged')
+      throw new LuminaError('INVALID_ARGUMENT', '分页数据源需要由服务端查找');
+    return asArgument(() => findStoredCells(this.currentSheet, search, options));
+  }
+  replaceAll(request: ReplaceAllRequest): Pick<ReplaceAllResult, 'matches' | 'changedCells'> {
+    this.assertWritable();
+    const result = asArgument(() => replaceStoredCells(this.currentSheet, request));
+    if (result.changes.length)
+      this.apply(this.currentSheet.id, result.changes, true, undefined, undefined, true);
+    return { matches: result.matches, changedCells: result.changedCells };
   }
   /** Stable whole-row sort in an explicit static-sheet range, committed as one edit. */
   sortRows(request: RowSortRequest): SortResult {

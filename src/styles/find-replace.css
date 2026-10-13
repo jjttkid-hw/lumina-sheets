@@ -1,0 +1,63 @@
+.find-replace {
+  min-width: 0;
+}
+.find-replace-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  border: 0;
+  padding: 0;
+  margin: 20px 0 12px;
+}
+.find-replace-options legend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.find-replace-options label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+}
+.find-replace-hint {
+  color: #607566;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.find-replace-results {
+  max-height: 230px;
+  overflow: auto;
+  margin: 14px 0;
+  border: 1px solid #dbe5d8;
+  border-radius: 8px;
+}
+.find-replace-results button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 11px 14px;
+  text-align: left;
+  background: white;
+  border: 0;
+  border-bottom: 1px solid #edf1eb;
+  cursor: pointer;
+  color: var(--ink);
+}
+.find-replace-results button:hover {
+  background: #f2f7ef;
+}
+.find-replace-results strong {
+  flex: 0 0 52px;
+}
+.find-replace-results span {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.find-replace-results p {
+  padding: 0 14px;
+  font-size: 12px;
+}

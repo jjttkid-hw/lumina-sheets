@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "engine": "chromium",
+  "browserVersion": "155.0.8059.40",
+  "executedAt": "2026-10-13T06:25:19.508Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "854ccb9cd6624d33c31787c2c28f098a962e622a5fb284656b6c07d6661a1c32",
+  "artifactSha256": "e06f1a889f35db43fb11babd0cb275f55a43ab086210556777ddd5577ce1423d",
+  "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
+  "checks": [
+    {
+      "name": "dated-investment-edit-undo-xlsx",
+      "status": "passed",
+      "elapsedMs": 926,
+      "details": {
+        "date": "2008-06-01",
+        "npvFormula": "=XNPV(B8,B2:B6,A2:A6)",
+        "irrFormula": "=XIRR(B2:B6,A2:A6)",
+        "npv": 2028.3887383620045,
+        "irr": 0.3420022365994234,
+        "downloadSha256": "26b35d1e78ae5cc4cf903eee94a8ec0558aa83fd9731222014cb3463d0c5ef61"
+      }
+    },
+    {
+      "name": "validation-editor-recovery",
+      "status": "passed",
+      "elapsedMs": 273
+    },
+    {
+      "name": "validation-list-keyboard",
+      "status": "passed",
+      "elapsedMs": 98
+    },
+    {
+      "name": "native-clipboard-atomic-validation",
+      "status": "passed",
+      "elapsedMs": 451,
+      "details": {
+        "transport": "native keyboard copy/paste",
+        "rejected": "B2:C2 unchanged",
+        "accepted": "both cells changed, one undo restores both"
+      }
+    },
+    {
+      "name": "native-copy-cut-paste",
+      "status": "passed",
+      "elapsedMs": 122
+    },
+    {
+      "name": "sdk-mount-isolation-destroy",
+      "status": "passed",
+      "elapsedMs": 42,
+      "details": {
+        "duplicate": "INVALID_ARGUMENT",
+        "empty": 0,
+        "restored": "customer-host",
+        "destroyed": "DESTROYED",
+        "other": 22
+      }
+    },
+    {
+      "name": "sdk-pending-source-destroy",
+      "status": "passed",
+      "elapsedMs": 155,
+      "details": {
+        "outcome": "AbortError",
+        "lateCallbacks": 0,
+        "value": "new session"
+      }
+    },
+    {
+      "name": "sdk-prefetch-contract",
+      "status": "passed",
+      "elapsedMs": 25,
+      "details": {
+        "before": {
+          "row": 0,
+          "col": 0
+        },
+        "after": {
+          "row": 0,
+          "col": 0
+        },
+        "warmedValue": 20,
+        "outcome": "AbortError",
+        "offsets": [
+          0,
+          4,
+          20,
+          40,
+          0
+        ]
+      }
+    },
+    {
+      "name": "wps-validation-title-download",
+      "status": "passed",
+      "elapsedMs": 229,
+      "details": {
+        "title": "审批状态",
+        "message": "请选择通过、待审或拒绝",
+        "value": "通过",
+        "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
+        "downloadSha256": "759d79a6f2e2e923939798b4e52a5ad48ea5cf0cb7fbd3790290789ca798b2e6"
+      }
+    },
+    {
+      "name": "find-replace-ui-undo-xlsx",
+      "status": "passed",
+      "elapsedMs": 597,
+      "details": {
+        "source": "$& $&",
+        "formula": "=A1",
+        "matches": 2,
+        "downloadSha256": "3ace189c5e9d38428416411050ac18da516675d8353f86c0f5eeb3a0c4c1fcb5"
+      }
+    },
+    {
+      "name": "workspace-find-replace-dialog",
+      "status": "passed",
+      "elapsedMs": 1038,
+      "details": {
+        "matchedCells": 4,
+        "undo": true,
+        "resultNavigation": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "dated-investment-edit-undo-xlsx",
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract",
+      "wps-validation-title-download",
+      "find-replace-ui-undo-xlsx",
+      "workspace-find-replace-dialog"
+    ],
+    "actualChecks": [
+      "dated-investment-edit-undo-xlsx",
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract",
+      "wps-validation-title-download",
+      "find-replace-ui-undo-xlsx",
+      "workspace-find-replace-dialog"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

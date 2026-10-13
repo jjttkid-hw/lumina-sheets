@@ -333,6 +333,19 @@
         <button id="show-all-axes">显示全部行列</button>
         <span>行高与隐藏状态支持撤销、重做及 XLSX 往返。</span>
       </div>
+      <details class="settings" id="find-panel">
+        <summary>查找与替换 · 可一次撤销</summary>
+        <div class="bar">
+          <label>查找文字 <input id="find-text" placeholder="查找已存储文字" maxlength="32767" size="16" /></label>
+          <label>替换为 <input id="replace-text" placeholder="留空删除匹配文字" maxlength="32767" size="16" /></label>
+          <label><input id="find-case" type="checkbox" /> 区分大小写</label>
+          <label><input id="find-whole" type="checkbox" /> 匹配整个单元格</label>
+          <label><input id="find-formulas" type="checkbox" /> 包含公式源码</label>
+          <button id="find-next">查找下一格</button>
+          <button id="replace-all">全部替换</button>
+        </div>
+        <p id="find-note" aria-live="polite">当前工作表全部已存储文字，包含隐藏和筛选行；默认跳过公式，不查找计算结果或数字。替换保留单元格样式，清除修改文字的局部格式。</p>
+      </details>
       <details class="settings" id="sort-panel">
         <summary>整行排序 · 可一次撤销</summary>
         <div class="bar">
@@ -970,6 +983,8 @@
           button.setAttribute('aria-pressed', String(button.dataset.layout === currentLayout));
         $('#page-size').disabled = !['list', 'group', 'nested'].includes(currentLayout);
         $('#print-panel').hidden = isPaged;
+        $('#find-panel').hidden = isPaged;
+        for (const control of $('#find-panel').querySelectorAll('input, button')) control.disabled = isPaged;
         $('#sort-panel').hidden = isPaged;
         for (const control of $('#sort-panel').querySelectorAll('input, select, button'))
           control.disabled = isPaged;
@@ -1710,6 +1725,46 @@
         } catch (error) {
           showError(error);
         }
+      };
+      const findOptions = () => ({
+        matchCase: $('#find-case').checked,
+        wholeCell: $('#find-whole').checked,
+        includeFormulas: $('#find-formulas').checked,
+      });
+      let findCursor = null;
+      for (const input of $('#find-panel').querySelectorAll('input'))
+        input.addEventListener('input', () => { findCursor = null; });
+      $('#find-next').onclick = () => {
+        try {
+          const matches = grid.findCells($('#find-text').value, findOptions());
+          const keys = [...new Set(matches.map(match => match.key))];
+          const signature = JSON.stringify([grid.activeSheetInfo.id, $('#find-text').value, findOptions(), keys]);
+          const index = findCursor?.signature === signature ? (findCursor.index + 1) % keys.length : 0;
+          findCursor = { signature, index };
+          if (keys.length) {
+            grid.setFilter('');
+            $('#filter-text').value = '';
+            grid.select(parseCellKey(keys[index]));
+            syncSelection(true);
+          }
+          $('#find-note').textContent = keys.length
+            ? `找到 ${matches.length} 处文字 · ${keys.length} 格 · 当前 ${keys[index]}（${index + 1}/${keys.length}）；隐藏行列可通过布局设置显示。`
+            : '没有找到匹配文字。';
+          status.dataset.error = 'false';
+          status.textContent = $('#find-note').textContent;
+        } catch (error) { showError(error); }
+      };
+      $('#replace-all').onclick = () => {
+        try {
+          const result = grid.replaceAll({ ...findOptions(), search: $('#find-text').value, replacement: $('#replace-text').value });
+          findCursor = null;
+          status.dataset.error = 'false';
+          status.textContent = result.changedCells
+            ? `已替换 ${result.matches} 处文字，修改 ${result.changedCells} 格 · 一次撤销即可恢复`
+            : `找到 ${result.matches} 处 · 内容没有变化`;
+          $('#find-note').textContent = status.textContent;
+          syncSelection(true);
+        } catch (error) { showError(error); }
       };
       $('#report-zoom').onchange = () => {
         try {

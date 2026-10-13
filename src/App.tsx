@@ -120,6 +120,7 @@ import { createCalculationRuntime } from './lib/calculation';
 import { planWorkbookRowSort } from './lib/workbook-sort';
 import type { RowSortRequest } from './lib/row-sort';
 import SortDialog from './components/SortDialog';
+import FindReplaceDialog from './components/FindReplaceDialog';
 import ValidationDialog from './components/ValidationDialog';
 import StructureDialog from './components/StructureDialog';
 import { planStructureEdit } from './lib/structure-edit';
@@ -153,6 +154,7 @@ type ModalName =
   | 'rename'
   | 'rename-sheet'
   | 'sort'
+  | 'find-replace'
   | 'validation'
   | 'structure'
   | 'recovery'
@@ -2253,7 +2255,11 @@ export default function App() {
                         </IconBtn>
                       </div>
                       <div className="toolbar-end">
-                        <IconBtn label="查找单元格" onClick={() => setShowFilter(!showFilter)}>
+                        <IconBtn
+                          label="查找与替换"
+                          onClick={() => setModal('find-replace')}
+                          disabled={sheet.dataSource?.kind === 'paged'}
+                        >
                           <Search size={16} />
                         </IconBtn>
                       </div>
@@ -2470,6 +2476,22 @@ export default function App() {
           direction={sortDirection}
           onClose={closeModal}
           onSort={sortSheet}
+        />
+      )}
+      {modal === 'find-replace' && (
+        <FindReplaceDialog
+          key={`${book.id}:${sheet.id}`}
+          sheet={sheet}
+          onClose={closeModal}
+          onNavigate={(key) => {
+            const point = parseCellKey(key)!;
+            setFilter('');
+            setSelection(point);
+            setAddress(key);
+            closeModal();
+            notify(`已定位 ${key}；隐藏行列可通过布局设置显示。`);
+          }}
+          onReplace={(changes) => applySheetPatches(sheet.id, changes)}
         />
       )}
       {modal === 'rich-text' && selectedCell && (

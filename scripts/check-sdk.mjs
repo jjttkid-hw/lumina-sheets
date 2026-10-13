@@ -75,6 +75,8 @@ import {
   reportDataCsvReadableStream,
   workbookFromReportData,
   parseCellInput,
+  type FindCellsOptions,
+  type ReplaceAllRequest,
   type ReportSnapshotOptions,
   type ImportOptions,
   type CellChange,
@@ -118,6 +120,10 @@ export function mount(host: HTMLElement, workbook: Workbook): LuminaSpreadsheet 
   void grid.import(new File(['{}'], 'book.json'), importOptions);
   const changes: CellChange[] = [{ key: 'A1', cell: { value: 10 } }];
   grid.setCells(changes);
+  const searchOptions: FindCellsOptions = { maxCells: 100, wholeCell: true };
+  const request: ReplaceAllRequest = { search: 'a', replacement: '', ...searchOptions };
+  grid.findCells('a', searchOptions);
+  grid.replaceAll(request);
   const inlineStyle: RichTextStyle = { bold: true, fontFamily: 'Arial', strike: false, verticalAlign: 'superscript', fontFamilyClass: 2, charset: 134 };
   const richText: RichTextRun[] = [{ text: 'Rich', style: inlineStyle }];
   grid.setCells([{ key: 'C1', cell: { value: 'Rich', richText } }]);
@@ -544,7 +550,7 @@ try {
 import assert from 'node:assert/strict';
 assert.equal(typeof document, 'undefined');
 const sdk = await import('lumina-report-sdk');
-for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream', 'workbookFromReportData', 'productBuildIdentity']) {
+for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream', 'workbookFromReportData', 'productBuildIdentity', 'findStoredCells', 'replaceStoredCells']) {
   assert.equal(typeof sdk[name], 'function', 'Missing runtime API: ' + name);
 }
 const build = sdk.productBuildIdentity();
@@ -563,6 +569,13 @@ const workbook = {
   sheets: [{ id: 'sheet-1', name: 'Sheet1', rowCount: 2, colCount: 2, frozenRows: 0,
     cells: { A1: { value: 10 }, B1: { value: '=A1*2' } } }],
 };
+const searchSheet = { ...workbook.sheets[0], cells: { A1: { value: 'old old', style: { bold: true } }, A2: { value: 'old' } } };
+assert.equal(sdk.findStoredCells(searchSheet, 'old').length, 3);
+assert.throws(() => sdk.replaceStoredCells(searchSheet, { search: 'old', replacement: 'new', maxMatches: 2 }));
+const replacePlan = sdk.replaceStoredCells(searchSheet, { search: 'old', replacement: '$&' });
+assert.equal(replacePlan.changedCells, 2);
+assert.equal(replacePlan.changes[0].cell.value, '$& $&');
+assert.equal(searchSheet.cells.A1.value, 'old old');
 const evaluate = sdk.createEvaluator(workbook);
 assert.equal(evaluate(workbook.sheets[0], 'B1'), 20);
 workbook.sheets[0].cells.A2 = { value: '=IFERROR(1e999,42)' };

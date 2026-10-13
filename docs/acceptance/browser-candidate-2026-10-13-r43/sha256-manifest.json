@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1169,
+      "sha256": "140b915b47223ef1e4189f26064dd2c119421849750674bfb7ab32ee5241d03d"
+    },
+    {
+      "path": "accessibility/chromium.json",
+      "bytes": 4372,
+      "sha256": "a8fce2d222571cf0b869295ccaf6745f07edadcffb6bd2daf56657d4481c7fd4"
+    },
+    {
+      "path": "accessibility/firefox.json",
+      "bytes": 4367,
+      "sha256": "d9317c7069ddca918fcf1b82ab1996a83648f0668249824c710dc5a8a3304515"
+    },
+    {
+      "path": "accessibility/webkit.json",
+      "bytes": 4360,
+      "sha256": "26ccfd1a48b4af1bc8d7ba8e0b1e1eec90bf8d884d3f2473ba3f0684fa376f11"
+    },
+    {
+      "path": "business-corpus.json",
+      "bytes": 11493,
+      "sha256": "ca914cd701460a736e5ad5cfe4a2f195bd917ea3634adcb75c178d4f3b202628"
+    },
+    {
+      "path": "chromium/focus.json",
+      "bytes": 1526,
+      "sha256": "e94982fd198363d16cefcef04b0dbe066dd03e5ac1f4421578c9865dad29d214"
+    },
+    {
+      "path": "chromium/interactions.json",
+      "bytes": 4723,
+      "sha256": "71079a2e6c51e664ed1d43086c531c3c9ffbced0eef65766d674ccc1842373e8"
+    },
+    {
+      "path": "chromium/layout.json",
+      "bytes": 2943,
+      "sha256": "66f3c93b03919a5629895a2032fb7aecbcd67167ed221916a03cb55f65fa9ae9"
+    },
+    {
+      "path": "chromium/performance.json",
+      "bytes": 14161,
+      "sha256": "6580dc13d60a190062ba879079c38a658e634512162b417b07b55d38b041f524"
+    },
+    {
+      "path": "chromium/smoke.json",
+      "bytes": 8001,
+      "sha256": "9fa694da388bef45306df2ce673a7936e1714e1516f2faaa27a37c84b3cdc085"
+    },
+    {
+      "path": "firefox/focus.json",
+      "bytes": 1520,
+      "sha256": "6baa65ae3053940d8d0f183561d010cff7059a84d9ee1c776e1d34e324364851"
+    },
+    {
+      "path": "firefox/interactions.json",
+      "bytes": 4716,
+      "sha256": "c3d91b3aacac69eb4e57dc29bbd83da5d33f097b0547ecbf080c0d2fdb4130e9"
+    },
+    {
+      "path": "firefox/layout.json",
+      "bytes": 2918,
+      "sha256": "cd4b35623b4a030ab933caa0349f0d4b1f8232ce458106f2337d5e90342b8c25"
+    },
+    {
+      "path": "firefox/performance.json",
+      "bytes": 12980,
+      "sha256": "d5fc473fc93edd756751c187c104cc642a0489a6a3720020ed3ae257de8c8b37"
+    },
+    {
+      "path": "firefox/smoke.json",
+      "bytes": 7992,
+      "sha256": "40a348165096f2b17bc3eeeb5e17364e99da646f5b422c507dd1784b004a724a"
+    },
+    {
+      "path": "frameworks/summary.json",
+      "bytes": 2800,
+      "sha256": "e5554c52d219a9791917b662b8c457d0e03ec74355ec95c9ed84d98536984253"
+    },
+    {
+      "path": "ime/chromium.json",
+      "bytes": 3622,
+      "sha256": "7b4d83fc9539a1be4b9aac5ba4a18bffc155a4172efe24b0ad283e9335a20b18"
+    },
+    {
+      "path": "ime/firefox.json",
+      "bytes": 3615,
+      "sha256": "fff5646c5c388f9cf88e38ec30f577c7d35a78c4b513d1d6a9ff348e9324e2f0"
+    },
+    {
+      "path": "ime/webkit.json",
+      "bytes": 3611,
+      "sha256": "5a4bea7ba79adcf083fc9f4d55cbe05c103f3ade3b8935e43c804a6934ff1fab"
+    },
+    {
+      "path": "persistence/chromium.json",
+      "bytes": 3116,
+      "sha256": "2a4e2c89f5040c9aebc6ad5e58528b9b27a1e45be09fa0ef7b5a206e1cc0c7a9"
+    },
+    {
+      "path": "persistence/firefox.json",
+      "bytes": 3110,
+      "sha256": "eb7c84c647d85cb1ea69b89687380a2c1c1a854469aefa9053d9c2d8b3eef595"
+    },
+    {
+      "path": "persistence/webkit.json",
+      "bytes": 3105,
+      "sha256": "c12a1294ba16e8ccf92cff8401000ffadd5420956942bae1e819a79ce58774df"
+    },
+    {
+      "path": "touch/result.json",
+      "bytes": 1919,
+      "sha256": "574c7567b3b06cfd471505c61f5b0cc7d4e9702e33edd71af01f3c26e4604a20"
+    },
+    {
+      "path": "webkit/focus.json",
+      "bytes": 1515,
+      "sha256": "5340999ae9e71c4fa195d117d51fe4dc49e5af785bfc169a3e4ac93137ea064d"
+    },
+    {
+      "path": "webkit/interactions.json",
+      "bytes": 4712,
+      "sha256": "0b42e92fbf797c099a788e9000a1be6f44b54d8f273645494e6e12f054d3cf5e"
+    },
+    {
+      "path": "webkit/layout.json",
+      "bytes": 2914,
+      "sha256": "76f2d483e1191bbca2c6f5e194556a1ff45e7597ac0c57a56f86fafa1412ba9f"
+    },
+    {
+      "path": "webkit/performance.json",
+      "bytes": 13202,
+      "sha256": "94a4a89c150d10b9df28ca0d52900bfa72b8c2732c620536b0c6229bd053b96e"
+    },
+    {
+      "path": "webkit/smoke.json",
+      "bytes": 7986,
+      "sha256": "e0949c50b7e7ae535282c29014a3a891d6ee93744bbd4503c53484b501c8f81a"
+    },
+    {
+      "path": "wps-corpus.json",
+      "bytes": 1448,
+      "sha256": "2a6e79136ed3fa19c3cb5a555c4c670dc416eace74950f8bf3c3028edafafd18"
+    },
+    {
+      "path": "xlsx-corpus.json",
+      "bytes": 3852,
+      "sha256": "e6264cd0718cd884bed48109eed50fe959804ed4fcf0bb516ce3c6586a4837f1"
+    }
+  ]
+}

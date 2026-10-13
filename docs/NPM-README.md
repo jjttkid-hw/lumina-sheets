@@ -75,6 +75,8 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 | ----------------------------------------------------- | ------------------------------------------------------------------- |
 | `setCell(address, value, style?)`                     | Edit one cell; strings beginning with `=` are formulas.             |
 | `setCells(changes)`                                   | Apply a validated atomic batch; `cell: null` deletes a cell.        |
+| `findCells(search, options?)` | Find stored source text in row-major order; budget overflow throws. |
+| `replaceAll(request)` | Replace source text in the active sheet as one validated undoable edit. |
 | `getCell(address)` / `getValue(address)`              | Read an isolated raw cell or its current calculated value.          |
 | `setZoom(value)` / `zoom`                             | Change view scale without changing workbook data or undo history.   |
 | `select({ row, col, endRow?, endCol? })`              | Select using zero-based coordinates.                                |
@@ -109,6 +111,22 @@ refreshButton.addEventListener('click', () => grid.clearDataCache());
 ```
 
 `retryData()` only retries the last requested viewport and does not loop automatically. `clearDataCache()` cancels active page requests, drops retained pages, and reloads that viewport. Treat `AbortError` as an intentional cancellation during navigation or teardown; surface other errors to the user and keep the current cached pages visible.
+
+### Find and replace
+
+```js
+import { parseCellKey } from 'lumina-report-sdk';
+
+const matches = grid.findCells('待审', { wholeCell: true });
+if (matches.length) grid.select(parseCellKey(matches[0].key));
+const result = grid.replaceAll({ search: '待审', replacement: '通过', wholeCell: true });
+grid.undo(); // restores the entire replacement transaction
+```
+
+Search examines stored strings in the active sheet, including hidden/filtered cells. Numbers, formatted display and calculated results are excluded; `includeFormulas: true` explicitly searches/edits formula source. `matchCase` and `wholeCell` default to false. Case-insensitive matching uses ECMAScript Unicode simple folding, not locale-specific casing; match `index` and `length` are UTF-16 source offsets. Matches never overlap. Replacement text is literal (`$&` has no special meaning); empty replacement deletes matched text. Plain text cannot be turned into a formula by replacement. Cell style and links are preserved; changed rich text loses inline runs.
+
+Both operations synchronously reject the entire request on budget overflow, without partial results: at most 100,000 stored cells, 100,000 occurrences and 32,000,000 scanned UTF-16 units. `maxCells`, `maxMatches`, `maxTextUnits` can lower these limits. Logical blank grid slots are skipped. Replacement additionally caps each result at 32,767 units and total output at 32,000,000 units. Validation errors preserve workbook, selection, events and undo/redo; no-op replacement adds no history. Static read-only views support find; paged views require server-side search and reject both methods. These methods do not provide asynchronous cancellation or server-wide search.
+
 
 ## Build identity
 

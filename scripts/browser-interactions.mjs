@@ -501,6 +501,90 @@ try {
     };
   });
   await page.screenshot({ path: path.join(output, 'validation.png'), fullPage: true });
+  await check('find-replace-ui-undo-xlsx', async () => {
+    await jump('A1');
+    await page.locator('#formula').fill('old old');
+    await page.locator('#apply').click();
+    await jump('B1');
+    await page.locator('#formula').fill('=A1');
+    await page.locator('#apply').click();
+    await page.locator('#find-panel > summary').click();
+    await page.locator('#find-text').fill('old');
+    await page.locator('#replace-text').fill('$&');
+    await page.locator('#find-next').click();
+    await page.waitForFunction(() =>
+      document.querySelector('#find-note').textContent.includes('当前 A1'),
+    );
+    await page.locator('#replace-all').click();
+    await result('$& $&');
+    await jump('B1');
+    await result('$& $&');
+    await page.locator('#undo').click();
+    await result('old old');
+    await page.locator('#redo').click();
+    await result('$& $&');
+    await page.locator('#format').selectOption('xlsx');
+    const pending = page.waitForEvent('download');
+    await page.locator('#export').click();
+    const download = await pending,
+      destination = path.join(output, 'find-replace.xlsx');
+    await download.saveAs(destination);
+    assert.equal(await download.failure(), null);
+    const bytes = await readFile(destination);
+    const state = await page.evaluate(async (bytes) => {
+      const { workbookFromXlsx, findStoredCells } = await import('./lumina.js');
+      const book = await workbookFromXlsx(new Uint8Array(bytes).buffer);
+      const sheet = book.sheets[0];
+      return {
+        source: sheet.cells.A1.value,
+        formula: sheet.cells.B1.value,
+        matches: findStoredCells(sheet, '$&').length,
+      };
+    }, Array.from(bytes));
+    assert.deepEqual(state, { source: '$& $&', formula: '=A1', matches: 2 });
+    await page.screenshot({ path: path.join(output, 'find-replace.png'), fullPage: true });
+    await page.locator('#undo').click();
+    await page.locator('#undo').click();
+    await page.locator('#undo').click();
+    return { ...state, downloadSha256: createHash('sha256').update(bytes).digest('hex') };
+  });
+
+  await check('workspace-find-replace-dialog', async () => {
+    await page.goto(origin.href);
+    const trigger = page.getByRole('button', { name: '查找与替换', exact: true });
+    await trigger.waitFor();
+    await trigger.click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('textbox', { name: '查找文字', exact: true }).fill('云端协作');
+    await dialog.getByRole('textbox', { name: '替换为', exact: true }).fill('产品研发');
+    await dialog.getByRole('button', { name: '查找全部', exact: true }).click();
+    await dialog.getByRole('status').filter({ hasText: '找到' }).waitFor();
+    assert((await dialog.getByRole('button', { name: /^B[0-9]+/ }).count()) > 0);
+    await dialog.getByRole('button', { name: '全部替换', exact: true }).click();
+    await dialog.getByRole('status').filter({ hasText: '已替换' }).waitFor();
+    await dialog.getByRole('textbox', { name: '查找文字', exact: true }).fill('产品研发');
+    await dialog.getByRole('button', { name: '查找全部', exact: true }).click();
+    await dialog.getByRole('status').filter({ hasText: '找到' }).waitFor();
+    const count = await dialog.getByRole('button', { name: /^B[0-9]+/ }).count();
+    assert(count > 0);
+    await page.screenshot({
+      path: path.join(output, 'workspace-find-replace.png'),
+      fullPage: true,
+    });
+    await dialog.getByRole('button', { name: '关闭', exact: true }).click();
+    await page.getByRole('button', { name: '撤销', exact: true }).click();
+    await trigger.click();
+    await dialog.getByRole('textbox', { name: '查找文字', exact: true }).fill('云端协作');
+    await dialog.getByRole('button', { name: '查找全部', exact: true }).click();
+    await dialog.getByRole('status').filter({ hasText: '找到' }).waitFor();
+    assert.equal(await dialog.getByRole('button', { name: /^B[0-9]+/ }).count(), count);
+    await dialog
+      .getByRole('button', { name: /^B[0-9]+/ })
+      .first()
+      .click();
+    await dialog.waitFor({ state: 'hidden' });
+    return { matchedCells: count, undo: true, resultNavigation: true };
+  });
 } catch (error) {
   report.runErrors.push({
     name: error?.name ?? 'Error',
@@ -519,6 +603,8 @@ try {
     'sdk-pending-source-destroy',
     'sdk-prefetch-contract',
     'wps-validation-title-download',
+    'find-replace-ui-undo-xlsx',
+    'workspace-find-replace-dialog',
   ]);
   await writeFile(path.join(output, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   await browser.close();

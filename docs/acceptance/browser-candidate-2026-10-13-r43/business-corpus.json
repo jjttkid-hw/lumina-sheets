@@ -1,0 +1,379 @@
+{
+  "schema": 1,
+  "version": "0.29.0",
+  "executedAt": "2026-10-13T06:17:56.073Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0"
+  },
+  "status": "passed",
+  "artifactSha256": "e06f1a889f35db43fb11babd0cb275f55a43ab086210556777ddd5577ce1423d",
+  "scope": "Installed SDK versus retained native WPS synthetic business workbook caches. Not full Excel/WPS certification, live desktop automation or customer data.",
+  "checks": [
+    {
+      "name": "desktop-caches",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 1000,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1600.25,
+            "E8": 1800.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": 6,
+            "H2": 75,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 448.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 448.5,
+            "C9": 1600.25,
+            "C10": 1625.31
+          }
+        },
+        "source": "WPS desktop-saved formula caches"
+      }
+    },
+    {
+      "name": "installed-import",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 1000,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1600.25,
+            "E8": 1800.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": 6,
+            "H2": 75,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 448.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 448.5,
+            "C9": 1600.25,
+            "C10": 1625.31
+          }
+        }
+      }
+    },
+    {
+      "name": "installed-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 1000,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1600.25,
+            "E8": 1800.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": 6,
+            "H2": 75,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 448.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 448.5,
+            "C9": 1600.25,
+            "C10": 1625.31
+          }
+        }
+      }
+    },
+    {
+      "name": "edited-cross-sheet-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 900,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1500.25,
+            "E8": 1700.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": -2,
+            "H2": -25,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 348.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 348.5,
+            "C9": 1500.25,
+            "C10": 1425.31
+          }
+        },
+        "exportedSha256": "2876d55ab467080ad8645323ed47768162a40c1c289452150c4ff9eaa0d525f3"
+      }
+    },
+    {
+      "name": "desktop-reedited-export",
+      "status": "passed",
+      "details": {
+        "formulas": 22,
+        "values": {
+          "应收账款": {
+            "E2": 800,
+            "E3": 0,
+            "E4": 800.25,
+            "E5": -200,
+            "E6": 1400.25,
+            "E8": 1600.25,
+            "E9": 2
+          },
+          "库存": {
+            "F2": -2,
+            "H2": -25,
+            "J2": "补货",
+            "F3": 22,
+            "H3": 181.5,
+            "J3": "充足",
+            "F4": 60,
+            "H4": 192,
+            "J4": "充足",
+            "H5": 348.5
+          },
+          "项目费用": {
+            "C6": 423.44,
+            "C7": 223.44,
+            "C8": 348.5,
+            "C9": 1400.25,
+            "C10": 1325.31
+          }
+        },
+        "fixtureSha256": "4f633599ca393a517b318135f450911ae5ea961d01d14af05f1db55f6ed78fc0"
+      }
+    },
+    {
+      "name": "custom-title-roundtrip",
+      "status": "passed",
+      "details": {
+        "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
+        "title": "审批状态",
+        "message": "请选择通过、待审或拒绝",
+        "exportedSha256": "8f487f9f7cc1b82ae961df372ea586116991a6c14e4c15b6f76d70c5476e99c4"
+      }
+    },
+    {
+      "name": "native-input-prompt-roundtrip",
+      "status": "passed",
+      "details": {
+        "file": "docs/acceptance/browser-candidate-2026-10-03-r36/native-wps-input-prompt/wps-saved.xlsx",
+        "fixtureSha256": "bfdb6e22d34316bd34b9f2a2252658e128e92c4984c73dfd047d26bc4a54ab2c",
+        "output": "lumina-native-prompt-roundtrip.xlsx",
+        "exportedSha256": "6ccb5a640b0e82d132c67a57ea1c215200e49774ea2bcdafeefc15c81ee7bda5",
+        "promptTitle": "审批说明😀"
+      }
+    },
+    {
+      "name": "native-active-sheet-roundtrip",
+      "status": "passed",
+      "details": {
+        "storedCells": 199,
+        "formulas": 41,
+        "activeSheet": "经营汇总",
+        "file": "docs/acceptance/browser-candidate-2026-10-03-r37/native-wps-active-sheet/wps-saved.xlsx",
+        "fixtureSha256": "b495f3340e154a7a1cd308577f2a01f8a7460baee59d217782eaaa729e327fe2",
+        "output": "lumina-native-active-roundtrip.xlsx",
+        "exportedSha256": "c8dfb6fcfd8e2d8b432ea2ff79550cc5d6a14079be4adeb0706d7499b6f0c238"
+      }
+    },
+    {
+      "name": "native-lookup-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 28,
+        "cells": 70,
+        "quantity": 10,
+        "total": 1297.38,
+        "units": 161,
+        "nativeError": "#N/A",
+        "file": "docs/acceptance/wps-lookup-2026-10-03-r37/wps-saved.xlsx",
+        "fixtureSha256": "9f7962b4e118890f02bf3f8b86bcbb2b87d1d42a4b73393a959137c41aa202e1",
+        "output": "lumina-wps-saved.xlsx",
+        "exportedSha256": "794cb99b5e26f2210520f193fda4444b489e470a7e43aad9f2330c6ff753e7ab"
+      }
+    },
+    {
+      "name": "native-lookup-reedited-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 28,
+        "cells": 70,
+        "quantity": 100,
+        "total": 1920.25,
+        "units": 251,
+        "nativeError": "#N/A",
+        "file": "docs/acceptance/wps-lookup-2026-10-03-r37/wps-reedited.xlsx",
+        "fixtureSha256": "fc45cd1e5acb4da24835b94211753e974241849f365d8cea50a5d3ce58568c5b",
+        "output": "lumina-wps-reedited.xlsx",
+        "exportedSha256": "9dfd9ddd89771d4426591cd661585f230ea3cee8446ee2b635307f2903dd1fb4"
+      }
+    },
+    {
+      "name": "native-duplicate-threshold-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 16,
+        "cells": 51,
+        "file": "docs/acceptance/wps-lookup-duplicates-2026-10-03-r39/wps-saved.xlsx",
+        "fixtureSha256": "61f05edcc0c1d8aadfb36b7058f8a085951e6f19afb6df8b9e7e0a6af01da15e",
+        "nativeRoundtripFile": "docs/acceptance/wps-lookup-duplicates-2026-10-03-r39/wps-resaved-sdk.xlsx",
+        "nativeRoundtripSha256": "2992dacdee3af47ee2e67cd94e189abf98483b181f3725d0ae74e5319008e763",
+        "output": "lumina-duplicate-thresholds.xlsx",
+        "exportedSha256": "f3e7d05decbafbae54bdb1bedbd43a5faa5bd6d71ed6efb07e397f698a958c9d"
+      }
+    },
+    {
+      "name": "native-payroll-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 51,
+        "cells": 119,
+        "file": "docs/acceptance/wps-payroll-2026-10-05-r41/wps-saved.xlsx",
+        "fixtureSha256": "2f68875eeb641248564caf997a2e25776cb56317f509bdef248316ea27c7b886",
+        "output": "lumina-payroll-baseline.xlsx",
+        "exportedSha256": "52447b7d46d0d3373061931086f708b638be6c6d9df76f6ba0baba01df1a4bcc",
+        "attendance": 0.5,
+        "cashCost": 32478.55,
+        "closingCash": 17521.45
+      }
+    },
+    {
+      "name": "native-payroll-edited-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 51,
+        "cells": 119,
+        "file": "docs/acceptance/wps-payroll-2026-10-05-r41/wps-edited.xlsx",
+        "fixtureSha256": "c91800dd93ccd717814df1fa7e4a35a2d9596dc6f269be9be5d64bb11d47dbc4",
+        "output": "lumina-payroll-edited.xlsx",
+        "exportedSha256": "8a89b6e272cd91390131571010d867f1fd7ec871e691532251cd48622ce50478",
+        "attendance": 0.75,
+        "cashCost": 34718.55,
+        "closingCash": 15281.45
+      }
+    },
+    {
+      "name": "native-payroll-resaved-roundtrip",
+      "status": "passed",
+      "details": {
+        "formulas": 51,
+        "cells": 119,
+        "file": "docs/acceptance/wps-payroll-2026-10-05-r41/wps-resaved-sdk.xlsx",
+        "fixtureSha256": "3f633dab9d22325c82476933a42266d25d2a08fc499c35ab0129e33079ce20e1",
+        "output": "lumina-payroll-resaved.xlsx",
+        "exportedSha256": "165e31462eec7a68751391015233888c7f27817da6a02a434999ff4166bb3ebf",
+        "attendance": 0.75,
+        "cashCost": 34718.55,
+        "closingCash": 15281.45
+      }
+    },
+    {
+      "name": "nonblocking-validation-rejected",
+      "status": "passed",
+      "details": {
+        "file": "wps-nonblocking-validation.xlsx",
+        "fixtureSha256": "012d0bba6cdbef0a7f953b9b50c2ac216039d1dc36fe2d1bf53380df1b66a2b2",
+        "rejection": "XLSX 数据验证：只支持阻止无效输入的 Stop 错误策略（D2）"
+      }
+    }
+  ],
+  "errors": [],
+  "fixtureSha256": "56bc904e89ae3f1bc55353876a9ace579fb4aa501bf2ef895cc8483c2141b9f3",
+  "validation": {
+    "expectedChecks": [
+      "desktop-caches",
+      "installed-import",
+      "installed-roundtrip",
+      "edited-cross-sheet-roundtrip",
+      "desktop-reedited-export",
+      "nonblocking-validation-rejected",
+      "custom-title-roundtrip",
+      "native-input-prompt-roundtrip",
+      "native-active-sheet-roundtrip",
+      "native-lookup-roundtrip",
+      "native-lookup-reedited-roundtrip",
+      "native-duplicate-threshold-roundtrip",
+      "native-payroll-roundtrip",
+      "native-payroll-edited-roundtrip",
+      "native-payroll-resaved-roundtrip"
+    ],
+    "actualChecks": [
+      "desktop-caches",
+      "installed-import",
+      "installed-roundtrip",
+      "edited-cross-sheet-roundtrip",
+      "desktop-reedited-export",
+      "custom-title-roundtrip",
+      "native-input-prompt-roundtrip",
+      "native-active-sheet-roundtrip",
+      "native-lookup-roundtrip",
+      "native-lookup-reedited-roundtrip",
+      "native-duplicate-threshold-roundtrip",
+      "native-payroll-roundtrip",
+      "native-payroll-edited-roundtrip",
+      "native-payroll-resaved-roundtrip",
+      "nonblocking-validation-rejected"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "errorCount": 0
+  }
+}
