@@ -224,6 +224,7 @@
         <button data-layout="group">分组汇总</button>
         <button data-layout="nested">多级分组</button>
         <button data-layout="cross">交叉统计</button>
+        <button data-layout="pivot">透视分析</button>
         <button data-layout="formulas">公式示例</button>
         <button data-layout="investment">投资回款</button>
         <button data-layout="sheets">多工作表</button>
@@ -333,18 +334,71 @@
         <button id="show-all-axes">显示全部行列</button>
         <span>行高与隐藏状态支持撤销、重做及 XLSX 往返。</span>
       </div>
+      <details class="settings" id="pivot-panel" hidden>
+        <summary>透视分析配置 · 多指标与总计</summary>
+        <div class="bar">
+          <label
+            >行分组
+            <select id="pivot-rows">
+              <option value="region">区域</option>
+              <option value="product">产品</option>
+              <option value="region,product">区域 + 产品</option>
+            </select></label
+          >
+          <label
+            >列分类
+            <select id="pivot-columns">
+              <option value="month">月份</option>
+              <option value="region">区域</option>
+              <option value="">不分列</option>
+            </select></label
+          >
+          <label
+            >营收指标
+            <select id="pivot-aggregate">
+              <option value="sum">求和</option>
+              <option value="average">平均</option>
+              <option value="min">最小</option>
+              <option value="max">最大</option>
+            </select></label
+          >
+          <label
+            >第一笔营收
+            <input
+              id="pivot-source-amount"
+              type="number"
+              value="100000"
+              step="100"
+              style="width: 120px"
+          /></label>
+          <button id="apply-pivot">重新生成透视分析</button>
+        </div>
+        <p>
+          基于 36
+          条源记录；另含记录数指标。总计的平均值基于原记录，不平均各组均值。结果是静态快照，修改这里的源值后重新生成；直接编辑结果不改变源记录。XLSX
+          导出为普通单元格。
+        </p>
+      </details>
       <details class="settings" id="find-panel">
         <summary>查找与替换 · 可一次撤销</summary>
         <div class="bar">
-          <label>查找文字 <input id="find-text" placeholder="查找已存储文字" maxlength="32767" size="16" /></label>
-          <label>替换为 <input id="replace-text" placeholder="留空删除匹配文字" maxlength="32767" size="16" /></label>
+          <label
+            >查找文字
+            <input id="find-text" placeholder="查找已存储文字" maxlength="32767" size="16"
+          /></label>
+          <label
+            >替换为
+            <input id="replace-text" placeholder="留空删除匹配文字" maxlength="32767" size="16"
+          /></label>
           <label><input id="find-case" type="checkbox" /> 区分大小写</label>
           <label><input id="find-whole" type="checkbox" /> 匹配整个单元格</label>
           <label><input id="find-formulas" type="checkbox" /> 包含公式源码</label>
           <button id="find-next">查找下一格</button>
           <button id="replace-all">全部替换</button>
         </div>
-        <p id="find-note" aria-live="polite">当前工作表全部已存储文字，包含隐藏和筛选行；默认跳过公式，不查找计算结果或数字。替换保留单元格样式，清除修改文字的局部格式。</p>
+        <p id="find-note" aria-live="polite">
+          当前工作表全部已存储文字，包含隐藏和筛选行；默认跳过公式，不查找计算结果或数字。替换保留单元格样式，清除修改文字的局部格式。
+        </p>
       </details>
       <details class="settings" id="sort-panel">
         <summary>整行排序 · 可一次撤销</summary>
@@ -861,6 +915,7 @@
         group: '分组汇总',
         nested: '多级分组',
         cross: '交叉统计',
+        pivot: '透视分析',
         formulas: '公式示例',
         investment: '投资回款',
         sheets: '多工作表',
@@ -982,9 +1037,11 @@
         for (const button of document.querySelectorAll('[data-layout]'))
           button.setAttribute('aria-pressed', String(button.dataset.layout === currentLayout));
         $('#page-size').disabled = !['list', 'group', 'nested'].includes(currentLayout);
+        $('#pivot-panel').hidden = currentLayout !== 'pivot';
         $('#print-panel').hidden = isPaged;
         $('#find-panel').hidden = isPaged;
-        for (const control of $('#find-panel').querySelectorAll('input, button')) control.disabled = isPaged;
+        for (const control of $('#find-panel').querySelectorAll('input, button'))
+          control.disabled = isPaged;
         $('#sort-panel').hidden = isPaged;
         for (const control of $('#sort-panel').querySelectorAll('input, select, button'))
           control.disabled = isPaged;
@@ -1425,6 +1482,30 @@
               '选中状态列 D2:D4 中的一格，点击格内箭头或按 Alt+↓，搜索并选择状态；Enter 确定、Esc 取消。数量、单价、状态与备注均有输入规则，粘贴不合规则时整批拒绝。';
             $('#code').textContent =
               `grid.setDataValidation([{ id: 'quantity', range: { start: {row:1,col:1}, end: {row:3,col:1} }, kind:'whole', operator:'between', min:1, max:1000, allowBlank:false }]);\ntry { grid.setCell('B2', -1); } catch (error) { console.log(error.code, error.failures); }`;
+          } else if (mode === 'pivot') {
+            const sourceAmount = Number($('#pivot-source-amount').value);
+            if (!$('#pivot-source-amount').value.trim() || !Number.isFinite(sourceAmount))
+              throw new Error('第一笔营收必须是有限数字。');
+            const definition = {
+              name: '经营透视分析',
+              rows: $('#pivot-rows').value.split(','),
+              ...($('#pivot-columns').value ? { columns: $('#pivot-columns').value } : {}),
+              values: [
+                { field: 'revenue', title: '营收', aggregate: $('#pivot-aggregate').value },
+                { field: 'revenue', title: '记录数', aggregate: 'count' },
+              ],
+              sort: 'label',
+            };
+            grid.pivot(
+              definition,
+              records.map((record, index) =>
+                index === 0 ? { ...record, revenue: sourceAmount } : record,
+              ),
+            );
+            grid.setConditionalRules([]);
+            $('#layout-note').textContent =
+              '区域/产品 × 月份 · 多指标透视与总计 · 普通单元格快照；修改源记录需重新生成。';
+            $('#code').textContent = `grid.pivot(${JSON.stringify(definition, null, 2)}, records);`;
           } else if (mode === 'formulas') {
             grid.report(
               {
@@ -1486,6 +1567,10 @@
           if (generation === reportGeneration) showError(error);
         }
       }
+      $('#apply-pivot').onclick = () => {
+        if (!allowReplacement()) return;
+        return report('pivot');
+      };
       function allowReplacement() {
         return (
           !sessionEdited ||
@@ -1733,13 +1818,21 @@
       });
       let findCursor = null;
       for (const input of $('#find-panel').querySelectorAll('input'))
-        input.addEventListener('input', () => { findCursor = null; });
+        input.addEventListener('input', () => {
+          findCursor = null;
+        });
       $('#find-next').onclick = () => {
         try {
           const matches = grid.findCells($('#find-text').value, findOptions());
-          const keys = [...new Set(matches.map(match => match.key))];
-          const signature = JSON.stringify([grid.activeSheetInfo.id, $('#find-text').value, findOptions(), keys]);
-          const index = findCursor?.signature === signature ? (findCursor.index + 1) % keys.length : 0;
+          const keys = [...new Set(matches.map((match) => match.key))];
+          const signature = JSON.stringify([
+            grid.activeSheetInfo.id,
+            $('#find-text').value,
+            findOptions(),
+            keys,
+          ]);
+          const index =
+            findCursor?.signature === signature ? (findCursor.index + 1) % keys.length : 0;
           findCursor = { signature, index };
           if (keys.length) {
             grid.setFilter('');
@@ -1752,11 +1845,17 @@
             : '没有找到匹配文字。';
           status.dataset.error = 'false';
           status.textContent = $('#find-note').textContent;
-        } catch (error) { showError(error); }
+        } catch (error) {
+          showError(error);
+        }
       };
       $('#replace-all').onclick = () => {
         try {
-          const result = grid.replaceAll({ ...findOptions(), search: $('#find-text').value, replacement: $('#replace-text').value });
+          const result = grid.replaceAll({
+            ...findOptions(),
+            search: $('#find-text').value,
+            replacement: $('#replace-text').value,
+          });
           findCursor = null;
           status.dataset.error = 'false';
           status.textContent = result.changedCells
@@ -1764,7 +1863,9 @@
             : `找到 ${result.matches} 处 · 内容没有变化`;
           $('#find-note').textContent = status.textContent;
           syncSelection(true);
-        } catch (error) { showError(error); }
+        } catch (error) {
+          showError(error);
+        }
       };
       $('#report-zoom').onchange = () => {
         try {

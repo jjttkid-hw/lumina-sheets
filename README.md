@@ -13,11 +13,11 @@ CI、CD 与 Fork 数实时更新。主分支检查通过后，CD 将同一份验
 
 Lumina 是一个可直接嵌入网页的 JavaScript 表格与报表组件，目标是对齐 SpreadJS Report 性能页描述的前端能力：Canvas 视区绘制、百万逻辑行、分片数据、浏览器内公式和文件导出。后端只需提供分页数据接口，宿主网页不需要 React。本项目为独立开源项目，非葡萄城官方产品，与葡萄城及 SpreadJS 无隶属或授权背书关系。
 
-当前版本仍是 0.29 开发线，最新 v2.0 开发候选为 [r43](docs/acceptance/browser-candidate-2026-10-13-r43/README.md)。稳定版范围见 [支持矩阵](docs/SUPPORT-MATRIX.md)，从 0.x 迁移见 [迁移指南](docs/MIGRATION.md)。真实浏览器和第三方许可门槛完成前，不声明 v1.0 或完整 Excel/SpreadJS 兼容。
+当前版本仍是 0.29 开发线，最新 v3.0 开发候选为 [r44](docs/acceptance/browser-candidate-2026-10-13-r44/README.md)。稳定版范围见 [支持矩阵](docs/SUPPORT-MATRIX.md)，从 0.x 迁移见 [迁移指南](docs/MIGRATION.md)。真实浏览器和第三方许可门槛完成前，不声明 v1.0 或完整 Excel/SpreadJS 兼容。
 
 当前候选的逐项状态见 [v1.0 readiness 账本](docs/V1-READINESS.md)。它区分已通过的制品验证和仍需外部证据的商业发布门槛。
 
-[v2.0 产品路线](docs/V2-PLAN.md)持续记录已交付能力和剩余门槛。当前候选包含 XNPV/XIRR、“投资回款”示例，以及跨编辑器、报表示例和 SDK 共用的有界查找与批量替换；详细公式限制见 [公式文档](docs/FORMULAS.md#实际日期现金流)，查找替换语义见 [npm 接入文档](docs/NPM-README.md#find-and-replace)。
+[v2.0 产品路线](docs/V2-PLAN.md)持续记录已交付能力和剩余门槛；3.0 已开始落地可编程透视分析。当前候选包含 XNPV/XIRR、“投资回款”示例，以及跨编辑器、报表示例和 SDK 共用的有界查找与批量替换；详细公式限制见 [公式文档](docs/FORMULAS.md#实际日期现金流)，查找替换语义见 [npm 接入文档](docs/NPM-README.md#find-and-replace)。
 
 ## 运行与构建
 
@@ -36,7 +36,7 @@ npm run check:bundle-performance
 
 `npm run check:bundle-performance` 检查首页和报表示例的首屏 JavaScript 预算，并确认 ExcelJS 只在 XLSX 操作时按需加载；这项检查与 CI 使用同一份门禁脚本。
 
-当前候选的浏览器证据固定在 [r43](docs/acceptance/browser-candidate-2026-10-13-r43/README.md)：Chromium、Firefox 和 WebKit 均通过核心交互、查找替换、撤销、XLSX 往返、可访问性、IME 和持久化检查。证据目录中的站点与 SDK SHA-256 绑定到同一构建；它是开发候选记录，不代表已经完成实体触控、真实屏幕阅读器、目标设备性能或独立商业法律复核。
+当前候选的浏览器证据固定在 [r44](docs/acceptance/browser-candidate-2026-10-13-r44/README.md)：Chromium、Firefox 和 WebKit 均通过核心交互、透视分析、查找替换、撤销、XLSX 往返、可访问性、IME 和持久化检查。证据目录中的站点与 SDK SHA-256 绑定到同一构建；它是开发候选记录，不代表已经完成实体触控、真实屏幕阅读器、目标设备性能或独立商业法律复核。
 
 `npm run build:all` 会生成 `dist/sdk/`：
 
@@ -99,6 +99,7 @@ npm run check:bundle-performance
 - 打印设置支持 A4/A3/Letter、横竖方向、页边距、重复行列和手动分页，随 JSON 保存并可撤销重做。
 - XLSX、CSV、JSON、PDF；XLSX 可往返受支持的输入规则与纸张、边距、重复标题、双轴手动分页；分页源完整 CSV 支持取消和进度。
 - 性能实验室实际生成 10 万/100 万存储单元格、百万逻辑行，单独测量 Canvas、可见编辑和 Web Worker 公式。
+- v3.0 首个里程碑新增 `createPivot` / `generatePivotReport` / `grid.pivot()`：支持多行分组、列分类、求和/计数/平均/最小/最大多指标聚合，稳定排序、总计和预算保护；SDK 生成普通可编辑快照，不伪装成 Excel 原生透视表。
 - v2.0 新增有界 `findCells` / `replaceAll`：按行列顺序查找已存储文字，支持区分大小写、整格匹配和显式搜索公式源码；替换支持空字符串删除、字面 `$&`、数据验证、公式失效、一次撤销和重做。默认跳过数字、格式化显示与计算结果；超过 100,000 个实存格、100,000 处匹配或 32,000,000 个 UTF-16 字符时整批拒绝，避免静默截断。分页数据源需由服务端搜索。
 
 ## 边界与商业发布前工作

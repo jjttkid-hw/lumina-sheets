@@ -68,6 +68,8 @@ import {
   LuminaError,
   createEvaluator,
   generateReport,
+  createPivot,
+  generatePivotReport,
   restDataSource,
   workbookToXlsx,
   workbookFromXlsx,
@@ -124,6 +126,10 @@ export function mount(host: HTMLElement, workbook: Workbook): LuminaSpreadsheet 
   const request: ReplaceAllRequest = { search: 'a', replacement: '', ...searchOptions };
   grid.findCells('a', searchOptions);
   grid.replaceAll(request);
+  const pivot = createPivot({ rows: ['region'], values: [{ field: 'amount', aggregate: 'sum' }] }, [{ region: 'East', amount: 2 }]);
+  grid.pivot({ rows: ['region'], values: [{ field: 'amount', aggregate: 'sum' }] }, [{ region: 'East', amount: 2 }]);
+  void pivot;
+  void generatePivotReport;
   const inlineStyle: RichTextStyle = { bold: true, fontFamily: 'Arial', strike: false, verticalAlign: 'superscript', fontFamilyClass: 2, charset: 134 };
   const richText: RichTextRun[] = [{ text: 'Rich', style: inlineStyle }];
   grid.setCells([{ key: 'C1', cell: { value: 'Rich', richText } }]);
@@ -204,7 +210,9 @@ try {
   ])
     assert.equal(Object.keys(sourceManifest[field] ?? {}).length, 0, `${field} must be bundled`);
 
-  const [packed] = JSON.parse(run(npm, ['pack', '--dry-run', '--json', '--ignore-scripts'], sdkDirectory));
+  const [packed] = JSON.parse(
+    run(npm, ['pack', '--dry-run', '--json', '--ignore-scripts'], sdkDirectory),
+  );
   assert.equal(packed.name, packageName);
   assert.equal(packed.version, sourceManifest.version);
   assert.equal(path.basename(packed.filename), packed.filename);
@@ -245,8 +253,7 @@ try {
 
   const packedArchive = path.join(temporary, packed.filename);
   const sourceEpoch =
-    process.env.SOURCE_DATE_EPOCH ??
-    run('git', ['log', '-1', '--format=%ct'], root).trim();
+    process.env.SOURCE_DATE_EPOCH ?? run('git', ['log', '-1', '--format=%ct'], root).trim();
   // package-notices.mjs records the build timestamp in the published
   // dependency inventory. Keep the archive metadata and the generated
   // metadata on the same deterministic clock; otherwise a local verification
@@ -550,7 +557,7 @@ try {
 import assert from 'node:assert/strict';
 assert.equal(typeof document, 'undefined');
 const sdk = await import('lumina-report-sdk');
-for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream', 'workbookFromReportData', 'productBuildIdentity', 'findStoredCells', 'replaceStoredCells']) {
+for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'DataValidationError', 'createEvaluator', 'generateReport', 'createPivot', 'generatePivotReport', 'arrayDataSource', 'restDataSource', 'ReportChunkCache', 'workbookToXlsx', 'workbookFromXlsx', 'workbookToPdf', 'workbookCsvReadableStream', 'reportDataCsvReadableStream', 'workbookFromReportData', 'productBuildIdentity', 'findStoredCells', 'replaceStoredCells']) {
   assert.equal(typeof sdk[name], 'function', 'Missing runtime API: ' + name);
 }
 const build = sdk.productBuildIdentity();
@@ -576,6 +583,16 @@ const replacePlan = sdk.replaceStoredCells(searchSheet, { search: 'old', replace
 assert.equal(replacePlan.changedCells, 2);
 assert.equal(replacePlan.changes[0].cell.value, '$& $&');
 assert.equal(searchSheet.cells.A1.value, 'old old');
+const pivotDefinition = { rows: ['region'], columns: 'month', values: [{ field: 'amount', aggregate: 'average' }, { field: 'amount', aggregate: 'count' }] };
+const pivotRecords = [{ region: 'East', month: 'Jan', amount: 10 }, { region: 'East', month: 'Jan', amount: 30 }, { region: 'East', month: 'Feb', amount: 80 }];
+const pivotModel = sdk.createPivot(pivotDefinition, pivotRecords);
+assert.deepEqual(pivotModel.rows[0].cells, [20, 2, 80, 1, 40, 3]);
+assert.deepEqual(pivotModel.grandTotals, [20, 2, 80, 1, 40, 3]);
+const pivotBook = sdk.generatePivotReport(pivotDefinition, pivotRecords);
+const pivotRestored = await sdk.workbookFromXlsx(await sdk.workbookToXlsx(pivotBook));
+assert.equal(pivotRestored.sheets[0].cells.F2.value, 40);
+assert.equal(pivotRestored.sheets[0].cells.G3.value, 3);
+assert.throws(() => sdk.createPivot({ ...pivotDefinition, maxColumns: 1 }, pivotRecords));
 const evaluate = sdk.createEvaluator(workbook);
 assert.equal(evaluate(workbook.sheets[0], 'B1'), 20);
 workbook.sheets[0].cells.A2 = { value: '=IFERROR(1e999,42)' };

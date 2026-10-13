@@ -887,3 +887,25 @@ it.each(['00123', '9007199254740993', '0.1234567890123456789', '1e-999', '3e-324
     expect(grid.getCell('A1')?.value).toBe(text);
   },
 );
+
+it('regenerates a weighted multi-measure pivot from edited source records', async () => {
+  const { grid, $, report } = mount();
+  $('#pivot-rows').value = 'region';
+  $('#pivot-columns').value = 'month';
+  $('#pivot-aggregate').value = 'sum';
+  $('#pivot-source-amount').value = '100000';
+  await report('pivot');
+  expect(grid.getValue('B2')).toBe(343800);
+  expect(grid.getValue('N4')).toBe(8199000);
+  $('#pivot-aggregate').value = 'average';
+  $('#pivot-source-amount').value = '200000';
+  await $('#apply-pivot').click();
+  expect(grid.getValue('B2')).toBe(147933.33333333334);
+  expect(grid.getValue('N4')).toBe(8299000 / 36);
+  expect(grid.getValue('O4')).toBe(36);
+  const before = grid.toJSON();
+  $('#pivot-source-amount').value = '';
+  await $('#apply-pivot').click();
+  expect($('#status').dataset.error).toBe('true');
+  expect(grid.toJSON()).toEqual(before);
+});

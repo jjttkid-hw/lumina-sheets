@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "reports": [
+    {
+      "path": "development/firefox/vue/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "development/firefox/react/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "development/webkit/vue/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "development/webkit/react/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "development/chromium/vue/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "development/chromium/react/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "production/firefox/vue/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "production/firefox/react/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "production/webkit/vue/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "production/webkit/react/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "production/chromium/vue/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    },
+    {
+      "path": "production/chromium/react/result.json",
+      "status": "passed",
+      "checks": 6,
+      "siteSha256": null,
+      "artifactSha256": "405308fd0601ed32400a587bcb5622dcf7aad7afc658635f511fb08417e92392"
+    }
+  ]
+}

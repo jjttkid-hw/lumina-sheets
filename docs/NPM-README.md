@@ -71,22 +71,23 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 
 ## Core API
 
-| API                                                   | Behavior                                                            |
-| ----------------------------------------------------- | ------------------------------------------------------------------- |
-| `setCell(address, value, style?)`                     | Edit one cell; strings beginning with `=` are formulas.             |
-| `setCells(changes)`                                   | Apply a validated atomic batch; `cell: null` deletes a cell.        |
-| `findCells(search, options?)` | Find stored source text in row-major order; budget overflow throws. |
-| `replaceAll(request)` | Replace source text in the active sheet as one validated undoable edit. |
-| `getCell(address)` / `getValue(address)`              | Read an isolated raw cell or its current calculated value.          |
-| `setZoom(value)` / `zoom`                             | Change view scale without changing workbook data or undo history.   |
-| `select({ row, col, endRow?, endCol? })`              | Select using zero-based coordinates.                                |
-| `undo()` / `redo()`                                   | Undo or redo editing transactions.                                  |
-| `toJSON()` / `load(workbook)`                         | Capture or restore a workbook snapshot; snapshots copy stored data. |
-| `import(file, options?)` / `export(format, options?)` | Browser file import and XLSX, CSV, PDF, or JSON download.           |
-| `prefetch(range, options?)`                          | Warm a paged viewport without changing selection or view state.    |
-| `report(definition, records)`                         | Generate list, grouped, or cross-tab reports.                       |
-| `bindData(source, options?)`                          | Bind a read-only paged source with bounded viewport caching.        |
-| `destroy()`                                           | Release the instance; safe to call repeatedly.                      |
+| API                                                   | Behavior                                                                    |
+| ----------------------------------------------------- | --------------------------------------------------------------------------- |
+| `setCell(address, value, style?)`                     | Edit one cell; strings beginning with `=` are formulas.                     |
+| `setCells(changes)`                                   | Apply a validated atomic batch; `cell: null` deletes a cell.                |
+| `pivot(definition, records)`                          | Generate a bounded multi-measure pivot snapshot as ordinary editable cells. |
+| `findCells(search, options?)`                         | Find stored source text in row-major order; budget overflow throws.         |
+| `replaceAll(request)`                                 | Replace source text in the active sheet as one validated undoable edit.     |
+| `getCell(address)` / `getValue(address)`              | Read an isolated raw cell or its current calculated value.                  |
+| `setZoom(value)` / `zoom`                             | Change view scale without changing workbook data or undo history.           |
+| `select({ row, col, endRow?, endCol? })`              | Select using zero-based coordinates.                                        |
+| `undo()` / `redo()`                                   | Undo or redo editing transactions.                                          |
+| `toJSON()` / `load(workbook)`                         | Capture or restore a workbook snapshot; snapshots copy stored data.         |
+| `import(file, options?)` / `export(format, options?)` | Browser file import and XLSX, CSV, PDF, or JSON download.                   |
+| `prefetch(range, options?)`                           | Warm a paged viewport without changing selection or view state.             |
+| `report(definition, records)`                         | Generate list, grouped, or cross-tab reports.                               |
+| `bindData(source, options?)`                          | Bind a read-only paged source with bounded viewport caching.                |
+| `destroy()`                                           | Release the instance; safe to call repeatedly.                              |
 
 Use `grid.setZoom(125)` for 125%. The getter returns the supplied value; values above 3 are percentages, smaller positive values are scale factors, and Canvas clamps the effective scale to 50–200%. Read-only and paged views support zoom. Loading a workbook retains it.
 
@@ -99,9 +100,10 @@ For a production paged view, expose the data state and keep retry explicit. A fa
 ```js
 const grid = createSpreadsheet(host, {
   onDataStateChange: (state) => {
-    status.textContent = state.status === 'error'
-      ? `加载失败：${state.error?.message ?? '请重试'}`
-      : `${state.cachedPages} 页已缓存`;
+    status.textContent =
+      state.status === 'error'
+        ? `加载失败：${state.error?.message ?? '请重试'}`
+        : `${state.cachedPages} 页已缓存`;
     retryButton.disabled = state.status !== 'error';
   },
 });
@@ -111,6 +113,33 @@ refreshButton.addEventListener('click', () => grid.clearDataCache());
 ```
 
 `retryData()` only retries the last requested viewport and does not loop automatically. `clearDataCache()` cancels active page requests, drops retained pages, and reloads that viewport. Treat `AbortError` as an intentional cancellation during navigation or teardown; surface other errors to the user and keep the current cached pages visible.
+
+### Pivot analysis
+
+```js
+import { createPivot } from 'lumina-report-sdk';
+
+const model = createPivot(
+  {
+    rows: ['region', 'product'],
+    columns: 'month',
+    values: [
+      { field: 'revenue', title: 'Revenue', aggregate: 'sum' },
+      { field: 'revenue', title: 'Average', aggregate: 'average' },
+      { field: 'revenue', title: 'Records', aggregate: 'count' },
+    ],
+    sort: 'label',
+  },
+  records,
+);
+// Install a static, editable snapshot in the active grid:
+grid.pivot(
+  { rows: ['region'], columns: 'month', values: [{ field: 'revenue', aggregate: 'sum' }] },
+  records,
+);
+```
+
+The model is computed from a bounded in-memory record snapshot. It distinguishes typed dimension values, uses source-record weighting for averages, and returns deterministic row/column totals. Limits are 100,000 records, 10,000 groups, 256 categories, 8 measures, 100,000 output cells and 8,000,000 UTF-16 dimension units. Numeric measures accept finite numbers or blank values; text, booleans, formula source strings and non-finite numbers are rejected. `grid.pivot()` installs ordinary cells, so edits and XLSX export use the normal SDK path; it does not create or preserve a native Excel pivot cache. Regenerate after changing source records.
 
 ### Find and replace
 
@@ -126,7 +155,6 @@ grid.undo(); // restores the entire replacement transaction
 Search examines stored strings in the active sheet, including hidden/filtered cells. Numbers, formatted display and calculated results are excluded; `includeFormulas: true` explicitly searches/edits formula source. `matchCase` and `wholeCell` default to false. Case-insensitive matching uses ECMAScript Unicode simple folding, not locale-specific casing; match `index` and `length` are UTF-16 source offsets. Matches never overlap. Replacement text is literal (`$&` has no special meaning); empty replacement deletes matched text. Plain text cannot be turned into a formula by replacement. Cell style and links are preserved; changed rich text loses inline runs.
 
 Both operations synchronously reject the entire request on budget overflow, without partial results: at most 100,000 stored cells, 100,000 occurrences and 32,000,000 scanned UTF-16 units. `maxCells`, `maxMatches`, `maxTextUnits` can lower these limits. Logical blank grid slots are skipped. Replacement additionally caps each result at 32,767 units and total output at 32,000,000 units. Validation errors preserve workbook, selection, events and undo/redo; no-op replacement adds no history. Static read-only views support find; paged views require server-side search and reject both methods. These methods do not provide asynchronous cancellation or server-wide search.
-
 
 ## Build identity
 

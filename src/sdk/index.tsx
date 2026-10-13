@@ -42,6 +42,7 @@ import {
   type ReportRecord,
 } from '../lib/report';
 import { exportWorkbook, importFile } from '../lib/io';
+import { generatePivotReport, type PivotDefinition } from '../lib/pivot';
 import {
   findStoredCells,
   replaceStoredCells,
@@ -60,6 +61,7 @@ export { parseCellInput } from '../lib/cell-input';
 export * from '../lib/report-data';
 export * from '../lib/report-data-export';
 export * from '../lib/report';
+export * from '../lib/pivot';
 export * from '../lib/search-replace';
 export * from '../lib/data-validation';
 export * from '../lib/print-settings';
@@ -1491,6 +1493,14 @@ export class LuminaSpreadsheet {
     const workbook = asArgument(() => generateReport(definition, data));
     this.load(workbook);
     this.rules = rules;
+    this.changed();
+  }
+  /** Replace the workbook with a static multi-measure analysis snapshot. */
+  pivot(definition: PivotDefinition, data: readonly ReportRecord[]): void {
+    this.assertLive();
+    const workbook = asArgument(() => generatePivotReport(definition, data));
+    this.load(workbook);
+    this.rules = [];
     this.changed();
   }
   private apply(

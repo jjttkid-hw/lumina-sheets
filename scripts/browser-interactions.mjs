@@ -119,6 +119,70 @@ async function copyText(text) {
 try {
   await page.goto(new URL('sdk/example.html', origin).href);
   await page.getByRole('grid').waitFor();
+  await check('pivot-analysis-ui-xlsx', async () => {
+    await page.locator('[data-layout="pivot"]').click();
+    await page.locator('#pivot-panel > summary').click();
+    await jump('B2');
+    await result(343800);
+    await page.locator('#pivot-aggregate').selectOption('average');
+    await page.locator('#apply-pivot').click();
+    await jump('B2');
+    await result(114600);
+    await jump('N4');
+    await result(227750);
+    await page.locator('#pivot-source-amount').fill('200000');
+    await page.locator('#apply-pivot').click();
+    await jump('B2');
+    const changedAverage = 443800 / 3;
+    await result(changedAverage);
+    await jump('N4');
+    const expected = 8299000 / 36;
+    await result(expected);
+    await page.locator('#format').selectOption('xlsx');
+    const pending = page.waitForEvent('download');
+    await page.locator('#export').click();
+    const download = await pending,
+      destination = path.join(output, 'pivot.xlsx');
+    await download.saveAs(destination);
+    assert.equal(await download.failure(), null);
+    const bytes = await readFile(destination);
+    const state = await page.evaluate(async (bytes) => {
+      const { workbookFromXlsx } = await import('./lumina.js');
+      const book = await workbookFromXlsx(new Uint8Array(bytes).buffer);
+      const sheet = book.sheets[0];
+      return {
+        title: sheet.cells.A1.value,
+        firstAverage: sheet.cells.B2.value,
+        grandAverage: sheet.cells.N4.value,
+        records: sheet.cells.O4.value,
+      };
+    }, Array.from(bytes));
+    assert.deepEqual(state, {
+      title: 'region',
+      firstAverage: changedAverage,
+      grandAverage: expected,
+      records: 36,
+    });
+    // The snapshot supports ordinary editing and one-step undo.
+    await jump('B2');
+    await page.locator('#formula').fill('42');
+    await page.locator('#apply').click();
+    await result(42);
+    await page.locator('#undo').click();
+    await result(changedAverage);
+    await page.screenshot({ path: path.join(output, 'pivot.png'), fullPage: true });
+    // Reload a clean demo so an edited snapshot cannot trigger the next check's confirm.
+    await page.goto(new URL('sdk/example.html', origin).href);
+    await page.getByRole('grid').waitFor();
+    page.once('dialog', (dialog) => dialog.accept());
+    const change = page.locator('[data-layout="list"]').click();
+    await change;
+    return {
+      ...state,
+      editedSnapshotUndo: true,
+      downloadSha256: createHash('sha256').update(bytes).digest('hex'),
+    };
+  });
   await check('dated-investment-edit-undo-xlsx', async () => {
     await page.locator('[data-layout="investment"]').click();
     await jump('B9');
@@ -594,6 +658,7 @@ try {
   throw error;
 } finally {
   finalizeBrowserReport(report, [
+    'pivot-analysis-ui-xlsx',
     'dated-investment-edit-undo-xlsx',
     'validation-editor-recovery',
     'validation-list-keyboard',
