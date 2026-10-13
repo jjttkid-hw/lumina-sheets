@@ -2,57 +2,60 @@
 
 [![CI](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml)
 [![CD](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/cd.yml/badge.svg)](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/cd.yml)
-[![npm release](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/npm.yml/badge.svg)](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/npm.yml)
-[![npm: not published](https://img.shields.io/badge/npm-not_published-lightgrey?logo=npm)](docs/SDK.md)
-[![npm downloads: not available](https://img.shields.io/badge/npm_downloads-not_available-lightgrey)](docs/SDK.md)
+[![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![GitHub forks](https://img.shields.io/github/forks/jjttkid-hw/lumina-sheets?style=flat&logo=github)](https://github.com/jjttkid-hw/lumina-sheets/forks)
+[![npm](https://img.shields.io/badge/npm-coming%20soon-lightgrey?logo=npm)](docs/RELEASING.md)
 
-CI、CD 与 Fork 数实时更新。主分支检查通过后，CD 将同一份验证产物自动部署到 GitHub Pages。SDK 包 `lumina-report-sdk` 尚待首次 npm 账号授权发布，因此暂未提供 npm 版本和下载量；发布流程见 [发布与交付](docs/RELEASING.md)。
+Lumina 是一个面向业务系统的高性能 JavaScript 表格与报表 SDK。它以 Canvas 绘制可见区域，以稀疏数据结构保存工作簿，并为分页数据、公式计算、XLSX/CSV/PDF 导出和浏览器内分析提供统一 API。
 
-[在线工作空间](https://jjttkid-hw.github.io/lumina-sheets/) · [JavaScript 报表示例](https://jjttkid-hw.github.io/lumina-sheets/examples/report.html) · [性能实验室](https://jjttkid-hw.github.io/lumina-sheets/?view=performance)
+它适合财务填报、经营分析、订单录入、管理报表和嵌入式数据工作台。宿主页面可以直接使用原生 JavaScript，不需要安装 React；React 和 Vue 集成示例也随仓库提供。
 
-Lumina 是一个可直接嵌入网页的 JavaScript 表格与报表组件，目标是对齐 SpreadJS Report 性能页描述的前端能力：Canvas 视区绘制、百万逻辑行、分片数据、浏览器内公式和文件导出。后端只需提供分页数据接口，宿主网页不需要 React。本项目为独立开源项目，非葡萄城官方产品，与葡萄城及 SpreadJS 无隶属或授权背书关系。
+> Lumina 是独立开源项目，与葡萄城、SpreadJS 没有隶属、授权或官方背书关系。当前仍是 `0.x` 开发线，文档中的能力边界和验收证据优先于营销性兼容承诺。
 
-当前版本仍是 0.29 开发线，最新 v3.0 开发候选为 [r44](docs/acceptance/browser-candidate-2026-10-13-r44/README.md)。稳定版范围见 [支持矩阵](docs/SUPPORT-MATRIX.md)，从 0.x 迁移见 [迁移指南](docs/MIGRATION.md)。真实浏览器和第三方许可门槛完成前，不声明 v1.0 或完整 Excel/SpreadJS 兼容。
+## 在线体验
 
-当前候选的逐项状态见 [v1.0 readiness 账本](docs/V1-READINESS.md)。它区分已通过的制品验证和仍需外部证据的商业发布门槛。
+- [在线工作空间](https://jjttkid-hw.github.io/lumina-sheets/)
+- [JavaScript 报表示例](https://jjttkid-hw.github.io/lumina-sheets/examples/report.html)
+- [性能实验室](https://jjttkid-hw.github.io/lumina-sheets/?view=performance)
+- [SDK 接入文档](docs/NPM-README.md)
+- [支持矩阵](docs/SUPPORT-MATRIX.md)
 
-[v2.0 产品路线](docs/V2-PLAN.md)持续记录已交付能力和剩余门槛；3.0 已开始落地可编程透视分析。当前候选包含 XNPV/XIRR、“投资回款”示例，以及跨编辑器、报表示例和 SDK 共用的有界查找与批量替换；详细公式限制见 [公式文档](docs/FORMULAS.md#实际日期现金流)，查找替换语义见 [npm 接入文档](docs/NPM-README.md#find-and-replace)。
+## 能力概览
 
-## 运行与构建
+- Canvas 虚拟化网格：可见区域绘制、冻结行、合并单元格、隐藏行列、列宽行高、键盘导航和 IME 编辑。
+- 稀疏工作簿：最多 1,048,576 个逻辑行和 16,384 列，不为逻辑空白单元格创建密集对象。
+- 公式引擎：跨表依赖、增量失效、范围索引、数组计算和受限的安全函数集合；工作区可将计算移交 Web Worker。
+- 分页数据：有界 LRU 缓存、重复请求合并、取消、失败重试、视区预取和完整分页 CSV 导出。
+- 报表生成：列表、分组小计、交叉统计、模板公式、条件规则、数据校验、撤销重做和持久化。
+- 文件链路：XLSX、CSV、JSON、PDF 导入导出；XLSX 相关代码按需加载。
+- 可编程透视：`createPivot`、`createPivotAsync`、`grid.pivot()` 和 `grid.pivotAsync()` 支持多级分组、多指标聚合、稳定排序、总计、进度回调与取消。
+- SDK 生命周期：只读模式、统一错误码、异步导入/导出取消、过期任务隔离和严格 TypeScript 声明。
+
+透视和分页分析都有明确预算，超限会整批拒绝，不会静默截断。当前透视结果是普通可编辑工作表快照，不伪装成 Excel 原生透视缓存；源记录改变后需要重新生成。
+
+## 快速开始
 
 ```sh
 npm install
 npm run dev
-npm test
-npm run build:all
-npm run check:sdk
-npm run check:bundle-performance
 ```
 
-开发页：`http://127.0.0.1:5173/examples/report.html`。其中“行列编辑”工具可直接插入、删除当前选区所在行列并撤销。性能实验室：`http://127.0.0.1:5173/?view=performance`。
+打开 <http://127.0.0.1:5173/examples/report.html> 查看完整示例。构建站点和 SDK：
 
-`npm run check:sdk` 将真实安装包安装到隔离目录，验证严格 TypeScript、ES module、声明与分包完整性，并将已验证的 `.tgz` 与 SHA-256 留在 `artifacts/`。可以将该包直接安装到业务项目；npm 首发前也可从通过的 [CI 运行](https://github.com/jjttkid-hw/lumina-sheets/actions/workflows/ci.yml) 下载 `npm-package` 产物。SDK 安装与使用见 [npm 接入文档](docs/NPM-README.md)。
+```sh
+npm run build:all
+```
 
-`npm run check:bundle-performance` 检查首页和报表示例的首屏 JavaScript 预算，并确认 ExcelJS 只在 XLSX 操作时按需加载；这项检查与 CI 使用同一份门禁脚本。
+SDK 构建产物位于 `dist/sdk/`：`lumina.js` 是 ES module 入口，`lumina.css` 是组件样式，`types/` 是 TypeScript 声明，`example.html` 是不依赖 React 宿主的示例。
 
-当前候选的浏览器证据固定在 [r44](docs/acceptance/browser-candidate-2026-10-13-r44/README.md)：Chromium、Firefox 和 WebKit 均通过核心交互、透视分析、查找替换、撤销、XLSX 往返、可访问性、IME 和持久化检查。证据目录中的站点与 SDK SHA-256 绑定到同一构建；它是开发候选记录，不代表已经完成实体触控、真实屏幕阅读器、目标设备性能或独立商业法律复核。
-
-`npm run build:all` 会生成 `dist/sdk/`：
-
-- `lumina.js`：ES module，可由普通 JavaScript 使用；
-- `lumina.css`：组件样式；
-- `types/sdk/index.d.ts`：TypeScript 类型；
-- `example.html`：不依赖 React 宿主的完整示例；
-- ExcelJS 处理包：只有 XLSX 导入导出路径需要它。
+### 原生 JavaScript
 
 ```html
 <link rel="stylesheet" href="./lumina.css" />
-<div id="report" style="height:600px"></div>
+<div id="report" style="height: 600px"></div>
 <script type="module">
   import { createSpreadsheet } from './lumina.js';
   const grid = createSpreadsheet(document.querySelector('#report'));
-  const records = [{ month: '1月', revenue: 100000, cost: 60000 }];
   grid.report(
     {
       name: '经营报表',
@@ -64,66 +67,61 @@ npm run check:bundle-performance
         { field: 'profit', title: '利润', formula: '=B{row}-C{row}', aggregate: 'sum' },
       ],
     },
-    records,
+    [{ month: '1月', revenue: 100000, cost: 60000 }],
   );
 </script>
 ```
 
-## 已交付能力
+### 异步透视分析
 
-- Canvas 双向视区裁剪，逻辑坐标支持最多 1,048,576 行和 16,384 列；滚动条使用有界物理范围映射，不为百万行创建 DOM。
-- 合并单元格索引、冻结行、列宽、复制粘贴、填充、IME 编辑、键盘导航和一个无障碍代理单元格。
-- `ReportChunkCache` 有界 LRU 分页缓存、重复请求合并、取消、失败重试和 REST/数组数据源；视区只取需要的页。
-- 列表、最多 8 级分组小计、交叉统计报表；模板公式占位符、57 个安全公式函数（包含 VLOOKUP/HLOOKUP 与 CONCATENATE 别名）、条件规则和静态样式。
-- `setCell` / `setCells`、撤销重做、单格原始值和计算值读取、选择、数据源状态事件、稳定错误码、JSON 快照和只读模式。
-- v0.7 增加稀疏行高、隐藏行列、SUMPRODUCT 加权数组计算，以及 Canvas 虚拟化布局支持；XLSX/JSON 往返与 SDK 撤销重做保持一致。
-- v0.8 PDF 跳过隐藏行列，保留可见合并区域和原始坐标分页；打印版式、公式、可编辑公式栏、导出进度与取消均有可操作演示。
-- v0.9 支持筛选后的合并区域显示与原锚点编辑，以及行高、列宽、隐藏行列、冻结行的一次批量设置与撤销；示例新增“筛选合并区域”和“批量布局”。
-- v0.10 默认仅对可见单元格复制、剪切、删除、粘贴和填充；跳过隐藏/筛除行列，保留原公式坐标偏移，可切换为全部单元格。目标不足或合并冲突时整批拒绝。
-- v0.11 增加可撤销的多列整行排序：按计算值稳定排序，默认跳过隐藏行，整行单元格及样式一起移动；公式相对引用按行平移，冻结表头和合并冲突明确拒绝。
-- v0.12 主工作空间接入相同的排序与候选校验：明确选择起止行和两级条件，保留公式与整行样式，失败不改数据；一次撤销或重做整次排序。行为与边界见 [工作空间排序](docs/WORKSPACE-SORT.md)。
-- v0.13 主工作空间统一公式栏、画布和批量编辑的输入校验，失败保留原数据；公式栏支持修改重试。修复新建工作簿、新增表和元数据的自动保存，快照与补丁按顺序落盘，失败可重试。见 [填报与保存](docs/WORKSPACE-EDIT.md)。
-- v0.14 修复 SDK 安装后的类型依赖和独立示例路径，宿主无需安装 React 类型；支持严格 NodeNext/Bundler。工作空间、报表与性能页支持子目录托管；CI 验证实际安装包，CD 自动交付已验证演示站，npm 工作流支持来源证明。
-- v0.15 工作空间增加可视化数据验证规则编辑器：直接设置整数、小数、文本长度与列表规则，编辑和删除先保留为草稿，保存为一次可撤销操作并自动落盘。规则不改写已有值，后续填报复用整批候选校验；详见 [规则编辑器](docs/WORKSPACE-VALIDATION.md)。
-- v0.16 工作空间与 SDK 增加 Canvas 单元格选项浮层：搜索、键盘选择、长列表虚拟滚动和类型保真提交；重叠规则筛选共同允许值，复用单格验证与撤销。详见 [单元格选项](docs/VALIDATION-PICKER.md)。
-- v0.17 优化本地日志恢复：整批补丁每张受影响表最多复制一次单元格索引，内存读取返回隔离副本；底层写入失败保留日志，支持按原顺序重试。详见 [填报与保存](docs/WORKSPACE-EDIT.md)。
-- v0.18 工作空间普通编辑、排序、规则与布局采用补丁撤销历史，撤销/重做也以补丁保存；新增表、重命名和版本恢复保留快照。普通编辑不再为历史复制整本工作簿，详见 [历史边界](docs/WORKSPACE-EDIT.md#v018-混合撤销历史)。
-- v0.19 工作空间列宽、样式、规则和收藏等不改变公式输入的操作复用计算结果，保留进行中的计算；无公式工作簿不向 Worker 传输。数据修改和同 ID 文件替换会隔离旧结果，详见 [计算调度](docs/WORKSPACE-EDIT.md#v019-按计算输入调度)。
-- v0.20 工作空间后台计算最多保留一个已发送请求和一个最新待发送版本，连续编辑会淘汰尚未传输的旧版本；切换数据或关闭页面清理过时请求，详见 [后台计算队列](docs/WORKSPACE-EDIT.md#v020-后台计算队列)。
-- v0.21 后台计算增加 30 秒超时保护：终止失去响应的 Worker，保留最新待发送版本并重建后台；不自动重试超时任务，详见 [超时恢复](docs/WORKSPACE-EDIT.md#v021-计算超时恢复)。
-- v0.22 小选区统计直接读取目标格，大选区遍历稀疏存储；首页统计按数据来源复用，列宽、规则、样式和收藏变化不再重复统计，详见 [工作空间统计](docs/WORKSPACE-EDIT.md#v022-选区与首页统计)。
-- v0.23 补齐 SDK 异步导入取消与过期保护，防止迟到文件覆盖编辑；发布流程区分 `next` / `latest` 并校验公共声明契约。[v1.0 交付计划](docs/V1-PLAN.md) 持续记录未完成验收。
-- v0.24 修复崩溃页恢复备份遗漏当前存储的问题，明确部分失败与内存会话风险；构建材料采用来源时间戳，本机连续两次 SDK 构建制品一致。见 [恢复说明](docs/RECOVERY.md)。
-- SDK 编辑按依赖失效缓存，独立公式保留结果；范围依赖使用动态 AVL 矩形索引，公式解析缓存限制为 4,096 条。
-- 订单填报支持列表、整数、小数、文本长度校验；粘贴和批量写入先验证全部候选值，失败整批拒绝。
-- 打印设置支持 A4/A3/Letter、横竖方向、页边距、重复行列和手动分页，随 JSON 保存并可撤销重做。
-- XLSX、CSV、JSON、PDF；XLSX 可往返受支持的输入规则与纸张、边距、重复标题、双轴手动分页；分页源完整 CSV 支持取消和进度。
-- 性能实验室实际生成 10 万/100 万存储单元格、百万逻辑行，单独测量 Canvas、可见编辑和 Web Worker 公式。
-- v3.0 首个里程碑新增 `createPivot` / `generatePivotReport` / `grid.pivot()`：支持多行分组、列分类、求和/计数/平均/最小/最大多指标聚合，稳定排序、总计和预算保护；SDK 生成普通可编辑快照，不伪装成 Excel 原生透视表。
-- v2.0 新增有界 `findCells` / `replaceAll`：按行列顺序查找已存储文字，支持区分大小写、整格匹配和显式搜索公式源码；替换支持空字符串删除、字面 `$&`、数据验证、公式失效、一次撤销和重做。默认跳过数字、格式化显示与计算结果；超过 100,000 个实存格、100,000 处匹配或 32,000,000 个 UTF-16 字符时整批拒绝，避免静默截断。分页数据源需由服务端搜索。
+```ts
+const controller = new AbortController();
+await grid.pivotAsync(
+  {
+    rows: ['region', 'product'],
+    columns: 'month',
+    values: [
+      { field: 'revenue', title: '营收', aggregate: 'sum' },
+      { field: 'revenue', title: '平均', aggregate: 'average' },
+      { field: 'revenue', title: '记录数', aggregate: 'count' },
+    ],
+    sort: 'label',
+  },
+  records,
+  {
+    batchSize: 512,
+    signal: controller.signal,
+    onProgress: ({ completed, total }) => console.log(`${completed}/${total}`),
+  },
+);
+```
 
-## 边界与商业发布前工作
+`pivotAsync` 会在批次之间让出事件循环，保证界面可以响应输入；取消、编辑、重新加载或销毁实例时，未完成结果不会覆盖当前工作簿。同步场景可使用 `createPivot` 或 `grid.pivot()`。
 
-接入 API 与完整示例见 [docs/SDK.md](docs/SDK.md)，函数语义与限制见 [docs/FORMULAS.md](docs/FORMULAS.md)。
+## 验证与质量门禁
 
-SDK 分页模式是只读的，分页 CSV 会逐页扫描完整数据源；其他分页格式会明确拒绝，避免把视区缓存误当成完整文件。CSV Blob 会暂存完整输出，超大文件应使用流；分页源应提供稳定快照和 `totalRows`。缓存遇到未知总数先使用逻辑上限，仅在收到 `totalRows` 后更新滚动尺寸；分页 CSV 扫描在总数仍未知时以短页确认结束。
+```sh
+npm test
+npm run format:check
+npx tsc -b
+npm run check:sdk
+npm run check:bundle-performance
+```
 
-SDK 的条件规则在 XLSX/PDF/JSON 导出时固化成当前单元格样式，不写入 Excel 动态条件格式。PDF 是 Canvas 栅格报表，中文可读但没有可选择文字、图表或完整 Excel 打印保真，限制与验收见 [docs/PDF.md](docs/PDF.md)。
+`npm run check:sdk` 会在隔离目录安装打包结果，检查 NodeNext/Bundler 类型、ES module 导入、声明文件、示例和依赖闭包。`npm run check:bundle-performance` 会检查首屏预算，并确认 ExcelJS 只在 XLSX 路径按需加载。
 
-SDK 编辑公式是同步安全解析器，每批编辑仅使受影响依赖失效，读取时按需重算；范围订阅通过每表动态 AVL 矩形索引查找，跳过不相交子树。大量重叠仍可能遍历很多节点，大范围求值仍需访问成员。性能实验室和工作区另有版本化 Worker。工作区编辑路径仍含单表索引复制、配额和分析扫描，数值修改仍会扫描公式并传输工作簿，不应拿来承载百万格热编辑；百万规模请使用 SDK 分片模式和补丁 API。实现口径见 [增量计算](docs/INCREMENTAL-CALC.md)。
+浏览器验收和制品摘要保存在 [`docs/acceptance/`](docs/acceptance/)。历史候选证据不可替代当前代码；发布前应生成新的候选目录并重新绑定站点、SDK 和测试摘要。
 
-结构编辑由 SDK 同步执行，扫描全工作簿的已存储单元格与公式，并为受影响工作表保留前后快照；结构历史最多 10 次，与普通编辑保持有序撤销。它不为逻辑空白网格分配密集对象，也不保证百万实存单元格能即时完成插删。普通单格编辑仍使用增量失效。SDK 操作入口为 [examples/report.html](examples/report.html)；v0.27 主工作空间工具栏“行列”也已接入插入/删除，使用更严格的工作空间限额和快照历史，详见 [工作空间编辑](docs/WORKSPACE-EDIT.md)。语义见 [STRUCTURE.md](docs/STRUCTURE.md)、[STRUCTURE-FORMULAS.md](docs/STRUCTURE-FORMULAS.md)，接口与事件见 [SDK.md](docs/SDK.md)。
+## 当前边界
 
-数据校验只拦截直接编辑的单元格，既有值与未编辑的依赖公式可用 `validateCell` 检查；撤销重做恢复历史。JSON 保留完整 SDK 规则与打印设置。v0.5 的 XLSX 双向转换支持常量数值/长度规则、受限内联文本列表，以及 A4/A3/Letter、方向、边距、前导重复标题和行列手动分页；超出子集时明确拒绝。XLSX 不保留规则 ID，也不保证 Excel 的类型、大小写或 Unicode 长度行为与 SDK 相同。见 [数据校验](docs/DATA-VALIDATION.md)、[XLSX 验证兼容](docs/XLSX-VALIDATION.md) 和 [XLSX 打印兼容](docs/XLSX-PRINT.md)。
+Lumina 当前不宣称完整 Excel/SpreadJS 兼容，也不包含原生 Excel 图表/透视表对象、多人协作、账号权限、云端存储、计费或 AI 服务。PDF 是 Canvas 栅格报表，分页数据源是只读视图；大规模热编辑应使用分页数据和补丁 API，并根据目标设备重新测量。
 
-当前不宣称 SpreadJS 的 450+ 函数、完整 Excel 兼容、图表/透视表设计器、多人协作、账号权限、云端存储、支付、AI 服务或官方页面中的 CPU/网络/并发数字。性能结论只能引用 [docs/PERFORMANCE.md](docs/PERFORMANCE.md) 中带设备、规模和脚本的实测结果。
+性能结论只引用带设备、规模和脚本的实测记录，见 [性能说明](docs/PERFORMANCE.md)。公式、XLSX、打印、数据校验和结构编辑的兼容范围分别见 [公式文档](docs/FORMULAS.md)、[SDK 文档](docs/SDK.md) 和 [支持矩阵](docs/SUPPORT-MATRIX.md)。
 
-生产依赖清单、上游许可文本和预打包组件证据已通过当前技术门禁（0 个错误、0 个待审项、0 个未解决预打包组件）；这不替代权利人授权、专利风险和商业许可证义务的人工复核。商业发行前仍需固定版本 API、扩大 Excel 兼容语料、模板设计器、更多验证与打印兼容、浏览器认证及企业支持体系，详见 [依赖许可](docs/DEPENDENCIES.md)。
+## 开源与发布
 
-## 开源与参与贡献
+代码采用 [Apache License 2.0](LICENSE)。第三方依赖、许可文本和预打包组件证据见 [依赖许可](docs/DEPENDENCIES.md)。
 
-Lumina Sheets 项目代码采用 [Apache License 2.0](LICENSE)。第三方依赖继续遵循各自许可证，许可材料与待复核事项见 [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md)。
+首次 npm 发布尚未完成账号授权，因此仓库目前以 GitHub 源码、GitHub Actions 制品和本地 `.tgz` 验证包为主；发布步骤见 [发布与交付](docs/RELEASING.md)。
 
-欢迎提交问题复现、兼容性用例、文档改进和 Pull Request。开发环境、验证命令及提交要求见 [CONTRIBUTING.md](CONTRIBUTING.md)。请使用脱敏或合成数据，不要在公开 Issue、代码或测试文件中上传真实业务数据、个人信息或密钥。
-
-工作空间 v0.28 可从“导入”打开恢复备份，选择一本恢复为独立副本。批注和历史版本暂不自动回写，详情见 [恢复说明](docs/RECOVERY.md)。
+欢迎提交问题复现、兼容性用例、文档改进和 Pull Request。贡献前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，不要上传真实业务数据、个人信息或密钥。
