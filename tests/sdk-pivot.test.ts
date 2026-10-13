@@ -47,4 +47,37 @@ describe('SDK pivot snapshot', () => {
       expect.objectContaining({ code: 'DESTROYED' }),
     );
   });
+  it('installs async analysis only after completion and supports cancellation', async () => {
+    const grid = make();
+    const progress: number[] = [];
+    await grid.pivotAsync(
+      { rows: ['region'], values: [{ field: 'amount', aggregate: 'sum' }] },
+      [
+        { region: '华东', amount: 10 },
+        { region: '华东', amount: 30 },
+      ],
+      { batchSize: 1, onProgress: ({ completed }) => progress.push(completed) },
+    );
+    expect(grid.getValue('B2')).toBe(40);
+    expect(progress).toEqual([0, 1, 2]);
+    const before = grid.toJSON();
+    const controller = new AbortController();
+    const pending = grid.pivotAsync(
+      { rows: ['region'], values: [{ field: 'amount' }] },
+      Array.from({ length: 2_000 }, (_, i) => ({ region: 'r', amount: i })),
+      { batchSize: 1, signal: controller.signal },
+    );
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ code: 'PIVOT_CANCELLED' });
+    expect(grid.toJSON()).toEqual(before);
+    const alreadyCancelled = new AbortController();
+    alreadyCancelled.abort('before start');
+    await expect(
+      grid.pivotAsync(
+        { rows: ['region'], values: [{ field: 'amount' }] },
+        [{ region: '华东', amount: 1 }],
+        { signal: alreadyCancelled.signal },
+      ),
+    ).rejects.toMatchObject({ code: 'PIVOT_CANCELLED' });
+  });
 });

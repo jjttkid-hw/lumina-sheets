@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createPivot,
+  createPivotAsync,
   generatePivotReport,
   PIVOT_LIMITS,
   type PivotDefinition,
@@ -25,6 +26,24 @@ const records = [
   { region: '华南', team: 'B', month: '2月', amount: null },
 ];
 describe('bounded multi-measure pivot', () => {
+  it('runs cooperatively with progress and cancellation', async () => {
+    const progress: number[] = [];
+    const result = await createPivotAsync(
+      { rows: ['region'], values: [{ field: 'amount' }] },
+      records,
+      { batchSize: 2, onProgress: ({ completed }) => progress.push(completed) },
+    );
+    expect(result.grandTotals).toEqual([100]);
+    expect(progress).toEqual([0, 2, 4, 5]);
+    const controller = new AbortController();
+    const pending = createPivotAsync(
+      { rows: ['region'], values: [{ field: 'amount' }] },
+      Array.from({ length: 5_000 }, (_, i) => ({ region: 'r', amount: i })),
+      { batchSize: 1, signal: controller.signal },
+    );
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ name: 'AbortError' });
+  });
   it('aggregates categories, row totals and weighted grand averages from records', () => {
     const result = createPivot(definition, records);
     expect(result.rows[0]).toEqual({

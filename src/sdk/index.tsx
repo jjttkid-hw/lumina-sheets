@@ -42,7 +42,13 @@ import {
   type ReportRecord,
 } from '../lib/report';
 import { exportWorkbook, importFile } from '../lib/io';
-import { generatePivotReport, type PivotDefinition } from '../lib/pivot';
+import {
+  createPivotAsync,
+  generatePivotReport,
+  pivotTableToWorkbook,
+  type PivotAsyncOptions,
+  type PivotDefinition,
+} from '../lib/pivot';
 import {
   findStoredCells,
   replaceStoredCells,
@@ -127,6 +133,7 @@ export type LuminaErrorCode =
   | 'DATA_SOURCE'
   | 'EXPORT_CANCELLED'
   | 'IMPORT_CANCELLED'
+  | 'PIVOT_CANCELLED'
   | 'VALIDATION_FAILED';
 
 export class LuminaError extends Error {
@@ -586,6 +593,7 @@ export class LuminaSpreadsheet {
   private viewportError?: Error;
   private initialRequest?: AbortController;
   private pendingImport?: { cancel: (reason?: unknown) => void };
+  private pendingPivot?: { cancel: (reason?: unknown) => void };
   private exportRequests = new Set<AbortController>();
   private lastViewport = '';
   private destroyed = false;
@@ -853,6 +861,9 @@ export class LuminaSpreadsheet {
   }
   private cancelImport(reason: unknown) {
     this.pendingImport?.cancel(reason);
+  }
+  private cancelPivot(reason: unknown) {
+    this.pendingPivot?.cancel(reason);
   }
   async import(file: File, options: ImportOptions = {}) {
     this.assertLive();
@@ -1489,6 +1500,7 @@ export class LuminaSpreadsheet {
   }
   report(definition: ReportDefinition, data: ReportRecord[]) {
     this.assertLive();
+    this.cancelPivot('新的报表已开始');
     const rules = asArgument(() => copyRules(definition.conditionalRules ?? []));
     const workbook = asArgument(() => generateReport(definition, data));
     this.load(workbook);
@@ -1498,10 +1510,92 @@ export class LuminaSpreadsheet {
   /** Replace the workbook with a static multi-measure analysis snapshot. */
   pivot(definition: PivotDefinition, data: readonly ReportRecord[]): void {
     this.assertLive();
+    this.cancelPivot('新的透视分析已开始');
     const workbook = asArgument(() => generatePivotReport(definition, data));
     this.load(workbook);
     this.rules = [];
     this.changed();
+  }
+  /** Analyze a large snapshot cooperatively and install it when complete. */
+  pivotAsync(
+    definition: PivotDefinition,
+    data: readonly ReportRecord[],
+    options: PivotAsyncOptions = {},
+  ): Promise<void> {
+    this.assertLive();
+    this.assertWritable();
+    if (!options || typeof options !== 'object' || Array.isArray(options))
+      throw new LuminaError('INVALID_ARGUMENT', '无效透视分析选项');
+    if (
+      options.signal !== undefined &&
+      (typeof AbortSignal === 'undefined' || !(options.signal instanceof AbortSignal))
+    )
+      throw new LuminaError('INVALID_ARGUMENT', 'signal 必须为 AbortSignal');
+    if (options.onProgress !== undefined && typeof options.onProgress !== 'function')
+      throw new LuminaError('INVALID_ARGUMENT', 'onProgress 必须为函数');
+    if (options.signal?.aborted)
+      return Promise.reject(
+        new LuminaError(
+          'PIVOT_CANCELLED',
+          '透视分析已取消，当前工作簿未被替换。',
+          options.signal.reason,
+        ),
+      );
+    this.cancelPivot('新的透视分析已开始');
+    return new Promise<void>((resolve, reject) => {
+      let settled = false;
+      const worker = new AbortController();
+      const finish = () => {
+        settled = true;
+        options.signal?.removeEventListener('abort', abort);
+        if (this.pendingPivot === operation) this.pendingPivot = undefined;
+      };
+      const cancel = (reason?: unknown) => {
+        if (settled) return;
+        finish();
+        worker.abort(reason);
+        reject(new LuminaError('PIVOT_CANCELLED', '透视分析已取消，当前工作簿未被替换。', reason));
+      };
+      const abort = () => cancel(options.signal?.reason);
+      const operation = { cancel };
+      this.pendingPivot = operation;
+      options.signal?.addEventListener('abort', abort, { once: true });
+      void createPivotAsync(definition, data, { ...options, signal: worker.signal }).then(
+        (table) => {
+          if (settled) return;
+          if (this.destroyed) {
+            cancel('表格已销毁');
+            return;
+          }
+          try {
+            const workbook = pivotTableToWorkbook(definition, table);
+            finish();
+            this.load(workbook);
+            resolve();
+          } catch (error) {
+            finish();
+            reject(error);
+          }
+        },
+        (error: unknown) => {
+          if (settled) return;
+          finish();
+          if (error instanceof Error && error.name === 'AbortError')
+            reject(
+              new LuminaError('PIVOT_CANCELLED', '透视分析已取消，当前工作簿未被替换。', error),
+            );
+          else if (error instanceof LuminaError) reject(error);
+          else
+            reject(
+              new LuminaError(
+                'INVALID_ARGUMENT',
+                error instanceof Error ? error.message : '透视分析失败',
+                error,
+              ),
+            );
+        },
+      );
+    });
   }
   private apply(
     sheetId: string,
@@ -1512,6 +1606,7 @@ export class LuminaSpreadsheet {
     preserveSelection = false,
   ) {
     this.assertWritable();
+    this.cancelPivot('工作簿已编辑');
     const sheet = this.workbook.sheets.find((item) => item.id === sheetId);
     if (!sheet) throw new LuminaError('INVALID_ARGUMENT', '找不到工作表');
     if (sheet.dataSource?.kind === 'paged') throw new LuminaError('READ_ONLY', '分页数据源为只读');
@@ -1755,6 +1850,7 @@ export class LuminaSpreadsheet {
     // Detach every old owner before abort listeners can synchronously rebind.
     // Cleanup must never borrow controllers or subscriptions from that new binding.
     this.exportRequests.clear();
+    this.cancelPivot('工作簿已替换');
     this.unsubscribeCache?.();
     this.unsubscribeCache = undefined;
     this.viewportRequest = undefined;

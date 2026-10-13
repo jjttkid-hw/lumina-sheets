@@ -53,6 +53,22 @@ export interface PivotTable {
   records: number;
 }
 
+export interface PivotProgress {
+  /** Number of source records consumed so far. */
+  completed: number;
+  /** Total source records in this bounded snapshot. */
+  total: number;
+}
+
+export interface PivotAsyncOptions {
+  /** Abort a long analysis between source records. */
+  signal?: AbortSignal;
+  /** Called after each cooperative batch. */
+  onProgress?: (progress: PivotProgress) => void;
+  /** Records per event-loop batch. Defaults to 512. */
+  batchSize?: number;
+}
+
 function field(value: unknown, label: string): string {
   if (typeof value !== 'string' || !value.trim() || value.length > 128)
     throw new TypeError(`${label}必须为 1–128 个字符的非空文字。`);
@@ -116,11 +132,23 @@ function compareKeys(a: string[], b: string[]) {
   return 0;
 }
 
-/** Synchronous bounded snapshot analysis. Does not mutate input or evaluate formula strings. */
-export function createPivot(
-  definition: PivotDefinition,
-  records: readonly ReportRecord[],
-): PivotTable {
+type PivotConfig = {
+  definition: PivotDefinition;
+  rowFields: string[];
+  columnField?: string;
+  values: Array<{ field: string; title: string; aggregate: PivotAggregate }>;
+  maxGroups: number;
+  maxColumns: number;
+};
+type PivotAccumulator = {
+  config: PivotConfig;
+  groups: Map<string, { keys: string[]; buckets: Map<string, State[]>; totals: State[] }>;
+  categories: Map<string, { label: string; totals: State[] }>;
+  grand: State[];
+  textUnits: number;
+};
+
+function preparePivot(definition: PivotDefinition, records: readonly ReportRecord[]): PivotConfig {
   if (!definition || typeof definition !== 'object' || Array.isArray(definition))
     throw new TypeError('透视配置必须为对象。');
   if (!Array.isArray(records) || records.length > PIVOT_LIMITS.records)
@@ -159,62 +187,80 @@ export function createPivot(
     throw new TypeError('透视排序必须为 input 或 label。');
   const maxGroups = limit(definition.maxGroups, PIVOT_LIMITS.groups, '透视分组上限');
   const maxColumns = limit(definition.maxColumns, PIVOT_LIMITS.categories, '透视列分类上限');
-  const groups = new Map<
-    string,
-    { keys: string[]; buckets: Map<string, State[]>; totals: State[] }
-  >();
-  const categories = new Map<string, { label: string; totals: State[] }>();
-  const grand = values.map(state);
-  let textUnits = 0;
-  const checkOutput = () => {
-    const width = rowFields.length + (columnField ? categories.size + 1 : 1) * values.length;
-    if ((groups.size + 2) * width > PIVOT_LIMITS.outputCells)
-      throw new RangeError('透视输出超过 100,000 格，未生成部分结果。');
+  return {
+    definition,
+    rowFields,
+    ...(columnField ? { columnField } : {}),
+    values,
+    maxGroups,
+    maxColumns,
   };
-  for (const record of records) {
-    if (!record || typeof record !== 'object' || Array.isArray(record))
-      throw new TypeError('透视记录必须为对象。');
-    const dimensions = rowFields.map((item) =>
-      dimension(Object.hasOwn(record, item) ? record[item] : undefined),
-    );
-    const category = columnField
-      ? dimension(Object.hasOwn(record, columnField) ? record[columnField] : undefined)
-      : { id: '', label: '' };
-    textUnits += dimensions.reduce((n, item) => n + item.label.length, 0) + category.label.length;
-    if (textUnits > PIVOT_LIMITS.textUnits) throw new RangeError('透视维度文字超过扫描上限。');
-    const id = JSON.stringify(dimensions.map((item) => item.id));
-    let group = groups.get(id);
-    if (!group) {
-      if (groups.size >= maxGroups) throw new RangeError('透视分组数量超过上限。');
-      group = {
-        keys: dimensions.map((item) => item.label),
-        buckets: new Map(),
-        totals: values.map(state),
-      };
-      groups.set(id, group);
-    }
-    let column = categories.get(category.id);
-    if (!column) {
-      if (columnField && categories.size >= maxColumns)
-        throw new RangeError('透视列分类数量超过上限。');
-      column = { label: category.label, totals: values.map(state) };
-      categories.set(category.id, column);
-    }
-    checkOutput();
-    const bucket = group.buckets.get(category.id) ?? values.map(state);
-    group.buckets.set(category.id, bucket);
-    values.forEach((value, index) => {
-      const raw = Object.hasOwn(record, value.field) ? record[value.field] : undefined;
-      for (const target of [
-        bucket[index],
-        group!.totals[index],
-        column!.totals[index],
-        grand[index],
-      ])
-        add(target, raw, value.aggregate);
-    });
+}
+
+function createAccumulator(config: PivotConfig): PivotAccumulator {
+  return {
+    config,
+    groups: new Map(),
+    categories: new Map(),
+    grand: config.values.map(state),
+    textUnits: 0,
+  };
+}
+
+function consumeRecord(acc: PivotAccumulator, record: ReportRecord): void {
+  const { config } = acc;
+  const { rowFields, columnField, values } = config;
+  if (!record || typeof record !== 'object' || Array.isArray(record))
+    throw new TypeError('透视记录必须为对象。');
+  const dimensions = rowFields.map((item) =>
+    dimension(Object.hasOwn(record, item) ? record[item] : undefined),
+  );
+  const category = columnField
+    ? dimension(Object.hasOwn(record, columnField) ? record[columnField] : undefined)
+    : { id: '', label: '' };
+  acc.textUnits += dimensions.reduce((n, item) => n + item.label.length, 0) + category.label.length;
+  if (acc.textUnits > PIVOT_LIMITS.textUnits) throw new RangeError('透视维度文字超过扫描上限。');
+  const id = JSON.stringify(dimensions.map((item) => item.id));
+  let group = acc.groups.get(id);
+  if (!group) {
+    if (acc.groups.size >= config.maxGroups) throw new RangeError('透视分组数量超过上限。');
+    group = {
+      keys: dimensions.map((item) => item.label),
+      buckets: new Map(),
+      totals: values.map(state),
+    };
+    acc.groups.set(id, group);
   }
-  checkOutput();
+  let column = acc.categories.get(category.id);
+  if (!column) {
+    if (columnField && acc.categories.size >= config.maxColumns)
+      throw new RangeError('透视列分类数量超过上限。');
+    column = { label: category.label, totals: values.map(state) };
+    acc.categories.set(category.id, column);
+  }
+  const width = rowFields.length + (columnField ? acc.categories.size + 1 : 1) * values.length;
+  if ((acc.groups.size + 2) * width > PIVOT_LIMITS.outputCells)
+    throw new RangeError('透视输出超过 100,000 格，未生成部分结果。');
+  const bucket = group.buckets.get(category.id) ?? values.map(state);
+  group.buckets.set(category.id, bucket);
+  values.forEach((value, index) => {
+    const raw = Object.hasOwn(record, value.field) ? record[value.field] : undefined;
+    for (const target of [
+      bucket[index],
+      group!.totals[index],
+      column!.totals[index],
+      acc.grand[index],
+    ])
+      add(target, raw, value.aggregate);
+  });
+}
+
+function finalizePivot(acc: PivotAccumulator, records: readonly ReportRecord[]): PivotTable {
+  const { config, groups, categories, grand } = acc;
+  const { definition, rowFields, columnField, values } = config;
+  const width = rowFields.length + (columnField ? categories.size + 1 : 1) * values.length;
+  if ((groups.size + 2) * width > PIVOT_LIMITS.outputCells)
+    throw new RangeError('透视输出超过 100,000 格，未生成部分结果。');
   const orderedGroups = [...groups.values()];
   const orderedCategories = [...categories];
   if (definition.sort === 'label') {
@@ -280,12 +326,59 @@ export function createPivot(
   };
 }
 
-/** Produces an ordinary editable workbook snapshot, not an Excel pivot-table object. */
-export function generatePivotReport(
+/** Synchronous bounded snapshot analysis. Does not mutate input or evaluate formula strings. */
+export function createPivot(
   definition: PivotDefinition,
   records: readonly ReportRecord[],
-): Workbook {
-  const pivot = createPivot(definition, records);
+): PivotTable {
+  const config = preparePivot(definition, records);
+  const acc = createAccumulator(config);
+  for (const record of records) consumeRecord(acc, record);
+  return finalizePivot(acc, records);
+}
+
+function throwIfAborted(signal?: AbortSignal): void {
+  if (!signal?.aborted) return;
+  try {
+    throw new DOMException('透视分析已取消。', 'AbortError');
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') throw error;
+    const fallback = new Error('透视分析已取消。');
+    fallback.name = 'AbortError';
+    throw fallback;
+  }
+}
+
+/**
+ * Cooperative bounded analysis for large snapshots. Work is yielded between batches,
+ * so cancellation and UI input remain responsive. The input is never mutated.
+ */
+export async function createPivotAsync(
+  definition: PivotDefinition,
+  records: readonly ReportRecord[],
+  options: PivotAsyncOptions = {},
+): Promise<PivotTable> {
+  const config = preparePivot(definition, records);
+  const batchSize = options.batchSize ?? 512;
+  if (!Number.isSafeInteger(batchSize) || batchSize < 1 || batchSize > 10_000)
+    throw new RangeError('透视批大小必须为 1–10,000 的整数。');
+  const acc = createAccumulator(config);
+  throwIfAborted(options.signal);
+  options.onProgress?.({ completed: 0, total: records.length });
+  for (let index = 0; index < records.length; index++) {
+    consumeRecord(acc, records[index]);
+    if ((index + 1) % batchSize === 0 || index + 1 === records.length) {
+      options.onProgress?.({ completed: index + 1, total: records.length });
+      throwIfAborted(options.signal);
+      if (index + 1 < records.length) await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      throwIfAborted(options.signal);
+    }
+  }
+  return finalizePivot(acc, records);
+}
+
+/** Converts a computed model to the ordinary editable workbook representation. */
+export function pivotTableToWorkbook(definition: PivotDefinition, pivot: PivotTable): Workbook {
   const book = createBlankWorkbook(definition.name ?? '透视分析');
   const sheet = book.sheets[0];
   sheet.name = '透视分析';
@@ -322,4 +415,13 @@ export function generatePivotReport(
   book.description = '透视分析静态快照；源数据修改后请重新生成。';
   book.category = '前端分析';
   return book;
+}
+
+/** Produces an ordinary editable workbook snapshot, not an Excel pivot-table object. */
+export function generatePivotReport(
+  definition: PivotDefinition,
+  records: readonly ReportRecord[],
+): Workbook {
+  const pivot = createPivot(definition, records);
+  return pivotTableToWorkbook(definition, pivot);
 }

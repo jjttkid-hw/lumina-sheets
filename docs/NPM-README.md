@@ -76,6 +76,7 @@ Serve these files over HTTP(S), not `file://`. Clipboard integration depends on 
 | `setCell(address, value, style?)`                     | Edit one cell; strings beginning with `=` are formulas.                     |
 | `setCells(changes)`                                   | Apply a validated atomic batch; `cell: null` deletes a cell.                |
 | `pivot(definition, records)`                          | Generate a bounded multi-measure pivot snapshot as ordinary editable cells. |
+| `pivotAsync(definition, records, options)`            | Cooperatively analyze a large snapshot with progress and cancellation.      |
 | `findCells(search, options?)`                         | Find stored source text in row-major order; budget overflow throws.         |
 | `replaceAll(request)`                                 | Replace source text in the active sheet as one validated undoable edit.     |
 | `getCell(address)` / `getValue(address)`              | Read an isolated raw cell or its current calculated value.                  |
@@ -137,6 +138,14 @@ grid.pivot(
   { rows: ['region'], columns: 'month', values: [{ field: 'revenue', aggregate: 'sum' }] },
   records,
 );
+
+// Keep the editor responsive for larger in-memory snapshots:
+const controller = new AbortController();
+await grid.pivotAsync(definition, records, {
+  batchSize: 512,
+  signal: controller.signal,
+  onProgress: ({ completed, total }) => console.log(`${completed}/${total}`),
+});
 ```
 
 The model is computed from a bounded in-memory record snapshot. It distinguishes typed dimension values, uses source-record weighting for averages, and returns deterministic row/column totals. Limits are 100,000 records, 10,000 groups, 256 categories, 8 measures, 100,000 output cells and 8,000,000 UTF-16 dimension units. Numeric measures accept finite numbers or blank values; text, booleans, formula source strings and non-finite numbers are rejected. `grid.pivot()` installs ordinary cells, so edits and XLSX export use the normal SDK path; it does not create or preserve a native Excel pivot cache. Regenerate after changing source records.
