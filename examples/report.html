@@ -225,6 +225,7 @@
         <button data-layout="nested">多级分组</button>
         <button data-layout="cross">交叉统计</button>
         <button data-layout="formulas">公式示例</button>
+        <button data-layout="investment">投资回款</button>
         <button data-layout="sheets">多工作表</button>
         <button data-layout="validation">订单填报</button>
         <button data-layout="print">打印版式</button>
@@ -706,7 +707,13 @@
         clearTimeout(pointerApplyTimer);
         pointerApplyTimer = setTimeout(() => {
           pointerApplyTimer = null;
-          if (revision !== pointerApplyRevision || formulaComposing || $('#apply').disabled || !matchesApplyDraft(draft)) return;
+          if (
+            revision !== pointerApplyRevision ||
+            formulaComposing ||
+            $('#apply').disabled ||
+            !matchesApplyDraft(draft)
+          )
+            return;
           try {
             applyFormulaDraft();
             pointerAppliedDraft = captureApplyDraft();
@@ -842,6 +849,7 @@
         nested: '多级分组',
         cross: '交叉统计',
         formulas: '公式示例',
+        investment: '投资回款',
         sheets: '多工作表',
         validation: '订单填报',
         print: '打印版式',
@@ -1081,6 +1089,43 @@
             await binding;
             if (generation !== reportGeneration) return;
             updateControls();
+          } else if (mode === 'investment') {
+            grid.report(
+              {
+                name: '项目投资回款',
+                layout: 'list',
+                columns: [
+                  { field: 'date', title: '回款日期', width: 150 },
+                  { field: 'cash', title: '现金流', width: 160, format: 'currency' },
+                  { field: 'note', title: '说明', width: 340 },
+                ],
+              },
+              [
+                { date: '2008-01-01', cash: -10000, note: '初始投入（负数）' },
+                { date: '2008-03-01', cash: 2750, note: '第一笔回款' },
+                { date: '2008-10-30', cash: 4250, note: '第二笔回款' },
+                { date: '2009-02-15', cash: 3250, note: '第三笔回款' },
+                { date: '2009-04-01', cash: 2750, note: '尾款' },
+              ],
+            );
+            grid.setCells([
+              { key: 'A8', cell: { value: '折现率' } },
+              { key: 'B8', cell: { value: 0.09, style: { format: 'percent' } } },
+              { key: 'A9', cell: { value: '净现值' } },
+              {
+                key: 'B9',
+                cell: { value: '=XNPV(B8,B2:B6,A2:A6)', style: { format: 'currency' } },
+              },
+              { key: 'A10', cell: { value: '年化内部收益率' } },
+              { key: 'B10', cell: { value: '=XIRR(B2:B6,A2:A6)', style: { format: 'percent' } } },
+              { key: 'C9', cell: { value: '修改回款金额、日期或折现率，结果自动更新' } },
+              { key: 'C10', cell: { value: '实际天数 / 365；日期使用 YYYY-MM-DD' } },
+            ]);
+            grid.setConditionalRules([]);
+            $('#layout-note').textContent =
+              '实际日期现金流 · 净现值约 2,086.65，年化收益率约 37.34% · 可编辑、撤销并导出 Excel。';
+            $('#code').textContent =
+              'grid.setCell("B9", "=XNPV(B8,B2:B6,A2:A6)");\ngrid.setCell("B10", "=XIRR(B2:B6,A2:A6)");';
           } else if (mode === 'sheets') {
             grid.report({ name: '多工作表经营分析', layout: 'list', columns }, records);
             const workbook = grid.toJSON();
@@ -1536,7 +1581,12 @@
         }
       });
       $('#formula').onkeydown = (event) => {
-        if (event.key === 'Enter' && !formulaComposing && !event.isComposing && event.keyCode !== 229)
+        if (
+          event.key === 'Enter' &&
+          !formulaComposing &&
+          !event.isComposing &&
+          event.keyCode !== 229
+        )
           $('#apply').click();
       };
       $('#undo').onclick = () => {

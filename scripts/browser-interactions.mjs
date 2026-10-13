@@ -30,7 +30,8 @@ const archive = await readFile(`artifacts/lumina-report-sdk-${version}.tgz`);
 const browser = await engines[engine].launch({
   headless: process.env.BROWSER_HEADED !== '1',
   ...(engine === 'chromium' && process.env.BROWSER_CHANNEL !== 'bundled'
-    ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' } : {}),
+    ? { channel: process.env.BROWSER_CHANNEL ?? 'chrome' }
+    : {}),
   // Only local candidate traffic skips system proxies; remote runs keep normal routing.
   ...(engine === 'firefox' && ['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)
     ? { firefoxUserPrefs: { 'network.proxy.type': 0 } }
@@ -118,6 +119,75 @@ async function copyText(text) {
 try {
   await page.goto(new URL('sdk/example.html', origin).href);
   await page.getByRole('grid').waitFor();
+  await check('dated-investment-edit-undo-xlsx', async () => {
+    await page.locator('[data-layout="investment"]').click();
+    await jump('B9');
+    await page.waitForFunction(() =>
+      document.querySelector('#value')?.textContent.includes('2086.647602'),
+    );
+    await jump('B10');
+    await page.waitForFunction(() =>
+      document.querySelector('#value')?.textContent.includes('0.373362533'),
+    );
+    await jump('B3');
+    await page.locator('#formula').fill('4000');
+    await page.locator('#apply').click();
+    await result(4000);
+    await jump('B10');
+    const edited = await page.locator('#value').textContent();
+    assert(!edited.includes('0.373362533'), 'cash edit must invalidate XIRR');
+    await page.locator('#undo').click();
+    await page.waitForFunction(() =>
+      document.querySelector('#value')?.textContent.includes('0.373362533'),
+    );
+    await jump('A3');
+    await page.locator('#formula').fill('2008-06-01');
+    await page.locator('#apply').click();
+    await result('2008-06-01');
+    await jump('B10');
+    const dateEdited = await page.locator('#value').textContent();
+    assert(!dateEdited.includes('0.373362533'), 'date edit must invalidate XIRR');
+    await page.locator('#format').selectOption('xlsx');
+    const pending = page.waitForEvent('download');
+    await page.locator('#export').click();
+    const download = await pending;
+    const destination = path.join(output, 'investment.xlsx');
+    await download.saveAs(destination);
+    assert.equal(await download.failure(), null);
+    const bytes = await readFile(destination);
+    const values = await page.evaluate(async (bytes) => {
+      const { workbookFromXlsx, createSpreadsheet } = await import('./lumina.js');
+      const book = await workbookFromXlsx(new Uint8Array(bytes).buffer);
+      const host = document.createElement('div');
+      host.style.cssText = 'height:320px;width:900px';
+      document.body.append(host);
+      const grid = createSpreadsheet(host, { workbook: book });
+      try {
+        return {
+          date: grid.getCell('A3').value,
+          npvFormula: grid.getCell('B9').value,
+          irrFormula: grid.getCell('B10').value,
+          npv: grid.getValue('B9'),
+          irr: grid.getValue('B10'),
+        };
+      } finally {
+        grid.destroy();
+        host.remove();
+      }
+    }, Array.from(bytes));
+    assert.equal(values.date, '2008-06-01');
+    assert.equal(values.npvFormula, '=XNPV(B8,B2:B6,A2:A6)');
+    assert.equal(values.irrFormula, '=XIRR(B2:B6,A2:A6)');
+    assert.equal(dateEdited, `结果：${values.irr}`);
+    assert(Number.isFinite(values.npv));
+    await page.screenshot({ path: path.join(output, 'investment.png'), fullPage: true });
+    await page.locator('#undo').click();
+    const dialog = page.waitForEvent('dialog');
+    const change = page.locator('[data-layout="validation"]').click();
+    await (await dialog).accept();
+    await change;
+    return { ...values, downloadSha256: createHash('sha256').update(bytes).digest('hex') };
+  });
   await check('validation-editor-recovery', async () => {
     await page.locator('[data-layout="validation"]').click();
     await jump('B2');
@@ -363,7 +433,9 @@ try {
     return state;
   });
   await check('wps-validation-title-download', async () => {
-    const fixture = await readFile('docs/acceptance/wps-business-2026-10-03-r34/wps-custom-title.xlsx');
+    const fixture = await readFile(
+      'docs/acceptance/wps-business-2026-10-03-r34/wps-custom-title.xlsx',
+    );
     await page.evaluate(async (bytes) => {
       const { createSpreadsheet, workbookFromXlsx } = await import('./lumina.js');
       const workbook = await workbookFromXlsx(new Uint8Array(bytes).buffer);
@@ -383,10 +455,15 @@ try {
     const grid = page.locator('#test-title [role=grid]');
     await grid.focus();
     await page.keyboard.press('F2');
-    const editor = page.locator('#test-title').getByRole('textbox', { name: '编辑单元格 D2', exact: true });
+    const editor = page
+      .locator('#test-title')
+      .getByRole('textbox', { name: '编辑单元格 D2', exact: true });
     await editor.fill('无效');
     await editor.press('Enter');
-    await page.locator('#test-title').getByText('D2：审批状态：请选择通过、待审或拒绝', { exact: false }).waitFor();
+    await page
+      .locator('#test-title')
+      .getByText('D2：审批状态：请选择通过、待审或拒绝', { exact: false })
+      .waitFor();
     assert.equal(await editor.inputValue(), '无效');
     await editor.fill('通过');
     await editor.press('Enter');
@@ -402,14 +479,26 @@ try {
       const { workbookFromXlsx } = await import('./lumina.js');
       const restored = await workbookFromXlsx(new Uint8Array(bytes).buffer);
       const sheet = restored.sheets[2];
-      const state = { title: sheet.dataValidations[0].errorTitle, message: sheet.dataValidations[0].message, value: sheet.cells.D2.value };
+      const state = {
+        title: sheet.dataValidations[0].errorTitle,
+        message: sheet.dataValidations[0].message,
+        value: sheet.cells.D2.value,
+      };
       window.titleAcceptance.grid.destroy();
       window.titleAcceptance.host.remove();
       window.titleAcceptance.download.remove();
       return state;
     }, Array.from(bytes));
-    assert.deepEqual(state, { title: '审批状态', message: '请选择通过、待审或拒绝', value: '通过' });
-    return { ...state, fixtureSha256: createHash('sha256').update(fixture).digest('hex'), downloadSha256: createHash('sha256').update(bytes).digest('hex') };
+    assert.deepEqual(state, {
+      title: '审批状态',
+      message: '请选择通过、待审或拒绝',
+      value: '通过',
+    });
+    return {
+      ...state,
+      fixtureSha256: createHash('sha256').update(fixture).digest('hex'),
+      downloadSha256: createHash('sha256').update(bytes).digest('hex'),
+    };
   });
   await page.screenshot({ path: path.join(output, 'validation.png'), fullPage: true });
 } catch (error) {
@@ -421,6 +510,7 @@ try {
   throw error;
 } finally {
   finalizeBrowserReport(report, [
+    'dated-investment-edit-undo-xlsx',
     'validation-editor-recovery',
     'validation-list-keyboard',
     'native-clipboard-atomic-validation',

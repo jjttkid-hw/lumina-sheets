@@ -881,7 +881,108 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
     const count = (min: number, max = min) => {
       if (args.length < min || args.length > max) fail();
     };
+    const datedCashFlows = (valueIndex: number, dateIndex: number) => {
+      const values = grid(args[valueIndex]);
+      const dates = grid(args[dateIndex]);
+      if (
+        values.rows !== dates.rows ||
+        values.cols !== dates.cols ||
+        (values.rows !== 1 && values.cols !== 1)
+      )
+        fail('#VALUE!');
+      const length = values.rows * values.cols;
+      if (length < 2 || length > MAX_RANGE_CELLS) fail('#NUM!');
+      const flows: { cash: number; years: number }[] = [];
+      let first = 0;
+      for (let index = 0; index < length; index++) {
+        const row = values.rows === 1 ? 0 : index;
+        const col = values.rows === 1 ? index : 0;
+        const cash = values.at(row, col);
+        // Never drop a member and accidentally pair subsequent cash with a
+        // different date. This subset requires an explicit numeric cash value.
+        if (typeof cash !== 'number') fail('#VALUE!');
+        const date = Math.floor(dateSerial(dates.at(row, col)));
+        if (index === 0) first = date;
+        if (date < first) fail('#NUM!');
+        flows.push({ cash: finite(cash), years: (date - first) / 365 });
+      }
+      return flows;
+    };
     switch (node.name) {
+      case 'XNPV': {
+        count(3);
+        const rate = number(get(0));
+        if (rate <= -1) fail('#NUM!');
+        const flows = datedCashFlows(1, 2);
+        const logarithm = Math.log1p(rate);
+        let sum = 0,
+          correction = 0;
+        for (const { cash, years } of flows) {
+          const discount = Math.exp(-years * logarithm);
+          const term =
+            cash === 0
+              ? 0
+              : finite(
+                  Number.isFinite(discount) && discount !== 0
+                    ? cash * discount
+                    : Math.sign(cash) * Math.exp(Math.log(Math.abs(cash)) - years * logarithm),
+                );
+          const next = finite(sum + term);
+          correction = finite(
+            correction + (Math.abs(sum) >= Math.abs(term) ? sum - next + term : term - next + sum),
+          );
+          sum = next;
+        }
+        return finite(sum + correction) || 0;
+      }
+      case 'XIRR': {
+        count(2, 3);
+        const flows = datedCashFlows(0, 1);
+        const guess = args.length === 3 ? number(get(2)) : 0.1;
+        if (
+          guess <= -1 ||
+          guess > 1_000_000 ||
+          !flows.some(({ cash }) => cash > 0) ||
+          !flows.some(({ cash }) => cash < 0)
+        )
+          fail('#NUM!');
+        const nonzero = flows.filter(({ cash }) => cash !== 0);
+        if (nonzero.every(({ years }) => years === nonzero[0].years)) fail('#NUM!');
+        const terms = nonzero.map(({ cash, years }) => ({
+          sign: Math.sign(cash),
+          logarithm: Math.log(Math.abs(cash)),
+          years,
+        }));
+        let visited = 0;
+        return solveFinancialRate(
+          (rate) => {
+            // Count both passes: an adversarial schedule cannot scan 100k flows
+            // hundreds of times on the UI thread.
+            visited += terms.length * 2;
+            if (visited > 2_000_000) fail('#NUM!');
+            const logRate = Math.log1p(rate);
+            let largest = -Infinity;
+            for (const term of terms)
+              largest = Math.max(largest, term.logarithm - term.years * logRate);
+            let sum = 0,
+              correction = 0,
+              magnitude = 0;
+            for (const term of terms) {
+              const value = term.sign * Math.exp(term.logarithm - term.years * logRate - largest);
+              const next = sum + value;
+              correction +=
+                Math.abs(sum) >= Math.abs(value) ? sum - next + value : value - next + sum;
+              magnitude += Math.abs(value);
+              sum = next;
+            }
+            // Normalize against CURRENT discounted amounts, avoiding a false
+            // zero when all future terms underflow relative to original cash.
+            return (sum + correction) / magnitude;
+          },
+          guess,
+          1,
+        );
+      }
       case 'NPV': {
         count(2, 255);
         const rate = number(get(0));

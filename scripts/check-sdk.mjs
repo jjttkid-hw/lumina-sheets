@@ -568,6 +568,18 @@ assert.equal(evaluate(workbook.sheets[0], 'B1'), 20);
 workbook.sheets[0].cells.A2 = { value: '=IFERROR(1e999,42)' };
 assert.equal(evaluate(workbook.sheets[0], 'A2'), 42);
 assert.deepEqual(evaluate.result(workbook.sheets[0], 'A2'), { kind: 'value', value: 42 });
+const cashSheet = { id: 'cash', name: 'Cash', rowCount: 5, colCount: 3, cells: {
+  A1: { value: -100 }, A2: { value: 121 },
+  B1: { value: 45000 }, B2: { value: 45730 },
+  C1: { value: '=XIRR(A1:A2,B1:B2)' }, C2: { value: '=XNPV(0.1,A1:A2,B1:B2)' },
+} };
+const cashBook = { ...workbook, activeSheetId: cashSheet.id, sheets: [cashSheet] };
+const cashEvaluate = sdk.createEvaluator(cashBook);
+assert(Math.abs(cashEvaluate(cashSheet, 'C1') - 0.1) < 1e-9);
+assert(Math.abs(cashEvaluate(cashSheet, 'C2')) < 1e-9);
+const cashRestored = await sdk.workbookFromXlsx(await sdk.workbookToXlsx(cashBook));
+assert.equal(cashRestored.sheets[0].cells.C1.value, '=XIRR(A1:A2,B1:B2)');
+assert(Math.abs(sdk.createEvaluator(cashRestored)(cashRestored.sheets[0], 'C1') - 0.1) < 1e-9);
 const source = sdk.arrayDataSource([[10, 20], [30, 40]], { columnCount: 2 });
 assert.deepEqual((await source.fetchPage(1, 1)).rows, [[30, 40]]);
 const cache = new sdk.ReportChunkCache(source, { pageSize: 1 });

@@ -305,8 +305,9 @@ rendering, or a commercial SLA.
    rebuild with the same source epoch, and require the identical artifact hashes
    and `npm run check:stable` to pass. Then create the matching `v1.0.0` tag and
    Release; the publishing workflow must repeat its gates before publication.
-5. Verify the published 1.0.0 tarball, `latest` tag and isolated install before
-   announcing delivery. Do not move existing tags to pick up workflow fixes:
+5. Verify the release SDK archive and isolated install before announcing product
+   delivery. If npm distribution is enabled, separately verify its tarball,
+   `latest` tag and isolated install; npm publication is not a product acceptance gate. Do not move existing tags to pick up workflow fixes:
    the workflow checks out the release tag, not the current main source.
 
 Trusted Publisher fields are recorded in

@@ -123,6 +123,36 @@ function check(result: CalculationMessage, request: CalculationRequest) {
   if (result.type === 'calculated') expect(result.values).toEqual(calculateSync(request).values);
 }
 describe('real isolated calculation thread', () => {
+  it('calculates dated cash flows and applies a changed date in a real thread', async () => {
+    const { send } = start();
+    const sender = new CalculationTransferSender();
+    const workbook = createBlankWorkbook();
+    const sheet = workbook.sheets[0];
+    sheet.cells = {
+      A1: { value: -100 },
+      A2: { value: 121 },
+      B1: { value: 45000 },
+      B2: { value: 45365 },
+      C1: { value: '=XIRR(A1:A2,B1:B2)' },
+      C2: { value: '=XNPV(0.1,A1:A2,B1:B2)' },
+    };
+    const request: CalculationRequest = {
+      type: 'calculate',
+      revision: 1,
+      workbook,
+      targets: ['C1', 'C2'].map((key) => ({ sheetId: sheet.id, key })),
+    };
+    const first = await send(sender.prepare(request, 1));
+    check(first, request);
+    if (first.type === 'calculated') expect(first.values[`${sheet.id}:C1`]).toBeCloseTo(0.21, 9);
+    sender.commit(request, 1);
+    const next = structuredClone(request);
+    next.revision = 2;
+    next.workbook.sheets[0].cells.B2.value = 45730;
+    const second = await send(sender.prepare(next, 2));
+    check(second, next);
+    if (second.type === 'calculated') expect(second.values[`${sheet.id}:C1`]).toBeCloseTo(0.1, 9);
+  });
   it('keeps non-finite literals as catchable errors in a real calculation thread', async () => {
     const { send } = start();
     const sender = new CalculationTransferSender();
