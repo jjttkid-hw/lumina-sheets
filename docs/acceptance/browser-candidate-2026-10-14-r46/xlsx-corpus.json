@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "version": "1.0.0",
-  "executedAt": "2026-10-14T02:00:11.629Z",
+  "executedAt": "2026-10-14T03:10:49.862Z",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -15,12 +15,12 @@
     {
       "name": "business-report-roundtrip",
       "status": "passed",
-      "elapsedMs": 122,
+      "elapsedMs": 150,
       "details": {
         "input": "docs/artifacts/report-v05.xlsx",
         "inputBytes": 7579,
         "inputSha256": "75cbfb28402a8a199484417f8463c7360bbb107b12ac3213d2791cb625a1ad6d",
-        "exportedBytes": 7670,
+        "exportedBytes": 7676,
         "semanticSha256": "1d11383e5def44bea4d5b7f7ead9b8ab291673fddf25d4b54e979059313f9cdf",
         "sheets": 1,
         "storedCells": 30
@@ -29,7 +29,7 @@
     {
       "name": "structure-report-roundtrip",
       "status": "passed",
-      "elapsedMs": 52,
+      "elapsedMs": 56,
       "details": {
         "input": "docs/artifacts/report-v06-structure.xlsx",
         "inputBytes": 7518,
@@ -43,10 +43,10 @@
     {
       "name": "synthetic-supported-subset",
       "status": "passed",
-      "elapsedMs": 33,
+      "elapsedMs": 40,
       "details": {
-        "generatedBytes": 8786,
-        "generatedSha256": "de2e7526878006f944e429637f855beb5680902e58a112be74e0d4d560953b27",
+        "generatedBytes": 8787,
+        "generatedSha256": "8eb548e8d22a41d23280ca74b1f7c0b55b03a4f8d1222e8e42071a6deb1d692f",
         "semanticSha256": "702d2570454d76ed3b0a89083701b479587625b0efe248f2b0ccf2ecb0a618ba",
         "sheets": 2,
         "storedCells": 12,
@@ -68,7 +68,7 @@
     {
       "name": "independent-reader-contract",
       "status": "passed",
-      "elapsedMs": 16,
+      "elapsedMs": 28,
       "details": {
         "reader": "exceljs@4.4.0",
         "sheets": [
@@ -86,11 +86,11 @@
     {
       "name": "unsupported-image-rejection",
       "status": "passed",
-      "elapsedMs": 19,
+      "elapsedMs": 29,
       "details": {
         "generator": "exceljs@4.4.0",
         "inputBytes": 8425,
-        "inputSha256": "2042ef58926051092fa6030a5fab589c6b8f67210478f2fe744d911270d7fa9a",
+        "inputSha256": "3f885ca5b0e4b56cd39b1afb2ca175f26aee303dd0a64b1151f97689d2e02ceb",
         "rejected": true,
         "error": "XLSX：工作表「含图片对象」包含尚不能保留的图片或图形，已停止导入以避免内容丢失。请保留原文件，在副本中移除这些对象后再导入。"
       }

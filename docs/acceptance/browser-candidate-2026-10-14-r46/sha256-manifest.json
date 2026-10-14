@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-14T03:30:26.392Z",
+  "generatedAt": "2026-10-14T03:38:27.706Z",
   "files": [
     {
       "path": "accessibility-chromium.json",
@@ -805,7 +805,7 @@
     {
       "path": "business-corpus.json",
       "bytes": 11492,
-      "sha256": "e2046f3049471afbb7d2efa36d51ff3bd340bd44041823b5fd6d74e991227255"
+      "sha256": "539f21946345b03dc3c04a8b2ef65c1a951ac71856f39cd8c7fc5add515f53ae"
     },
     {
       "path": "chromium/focus.json",
@@ -930,12 +930,12 @@
     {
       "path": "wps-corpus.json",
       "bytes": 1447,
-      "sha256": "5d8096d0a911e060c6398097682d0b388bfdb7a1bbebde00dc292e025b3b47b1"
+      "sha256": "fd17bb46adfc3478a92073f9a08e0ffcdfe417657f46babeea06df508e9bd902"
     },
     {
       "path": "xlsx-corpus.json",
       "bytes": 3850,
-      "sha256": "3e8ea3814d2c940acc0f1895c8d3a8aa726d5b9f6e2eb92cd331534ffaf3fd8f"
+      "sha256": "76437f2ca576411c79e7763e9f9d178e9db7d974e82167074c587b2392d50570"
     }
   ]
 }
