@@ -6,18 +6,22 @@
 
 ## 支持的函数
 
-工作空间公式栏获得焦点时，会为以已知函数开头的公式显示参数签名与中文用途；覆盖下列全部 57 个名称。当前只提示最外层函数，不根据光标定位嵌套参数，也不自动改写草稿。方括号表示可省略的尾部参数，不支持连续逗号省略中间参数。
+工作空间公式栏获得焦点时，会为以已知函数开头的公式显示参数签名与中文用途；覆盖下列全部 59 个名称。当前只提示最外层函数，不根据光标定位嵌套参数，也不自动改写草稿。方括号表示可省略的尾部参数，不支持连续逗号省略中间参数。
 
 | 分类     | 函数                                                    |
 | -------- | ------------------------------------------------------- |
 | 汇总     | SUM、AVERAGE、MIN、MAX、COUNT、COUNTA                   |
-| 条件汇总 | SUMIF、COUNTIF、SUMIFS、COUNTIFS、SUMPRODUCT            |
+| 条件汇总 | SUMIF、COUNTIF、AVERAGEIF、SUMIFS、COUNTIFS、AVERAGEIFS、SUMPRODUCT |
 | 逻辑     | IF、IFERROR、AND、OR、NOT                               |
 | 查找引用 | VLOOKUP、HLOOKUP、INDEX、MATCH、XLOOKUP                  |
 | 数值     | ROUND、ROUNDUP、ROUNDDOWN、MOD、INT、ABS                |
 | 文本     | LEN、UPPER、LOWER、CONCAT、CONCATENATE、LEFT、RIGHT、MID、TRIM、CLEAN、FIND、REPLACE、SUBSTITUTE                  |
 | 日期     | TODAY、DATE、DATEVALUE、YEAR、MONTH、DAY、DAYS、EOMONTH |
 | 财务     | PMT、PV、FV、NPV、XNPV、NPER、IRR、XIRR、RATE |
+
+## 条件统计平均值
+
+`AVERAGEIF(range, criteria, [average_range])` 在条件范围中筛选记录，并对对应的数值求平均；省略 `average_range` 时平均条件范围本身。`AVERAGEIFS(average_range, criteria_range1, criteria1, …)` 支持多个条件，所有条件范围必须与平均范围具有完全相同的形状。条件沿用 `SUMIF`/`COUNTIF` 的比较运算符、通配符和转义规则；文本、布尔值和空白不会计入平均分母。没有匹配的数值成员返回 `#DIV/0!`，范围尺寸不一致返回 `#VALUE!`，不会静默截断数据。
 
 ## 文本提取与清理
 

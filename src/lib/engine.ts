@@ -1340,6 +1340,25 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
           0,
         );
       }
+      case 'AVERAGEIF': {
+        count(2, 3);
+        const sourceResult = get(0);
+        const source = flatten([sourceResult]);
+        const matches = criterion(scalar(get(1)));
+        const averages = args.length === 3 ? flatten([get(2)]) : source;
+        if (averages.length !== source.length) fail('#VALUE!');
+        let total = 0;
+        let countMatches = 0;
+        for (let index = 0; index < source.length; index++) {
+          if (!matches(source[index])) continue;
+          const value = averages[index];
+          if (typeof value !== 'number') continue;
+          total = finite(total + value);
+          countMatches++;
+        }
+        if (!countMatches) fail('#DIV/0!');
+        return finite(total / countMatches);
+      }
       case 'SUMIFS':
       case 'COUNTIFS': {
         const minimum = node.name === 'SUMIFS' ? 3 : 2;
@@ -1366,6 +1385,31 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
           }
         }
         return total;
+      }
+      case 'AVERAGEIFS': {
+        if (args.length < 3 || args.length > 255 || (args.length - 1) % 2 !== 0) fail('#VALUE!');
+        const targetResult = get(0);
+        const target = flatten([targetResult]);
+        const pairs: Array<{ range: Scalar[]; matches: (value: Scalar) => boolean }> = [];
+        for (let index = 1; index < args.length; index += 2) {
+          const rangeResult = evaluate(args[index], sheet);
+          if (!sameShape(rangeResult, targetResult)) fail('#VALUE!');
+          pairs.push({
+            range: flatten([rangeResult]),
+            matches: criterion(scalar(evaluate(args[index + 1], sheet))),
+          });
+        }
+        let total = 0;
+        let countMatches = 0;
+        for (let index = 0; index < target.length; index++) {
+          if (!pairs.every(({ range, matches }) => matches(range[index]))) continue;
+          const value = target[index];
+          if (typeof value !== 'number') continue;
+          total = finite(total + value);
+          countMatches++;
+        }
+        if (!countMatches) fail('#DIV/0!');
+        return finite(total / countMatches);
       }
       case 'SUMPRODUCT': {
         count(1, 255);

@@ -155,6 +155,24 @@ describe('safe spreadsheet formula evaluator', () => {
       }),
     ).toBe(2);
   });
+  it('supports conditional averages with range-shape and empty-match safeguards', () => {
+    const values = {
+      A1: '华东',
+      A2: '华东',
+      A3: '华南',
+      B1: 100,
+      B2: 300,
+      B3: 500,
+      C1: 1,
+      C2: 0,
+      C3: 1,
+    };
+    expect(evaluate('=AVERAGEIF(A1:A3,"华东",B1:B3)', values)).toBe(200);
+    expect(evaluate('=AVERAGEIF(C1:C3,1,B1:B3)', values)).toBe(300);
+    expect(evaluate('=AVERAGEIFS(B1:B3,A1:A3,"华东",C1:C3,1)', values)).toBe(100);
+    expect(evaluate('=AVERAGEIF(A1:A3,"不存在",B1:B3)', values)).toBe('#DIV/0!');
+    expect(evaluate('=AVERAGEIFS(B1:B3,A1:A2,"华东")', values)).toBe('#VALUE!');
+  });
   it('supports text, rounding, absolute values and dates', () => {
     expect(evaluate('=CONCAT(UPPER("abc"),LOWER("DEF"),LEN("你好"))')).toBe('ABCdef2');
     expect(evaluate('=ROUND(-1.25,1)')).toBe(-1.3);
