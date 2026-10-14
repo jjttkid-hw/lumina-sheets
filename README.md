@@ -31,9 +31,11 @@ Lumina 是一个面向业务系统的高性能 JavaScript 表格与报表 SDK。
 - 报表生成：列表、分组小计、交叉统计、模板公式、条件规则、数据校验、撤销重做和持久化。
 - 文件链路：XLSX、CSV、JSON、PDF 导入导出；XLSX 相关代码按需加载。
 - 可编程透视：`createPivot`、`createPivotAsync`、`grid.pivot()` 和 `grid.pivotAsync()` 支持多级分组、多指标聚合、稳定排序、总计、进度回调与取消。
+- 可编程图表模型：`createChartModel`、`createPivotChartModel`、`grid.chart()` 和 `grid.pivotChart()` 支持受限的柱状、折线、饼图数据模型，可直接交给 Canvas/SVG 渲染器。
 - SDK 生命周期：只读模式、统一错误码、异步导入/导出取消、过期任务隔离和严格 TypeScript 声明。
 
 透视和分页分析都有明确预算，超限会整批拒绝，不会静默截断。当前透视结果是普通可编辑工作表快照，不伪装成 Excel 原生透视缓存；源记录改变后需要重新生成。
+图表 API 只生成确定性的纯数据模型，不修改工作簿、不执行公式字符串，也不导出为 Excel 原生图表对象；记录、分类、系列和文字均有硬上限，饼图拒绝负数并只接受单系列。
 
 ## 快速开始
 
@@ -116,7 +118,7 @@ npm run check:bundle-performance
 
 ## 当前边界
 
-Lumina 当前不宣称完整 Excel/SpreadJS 兼容，也不包含原生 Excel 图表/透视表对象、多人协作、账号权限、云端存储、计费或 AI 服务。PDF 是 Canvas 栅格报表，分页数据源是只读视图；大规模热编辑应使用分页数据和补丁 API，并根据目标设备重新测量。
+Lumina 当前不宣称完整 Excel/SpreadJS 兼容，也不包含原生 Excel 图表/透视表对象、多人协作、账号权限、云端存储、计费或 AI 服务。图表能力是可嵌入的纯前端数据模型，宿主负责 Canvas/SVG 绘制与交互。PDF 是 Canvas 栅格报表，分页数据源是只读视图；大规模热编辑应使用分页数据和补丁 API，并根据目标设备重新测量。
 
 性能结论只引用带设备、规模和脚本的实测记录，见 [性能说明](docs/PERFORMANCE.md)。公式、XLSX、打印、数据校验和结构编辑的兼容范围分别见 [公式文档](docs/FORMULAS.md)、[SDK 文档](docs/SDK.md) 和 [支持矩阵](docs/SUPPORT-MATRIX.md)。
 

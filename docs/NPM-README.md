@@ -96,6 +96,10 @@ Imports accept an AbortSignal. A newer import, successful workbook edit/replacem
 
 Additional APIs cover layout, static row sorting, row/column insertion and deletion, input validation, conditional styles, print settings, data retries, and streaming CSV exports. [API documentation](https://github.com/jjttkid-hw/lumina-sheets/blob/main/docs/SDK.md) describes contracts and examples. Errors from direct API calls should be handled by the caller; `onError` reports asynchronous data, interaction, and callback failures.
 
+### Chart data models
+
+The SDK exposes `createChartModel(definition, records)` and `createPivotChartModel(pivot, definition)`, plus the instance methods `grid.chart()` and `grid.pivotChart()`. They return a deterministic, bounded model for `bar`, `line`, or `pie` rendering. The model is intentionally separate from the workbook: it does not execute formula-like strings, mutate cells, or create an Excel chart object. Records are limited to 100,000, categories to 512, series to 12, and chart text to 1,000,000 UTF-16 units. Pie charts accept one series and reject negative values. Hosts can render the returned categories and series with Canvas or SVG and own interaction/export behavior.
+
 For a production paged view, expose the data state and keep retry explicit. A failed page stays out of the cache, while pages that already loaded remain usable:
 
 ```js

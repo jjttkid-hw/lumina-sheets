@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('react-dom/client', () => ({ createRoot: () => ({ render() {}, unmount() {} }) }));
 import { LuminaSpreadsheet } from '../src/sdk';
+import { createPivot } from '../src/lib/pivot';
 class Host {
   className = '';
   classList = { add() {} };
@@ -17,6 +18,21 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe('SDK pivot snapshot', () => {
+  it('prepares bounded chart models without changing the workbook', () => {
+    const grid = make();
+    const before = grid.toJSON();
+    const chart = grid.chart({ type: 'line', category: 'month', series: [{ field: 'amount' }] }, [
+      { month: '一月', amount: 10 },
+    ]);
+    expect(chart.categories).toEqual(['一月']);
+    expect(chart.series[0].values).toEqual([10]);
+    const pivot = createPivot(
+      { rows: ['region'], values: [{ field: 'amount', aggregate: 'sum' }] },
+      [{ region: '华东', amount: 10 }],
+    );
+    expect(grid.pivotChart(pivot, { type: 'bar' }).series[0].values).toEqual([10]);
+    expect(grid.toJSON()).toEqual(before);
+  });
   it('installs an editable report and isolates the input', () => {
     const grid = make();
     const records = [

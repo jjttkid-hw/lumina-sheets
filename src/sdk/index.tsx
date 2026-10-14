@@ -46,9 +46,17 @@ import {
   createPivotAsync,
   generatePivotReport,
   pivotTableToWorkbook,
+  type PivotTable,
   type PivotAsyncOptions,
   type PivotDefinition,
 } from '../lib/pivot';
+import {
+  createChartModel,
+  createPivotChartModel,
+  type ChartDefinition,
+  type ChartModel,
+  type PivotChartDefinition,
+} from '../lib/chart';
 import {
   findStoredCells,
   replaceStoredCells,
@@ -68,6 +76,7 @@ export * from '../lib/report-data';
 export * from '../lib/report-data-export';
 export * from '../lib/report';
 export * from '../lib/pivot';
+export * from '../lib/chart';
 export * from '../lib/search-replace';
 export * from '../lib/data-validation';
 export * from '../lib/print-settings';
@@ -1596,6 +1605,16 @@ export class LuminaSpreadsheet {
         },
       );
     });
+  }
+  /** Prepares a bounded chart model without changing the workbook. */
+  chart(definition: ChartDefinition, data: readonly ReportRecord[]): ChartModel {
+    this.assertLive();
+    return asArgument(() => createChartModel(definition, data));
+  }
+  /** Prepares a chart model from a previously computed pivot snapshot. */
+  pivotChart(pivot: PivotTable, definition: PivotChartDefinition): ChartModel {
+    this.assertLive();
+    return asArgument(() => createPivotChartModel(pivot, definition));
   }
   private apply(
     sheetId: string,

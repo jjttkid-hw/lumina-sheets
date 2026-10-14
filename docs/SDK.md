@@ -325,6 +325,12 @@ grid.redo();
 富文本上下标使用 `RichTextStyle.verticalAlign`（baseline/superscript/subscript），支持显示、PDF 和 XLSX 往返。`fontFamilyClass`（0–5）与 `charset`（0–255）保留 Excel 字体分类和字符集元数据。主题色/字体关系尚未支持；详情见 RICH-TEXT.md。
 
 
+## 图表数据模型
+
+SDK 提供 `createChartModel(definition, records)`、`createPivotChartModel(pivot, definition)`，以及实例方法 `grid.chart()` / `grid.pivotChart()`。它们返回可交给宿主 Canvas 或 SVG 绘制器的确定性模型，支持 `bar`、`line`、`pie` 三种类型。模型独立于工作簿，不执行公式字符串、不修改单元格，也不生成 Excel 原生图表对象。
+
+图表模型默认最多处理 100,000 条记录、512 个分类、12 个系列和 1,000,000 个 UTF-16 文字单元。数值系列只接受有限数字或空值，`count` 只统计非空值；饼图必须只有一个系列且不能出现负数。超限或类型错误会整次拒绝，不返回部分结果。`sort: 'label'` 使用确定的 UTF-16 顺序，默认保留分类首次出现顺序。透视图表可通过 `series` 指定透视列索引，未指定时选择透视总计列。宿主负责绘制、悬浮/键盘交互、无障碍描述和导出策略。
+
 ## SDK 多工作表切换
 
 通过 `sheetInfos` 获取表目录（id/name/rowCount/colCount/readOnly），不复制单元格数据。返回对象可独立修改，不影响工作簿。`setActiveSheet(sheetId)` 允许只读实例切表；成功后选区回到 A1、清空本地筛选，保留全工作簿撤销/重做、计算缓存和正在解析的导入，不修改 updatedAt。相同 ID 不通知、不改变选区；不存在或非字符串 ID 返回 INVALID_ARGUMENT；销毁后返回 DESTROYED。
