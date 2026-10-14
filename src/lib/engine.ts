@@ -1345,8 +1345,9 @@ export function createEvaluator(workbook?: Workbook, options: EvaluatorOptions =
         const sourceResult = get(0);
         const source = flatten([sourceResult]);
         const matches = criterion(scalar(get(1)));
-        const averages = args.length === 3 ? flatten([get(2)]) : source;
-        if (averages.length !== source.length) fail('#VALUE!');
+        const averageResult = args.length === 3 ? get(2) : sourceResult;
+        if (!sameShape(sourceResult, averageResult)) fail('#VALUE!');
+        const averages = flatten([averageResult]);
         let total = 0;
         let countMatches = 0;
         for (let index = 0; index < source.length; index++) {
