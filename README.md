@@ -28,7 +28,7 @@ Lumina 是一个面向业务系统的高性能 JavaScript 表格与报表 SDK。
 - 稀疏工作簿：最多 1,048,576 个逻辑行和 16,384 列，不为逻辑空白单元格创建密集对象。
 - 公式引擎：跨表依赖、增量失效、范围索引、数组计算和受限的安全函数集合；工作区可将计算移交 Web Worker。
 - 分页数据：有界 LRU 缓存、重复请求合并、取消、失败重试、视区预取和完整分页 CSV 导出。
-- 报表生成：列表、分组小计、交叉统计、模板公式、条件规则、数据校验、撤销重做和持久化。
+- 报表生成：列表、分组小计、交叉统计、模板公式、条件规则、受限双色阶、数据校验、撤销重做和持久化。
 - 文件链路：XLSX、CSV、JSON、PDF 导入导出；XLSX 相关代码按需加载。
 - 可编程透视：`createPivot`、`createPivotAsync`、`grid.pivot()` 和 `grid.pivotAsync()` 支持多级分组、多指标聚合、稳定排序、总计、进度回调与取消。
 - 可编程图表模型：`createChartModel`、`createPivotChartModel`、`grid.chart()` 和 `grid.pivotChart()` 支持受限的柱状、折线、饼图；`chartToSvg()` 导出矢量图片，示例含数据更新与精确数据表。
@@ -110,6 +110,7 @@ npm run format:check
 npx tsc -b
 npm run check:sdk
 npm run check:bundle-performance
+npm run check:browser-conditional-scale
 ```
 
 `npm run check:sdk` 会在隔离目录安装打包结果，检查 NodeNext/Bundler 类型、ES module 导入、声明文件、示例和依赖闭包。`npm run check:bundle-performance` 会检查首屏预算，并确认 ExcelJS 只在 XLSX 路径按需加载。
@@ -120,7 +121,7 @@ npm run check:bundle-performance
 
 Lumina 当前不宣称完整 Excel/SpreadJS 兼容，也不包含原生 Excel 图表/透视表对象、多人协作、账号权限、云端存储、计费或 AI 服务。图表能力是可嵌入的纯前端数据模型，内置 SVG 导出，宿主负责额外交互和 Excel 对象集成。PDF 是 Canvas 栅格报表，分页数据源是只读视图；大规模热编辑应使用分页数据和补丁 API，并根据目标设备重新测量。
 
-性能结论只引用带设备、规模和脚本的实测记录，见 [性能说明](docs/PERFORMANCE.md)。公式、XLSX、打印、数据校验和结构编辑的兼容范围分别见 [公式文档](docs/FORMULAS.md)、[SDK 文档](docs/SDK.md) 和 [支持矩阵](docs/SUPPORT-MATRIX.md)。
+性能结论只引用带设备、规模和脚本的实测记录，见 [性能说明](docs/PERFORMANCE.md)。公式、XLSX、打印、数据校验、双色阶和结构编辑的兼容范围分别见 [公式文档](docs/FORMULAS.md)、[SDK 文档](docs/SDK.md) 和 [支持矩阵](docs/SUPPORT-MATRIX.md)。双色阶使用固定 0/100 默认边界，不是自动数据范围，也不包含三色阶、数据条或图标集。
 
 ## 开源与发布
 
