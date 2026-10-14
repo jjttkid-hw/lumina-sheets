@@ -42,8 +42,14 @@ jobs:
       - run: npm run check:wps-corpus
       - name: Verify desktop-saved business workbook corpus
         run: node scripts/check-business-corpus.mjs
-      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-14-r46/xlsx-corpus.json
-      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-14-r46 --verify-build --require-accessibility --require-ime --require-persistence
+      # Re-run corpus checks against the runner's freshly built archive. The
+      # committed macOS candidate report remains a review artifact; npm pack
+      # bytes can differ across OS/toolchain tar implementations.
+      - run: npm run check:xlsx-corpus
+      # Core browser jobs below bind their reports to this runner build. The
+      # committed cross-engine evidence is checked for completeness here while
+      # its local build digest is intentionally not compared across platforms.
+      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-14-r46 --require-accessibility --require-ime --require-persistence
       - name: Generate dependency-license inventory
         run: node scripts/package-notices.mjs
       - name: Require complete dependency-license evidence
