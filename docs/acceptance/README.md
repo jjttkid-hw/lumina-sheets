@@ -1,5 +1,7 @@
 # 稳定版发布证据
 
+2026-10-14: [Candidate r45](browser-candidate-2026-10-14-r45/README.md) binds the 0.30.0 development package and Pages build to fresh Chromium, Firefox and WebKit core, accessibility, IME, persistence and touch-simulation reports. React/Vue lifecycle, XLSX, WPS and business corpus checks were rerun against the same archive. Stable native-platform and commercial-review gates remain open.
+
 2026-10-08: [Native WPS payroll corpus](wps-payroll-2026-10-05-r41/README.md)
 adds a four-sheet payroll and cash-control workflow. WPS and the installed SDK
 agree across 51 formulas and 119 non-empty cells for the baseline, a real 50% →
@@ -52,11 +54,9 @@ CI 在上传制品之前执行 `node scripts/check-stable-release.mjs --site`，
 
 候选验收必须保留上述清单并实际使用对应站点完成工作空间、SDK 示例和性能验收。CI 与 npm 工作流都读取同一个 `RELEASE_SOURCE_DATE_EPOCH`，减少仅新增报告导致的打包时间差异。npm 包单独发布仍执行原来的包门槛，不表示站点已经部署。门槛验证证据绑定，不判断报告内容真实性；浏览器实测仍必须完成。
 
-
 ### 可重复性报告
 
 正式候选应使用干净检出及明确的 RELEASE_SOURCE_DATE_EPOCH 运行 `npm run check:reproducibility`，并把 `artifacts/reproducibility/result.json`、inputs.json、两次站点清单和日志复制为仓库内报告，记录候选 tgz 与站点哈希。当前仓库的本地结果只证明同一工作区重复构建，不能填入 1.x 的 `reproducibility` 通过门禁；门禁还要求实际验收报告和清单哈希互相绑定。
-
 
 重复构建门禁读取 `gates.reproducibility.report` 指向的原始 result.json，而不只接受 passed 标签或文件哈希。报告必须为 schema 1/passed、同版本、dirty=false，含有效 commit、输入摘要、来源 epoch 与一致的 ISO 时间及 Node/npm/平台/架构。必须恰好两次运行，记录一致，且站点和 tgz 摘要匹配验收账本，文件数/字节数为正整数。仅重新计算报告哈希无法让 dirty=true 或不一致产物通过。该项检查不证明报告真实执行，也不自动验证干净安装/跨机器复现；inputs.json、站点清单、构建日志仍需随报告保存并由维护者核查。不得把当前 dirty=true 本地结果改写成干净候选。
 

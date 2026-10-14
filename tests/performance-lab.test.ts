@@ -1,3 +1,4 @@
+import { version as packageVersion } from '../package.json';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { isValidElement, type ReactNode, type ReactElement } from 'react';
 import { createBlankWorkbook } from '../src/lib/seed';
@@ -192,7 +193,7 @@ it('reload owns its worker and rejects all messages from the terminated worker',
 it('exports the embedded build identity instead of guessing a release from measurement time', async () => {
   load();
   const output = await report();
-  expect(output.build).toMatchObject({ schema: 1, version: '0.29.0', mode: 'development' });
+  expect(output.build).toMatchObject({ schema: 1, version: packageVersion, mode: 'development' });
   expect(output.build.sourceSha256).toMatch(/^[a-f0-9]{64}$/);
   expect(output.build.scope).toContain('final artifacts');
 });

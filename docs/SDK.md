@@ -39,7 +39,7 @@ XLSX 文件导入取消进一步覆盖异步阶段边界：等待模块、解压
 SDK 包名为 `lumina-report-sdk`。首次 npm 发布前，从 CI 的 `npm-package` 产物下载 `.tgz`，或本地执行 `npm run build:sdk && npm run check:sdk` 生成可安装包：
 
 ```sh
-npm install ./lumina-report-sdk-0.29.0.tgz
+npm install ./lumina-report-sdk-0.30.0.tgz
 ```
 
 在支持 CSS 的浏览器打包项目中接入：

@@ -1,3 +1,4 @@
+import { version as packageVersion } from '../package.json';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { isValidElement, type ReactNode, type ReactElement } from 'react';
 import { runRangeBenchmark } from '../src/lib/performance/range-benchmark';
@@ -160,7 +161,7 @@ it('exports actual workload counts with build provenance and clears stale status
     schema: 1,
     iterations: 2,
     formulaCount: 3,
-    build: { version: '0.29.0', mode: 'development' },
+    build: { version: packageVersion, mode: 'development' },
   });
   expect(data.notes.join(' ')).not.toContain('10,000');
   expect(data.notes.join(' ')).toContain('3 个公式');

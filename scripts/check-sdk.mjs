@@ -18,6 +18,7 @@ const sdkDirectory = path.join(root, 'dist/sdk');
 const compiler = path.join(root, 'node_modules/typescript/bin/tsc');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const packageName = 'lumina-report-sdk';
+const projectVersion = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8')).version;
 const args = process.argv.slice(2);
 assert(
   args.length === 0 || (args.length === 2 && args[0] === '--pack-destination' && args[1]),
@@ -562,7 +563,7 @@ for (const name of ['createSpreadsheet', 'LuminaSpreadsheet', 'LuminaError', 'Da
 }
 const build = sdk.productBuildIdentity();
 assert(build && build.schema === 1 && build.mode === 'production');
-assert.equal(build.version, '0.29.0');
+assert.equal(build.version, '${projectVersion}');
 assert.match(build.sourceSha256, /^[a-f0-9]{64}$/);
 assert.equal(sdk.parseCellInput('1e-999'), '1e-999');
 assert.equal(sdk.parseCellInput('0.1234567890123456789'), '0.1234567890123456789');

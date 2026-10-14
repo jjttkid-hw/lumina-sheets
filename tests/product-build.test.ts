@@ -1,3 +1,4 @@
+import { version as packageVersion } from '../package.json';
 import { afterEach, expect, it, vi } from 'vitest';
 import { mkdtemp, mkdir, rm, writeFile, symlink } from 'node:fs/promises';
 import os from 'node:os';
@@ -75,8 +76,8 @@ it('injects development identity and returns an isolated runtime copy', async ()
   const config = await productBuildPlugin().config({ root }, { command: 'serve' });
   const identity = JSON.parse(config.define.__LUMINA_BUILD__);
   expect(identity.mode).toBe('development');
-  expect(productBuildIdentity()).toMatchObject({ version: '0.29.0', mode: 'development' });
+  expect(productBuildIdentity()).toMatchObject({ version: packageVersion, mode: 'development' });
   const copy = productBuildIdentity()!;
   copy.version = 'modified';
-  expect(productBuildIdentity()!.version).toBe('0.29.0');
+  expect(productBuildIdentity()!.version).toBe(packageVersion);
 });
