@@ -79,7 +79,9 @@ jobs:
         run: node scripts/check-stable-release.mjs --site
       - name: Record open stable gate for acceptance candidates
         if: ${{ hashFiles('docs/acceptance/stable-release.json') == '' }}
-        run: echo 'No stable-release.json: 1.0.0 remains an acceptance candidate pending independent commercial/legal review.'
+        run: >-
+          echo 'No stable-release.json: 1.0.0 remains an acceptance candidate pending
+          independent commercial/legal review.'
       - uses: actions/upload-artifact@v7
         with:
           name: npm-package
