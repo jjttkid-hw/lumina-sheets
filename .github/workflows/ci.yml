@@ -204,6 +204,7 @@ jobs:
           name: framework-browser-reports
           path: |
             artifacts/browser-charts/
+            artifacts/browser-conditional-scales/
             artifacts/browser-frameworks/
             artifacts/browser-recovery/
             artifacts/browser-multisheet/

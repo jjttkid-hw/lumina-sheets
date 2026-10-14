@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { preview } from './fixtures/frameworks/node_modules/vite/dist/node/index.js';
 import { chromium, firefox, webkit } from './fixtures/frameworks/node_modules/playwright/index.mjs';
-import ExcelJS from 'exceljs';
+import JSZip from './fixtures/frameworks/node_modules/jszip/lib/index.js';
 import { siteDigest } from './site-evidence.mjs';
 
 // The installed production SDK, real Canvas pixels and generated XLSX blob
@@ -86,13 +86,26 @@ try {
           } finally { URL.createObjectURL = original; }
         });
         await writeFile(`${output}/scale.xlsx`, Buffer.from(encoded, 'base64'));
-        const book = new ExcelJS.Workbook();
-        await book.xlsx.load(await readFile(`${output}/scale.xlsx`));
-        const sheet = book.getWorksheet('Scale');
-        assert.equal(sheet.getCell('A2').fill.fgColor.argb, 'FF808080');
-        assert.equal(sheet.getCell('A3').fill.fgColor.argb, 'FF000000');
-        assert.equal(sheet.getCell('A3').value.formula, 'B1');
-        assert.equal(sheet.getCell('A3').value.result, 100);
+        const archive = await JSZip.loadAsync(await readFile(`${output}/scale.xlsx`));
+        const xml = await archive.file('xl/worksheets/sheet1.xml').async('string');
+        const styles = await archive.file('xl/styles.xml').async('string');
+        const fills = [...styles.matchAll(/<fill>([\s\S]*?)<\/fill>/g)].map(match => match[1]);
+        const formats = styles.match(/<cellXfs\b[^>]*>([\s\S]*?)<\/cellXfs>/)[1];
+        const xfs = [...formats.matchAll(/<xf\b([^>]*)(?:\/>|>[\s\S]*?<\/xf>)/g)].map(match => match[1]);
+        const cell = key => {
+          const match = xml.match(new RegExp(`<c\\b([^>]*\\br="${key}"[^>]*)>([\\s\\S]*?)<\\/c>`));
+          assert(match, `Missing exported cell ${key}`);
+          return { attributes: match[1], content: match[2] };
+        };
+        const fill = key => {
+          const style = Number(cell(key).attributes.match(/\bs="(\d+)"/)?.[1] ?? 0);
+          const fillId = Number(xfs[style].match(/\bfillId="(\d+)"/)[1]);
+          return fills[fillId].match(/<fgColor\b[^>]*\brgb="([^"]+)"/)?.[1];
+        };
+        assert.equal(fill('A2'), 'FF808080');
+        assert.equal(fill('A3'), 'FF000000');
+        assert.match(cell('A3').content, /<f>B1<\/f>/);
+        assert.match(cell('A3').content, /<v>100<\/v>/);
         assert.equal(await page.evaluate(() => window.scaleGrid.getCell('A2').style?.background ?? null), null);
         await page.screenshot({ path: `${output}/canvas.png`, fullPage: true });
       });
