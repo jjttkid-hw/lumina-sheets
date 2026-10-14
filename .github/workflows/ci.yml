@@ -46,6 +46,8 @@ jobs:
       # committed macOS candidate report remains a review artifact; npm pack
       # bytes can differ across OS/toolchain tar implementations.
       - run: npm run check:xlsx-corpus
+      # npm run check:xlsx-corpus-evidence remains the maintainer-side check for
+      # a committed, artifact-bound report; the runner archive is platform-local.
       # Core browser jobs below bind their reports to this runner build. The
       # committed cross-engine evidence is checked for completeness here while
       # its local build digest is intentionally not compared across platforms.
