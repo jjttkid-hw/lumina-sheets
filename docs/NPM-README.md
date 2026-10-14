@@ -2,7 +2,7 @@
 
 Canvas-based JavaScript spreadsheet and reporting SDK for browser applications. Mount it in an HTML element, edit cells, evaluate supported formulas, generate reports, and import or export supported workbook formats. JavaScript and TypeScript hosts do not need to install React: the renderer and its runtime are bundled.
 
-This package is an ES module browser SDK. Mounting requires a DOM and Canvas; server rendering and CommonJS `require()` are not supported. It is under active development and does not claim complete Excel or SpreadJS compatibility. Pin a version and validate it against your own workbook corpus before deploying.
+This package is an ES module browser SDK. Mounting requires a DOM and Canvas; server rendering and CommonJS `require()` are not supported. It is a 1.0.0 acceptance candidate and does not claim complete Excel or SpreadJS compatibility. Pin a version and validate it against your own workbook corpus before deploying.
 
 ## Install and mount
 
@@ -98,7 +98,7 @@ Additional APIs cover layout, static row sorting, row/column insertion and delet
 
 ### Chart data models
 
-The SDK exposes `createChartModel(definition, records)` and `createPivotChartModel(pivot, definition)`, plus the instance methods `grid.chart()` and `grid.pivotChart()`. They return a deterministic, bounded model for `bar`, `line`, or `pie` rendering. The model is intentionally separate from the workbook: it does not execute formula-like strings, mutate cells, or create an Excel chart object. Records are limited to 100,000, categories to 512, series to 12, and chart text to 1,000,000 UTF-16 units. Pie charts accept one series and reject negative values. Hosts can render the returned categories and series with Canvas or SVG and own interaction/export behavior.
+The SDK exposes `chartToSvg(model, { width?, height? })` for standalone SVG export, `copyChartModel` for validated snapshot copies, and `createChartModel(definition, records)` and `createPivotChartModel(pivot, definition)`, plus the instance methods `grid.chart()` and `grid.pivotChart()`. They return a deterministic, bounded model for `bar`, `line`, or `pie` rendering. The model is intentionally separate from the workbook: it does not execute formula-like strings, mutate cells, or create an Excel chart object. Records are limited to 100,000, categories to 512, series to 12, and chart text to 1,000,000 UTF-16 units. Pie charts accept one series and reject negative values. The packaged `charts.html` example supports type switching, record/pivot sources, data updates, an exact data table, and SVG downloads. `chartToSvg` escapes text, breaks lines at null values, normalizes extreme finite domains, and rejects malformed models before returning a result. Chart dimensions are bounded to 320–1920 by 240–1080 pixels. Hosts own interaction behavior. Chart measures include sum/count/average/min/max; pivot aggregates retain their original kind.
 
 For a production paged view, expose the data state and keep retry explicit. A failed page stays out of the cache, while pages that already loaded remain usable:
 

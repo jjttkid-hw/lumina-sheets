@@ -77,6 +77,7 @@ export * from '../lib/report-data-export';
 export * from '../lib/report';
 export * from '../lib/pivot';
 export * from '../lib/chart';
+export * from '../lib/chart-svg';
 export * from '../lib/search-replace';
 export * from '../lib/data-validation';
 export * from '../lib/print-settings';

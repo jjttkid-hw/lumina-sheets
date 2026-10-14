@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "version": "1.0.0",
+  "engine": "firefox",
+  "browserVersion": "144.0.2",
+  "executedAt": "2026-10-14T02:49:45.086Z",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.14.0",
+    "headless": true
+  },
+  "siteSha256": "09eccca944c224920e29a8d30ea26f4e260e9cea397236dc30d0219840f0bc3b",
+  "artifactSha256": "bd5faa3c01e45bbc43de8508a5d976782085691addbebdaddf89ad4c4691a2c1",
+  "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
+  "checks": [
+    {
+      "name": "pivot-analysis-ui-xlsx",
+      "status": "passed",
+      "elapsedMs": 890,
+      "details": {
+        "title": "region",
+        "firstAverage": 147933.33333333334,
+        "grandAverage": 230527.77777777778,
+        "records": 36,
+        "editedSnapshotUndo": true,
+        "downloadSha256": "0775e1f7b840efb2fa0c5cf76337ed8adefa85e3177bea739bbfd6eb34b1c82b"
+      }
+    },
+    {
+      "name": "dated-investment-edit-undo-xlsx",
+      "status": "passed",
+      "elapsedMs": 625,
+      "details": {
+        "date": "2008-06-01",
+        "npvFormula": "=XNPV(B8,B2:B6,A2:A6)",
+        "irrFormula": "=XIRR(B2:B6,A2:A6)",
+        "npv": 2028.388738362005,
+        "irr": 0.3420022365994224,
+        "downloadSha256": "673acd202d4207da87bbc58c040369b32221906ede0e5e263ca832a6e213bc66"
+      }
+    },
+    {
+      "name": "validation-editor-recovery",
+      "status": "passed",
+      "elapsedMs": 171
+    },
+    {
+      "name": "validation-list-keyboard",
+      "status": "passed",
+      "elapsedMs": 264
+    },
+    {
+      "name": "native-clipboard-atomic-validation",
+      "status": "passed",
+      "elapsedMs": 405,
+      "details": {
+        "transport": "native keyboard copy/paste",
+        "rejected": "B2:C2 unchanged",
+        "accepted": "both cells changed, one undo restores both"
+      }
+    },
+    {
+      "name": "native-copy-cut-paste",
+      "status": "passed",
+      "elapsedMs": 122
+    },
+    {
+      "name": "sdk-mount-isolation-destroy",
+      "status": "passed",
+      "elapsedMs": 19,
+      "details": {
+        "duplicate": "INVALID_ARGUMENT",
+        "empty": 0,
+        "restored": "customer-host",
+        "destroyed": "DESTROYED",
+        "other": 22
+      }
+    },
+    {
+      "name": "sdk-pending-source-destroy",
+      "status": "passed",
+      "elapsedMs": 160,
+      "details": {
+        "outcome": "AbortError",
+        "lateCallbacks": 0,
+        "value": "new session"
+      }
+    },
+    {
+      "name": "sdk-prefetch-contract",
+      "status": "passed",
+      "elapsedMs": 26,
+      "details": {
+        "before": {
+          "row": 0,
+          "col": 0
+        },
+        "after": {
+          "row": 0,
+          "col": 0
+        },
+        "warmedValue": 20,
+        "outcome": "AbortError",
+        "offsets": [
+          0,
+          4,
+          20,
+          40,
+          0
+        ]
+      }
+    },
+    {
+      "name": "wps-validation-title-download",
+      "status": "passed",
+      "elapsedMs": 332,
+      "details": {
+        "title": "审批状态",
+        "message": "请选择通过、待审或拒绝",
+        "value": "通过",
+        "fixtureSha256": "ac216df1a5c0e53ff37703d4e558531f001906c1aed92c3eb377e5b786ca77ae",
+        "downloadSha256": "504fe2f1dc525e542f48dbc45f859ef8c3289740384c07e9c15cf104e0e8f950"
+      }
+    },
+    {
+      "name": "find-replace-ui-undo-xlsx",
+      "status": "passed",
+      "elapsedMs": 662,
+      "details": {
+        "source": "$& $&",
+        "formula": "=A1",
+        "matches": 2,
+        "downloadSha256": "bfd2d5c21768a814313a62a2a54246050701f3d787c7e4f9f7ae03f05a4794c2"
+      }
+    },
+    {
+      "name": "workspace-find-replace-dialog",
+      "status": "passed",
+      "elapsedMs": 1735,
+      "details": {
+        "matchedCells": 4,
+        "undo": true,
+        "resultNavigation": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "runErrors": [],
+  "validation": {
+    "expectedChecks": [
+      "pivot-analysis-ui-xlsx",
+      "dated-investment-edit-undo-xlsx",
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract",
+      "wps-validation-title-download",
+      "find-replace-ui-undo-xlsx",
+      "workspace-find-replace-dialog"
+    ],
+    "actualChecks": [
+      "pivot-analysis-ui-xlsx",
+      "dated-investment-edit-undo-xlsx",
+      "validation-editor-recovery",
+      "validation-list-keyboard",
+      "native-clipboard-atomic-validation",
+      "native-copy-cut-paste",
+      "sdk-mount-isolation-destroy",
+      "sdk-pending-source-destroy",
+      "sdk-prefetch-contract",
+      "wps-validation-title-download",
+      "find-replace-ui-undo-xlsx",
+      "workspace-find-replace-dialog"
+    ],
+    "missingChecks": [],
+    "unexpectedChecks": [],
+    "duplicateChecks": [],
+    "failedChecks": [],
+    "pageErrorCount": 0,
+    "consoleErrorCount": 0,
+    "runErrorCount": 0
+  },
+  "status": "passed"
+}

@@ -1,11 +1,23 @@
 # Lumina Sheets v1.0 readiness
 
-This page records the candidate evidence observed through 2026-10-13; deployment commit IDs
+This page records the candidate evidence observed through 2026-10-14; deployment commit IDs
 are dated observations, not a promise that they remain the newest main commit. Live
 deployment identity is available in `build-info.json`. Historical candidate notes remain in
 [V1-PLAN.md](V1-PLAN.md); they do not override the status below.
 
 ## Latest candidate verification
+
+2026-10-14: [Candidate r46](acceptance/browser-candidate-2026-10-14-r46/README.md)
+is the 1.0.0 acceptance candidate. It adds deterministic bar/line/pie chart models,
+record and pivot chart sources, SVG export, exact data tables and packaged SDK examples.
+The current build has 2,489 passing tests, 25 bound browser reports across Chromium,
+Firefox and WebKit, the XLSX/WPS/business corpus, framework hosts, strict license evidence,
+and two reproducible site/package builds. Site SHA-256 is
+`09eccca944c224920e29a8d30ea26f4e260e9cea397236dc30d0219840f0bc3b`; SDK SHA-256 is
+`bd5faa3c01e45bbc43de8508a5d976782085691addbebdaddf89ad4c4691a2c1` (747405 bytes).
+The automated product-function scope passes. Native OS IME windows, physical devices,
+real screen readers, cross-device SLA measurements, complete Excel/SpreadJS compatibility,
+and independent human commercial/legal review remain outside this evidence.
 
 2026-10-13: [Candidate r42](acceptance/browser-candidate-2026-10-13-r42/README.md)
 starts the [v2.0 roadmap](V2-PLAN.md) with XNPV/XIRR and an editable investment
@@ -285,9 +297,10 @@ These are release gates, not claims that the implementation is broken:
   dependency evidence gate currently passes with 0 errors, 0 review items and 0
   unresolved bundled components; this does not replace the human legal review.
 
-The product therefore remains on the `0.29.0` development line. Creating a `1.0.0`
-tag before every gate has evidence would make the version misleading and is blocked by
-the release workflow's stable-acceptance check.
+The package and repository are now versioned `1.0.0` as an acceptance candidate. The
+stable-release workflow still blocks a `v1.0.0` tag until the remaining platform and
+independent human commercial/legal gates have evidence; this prevents an automated
+candidate from being presented as a fully approved commercial release.
 
 ## What the current stable scope means
 

@@ -42,8 +42,8 @@ jobs:
       - run: npm run check:wps-corpus
       - name: Verify desktop-saved business workbook corpus
         run: node scripts/check-business-corpus.mjs
-      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-14-r45/xlsx-corpus.json
-      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-14-r45 --verify-build --require-accessibility --require-ime --require-persistence
+      - run: npm run check:xlsx-corpus-evidence -- docs/acceptance/browser-candidate-2026-10-14-r46/xlsx-corpus.json
+      - run: npm run check:browser-evidence -- docs/acceptance/browser-candidate-2026-10-14-r46 --verify-build --require-accessibility --require-ime --require-persistence
       - name: Generate dependency-license inventory
         run: node scripts/package-notices.mjs
       - name: Require complete dependency-license evidence
@@ -166,6 +166,8 @@ jobs:
         run: node scripts/fixtures/frameworks/node_modules/playwright/cli.js install --with-deps chromium firefox webkit
       - name: Verify installed SDK in React and Vue development and production hosts
         run: node scripts/browser-frameworks.mjs
+      - name: Verify chart controls, data updates and vector downloads
+        run: node scripts/check-chart-browser.mjs
       - name: Verify multi-sheet editing, history and actual file round trips
         run: node scripts/check-multisheet-browser.mjs
       - name: Verify workspace validation rule editing, history and file round trips
@@ -185,6 +187,7 @@ jobs:
         with:
           name: framework-browser-reports
           path: |
+            artifacts/browser-charts/
             artifacts/browser-frameworks/
             artifacts/browser-recovery/
             artifacts/browser-multisheet/

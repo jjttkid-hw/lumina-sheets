@@ -1,12 +1,12 @@
 # API 稳定性与变更审查
 
-当前仍为 0.x 开发阶段。`docs/api-contract.json` 记录从真实 SDK 声明产物抽取的公共契约候选，包含包 exports 与可达声明文件，排除类 private 成员和注释。它是差异审查基线，不表示 v1.0 已定版或全部浏览器已认证。
+当前为 1.0.0 验收候选。`docs/api-contract.json` 记录从真实 SDK 声明产物抽取的公共契约候选，包含包 exports 与可达声明文件，排除类 private 成员和注释。它是差异审查基线，不表示 v1.0 已定版或全部浏览器已认证。
 
 本轮新增 `productBuildIdentity()` 与 `ProductBuildIdentity` 类型。它只提供构建诊断指纹，不承诺签名验证；宿主应允许开发环境返回 `null`，并继续以发布包与部署站点的摘要作为交付核验依据。
 
 构建后运行 `npm run check:api`，声明或导出路径变化时失败。CI 与 npm 发布工作流都执行该检查。确认新增/变更契约、测试和迁移说明后，维护者可执行 `node scripts/check-api.mjs --write` 更新基线，并审查提交中的实际差异。脚本不会因测试失败自动更新基线。该检查保守地包含可达声明文件中的辅助声明，因此可能拦截不影响公开调用的改变；它不取代运行时行为测试。
 
-## 1.x 预定兼容政策
+## 1.x 兼容政策
 
 0.29 工作空间最初新增工作表重命名时，可达 `lib/formula-structure.d.ts` 仅增加 `renameFormulaSheet` 辅助声明；已逐字核对删除该行后与旧基线一致。该阶段尚未提供 SDK 重命名方法，基线更新只记录内部辅助声明，不表示内部模块成为受支持入口；后续 SDK 重命名增量见下一段。
 
@@ -77,3 +77,5 @@ CSV 冻结结果修复增加内部 WorkbookExportOptions.frozenCsvValues（Reado
 0.29 数据验证错误标题：`DataValidationRule` 与 `DataValidationFailure` 新增可选 `errorTitle`，`DATA_VALIDATION_LIMITS` 新增 `errorTitleLength: 32`，根入口新增 `formatDataValidationFailure`。逐文件核对仅 `lib/data-validation.d.ts` 的四处增量改变，其余声明与 exports 不变。未设标题保持既有提示；有标题时 SDK 拒绝错误包含标题，失败对象正文仍独立。真实 WPS Stop 标题现在支持导入。
 
 0.29 输入说明增量：规则新增可选 `promptTitle`、`prompt`、`showInputMessage`，限制新增 `promptTitleLength: 32`、`promptLength: 255`。仅 `lib/data-validation.d.ts` 发生加法变更，其他声明和 exports 不变。省略显示开关保持原有界面行为；显式 false 保留内容。
+
+1.0 图表增量：新增 chartToSvg、ChartSvgOptions、copyChartModel；ChartAggregate 增加 min/max。透视图表保留原聚合类型，拒绝非有限数值、错误系列索引、稀疏行/系列与文字超额；同显示文字的类型不同维度保持分组独立。现有类方法、错误码与 package exports 不删除、不重命名。SVG 不进入 XLSX/PDF 网格导出链路。

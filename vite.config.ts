@@ -5,5 +5,7 @@ import { productBuildPlugin } from './scripts/product-build.mjs';
 export default defineConfig({
   plugins: [react(), productBuildPlugin()],
   server: { host: '0.0.0.0', port: 5173 },
-  build: { rollupOptions: { input: ['index.html', 'examples/report.html'] } },
+  build: {
+    rollupOptions: { input: ['index.html', 'examples/report.html', 'examples/charts.html'] },
+  },
 });

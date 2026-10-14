@@ -220,7 +220,7 @@ try {
   const packedPaths = new Set(packed.files.map((file) => file.path));
   assert.equal(packedPaths.size, packed.files.length, 'Archive contains duplicate paths');
   const allowedFile =
-    /^(?:[^/]+\.(?:js|css)|types\/(?:[\w-]+\/)*[\w.-]+\.d\.ts|package\.json|README\.md|LICENSE|NOTICE|THIRD_PARTY_NOTICES\.txt|dependency-inventory\.json|bundle-inputs\.json|example\.html|favicon\.svg)$/;
+    /^(?:[^/]+\.(?:js|css)|types\/(?:[\w-]+\/)*[\w.-]+\.d\.ts|package\.json|README\.md|LICENSE|NOTICE|THIRD_PARTY_NOTICES\.txt|dependency-inventory\.json|bundle-inputs\.json|(?:example|charts)\.html|favicon\.svg)$/;
   for (const filename of packedPaths) {
     assert(
       !path.posix.isAbsolute(filename) && !filename.split('/').includes('..'),

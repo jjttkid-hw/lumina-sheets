@@ -24,7 +24,9 @@ export async function verifySiteHttp(root, origin, fetcher = fetch) {
   for (const required of [
     'index.html',
     'examples/report.html',
+    'examples/charts.html',
     'sdk/example.html',
+    'sdk/charts.html',
     'sdk/lumina.js',
     'sdk/lumina.css',
   ])
@@ -32,7 +34,13 @@ export async function verifySiteHttp(root, origin, fetcher = fetch) {
 
   // Check HTML entry resources against the manifest, including the plain SDK
   // example's inline ESM import. External navigation links are not asset inputs.
-  for (const name of ['index.html', 'examples/report.html', 'sdk/example.html']) {
+  for (const name of [
+    'index.html',
+    'examples/report.html',
+    'examples/charts.html',
+    'sdk/example.html',
+    'sdk/charts.html',
+  ]) {
     const html = await readFile(path.join(root, name), 'utf8');
     const refs = [
       ...html.matchAll(/<(?:script|link)\b[^>]*?\b(?:src|href)=["']([^"']+)["']/gi),

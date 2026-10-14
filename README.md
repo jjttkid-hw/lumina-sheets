@@ -8,11 +8,11 @@
 
 Lumina 是一个面向业务系统的高性能 JavaScript 表格与报表 SDK。它以 Canvas 绘制可见区域，以稀疏数据结构保存工作簿，并为分页数据、公式计算、XLSX/CSV/PDF 导出和浏览器内分析提供统一 API。
 
-当前开发版本：**0.30.0**（v3.0 开发线）。
+当前版本：**1.0.0**（首个稳定候选；完整稳定版门禁见 [v1.0 验收](docs/V1-READINESS.md)）。
 
 它适合财务填报、经营分析、订单录入、管理报表和嵌入式数据工作台。宿主页面可以直接使用原生 JavaScript，不需要安装 React；React 和 Vue 集成示例也随仓库提供。
 
-> Lumina 是独立开源项目，与葡萄城、SpreadJS 没有隶属、授权或官方背书关系。当前仍是 `0.x` 开发线，文档中的能力边界和验收证据优先于营销性兼容承诺。
+> Lumina 是独立开源项目，与葡萄城、SpreadJS 没有隶属、授权或官方背书关系。1.0.0 当前为自动化验收候选；文档中的能力边界和验收证据优先于营销性兼容承诺。
 
 ## 在线体验
 
@@ -31,7 +31,7 @@ Lumina 是一个面向业务系统的高性能 JavaScript 表格与报表 SDK。
 - 报表生成：列表、分组小计、交叉统计、模板公式、条件规则、数据校验、撤销重做和持久化。
 - 文件链路：XLSX、CSV、JSON、PDF 导入导出；XLSX 相关代码按需加载。
 - 可编程透视：`createPivot`、`createPivotAsync`、`grid.pivot()` 和 `grid.pivotAsync()` 支持多级分组、多指标聚合、稳定排序、总计、进度回调与取消。
-- 可编程图表模型：`createChartModel`、`createPivotChartModel`、`grid.chart()` 和 `grid.pivotChart()` 支持受限的柱状、折线、饼图数据模型，可直接交给 Canvas/SVG 渲染器。
+- 可编程图表模型：`createChartModel`、`createPivotChartModel`、`grid.chart()` 和 `grid.pivotChart()` 支持受限的柱状、折线、饼图；`chartToSvg()` 导出矢量图片，示例含数据更新与精确数据表。
 - SDK 生命周期：只读模式、统一错误码、异步导入/导出取消、过期任务隔离和严格 TypeScript 声明。
 
 透视和分页分析都有明确预算，超限会整批拒绝，不会静默截断。当前透视结果是普通可编辑工作表快照，不伪装成 Excel 原生透视缓存；源记录改变后需要重新生成。
@@ -44,7 +44,7 @@ npm install
 npm run dev
 ```
 
-打开 <http://127.0.0.1:5173/examples/report.html> 查看完整示例。构建站点和 SDK：
+打开 <http://127.0.0.1:5173/examples/report.html> 查看表格示例，<http://127.0.0.1:5173/examples/charts.html> 查看图表更新和 SVG 导出。构建站点和 SDK：
 
 ```sh
 npm run build:all
@@ -118,7 +118,7 @@ npm run check:bundle-performance
 
 ## 当前边界
 
-Lumina 当前不宣称完整 Excel/SpreadJS 兼容，也不包含原生 Excel 图表/透视表对象、多人协作、账号权限、云端存储、计费或 AI 服务。图表能力是可嵌入的纯前端数据模型，宿主负责 Canvas/SVG 绘制与交互。PDF 是 Canvas 栅格报表，分页数据源是只读视图；大规模热编辑应使用分页数据和补丁 API，并根据目标设备重新测量。
+Lumina 当前不宣称完整 Excel/SpreadJS 兼容，也不包含原生 Excel 图表/透视表对象、多人协作、账号权限、云端存储、计费或 AI 服务。图表能力是可嵌入的纯前端数据模型，内置 SVG 导出，宿主负责额外交互和 Excel 对象集成。PDF 是 Canvas 栅格报表，分页数据源是只读视图；大规模热编辑应使用分页数据和补丁 API，并根据目标设备重新测量。
 
 性能结论只引用带设备、规模和脚本的实测记录，见 [性能说明](docs/PERFORMANCE.md)。公式、XLSX、打印、数据校验和结构编辑的兼容范围分别见 [公式文档](docs/FORMULAS.md)、[SDK 文档](docs/SDK.md) 和 [支持矩阵](docs/SUPPORT-MATRIX.md)。
 

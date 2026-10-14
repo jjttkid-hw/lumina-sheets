@@ -1,6 +1,6 @@
 # Lumina Sheets 支持矩阵
 
-这份矩阵定义当前 0.30 开发线和未来 1.x 稳定线的实际范围。它是产品边界，不是对 SpreadJS、Excel 或浏览器性能的等价承诺。
+这份矩阵定义当前 1.0.0 验收候选的实际范围。它是产品边界，不是对 SpreadJS、Excel 或浏览器性能的等价承诺。
 
 | 能力 | 当前实现 | 1.0 进入条件 | 明确不承诺 |
 | --- | --- | --- | --- |
@@ -8,7 +8,7 @@
 | 分页数据 | 只读视区缓存、取消、重试、CSV 全量流式导出；自动化候选覆盖分页、取消和导出边界 | Safari/移动设备完成切表、重绑、销毁和下载验收，并绑定最终候选制品 | 通过视区缓存自动完成全源 XLSX/PDF/JSON |
 | 公式 | 文档列出的 57 个安全子集函数（含 VLOOKUP/HLOOKUP/XNPV/XIRR）、依赖失效、跨表引用、分页缓存值 | XLSX 语料和真实浏览器结果与支持表一致 | 450+ Excel/SpreadJS 函数、动态数组、3D/结构化引用 |
 | 文件 | JSON/CSV/TSV；XLSX/PDF 支持文档列出的子集；r41 安装包语料已覆盖报表、公式、样式、富文本、超链接、合并、校验、打印、隐藏轴、跨表引用和 12 项业务语料；新增 WPS 工资/现金语料（51 个公式） | 扩充桌面 Excel/WPS 业务语料并完成真实浏览器下载/打开对照 | 完整 Excel 对象、原生图表/透视表、矢量 PDF |
-| 图表模型 | 纯前端 `createChartModel` / `createPivotChartModel` 与 SDK `chart` / `pivotChart`；bar/line/pie；受限记录、分类、系列、文字预算；不改工作簿 | Canvas/SVG 宿主渲染器、键盘/指针交互与导出策略 | Excel 原生图表对象、无损 XLSX 图表往返 |
+| 图表模型 | 纯前端 `createChartModel` / `createPivotChartModel` 与 SDK `chart` / `pivotChart`；bar/line/pie；受限记录、分类、系列、文字预算；不改工作簿 | SVG 渲染/导出与明细/透视切换示例已实现；高级图表交互与 Excel 对象模型待补齐 | Excel 原生图表对象、无损 XLSX 图表往返 |
 | 输入校验 | 整数、小数、文本长度、列表；批量原子拒绝 | 浏览器键盘、焦点、IME、移动触控闭环 | 服务端权限边界或持续约束所有依赖公式 |
 | SDK | 独立 ESM、CSS、TypeScript 声明、普通 JS/React/Vue 生命周期示例 | React 19.3 / Vue 3.5 开发/生产三引擎挂载、编辑、取消、重挂载已验；其他版本未认证 | CommonJS、SSR Canvas 渲染、云同步 |
 | 浏览器 | 需要 ES modules、Canvas 2D、ResizeObserver、AbortController、Web Streams；Chromium、Firefox、WebKit 自动化候选与 macOS Safari 定向线上复验已有记录 | 完成 Safari 全矩阵、移动实体触控、VoiceOver/NVDA/JAWS，并以最终候选摘要绑定 | 未测浏览器、屏幕阅读器和设备的性能推断 |

@@ -81,6 +81,11 @@ const example = (await readFile('examples/report.html', 'utf8'))
   .replaceAll('%BASE_URL%', 'https://jjttkid-hw.github.io/lumina-sheets/')
   .replace('</head>', '<link rel="stylesheet" href="./lumina.css"></head>');
 await writeFile('dist/sdk/example.html', example);
+const charts = (await readFile('examples/charts.html', 'utf8'))
+  .replace('href="../favicon.svg"', 'href="./favicon.svg"')
+  .replace('href="./report.html"', 'href="./example.html"')
+  .replace("'../src/sdk/index.tsx'", "'./lumina.js'");
+await writeFile('dist/sdk/charts.html', charts);
 await writeFile(
   'dist/sdk/package.json',
   JSON.stringify(
@@ -116,6 +121,7 @@ await writeFile(
         'dependency-inventory.json',
         'bundle-inputs.json',
         'example.html',
+        'charts.html',
         'favicon.svg',
       ],
       sideEffects: ['*.css'],

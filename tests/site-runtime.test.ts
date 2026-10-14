@@ -14,6 +14,11 @@ function fixture() {
   const write = (name: string, text: string) => writeFileSync(path.join(root, name), text);
   write('index.html', '<script src="/lumina-sheets/assets/main.js"></script>');
   write('examples/report.html', '<script src="../assets/main.js"></script>');
+  write('examples/charts.html', '<script src="../assets/main.js"></script>');
+  write(
+    'sdk/charts.html',
+    '<link href="./lumina.css"><script type="module">import { chartToSvg } from "./lumina.js";</script>',
+  );
   write(
     'sdk/example.html',
     '<link href="./lumina.css"><script type="module">import { grid } from "./lumina.js";</script>',
@@ -42,7 +47,7 @@ describe('HTTP deployment verification (synthetic transport)', () => {
   it('checks all lazy/worker/SDK resources and performance query against built bytes', async () => {
     const f = fixture();
     const result = await verifySiteHttp(f.root, 'http://localhost:1234', f.fetcher);
-    expect(result).toMatchObject({ status: 'passed', files: 8, requests: 10 });
+    expect(result).toMatchObject({ status: 'passed', files: 10, requests: 12 });
     expect(f.requested).toContain('/lumina-sheets/assets/lazy.js');
     expect(f.requested).toContain('/lumina-sheets/assets/worker.js');
     expect(f.requested).toContain('/lumina-sheets/?view=performance');
