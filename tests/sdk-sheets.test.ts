@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createBlankWorkbook } from '../src/lib/seed';
 import type { ReportPage } from '../src/lib/report-data';
+import type { Workbook } from '../src/lib/types';
 const io = vi.hoisted(() => ({
   export: vi.fn(async (..._args: unknown[]) => {}),
   import: vi.fn(),
@@ -407,6 +408,28 @@ it('recalculates cross-sheet paged formulas on arrival, eviction and retry, and 
   grid.setActiveSheet('summary');
   expect(grid.getValue('A1')).toBe(33);
   expect(fetchPage.mock.calls.map(([offset]) => offset)).toEqual([0, 40, 0]);
+});
+
+it('bakes conditional scale backgrounds into static exports without mutating the live cell', async () => {
+  const grid = make({
+    conditionalScaleRules: [
+      {
+        range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+        minColor: '#ffffff',
+        maxColor: '#000000',
+        min: 0,
+        max: 100,
+      },
+    ],
+  });
+  grid.setCell('A1', 50);
+  expect(grid.getCell('A1')?.style).toBeUndefined();
+  await grid.export('xlsx');
+  const exported = io.export.mock.calls.at(-1)?.[0] as Workbook;
+  expect(exported.sheets[0].cells.A1.style).toEqual({
+    background: '#808080',
+  });
+  expect(grid.getCell('A1')?.style).toBeUndefined();
 });
 
 it('does not bind a different worksheet selected by an old source abort callback', async () => {

@@ -57,6 +57,119 @@ describe('embeddable SDK edit controller', () => {
     instance.redo();
     expect(instance.getValue('C1')).toBe(11);
   });
+  it('applies and isolates conditional scale rules in the rendered cell view', () => {
+    const { instance } = make();
+    instance.setCell('A1', 50);
+    instance.setConditionalScaleRules([
+      {
+        range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+        minColor: '#ffffff',
+        maxColor: '#000000',
+        min: 0,
+        max: 100,
+      },
+    ]);
+    const rendered = instance.surface();
+    expect(rendered.props.getCell(rendered.props.sheet, 'A1')).toEqual({
+      value: 50,
+      style: { background: '#808080' },
+    });
+    expect(instance.getConditionalScaleRules()[0].maxColor).toBe('#000000');
+    const rules = instance.getConditionalScaleRules();
+    rules[0].maxColor = '#ff0000';
+    expect(instance.getConditionalScaleRules()[0].maxColor).toBe('#000000');
+    expect(() =>
+      instance.setConditionalScaleRules([
+        {
+          range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+          minColor: '#fff',
+          maxColor: '#000000',
+        },
+      ]),
+    ).toThrow('无效色阶规则');
+  });
+
+  it('updates conditional scales atomically and includes them in structure history', () => {
+    const { instance } = make();
+    instance.setCells([{ key: 'A1', cell: { value: 10 } }]);
+    const rule = {
+      range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+      minColor: '#ffffff',
+      maxColor: '#000000',
+      min: 0,
+      max: 100,
+    };
+    instance.setConditionalScaleRules([rule]);
+    expect(instance.getConditionalScaleRules()).toEqual([rule]);
+    expect(() => instance.setConditionalScaleRules([{ ...rule, max: 0 }])).toThrow('无效色阶规则');
+    expect(instance.getConditionalScaleRules()).toEqual([rule]);
+    instance.insertRows(1);
+    expect(instance.getConditionalScaleRules()[0].range.start.row).toBe(0);
+    instance.insertRows(0);
+    expect(instance.getConditionalScaleRules()[0].range.start.row).toBe(1);
+    instance.undo();
+    expect(instance.getConditionalScaleRules()[0].range.start.row).toBe(0);
+    instance.redo();
+    expect(instance.getConditionalScaleRules()[0].range.start.row).toBe(1);
+  });
+
+  it('rejects malformed or excessive scales before changing the current rules or revision', () => {
+    const { instance } = make();
+    const rule = {
+      range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+      minColor: '#ffffff',
+      maxColor: '#000000',
+    };
+    instance.setConditionalScaleRules([rule]);
+    const revision = instance.snapshot();
+    for (const input of [
+      new Array(1),
+      [null],
+      [{ ...rule, min: 100 }],
+      [{ ...rule, max: 0 }],
+      [{ ...rule, min: NaN }],
+      [{ ...rule, range: { start: { row: 1, col: 0 }, end: { row: 0, col: 0 } } }],
+      Array.from({ length: 1001 }, () => rule),
+    ]) {
+      expect(() => instance.setConditionalScaleRules(input as never)).toThrowError(
+        expect.objectContaining({ code: 'INVALID_ARGUMENT' }),
+      );
+      expect(instance.snapshot()).toBe(revision);
+      expect(instance.getConditionalScaleRules()).toEqual([rule]);
+    }
+  });
+
+  it('installs report scales before callbacks and preserves a reentrant newer report', () => {
+    const { instance } = make();
+    const rule = {
+      range: { start: { row: 1, col: 0 }, end: { row: 1, col: 0 } },
+      minColor: '#ffffff',
+      maxColor: '#000000',
+    };
+    let first = true;
+    instance.subscribe(() => {
+      if (!first) return;
+      first = false;
+      expect(instance.getConditionalScaleRules()).toEqual([rule]);
+      const surface = instance.surface();
+      expect(surface.props.getCell(surface.props.sheet, 'A2')?.style?.background).toBe('#808080');
+      instance.report({ name: 'newer', layout: 'list', columns: [{ field: 'v', title: 'v' }] }, [
+        { v: 2 },
+      ]);
+    });
+    instance.report(
+      {
+        name: 'older',
+        layout: 'list',
+        columns: [{ field: 'v', title: 'v' }],
+        conditionalScaleRules: [rule],
+      },
+      [{ v: 50 }],
+    );
+    expect(instance.toJSON().name).toBe('newer');
+    expect(instance.getConditionalScaleRules()).toEqual([]);
+    expect(instance.getValue('A2')).toBe(2);
+  });
 
   it('makes batches atomic, canonicalizes duplicate keys, and isolates input/event objects', () => {
     const onChange = vi.fn((event) => {

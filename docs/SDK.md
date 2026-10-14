@@ -96,6 +96,7 @@ React/Vue 生命周期接入见 [FRAMEWORKS.md](FRAMEWORKS.md)。同一容器不
 | `load(workbook)` / `import(file)`          | 替换工作簿并清空历史；文件导入仍受独立配额限制                |
 | `report(definition, records)`              | 在浏览器生成列表、多级分组或交叉统计                          |
 | `setConditionalRules(rules)`               | 设置显示规则；导出时固化当前已存储单元格的样式                |
+| `setConditionalScaleRules(rules)`          | 设置数值双色阶（最多 1000 条）；按范围映射单元格背景色，导出时固化显示结果 |
 | `bindData(source, options)`                | 只读分页绑定；替换当前表的数据与布局                          |
 | `prefetch({firstRow,lastRow}, options?)`   | 预热分页视区；不改变选区、活动表或可写状态                    |
 | `retryData()` / `clearDataCache()`         | 显式重试当前视区 / 清空缓存并刷新                             |
@@ -192,7 +193,7 @@ grid.deleteColumns(3); // 删除 D 列
 grid.undo(); // 恢复整次列删除
 ```
 
-结构编辑是原子操作：单元格、相关本表/跨表 A1 公式引用、合并、冻结行、列宽、打印参数、数据验证范围和条件格式范围一起调整；被删除的单格引用产生 `#REF!`。公式字符串常量不会被当作引用重写。`getConditionalRules()` 返回条件格式的隔离副本；首次结构操作会把未指定 `sheetId` 的全局条件规则展开为各表作用域，仅移动目标表范围。条件格式支持 `greaterThan`、`greaterThanOrEqual`、`lessThan`、`lessThanOrEqual`、`equal`、`notEqual`、`between`、`contains` 和 `notContains`。选择区域跟随位置移动，落入删除区的选择夹紧至剩余范围；撤销恢复操作前的选区。
+结构编辑是原子操作：单元格、相关本表/跨表 A1 公式引用、合并、冻结行、列宽、打印参数、数据验证范围和条件格式范围一起调整；被删除的单格引用产生 `#REF!`。公式字符串常量不会被当作引用重写。`getConditionalRules()` 与 `getConditionalScaleRules()` 返回隔离副本；首次结构操作会把未指定 `sheetId` 的全局条件规则展开为各表作用域，仅移动目标表范围。条件格式支持 `greaterThan`、`greaterThanOrEqual`、`lessThan`、`lessThanOrEqual`、`equal`、`notEqual`、`between`、`contains` 和 `notContains`；双色阶支持六位十六进制 `minColor` / `maxColor` 与可选 `min` / `max`，省略时固定使用 0 和 100，数值按范围线性插值，文本和错误值不着色。它不是自动按当前数据最小/最大值重算的 Excel 色阶，也不包含三色阶、数据条或图标集。选择区域跟随位置移动，落入删除区的选择夹紧至剩余范围；撤销恢复操作前的选区。
 
 结构操作通过 `onStructureChange` 通知，事件为 `{sheetId, axis, kind, index, count, phase, affectedSheetIds}`；它不触发普通单元格补丁 `onChange`。每次成功结构操作、撤销或重做触发一次订阅更新。错误输入不会改变数据、历史或事件；宿主回调抛错会转交 `onError`，已完成操作仍可撤销。
 

@@ -30,6 +30,15 @@ export interface ConditionalRule {
   upper?: number;
   style: CellStyle;
 }
+export interface ConditionalScaleRule {
+  /** Omit to apply the scale to every sheet. */
+  sheetId?: string;
+  range: CellRange;
+  minColor: string;
+  maxColor: string;
+  min?: number;
+  max?: number;
+}
 export interface ReportDefinition {
   name: string;
   layout: 'list' | 'group' | 'cross';
@@ -44,6 +53,7 @@ export interface ReportDefinition {
   pagination?: { rowsPerPage: number; repeatHeader?: boolean };
   cross?: { rows: string; columns: string; value: string; aggregate?: 'sum' | 'count' };
   conditionalRules?: ConditionalRule[];
+  conditionalScaleRules?: ConditionalScaleRule[];
 }
 const header: CellStyle = { bold: true, color: '#23644d', background: '#e8f2ec' };
 const subtotal: CellStyle = { bold: true, background: '#f0f5f1', format: 'number' };
@@ -278,4 +288,62 @@ export function conditionalStyle(
     if (match) Object.assign(style, rule.style);
   }
   return style;
+}
+
+function parseColor(value: string): [number, number, number] {
+  const match = /^#([\da-f]{6})$/i.exec(value);
+  if (!match) throw new Error('颜色必须为六位十六进制值');
+  return [
+    parseInt(match[1].slice(0, 2), 16),
+    parseInt(match[1].slice(2, 4), 16),
+    parseInt(match[1].slice(4), 16),
+  ];
+}
+
+/** Returns a deterministic two-color scale style for a numeric cell. */
+export function conditionalScaleStyle(
+  rules: ConditionalScaleRule[],
+  row: number,
+  col: number,
+  value: CellValue,
+): CellStyle {
+  const result: CellStyle = {};
+  if (typeof value !== 'number' || !Number.isFinite(value)) return result;
+  for (const rule of rules) {
+    if (
+      row < rule.range.start.row ||
+      row > rule.range.end.row ||
+      col < rule.range.start.col ||
+      col > rule.range.end.col
+    )
+      continue;
+    const min = rule.min ?? 0;
+    const max = rule.max ?? 100;
+    if (!Number.isFinite(min) || !Number.isFinite(max) || max <= min) continue;
+    // Scale all operands before subtracting so the range cannot overflow to
+    // Infinity for valid but extreme finite bounds (for example MIN_VALUE to
+    // MAX_VALUE). Values at either endpoint are handled explicitly so clamping
+    // remains deterministic even when the interval is very narrow.
+    let fraction: number;
+    if (value <= min) fraction = 0;
+    else if (value >= max) fraction = 1;
+    else {
+      const span = max - min;
+      if (Number.isFinite(span)) fraction = (value - min) / span;
+      else {
+        const scale = Math.max(Math.abs(min), Math.abs(max));
+        const scaledMin = min / scale;
+        const scaledMax = max / scale;
+        fraction = (value / scale - scaledMin) / (scaledMax - scaledMin);
+      }
+      fraction = Math.max(0, Math.min(1, fraction));
+    }
+    const low = parseColor(rule.minColor);
+    const high = parseColor(rule.maxColor);
+    const rgb = low.map((channel, index) =>
+      Math.round(channel + (high[index] - channel) * fraction),
+    );
+    result.background = `#${rgb.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
+  }
+  return result;
 }

@@ -55,6 +55,24 @@ afterEach(() => {
 });
 
 describe('SDK asynchronous import ownership', () => {
+  it('cancels an older import when validated conditional scales are edited', async () => {
+    const grid = make();
+    const pending = deferred();
+    files.read.mockReturnValue(pending.promise);
+    const result = outcome(grid.import(file()));
+    grid.setConditionalScaleRules([
+      {
+        range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+        minColor: '#ffffff',
+        maxColor: '#000000',
+      },
+    ]);
+    expect(await result).toMatchObject({ code: 'IMPORT_CANCELLED' });
+    pending.resolve(imported('stale'));
+    await Promise.resolve();
+    expect(grid.getValue('A1')).toBe('original');
+    expect(grid.getConditionalScaleRules()).toHaveLength(1);
+  });
   it.each(['conflicting payloads', 'unknown type', 'duplicate row'])(
     'preserves the workbook and history when an XLSX cell has %s',
     async (kind) => {

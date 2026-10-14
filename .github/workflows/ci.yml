@@ -182,6 +182,8 @@ jobs:
         run: node scripts/browser-frameworks.mjs
       - name: Verify chart controls, data updates and vector downloads
         run: node scripts/check-chart-browser.mjs
+      - name: Verify conditional scale Canvas pixels and static XLSX styles
+        run: node scripts/check-conditional-scale-browser.mjs
       - name: Verify multi-sheet editing, history and actual file round trips
         run: node scripts/check-multisheet-browser.mjs
       - name: Verify workspace validation rule editing, history and file round trips

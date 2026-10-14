@@ -1546,6 +1546,18 @@
                         style: { background: '#d8f1df', color: '#146440', bold: true },
                       },
                     ],
+              conditionalScaleRules:
+                mode === 'cross'
+                  ? []
+                  : [
+                      {
+                        range: { start: { row: 1, col: 3 }, end: { row: 200, col: 3 } },
+                        minColor: '#eff6ff',
+                        maxColor: '#2563eb',
+                        min: 0,
+                        max: 300000,
+                      },
+                    ],
             };
             grid.report(definition, records);
             $('#layout-note').textContent =

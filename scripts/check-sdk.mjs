@@ -94,6 +94,7 @@ import {
   type ReportDataSource,
   type DataValidationRule,
   type ConditionalRule,
+  type ConditionalScaleRule,
   type PrintSettings,
   type RowSortRequest,
   type StructureChangeEvent,
@@ -141,6 +142,8 @@ export function mount(host: HTMLElement, workbook: Workbook): LuminaSpreadsheet 
   grid.setDataValidation(rules);
   const conditionalRules: ConditionalRule[] = grid.getConditionalRules();
   grid.setConditionalRules(conditionalRules);
+  const scaleRules: ConditionalScaleRule[] = grid.getConditionalScaleRules();
+  grid.setConditionalScaleRules(scaleRules);
   const settings: PrintSettings | undefined = grid.getPrintSettings();
   grid.setPrintSettings(settings);
   const sort: RowSortRequest = {

@@ -29,6 +29,7 @@
     "check:bundle-performance": "node scripts/check-bundle-performance.mjs",
     "check:site-runtime": "node scripts/check-site-runtime.mjs",
     "check:browser-evidence": "node scripts/check-browser-evidence.mjs",
+    "check:browser-conditional-scale": "node scripts/check-conditional-scale-browser.mjs",
     "check:xlsx-corpus": "node scripts/check-xlsx-corpus.mjs",
     "check:wps-corpus": "node scripts/check-wps-corpus.mjs",
     "check:xlsx-corpus-evidence": "node scripts/check-xlsx-corpus-evidence.mjs",

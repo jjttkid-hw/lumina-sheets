@@ -35,9 +35,11 @@ import {
 } from '../lib/report-data';
 import { reportDataCsvBlob, type ReportDataCsvOptions } from '../lib/report-data-export';
 import {
+  conditionalScaleStyle,
   conditionalStyle,
   generateReport,
   type ConditionalRule,
+  type ConditionalScaleRule,
   type ReportDefinition,
   type ReportRecord,
 } from '../lib/report';
@@ -122,6 +124,7 @@ export interface SpreadsheetOptions {
   zoom?: number;
   clipboardMode?: ClipboardMode;
   conditionalRules?: ConditionalRule[];
+  conditionalScaleRules?: ConditionalScaleRule[];
   onChange?: (event: { sheetId: string; changes: CellChange[] }) => void;
   /** One atomic structural edit; does not emit a large synthetic cell-change list. */
   onStructureChange?: (event: StructureChangeEvent) => void;
@@ -253,7 +256,7 @@ function validateExportBudgets(value: unknown): asserts value is ExportOptions['
 }
 function copyRules(input: ConditionalRule[]): ConditionalRule[] {
   if (!Array.isArray(input)) throw new LuminaError('INVALID_ARGUMENT', '无效条件格式规则');
-  return input.map((rule) => {
+  return Array.from(input, (rule) => {
     if (
       !record(rule) ||
       !record(rule.range) ||
@@ -289,6 +292,54 @@ function copyRules(input: ConditionalRule[]): ConditionalRule[] {
     )
       throw new LuminaError('INVALID_ARGUMENT', '无效条件格式上限');
     return { ...structuredClone(rule), style: cell.style ?? {} };
+  });
+}
+function copyScaleRules(input: ConditionalScaleRule[]): ConditionalScaleRule[] {
+  if (!Array.isArray(input)) throw new LuminaError('INVALID_ARGUMENT', '无效色阶规则');
+  if (input.length > 1000) throw new LuminaError('INVALID_ARGUMENT', '色阶规则最多 1000 条');
+  return Array.from(input, (rule) => {
+    if (
+      !record(rule) ||
+      !record(rule.range) ||
+      !record(rule.range.start) ||
+      !record(rule.range.end)
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '无效色阶范围');
+    const { start, end } = rule.range;
+    const min = rule.min ?? 0;
+    const max = rule.max ?? 100;
+    if (
+      !validInteger(start.row, 0, MAX_ROWS - 1) ||
+      !validInteger(end.row, start.row, MAX_ROWS - 1) ||
+      !validInteger(start.col, 0, MAX_COLUMNS - 1) ||
+      !validInteger(end.col, start.col, MAX_COLUMNS - 1) ||
+      typeof rule.minColor !== 'string' ||
+      typeof rule.maxColor !== 'string' ||
+      !/^#[\da-f]{6}$/i.test(rule.minColor) ||
+      !/^#[\da-f]{6}$/i.test(rule.maxColor) ||
+      (rule.min !== undefined && (typeof rule.min !== 'number' || !Number.isFinite(rule.min))) ||
+      (rule.max !== undefined && (typeof rule.max !== 'number' || !Number.isFinite(rule.max))) ||
+      !Number.isFinite(min) ||
+      !Number.isFinite(max) ||
+      max <= min
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '无效色阶规则');
+    if (
+      rule.sheetId !== undefined &&
+      (typeof rule.sheetId !== 'string' || !rule.sheetId || rule.sheetId.length > 1024)
+    )
+      throw new LuminaError('INVALID_ARGUMENT', '无效色阶工作表');
+    return {
+      ...(rule.sheetId !== undefined ? { sheetId: rule.sheetId } : {}),
+      range: {
+        start: { row: start.row, col: start.col },
+        end: { row: end.row, col: end.col },
+      },
+      minColor: rule.minColor,
+      maxColor: rule.maxColor,
+      ...(rule.min !== undefined ? { min: rule.min } : {}),
+      ...(rule.max !== undefined ? { max: rule.max } : {}),
+    };
   });
 }
 type SheetDimensions = Pick<Sheet, 'rowCount' | 'colCount'>;
@@ -335,6 +386,8 @@ interface StructureTransaction {
   afterSheets: Sheet[];
   beforeRules: ConditionalRule[];
   afterRules: ConditionalRule[];
+  beforeScaleRules: ConditionalScaleRule[];
+  afterScaleRules: ConditionalScaleRule[];
   beforeSelection: Selection;
   afterSelection: Selection;
 }
@@ -618,6 +671,7 @@ export class LuminaSpreadsheet {
   private lastViewport = '';
   private destroyed = false;
   private rules: ConditionalRule[];
+  private scaleRules: ConditionalScaleRule[];
   private previousClass: string;
   private options: SpreadsheetOptions;
   private dataNotificationPending = false;
@@ -655,6 +709,7 @@ export class LuminaSpreadsheet {
     this.workbook = asArgument(() => copyWorkbook(options.workbook ?? createBlankWorkbook()));
     this.options = { ...options };
     this.rules = asArgument(() => copyRules(options.conditionalRules ?? []));
+    this.scaleRules = asArgument(() => copyScaleRules(options.conditionalScaleRules ?? []));
     this.evaluator = this.createWorkbookEvaluator();
     this.previousClass = host.className;
     mountedHosts.add(host);
@@ -879,6 +934,20 @@ export class LuminaSpreadsheet {
     this.filter = '';
     this.changed();
   }
+  private installGeneratedWorkbook(
+    next: Workbook,
+    rules: ConditionalRule[] = [],
+    scaleRules: ConditionalScaleRule[] = [],
+  ) {
+    this.cancelImport('工作簿已替换');
+    const epoch = this.clearSource();
+    if (this.destroyed || epoch !== this.sourceEpoch) return;
+    // Install formatting before notifying hosts. A listener may start another
+    // report or destroy this instance; no post-notification writes may follow.
+    this.rules = rules;
+    this.scaleRules = scaleRules;
+    this.commitLoadedWorkbook(next);
+  }
   private cancelImport(reason: unknown) {
     this.pendingImport?.cancel(reason);
   }
@@ -1068,7 +1137,7 @@ export class LuminaSpreadsheet {
           if (typeof cell.value === 'string' && cell.value.startsWith('='))
             frozenCsvValues.set(key, this.value(this.currentSheet, key));
       }
-      if (format !== 'csv' && this.rules.length) {
+      if (format !== 'csv' && (this.rules.length || this.scaleRules.length)) {
         // Conditional rules export as static styles, not Excel dynamic rules.
         const evaluate = createEvaluator(workbook);
         for (const sheet of workbook.sheets)
@@ -1079,6 +1148,12 @@ export class LuminaSpreadsheet {
               ...cell.style,
               ...conditionalStyle(
                 this.rules.filter((rule) => !rule.sheetId || rule.sheetId === sheet.id),
+                point.row,
+                point.col,
+                evaluate(sheet, key),
+              ),
+              ...conditionalScaleStyle(
+                this.scaleRules.filter((rule) => !rule.sheetId || rule.sheetId === sheet.id),
                 point.row,
                 point.col,
                 evaluate(sheet, key),
@@ -1255,6 +1330,17 @@ export class LuminaSpreadsheet {
     this.assertLive();
     return structuredClone(this.rules);
   }
+  setConditionalScaleRules(rules: ConditionalScaleRule[]) {
+    this.assertLive();
+    const next = asArgument(() => copyScaleRules(rules));
+    this.cancelImport('色阶规则已修改');
+    this.scaleRules = next;
+    this.changed();
+  }
+  getConditionalScaleRules(): ConditionalScaleRule[] {
+    this.assertLive();
+    return structuredClone(this.scaleRules);
+  }
   insertRows(index: number, count = 1) {
     this.editStructure({ axis: 'row', kind: 'insert', index, count });
   }
@@ -1344,6 +1430,19 @@ export class LuminaSpreadsheet {
         }),
       ),
     );
+    const nextScaleRules = asArgument(() =>
+      copyScaleRules(
+        this.scaleRules.flatMap((rule) => {
+          const scopes = rule.sheetId
+            ? [rule.sheetId]
+            : this.workbook.sheets.map((sheet) => sheet.id);
+          return scopes.flatMap((scope) => {
+            const range = scope === sheetId ? transformRange(rule.range, edit) : rule.range;
+            return range ? [{ ...rule, sheetId: scope, range }] : [];
+          });
+        }),
+      ),
+    );
     const axis = edit.axis === 'row' ? 'row' : 'col';
     const endAxis = edit.axis === 'row' ? 'endRow' : 'endCol';
     const size = edit.axis === 'row' ? afterSheet.rowCount : afterSheet.colCount;
@@ -1361,6 +1460,8 @@ export class LuminaSpreadsheet {
       afterSheets: validated.sheets.filter((sheet) => affected.has(sheet.id)),
       beforeRules: structuredClone(this.rules),
       afterRules: nextRules,
+      beforeScaleRules: structuredClone(this.scaleRules),
+      afterScaleRules: nextScaleRules,
       beforeSelection: { ...this.selection },
       afterSelection: nextSelection,
     };
@@ -1379,6 +1480,9 @@ export class LuminaSpreadsheet {
     const replacement = new Map(sheets.map((sheet) => [sheet.id, sheet]));
     this.workbook.sheets = this.workbook.sheets.map((sheet) => replacement.get(sheet.id) ?? sheet);
     this.rules = structuredClone(undo ? transaction.beforeRules : transaction.afterRules);
+    this.scaleRules = structuredClone(
+      undo ? transaction.beforeScaleRules : transaction.afterScaleRules,
+    );
     const activeTarget = this.workbook.activeSheetId === transaction.sheetId;
     if (activeTarget)
       this.selection = { ...(undo ? transaction.beforeSelection : transaction.afterSelection) };
@@ -1522,19 +1626,20 @@ export class LuminaSpreadsheet {
     this.assertLive();
     this.cancelPivot('新的报表已开始');
     const rules = asArgument(() => copyRules(definition.conditionalRules ?? []));
+    const scaleRules = asArgument(() => copyScaleRules(definition.conditionalScaleRules ?? []));
     const workbook = asArgument(() => generateReport(definition, data));
-    this.load(workbook);
-    this.rules = rules;
-    this.changed();
+    this.installGeneratedWorkbook(
+      asArgument(() => copyWorkbook(workbook)),
+      rules,
+      scaleRules,
+    );
   }
   /** Replace the workbook with a static multi-measure analysis snapshot. */
   pivot(definition: PivotDefinition, data: readonly ReportRecord[]): void {
     this.assertLive();
     this.cancelPivot('新的透视分析已开始');
     const workbook = asArgument(() => generatePivotReport(definition, data));
-    this.load(workbook);
-    this.rules = [];
-    this.changed();
+    this.installGeneratedWorkbook(asArgument(() => copyWorkbook(workbook)));
   }
   /** Analyze a large snapshot cooperatively and install it when complete. */
   pivotAsync(
@@ -1590,7 +1695,7 @@ export class LuminaSpreadsheet {
           try {
             const workbook = pivotTableToWorkbook(definition, table);
             finish();
-            this.load(workbook);
+            this.installGeneratedWorkbook(asArgument(() => copyWorkbook(workbook)));
             resolve();
           } catch (error) {
             finish();
@@ -1948,6 +2053,12 @@ export class LuminaSpreadsheet {
         ...base?.style,
         ...conditionalStyle(
           this.rules.filter((rule) => !rule.sheetId || rule.sheetId === sheet.id),
+          point.row,
+          point.col,
+          this.value(sheet, key),
+        ),
+        ...conditionalScaleStyle(
+          this.scaleRules.filter((rule) => !rule.sheetId || rule.sheetId === sheet.id),
           point.row,
           point.col,
           this.value(sheet, key),
