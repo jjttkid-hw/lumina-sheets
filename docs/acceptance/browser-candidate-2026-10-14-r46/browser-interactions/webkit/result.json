@@ -10,7 +10,7 @@
     "node": "v24.14.0",
     "headless": true
   },
-  "siteSha256": "09eccca944c224920e29a8d30ea26f4e260e9cea397236dc30d0219840f0bc3b",
+  "siteSha256": "6d5da4030238e9db15ee17c9bccbbbdb1547ca4287ab31299c1d08194f72de9d",
   "artifactSha256": "bd5faa3c01e45bbc43de8508a5d976782085691addbebdaddf89ad4c4691a2c1",
   "scope": "Real browser interaction checks. Clipboard uses browser keyboard commands. SDK lifecycle uses published JS API in the page. Not native IME, Safari or physical-touch certification.",
   "checks": [

@@ -4,7 +4,7 @@
   "engine": "webkit",
   "browserVersion": "26.0",
   "executedAt": "2026-10-14T02:48:35.407Z",
-  "siteSha256": "09eccca944c224920e29a8d30ea26f4e260e9cea397236dc30d0219840f0bc3b",
+  "siteSha256": "6d5da4030238e9db15ee17c9bccbbbdb1547ca4287ab31299c1d08194f72de9d",
   "artifactSha256": "bd5faa3c01e45bbc43de8508a5d976782085691addbebdaddf89ad4c4691a2c1",
   "scope": "Shipped site and packaged SDK chart controls, SVG downloads and exact table. No native Excel object, screen-reader or physical device claim.",
   "checks": [

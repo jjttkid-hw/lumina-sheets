@@ -13,7 +13,7 @@
     "logicalCpuCount": 15,
     "totalMemoryBytes": 25769803776
   },
-  "siteSha256": "09eccca944c224920e29a8d30ea26f4e260e9cea397236dc30d0219840f0bc3b",
+  "siteSha256": "6d5da4030238e9db15ee17c9bccbbbdb1547ca4287ab31299c1d08194f72de9d",
   "artifactSha256": "bd5faa3c01e45bbc43de8508a5d976782085691addbebdaddf89ad4c4691a2c1",
   "scope": "Measured real-browser performance on this machine. An explicit profile optionally judges latency ceilings; see performanceBudget for configuration and results. No customer hardware SLA or competitor comparison. Functional assertions cover data counts, formula sentinels, sampling completion, edits, cancellation and report export.",
   "checks": [

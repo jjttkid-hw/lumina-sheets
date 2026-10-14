@@ -13,7 +13,7 @@ record and pivot chart sources, SVG export, exact data tables and packaged SDK e
 The current build has 2,489 passing tests, 25 bound browser reports across Chromium,
 Firefox and WebKit, the XLSX/WPS/business corpus, framework hosts, strict license evidence,
 and two reproducible site/package builds. Site SHA-256 is
-`09eccca944c224920e29a8d30ea26f4e260e9cea397236dc30d0219840f0bc3b`; SDK SHA-256 is
+`6d5da4030238e9db15ee17c9bccbbbdb1547ca4287ab31299c1d08194f72de9d`; SDK SHA-256 is
 `bd5faa3c01e45bbc43de8508a5d976782085691addbebdaddf89ad4c4691a2c1` (747405 bytes).
 The automated product-function scope passes. Native OS IME windows, physical devices,
 real screen readers, cross-device SLA measurements, complete Excel/SpreadJS compatibility,
