@@ -16,7 +16,16 @@ export interface ConditionalRule {
   /** Omit to apply the rule to every sheet. */
   sheetId?: string;
   range: CellRange;
-  operator: 'greaterThan' | 'lessThan' | 'equal' | 'between' | 'contains';
+  operator:
+    | 'greaterThan'
+    | 'greaterThanOrEqual'
+    | 'lessThan'
+    | 'lessThanOrEqual'
+    | 'equal'
+    | 'notEqual'
+    | 'between'
+    | 'contains'
+    | 'notContains';
   value: CellValue;
   upper?: number;
   style: CellStyle;
@@ -246,18 +255,26 @@ export function conditionalStyle(
     const n = Number(value),
       target = Number(rule.value);
     const match =
-      rule.operator === 'contains'
-        ? String(value).includes(String(rule.value))
-        : rule.operator === 'equal'
-          ? value === rule.value
+      rule.operator === 'contains' || rule.operator === 'notContains'
+        ? rule.operator === 'contains'
+          ? String(value).includes(String(rule.value))
+          : !String(value).includes(String(rule.value))
+        : rule.operator === 'equal' || rule.operator === 'notEqual'
+          ? rule.operator === 'equal'
+            ? value === rule.value
+            : value !== rule.value
           : value !== '' &&
             Number.isFinite(n) &&
             Number.isFinite(target) &&
             (rule.operator === 'greaterThan'
               ? n > target
-              : rule.operator === 'lessThan'
-                ? n < target
-                : n >= target && n <= (rule.upper ?? target));
+              : rule.operator === 'greaterThanOrEqual'
+                ? n >= target
+                : rule.operator === 'lessThan'
+                  ? n < target
+                  : rule.operator === 'lessThanOrEqual'
+                    ? n <= target
+                    : n >= target && n <= (rule.upper ?? target));
     if (match) Object.assign(style, rule.style);
   }
   return style;

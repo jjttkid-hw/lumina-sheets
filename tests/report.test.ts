@@ -55,4 +55,67 @@ describe('JavaScript report generation', () => {
     expect(conditionalStyle([rule], 0, 2, -1)).toEqual({});
     expect(conditionalStyle([rule], 2, 2, '')).toEqual({});
   });
+  it('supports inclusive, inverse and text conditional operators', () => {
+    const style = { background: '#ff0000' };
+    expect(
+      conditionalStyle(
+        [
+          {
+            range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+            operator: 'greaterThanOrEqual',
+            value: 5,
+            style,
+          },
+        ],
+        0,
+        0,
+        5,
+      ),
+    ).toEqual(style);
+    expect(
+      conditionalStyle(
+        [
+          {
+            range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+            operator: 'lessThanOrEqual',
+            value: 5,
+            style,
+          },
+        ],
+        0,
+        0,
+        5,
+      ),
+    ).toEqual(style);
+    expect(
+      conditionalStyle(
+        [
+          {
+            range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+            operator: 'notEqual',
+            value: 5,
+            style,
+          },
+        ],
+        0,
+        0,
+        4,
+      ),
+    ).toEqual(style);
+    expect(
+      conditionalStyle(
+        [
+          {
+            range: { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } },
+            operator: 'notContains',
+            value: 'error',
+            style,
+          },
+        ],
+        0,
+        0,
+        'ready',
+      ),
+    ).toEqual(style);
+  });
 });

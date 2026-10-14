@@ -269,7 +269,17 @@ function copyRules(input: ConditionalRule[]): ConditionalRule[] {
       !validInteger(end.row, start.row, MAX_ROWS - 1) ||
       !validInteger(start.col, 0, MAX_COLUMNS - 1) ||
       !validInteger(end.col, start.col, MAX_COLUMNS - 1) ||
-      !['greaterThan', 'lessThan', 'equal', 'between', 'contains'].includes(rule.operator)
+      ![
+        'greaterThan',
+        'greaterThanOrEqual',
+        'lessThan',
+        'lessThanOrEqual',
+        'equal',
+        'notEqual',
+        'between',
+        'contains',
+        'notContains',
+      ].includes(rule.operator)
     )
       throw new LuminaError('INVALID_ARGUMENT', '无效条件格式规则');
     const cell = copyCell({ value: rule.value, style: rule.style });

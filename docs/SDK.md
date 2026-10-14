@@ -192,7 +192,7 @@ grid.deleteColumns(3); // 删除 D 列
 grid.undo(); // 恢复整次列删除
 ```
 
-结构编辑是原子操作：单元格、相关本表/跨表 A1 公式引用、合并、冻结行、列宽、打印参数、数据验证范围和条件格式范围一起调整；被删除的单格引用产生 `#REF!`。公式字符串常量不会被当作引用重写。`getConditionalRules()` 返回条件格式的隔离副本；首次结构操作会把未指定 `sheetId` 的全局条件规则展开为各表作用域，仅移动目标表范围。选择区域跟随位置移动，落入删除区的选择夹紧至剩余范围；撤销恢复操作前的选区。
+结构编辑是原子操作：单元格、相关本表/跨表 A1 公式引用、合并、冻结行、列宽、打印参数、数据验证范围和条件格式范围一起调整；被删除的单格引用产生 `#REF!`。公式字符串常量不会被当作引用重写。`getConditionalRules()` 返回条件格式的隔离副本；首次结构操作会把未指定 `sheetId` 的全局条件规则展开为各表作用域，仅移动目标表范围。条件格式支持 `greaterThan`、`greaterThanOrEqual`、`lessThan`、`lessThanOrEqual`、`equal`、`notEqual`、`between`、`contains` 和 `notContains`。选择区域跟随位置移动，落入删除区的选择夹紧至剩余范围；撤销恢复操作前的选区。
 
 结构操作通过 `onStructureChange` 通知，事件为 `{sheetId, axis, kind, index, count, phase, affectedSheetIds}`；它不触发普通单元格补丁 `onChange`。每次成功结构操作、撤销或重做触发一次订阅更新。错误输入不会改变数据、历史或事件；宿主回调抛错会转交 `onError`，已完成操作仍可撤销。
 
